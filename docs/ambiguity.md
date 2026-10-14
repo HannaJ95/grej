@@ -48,11 +48,11 @@ Decision: Yes, several of each.
 Why: Handmade items are often multi-colored, e.g. a bowl that is red, white and blue.
 
 **How does filtering on several colors or materials work?**
-Decision: Within one property it is "or", between properties it is "and". Filtering on red + blue shows everything that is red or blue. Filtering on red + ceramics shows everything that is red and made of ceramics.
+Decision (Should): Within one property it is "or", between properties it is "and". Filtering on red + blue shows everything that is red or blue. Filtering on red + ceramics shows everything that is red and made of ceramics.
 Why: This is how most webshops work, and a red, white and blue bowl is found whichever of its colors the customer picks.
 
 **Can a product have several images?**
-Decision: Yes, up to 10.
+Decision (Should): Yes, up to 10. The MVP has one image per product.
 
 ## Categories
 
@@ -61,11 +61,11 @@ Decision: No, one category per product.
 Why: Simpler data model and filtering. Subcategories cover the need for grouping.
 
 **Can categories have subcategories?**
-Decision: Yes, one level. A category can have any number of subcategories (e.g. Ceramics → Plates, Cups, Bowls, Candle holders, Other), but a subcategory cannot have its own subcategories. The admin creates both in the CMS.
+Decision (Should): Yes, one level. A category can have any number of subcategories (e.g. Ceramics → Plates, Cups, Bowls, Candle holders, Other), but a subcategory cannot have its own subcategories. The admin creates both in the CMS.
 Why: One level covers the need. Deeper trees make the CMS, the menu and the filtering much more complex.
 
 **What is shown when the customer selects a category?**
-Decision: All products in the category and its subcategories. The subcategories are shown as filters.
+Decision (Should): All products in the category and its subcategories. The subcategories are shown as filters.
 
 **What happens to products if the admin deletes a category?**
 Decision: A category that has products or subcategories cannot be deleted. Its products must be moved, and its subcategories deleted, first.
@@ -81,7 +81,7 @@ Decision: By default the list shows orders that are paid but not shipped, i.e. w
 Why: Cancelled and expired orders are never deleted, so the list grows over time.
 
 **Does cancelling an order refund the customer?**
-Decision: Not automatically. The admin refunds in the Stripe dashboard, Stripe notifies the API, and the payment becomes `Refunded`. If the order was not shipped, the stock is increased again.
+Decision: Not automatically. The admin refunds in the Stripe dashboard, Stripe notifies the API, and the payment becomes `Refunded`. Cancelling an order that has not been shipped increases the stock again; the refund itself never changes the stock.
 Why: Automatic refunds are more code and more risk, and refunds are rare in a small shop.
 
 ## Shipping, money and countries
@@ -114,5 +114,5 @@ Decision: The products are hidden, existing orders are kept.
 **An order contains products from several sellers. Who ships, how many shipping costs are there, and when is the order shipped?**
 Decision: Open. Must be decided before the marketplace is started.
 
-**How do sellers get their money when payouts (Stripe Connect) are Won't?**
+**How do sellers get their money (e.g. with Stripe Connect)?**
 Decision: Open. Must be decided before the marketplace is started.

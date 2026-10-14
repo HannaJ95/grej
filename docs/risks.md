@@ -29,10 +29,10 @@
 
 ## 4. Free hosting limits
 
-Render's free tier sleeps after inactivity (slow first request), its file system is cleared on every deploy, and some free databases expire after a limited time.
+Render's free tier sleeps after inactivity (slow first request) and its file system is cleared on every deploy. Supabase's free tier pauses a project after about a week without database traffic.
 
-**Mitigation:** check the limits in sprint 0. Images are stored in an external image service. Stripe retries webhooks that fail while the server wakes up. Open the deployed site a few minutes before the presentation.
-**Plan B:** move the database to another free PostgreSQL host (e.g. Neon or Supabase). Migrations and seed scripts mean the database can be recreated at any time.
+**Mitigation:** the database and images are stored in Supabase, not on Render. Stripe retries webhooks that fail while the server wakes up (in test mode only a few times over some hours), and events can be resent from the Stripe dashboard. Open the deployed site a few minutes before the presentation, and keep the project active until it has been graded (early December).
+**Plan B:** restore a paused project from the Supabase dashboard. Migrations and seed scripts mean the database can be recreated at any time.
 
 ## 5. Deployment problems found late (CORS, environment variables, secrets)
 
@@ -57,4 +57,4 @@ Render's free tier sleeps after inactivity (slow first request), its file system
 ## 9. Two customers buy the last unique item at the same time
 
 **Mitigation:** stock is checked before checkout and decreased when the payment is confirmed.
-**Plan B:** the second order is flagged, and the admin cancels and refunds it in Stripe (see [constraints.md](constraints.md)).
+**Plan B:** the stock goes below 0, which shows the admin that one of the orders must be cancelled and refunded in Stripe (see [constraints.md](constraints.md)).

@@ -7,8 +7,9 @@ How the system is built. What is built is in [scope.md](scope.md), the rules it 
 ```mermaid
 flowchart LR
     Browser["Angular frontend<br/>(Vercel)"] -->|REST + JWT| API["ASP.NET Core Web API<br/>(Render)"]
-    API --> DB[("PostgreSQL")]
-    API --> Images["Image service"]
+    API --> DB[("PostgreSQL<br/>(Supabase)")]
+    API -->|upload images| Storage["Supabase Storage"]
+    Browser -->|load images| Storage
     API -->|create Checkout session| Stripe["Stripe"]
     Browser -->|redirect to pay| Stripe
     Stripe -->|webhook| API
@@ -17,10 +18,12 @@ flowchart LR
 | Part | Technology | Hosting |
 |---|---|---|
 | Frontend | Angular | Vercel |
-| Backend | C# ASP.NET Core Web API, EF Core | Render |
-| Database | PostgreSQL | *Decided in sprint 0* |
-| Images | External image service (e.g. Cloudinary) | *Decided in sprint 0* |
+| Backend | C# ASP.NET Core Web API, EF Core | Render (Docker) |
+| Database | PostgreSQL | Supabase |
+| Images | Supabase Storage | Supabase |
 | Payments | Stripe Checkout (test mode) + webhook | Stripe |
+
+The API runs on Render as a Docker container, since Render has no built-in .NET support. It connects to the database through Supabase's session pooler, because Render can only reach IPv4 addresses.
 
 ## Modular monolith
 
@@ -52,7 +55,7 @@ Infrastructure
 | **Api** | Controllers, request/response models, authentication setup | `POST /api/checkout` |
 | **Application** | Use cases and interfaces for infrastructure | "Create checkout", "Mark order as shipped", `IPaymentProvider` |
 | **Domain** | Entities and business rules, no dependencies | `Order.MarkAsShipped()` refuses unless the payment is `Paid` |
-| **Infrastructure** | EF Core and PostgreSQL, Stripe, image service | `StripePaymentProvider`, `GrejDbContext` |
+| **Infrastructure** | EF Core and PostgreSQL, Stripe, Supabase Storage | `StripePaymentProvider`, `GrejDbContext` |
 
 **Why:** the business rules do not depend on the database or Stripe, which makes them easy to test and makes it possible to replace infrastructure later.
 
@@ -85,7 +88,7 @@ client/
 | **Prices calculated in the API** from the database; title and price stored on each order row | Prices in the browser can be manipulated; old orders must not change |
 | **Money as `decimal` + currency** (SEK in this version) | Floating point gives rounding errors; storing the currency keeps more currencies possible |
 | **ASP.NET Core Identity + JWT**, role Admin | Frontend and API are on different domains, which makes tokens simpler than cookies |
-| **External image service** | Render's file system is cleared on every deploy; the service also resizes images |
+| **Supabase for database and images** | One service I already know for both; images cannot be stored on Render, whose file system is cleared on every deploy |
 | **Cart in localStorage** | Customers buy as guests, so there is no account to store the cart on |
 | **`SellerId` on every product** (always the admin) | Cheap now, keeps a future marketplace possible |
 
@@ -129,7 +132,7 @@ erDiagram
     USER ||--o{ PRODUCT : owns
     ORDER ||--|{ ORDER_ITEM : contains
     PRODUCT ||--o{ ORDER_ITEM : "bought as"
-    ORDER ||--o{ PAYMENT : "paid by"
+    ORDER ||--|| PAYMENT : "paid by"
 ```
 
 ### Catalog
@@ -143,7 +146,7 @@ erDiagram
 | Description | string | |
 | Price | decimal | Greater than 0 |
 | Currency | string | `SEK` |
-| Stock | int | Unique art = 1 |
+| Stock | int | Unique art = 1; below 0 means the last item was sold twice |
 | IsActive | bool | `false` = draft or hidden |
 | CategoryId | → Category | Exactly one |
 | SellerId | → User | Always the admin in this version |
@@ -155,8 +158,8 @@ erDiagram
 |---|---|---|
 | Id | int | |
 | ProductId | → Product | At most 10 per product |
-| Url | string | From the image service |
-| StorageId | string | The image service's id, used to delete the image |
+| Url | string | Public URL in Supabase Storage |
+| StoragePath | string | Path in Supabase Storage, used to delete the image |
 | AltText | string | |
 | SortOrder | int | First image is the main image |
 
@@ -181,7 +184,7 @@ erDiagram
 | Id | int | |
 | OrderNumber | string | Shown to the customer on the success page |
 | Status | enum | `Pending`, `Shipped`, `Cancelled` |
-| NeedsAttention | bool | Set on double sale of the last item |
+| NeedsAttention | bool | Set on double sale of the last item (Should) |
 | CustomerName, CustomerEmail | string | From Stripe Checkout |
 | AddressLine1, AddressLine2, PostalCode, City, Country | string | From Stripe Checkout; Country is always `SE` for now |
 | ShippingMethod, ShippingCost | string, decimal | Null until shipping cost is built |
@@ -207,7 +210,7 @@ erDiagram
 | Column | Type | Note |
 |---|---|---|
 | Id | int | |
-| OrderId | → Order | One order can have several payment attempts |
+| OrderId | → Order | One payment per order in this version; a new checkout creates a new order |
 | Provider | string | `Stripe` |
 | ProviderReference | string | Stripe Checkout session id |
 | Status | enum | `Pending`, `Paid`, `Expired`, `Refunded` |

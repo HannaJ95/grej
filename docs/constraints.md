@@ -19,7 +19,7 @@ The rules the system must follow, regardless of how it is built. What is built i
 
 ## Orders and payments
 
-An order has two separate statuses: a **payment status** (is it paid?) and an **order status** (where is it in handling?). The payment provider only changes the payment status, and the admin only changes the order status.
+An order has two separate statuses: a **payment status** (is it paid?) and an **order status** (where is it in handling?). The payment provider only changes the payment status, and the admin changes the order status. The only automatic change to the order status is that the order is cancelled when its payment expires.
 
 A payment is stored separately from the order, with its provider (e.g. Stripe) and the provider's reference. This way more payment methods can be added later without changing the order flow.
 
@@ -62,7 +62,7 @@ Cancelled
 - An order can only be set to `Shipped` if its payment is `Paid`.
 - When the payment becomes `Expired`, the order becomes `Cancelled`.
 - An order that is `Cancelled` with payment `Paid` is shown to the admin as "needs refund".
-- If the last item was already sold when the payment becomes `Paid`, the order is flagged for the admin, who cancels it and refunds it in Stripe.
+- If the last item was already sold when the payment becomes `Paid`, the order is flagged for the admin, who cancels it and refunds it in Stripe (Should).
 - An order is never deleted.
 - Each order row stores the product's title and price at the time of purchase. Later changes to a product never change old orders.
 - The customer's name, email and address (including country) are taken from Stripe Checkout and stored on the order. Only Swedish addresses are allowed in this version.
@@ -78,18 +78,19 @@ Cancelled
 
 - A product belongs to exactly one category.
 - A product that is part of an order cannot be hard deleted. It is hidden instead (`IsActive = false`).
-- Categories have at most one level of subcategories.
+- Categories have at most one level of subcategories (Should).
 - A category that has products or subcategories cannot be deleted.
 - Every product has an owner (`SellerId`), which is always the admin in this version. This keeps the door open for a marketplace.
 - A product must have a title, a category and a price greater than 0. This is validated in both the form and the API.
-- A product has at most 10 images.
+- A product has one image in the MVP, and at most 10 when several images are built (Should).
 
-## Stock (Should)
+## Stock
 
 - Stock decreases only when a payment becomes `Paid`, not when a product is added to the cart.
-- When a paid order is cancelled before it is shipped, the stock is increased again automatically.
+- If two customers buy the last item at the same time, the stock goes below 0. This shows the admin that one of the orders must be cancelled and refunded.
+- When the admin cancels a paid order that has not been shipped, the stock is increased again automatically. A refund never changes the stock.
 - When a shipped order is returned, the admin adjusts the stock manually in the CMS.
-- A product with stock 0 is shown as sold out and cannot be added to the cart.
+- A product with stock 0 or less is shown as sold out and cannot be added to the cart.
 - The API checks stock again before creating a Checkout session.
 
 ## Stripe
@@ -101,7 +102,7 @@ Cancelled
 
 ## Security
 
-- Secrets (Stripe keys, database connection, admin password) are stored in User Secrets locally and environment variables in hosting, never in the code or the repo.
+- Secrets (Stripe keys, Supabase keys, database connection, admin password) are stored in User Secrets locally and environment variables in hosting, never in the code or the repo.
 - Passwords are hashed, never stored in plain text.
 - The API only accepts requests from the frontend's own domain (CORS).
 - Uploaded files must be images (jpg, png, webp) and at most 5 MB.
@@ -110,7 +111,7 @@ Cancelled
 
 - Built for a small shop: up to a few hundred products and a handful of simultaneous users.
 - Every list endpoint is paginated; no endpoint returns all rows of a table.
-- Images are resized on upload, so the product list never loads full-size images.
+- Images are not resized automatically in this version, since Supabase's free tier has no image resizing. The admin uploads images at a reasonable size.
 
 ## Failure modes
 

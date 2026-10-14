@@ -8,7 +8,9 @@ GREJ is a webshop for art and handmade items. Customers buy products with Stripe
 
 The MVP is a single-seller webshop with an admin CMS = all **Must** items below.
 
-**Tech stack:** Angular (Vercel) · ASP.NET Core Web API (Render) · PostgreSQL · Stripe.
+**Tech stack:** Angular (Vercel) · ASP.NET Core Web API (Render) · PostgreSQL and image storage (Supabase) · Stripe.
+
+**Language:** the shop is in Swedish. The documentation is in English.
 
 ## Users
 
@@ -25,6 +27,7 @@ The MVP is a single-seller webshop with an admin CMS = all **Must** items below.
 - Shopping cart: add and remove products, multiple products per order
 - Buy products with Stripe Checkout in test mode
 - Order saved in the database, and its payment marked as paid via Stripe webhook
+- Stock count that decreases when a product is paid for; sold-out products are shown as sold and cannot be bought
 - Admin login with role-based access
 - Admin CMS: create, edit and delete products, with one image per product
 - Admin CMS: manage categories and product properties (material, color)
@@ -36,12 +39,14 @@ The MVP is a single-seller webshop with an admin CMS = all **Must** items below.
 - Filter products by category
 - Search products by name
 - Filter products by price, material and color
-- Stock count that decreases when a product is purchased; sold-out products cannot be bought
+- Styled customer pages with shared colors, typography and spacing
+- Own visual design of the main customer pages, made before they are styled (about one day, decided Fri 23 Oct). Plan B: a component library with own colors
 - Responsive design: usable on mobile, tablet and desktop
 - Accessibility: keyboard navigation, alt texts on images, sufficient contrast
 - Several images per product
 - Subcategories, one level (e.g. Ceramics → Plates, Cups, Bowls)
 - Shipping cost: one fixed price, shown as its own row in Stripe Checkout
+- Flag an order when the last item was sold twice at the same time
 
 ### Could
 
