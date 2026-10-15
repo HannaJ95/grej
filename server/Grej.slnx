@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="Grej.Api/Grej.Api.csproj" />
+  <Project Path="Grej.Application/Grej.Application.csproj" />
+  <Project Path="Grej.Domain/Grej.Domain.csproj" />
+  <Project Path="Grej.Infrastructure/Grej.Infrastructure.csproj" />
+  <Project Path="Grej.IntegrationTests/Grej.IntegrationTests.csproj" />
+  <Project Path="Grej.UnitTests/Grej.UnitTests.csproj" />
+</Solution>
