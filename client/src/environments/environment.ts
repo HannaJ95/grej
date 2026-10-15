@@ -1,4 +1,4 @@
-// Used by production builds (Vercel). The Render URL is added in the deploy step.
+// Used by production builds (Vercel).
 export const environment = {
-  apiUrl: '',
+  apiUrl: 'https://grej-api.onrender.com',
 };

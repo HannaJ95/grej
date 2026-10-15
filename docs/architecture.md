@@ -25,6 +25,8 @@ flowchart LR
 
 The API runs on Render as a Docker container, since Render has no built-in .NET support. It connects to the database through Supabase's session pooler, because Render can only reach IPv4 addresses.
 
+Local development and production currently use the same Supabase database, so migrations applied locally also apply to production. A separate production database is decided before real demo content is added.
+
 ## Modular monolith
 
 The API is one application, deployed as one unit, split into modules with clear responsibilities:
