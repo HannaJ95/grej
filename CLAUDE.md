@@ -27,4 +27,8 @@ A webshop for art and handmade items with an admin CMS. Built as my examensarbet
 
 ## Commands
 
-Added as the projects are created.
+Run from `server/`:
+
+- `dotnet build` – build the solution
+- `dotnet test` – run unit and integration tests
+- `dotnet run --project Grej.Api` – start the API (health check: `GET /api/health`)
