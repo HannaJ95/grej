@@ -43,3 +43,11 @@ Run from `client/` (Angular; `client/CLAUDE.md` has the Angular team's best prac
 - `npm start` – start the app on http://localhost:4200 (calls the API on http://localhost:5200)
 - `npm test` – run the tests (Vitest)
 - `npm run build` – production build to `client/dist/`
+
+## Deployment
+
+Both deploy automatically when `main` changes.
+
+- **API:** https://grej-api.onrender.com (Render, Docker, root directory `server`, health check `/api/health`). Environment variables: `ConnectionStrings__Grej`, `Cors__AllowedOrigins__0` (the Vercel URL), `PORT=8080`.
+- **Frontend:** https://grej-xi.vercel.app (Vercel, root directory `client`, output `dist/grej/browser`). The API URL is in `client/src/environments/environment.ts`.
+- Render's free tier sleeps after 15 minutes without traffic, so the first request can take up to a minute.
