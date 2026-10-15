@@ -31,4 +31,9 @@ Run from `server/`:
 
 - `dotnet build` – build the solution
 - `dotnet test` – run unit and integration tests
-- `dotnet run --project Grej.Api` – start the API (health check: `GET /api/health`)
+- `dotnet run --project Grej.Api` – start the API (health checks: `GET /api/health` and `GET /api/health/database`)
+- `dotnet tool restore` – install the local `dotnet-ef` tool (once per machine)
+- `dotnet ef migrations add <Name> --project Grej.Infrastructure --startup-project Grej.Api --output-dir Persistence/Migrations` – create a migration
+- `dotnet ef database update --project Grej.Infrastructure --startup-project Grej.Api` – apply migrations to the database in User Secrets
+
+The connection string is `ConnectionStrings:Grej` in User Secrets locally (Supabase session pooler) and `ConnectionStrings__Grej` as an environment variable in hosting.
