@@ -1,0 +1,13 @@
+<main>
+  <h1>GREJ</h1>
+  <!-- role="status" makes screen readers announce the text when it changes. -->
+  <p role="status">
+    @switch (status()) {
+      @case ('checking') { Kontrollerar anslutningen… }
+      @case ('ok') { API och databas: OK }
+      @case ('error') { Kunde inte nå API:t eller databasen. }
+    }
+  </p>
+</main>
+
+<router-outlet />

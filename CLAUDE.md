@@ -37,3 +37,9 @@ Run from `server/`:
 - `dotnet ef database update --project Grej.Infrastructure --startup-project Grej.Api` – apply migrations to the database in User Secrets
 
 The connection string is `ConnectionStrings:Grej` in User Secrets locally (Supabase session pooler) and `ConnectionStrings__Grej` as an environment variable in hosting.
+
+Run from `client/` (Angular; `client/CLAUDE.md` has the Angular team's best practices):
+
+- `npm start` – start the app on http://localhost:4200 (calls the API on http://localhost:5200)
+- `npm test` – run the tests (Vitest)
+- `npm run build` – production build to `client/dist/`
