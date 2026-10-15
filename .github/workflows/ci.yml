@@ -1,0 +1,46 @@
+# Builds and tests the API and the Angular app on a clean machine at GitHub.
+# A pull request may only be merged to main when both jobs are green (definition-of-done.md).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - run: dotnet restore
+      - run: dotnet build --no-restore
+      # The tests need no database or secrets, so they can run here.
+      - run: dotnet test --no-build
+
+  client:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - uses: actions/checkout@v7
+
+      # Node 24 is what Vercel uses in production.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      # npm ci installs exactly the versions in package-lock.json.
+      - run: npm ci
+      - run: npm test -- --watch=false
+      - run: npm run build
