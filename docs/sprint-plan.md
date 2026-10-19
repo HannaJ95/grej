@@ -24,15 +24,15 @@ What each item means is described in [scope.md](scope.md). When something is don
 
 **Goal:** an empty app deployed end to end: Angular on Vercel calls the API on Render, which reads from the database.
 
-- [ ] Finish the planning documents and submit the detailed plan
-- [ ] Repo, branch strategy and solution structure (see [architecture.md](architecture.md))
-- [ ] ASP.NET Core API with EF Core, PostgreSQL and a first migration
-- [ ] Angular project
-- [ ] Supabase project for the database and image storage, connected through the session pooler
-- [ ] CI (GitHub Actions): build and run tests on every pull request
-- [ ] Deploy frontend to Vercel and API to Render (Docker), with environment variables and CORS
-- [ ] Stripe test account and Stripe CLI installed
-- [ ] CLAUDE.md and hook that stops Claude Code from reading secrets
+- [x] Finish the planning documents and submit the detailed plan
+- [x] Repo, branch strategy and solution structure (see [architecture.md](architecture.md))
+- [x] ASP.NET Core API with EF Core, PostgreSQL and a first migration
+- [x] Angular project
+- [x] Supabase project for the database and image storage, connected through the session pooler
+- [x] CI (GitHub Actions): build and run tests on every pull request
+- [x] Deploy frontend to Vercel and API to Render (Docker), with environment variables and CORS
+- [x] Stripe test account and Stripe CLI installed
+- [x] CLAUDE.md and hook that stops Claude Code from reading secrets
 
 ## Sprint 1 – Buying (Mon 19 – Fri 23 Oct)
 
