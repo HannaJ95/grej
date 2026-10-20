@@ -1,3 +1,5 @@
+using Grej.Application.Catalog;
+using Grej.Infrastructure.Persistence.Repositories;
 using Grej.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +20,9 @@ public static class DependencyInjection
             // Runs after `dotnet ef database update`. Only the synchronous version
             // is needed, since the API never migrates the database itself.
             .UseSeeding((context, _) => DemoData.Seed(context)));
+
+            services.AddScoped<IProductRepository, ProductRepository>();
+
 
         return services;
     }
