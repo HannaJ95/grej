@@ -21,8 +21,7 @@ public static class DependencyInjection
             // is needed, since the API never migrates the database itself.
             .UseSeeding((context, _) => DemoData.Seed(context)));
 
-            services.AddScoped<IProductRepository, ProductRepository>();
-
+        services.AddScoped<IProductRepository, ProductRepository>();
 
         return services;
     }
