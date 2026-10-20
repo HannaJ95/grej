@@ -1,0 +1,17 @@
+@if (product.isLoading()) {
+  <!-- Render's free tier can take up to a minute to wake up. -->
+  <p role="status">Laddar produkten…</p>
+} @else if (product.error()) {
+  <p role="alert">Produkten kunde inte visas.</p>
+} @else if (product.hasValue()) {
+  @let p = product.value();
+  <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
+  <article>
+    <h2>{{ p.title }}</h2>
+    <p>{{ p.description }}</p>
+    <p>{{ p.price | currency: p.currency }}</p>
+    @if (p.isSoldOut) {
+      <p>Slutsåld</p>
+    }
+  </article>
+}
