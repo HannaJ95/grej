@@ -4,3 +4,12 @@ GET {{Grej.Api_HostAddress}}/api/health
 Accept: application/json
 
 ###
+
+POST {{Grej.Api_HostAddress}}/api/checkout
+Content-Type: application/json
+
+{
+  "items": [{ "productId": 1, "quantity": 1 }]
+}
+
+###
