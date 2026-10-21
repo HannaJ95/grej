@@ -1,0 +1,53 @@
+using Grej.Domain.Payments;
+
+namespace Grej.Domain.Orders;
+
+// An order created in the checkout. It starts as Pending, and its total is
+// always the sum of its rows (constraints.md).
+public class Order
+{
+    // The real list. Only this class can add to it; EF Core finds it by its name.
+    private readonly List<OrderItem> _items = [];
+
+    public int Id { get; private set; }
+    public string OrderNumber { get; private set; } = NewOrderNumber();
+    public OrderStatus Status { get; private set; } = OrderStatus.Pending;
+    public decimal Total { get; private set; }
+    public string Currency { get; private set; } = "SEK";
+    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
+
+    // Read-only from the outside: rows can only be added through AddItem.
+    public IReadOnlyList<OrderItem> Items => _items;
+
+    // Null until the customer is sent to the payment provider.
+    public Payment? Payment { get; private set; }
+
+    public void AddItem(int productId, string title, decimal unitPrice, int quantity)
+    {
+        // Quantity comes from the browser, so it is never trusted (constraints.md).
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be greater than 0.");
+        }
+
+        _items.Add(new OrderItem(productId, title, unitPrice, quantity));
+        Total += unitPrice * quantity;
+    }
+
+    public void AddPayment(string provider, string providerReference)
+    {
+        // One payment per order in this version; a new checkout creates a new order.
+        if (Payment is not null)
+        {
+            throw new InvalidOperationException("The order already has a payment.");
+        }
+
+        Payment = new Payment(provider, providerReference, Total, Currency);
+    }
+
+    // E.g. GREJ-3F9A1C2B. Random instead of based on Id, since the Id is only set
+    // when the order is saved, and the number is sent to Stripe before that.
+    private static string NewOrderNumber() =>
+        $"GREJ-{Guid.NewGuid().ToString("N")[..8].ToUpperInvariant()}";
+}

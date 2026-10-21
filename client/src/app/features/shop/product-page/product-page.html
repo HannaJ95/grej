@@ -12,6 +12,13 @@
     <p>{{ p.price | currency: p.currency }}</p>
     @if (p.isSoldOut) {
       <p>Slutsåld</p>
+    } @else {
+      <button type="button" (click)="buy(p.id)" [disabled]="isBuying()">
+        {{ isBuying() ? 'Skickar dig till betalningen…' : 'Köp' }}
+      </button>
+      @if (buyFailed()) {
+        <p role="alert">Det gick inte att gå till betalningen. Försök igen.</p>
+      }
     }
   </article>
 }

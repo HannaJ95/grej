@@ -1,4 +1,5 @@
 using Grej.Application.Catalog;
+using Grej.Application.Orders;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Grej.Application;
@@ -9,6 +10,7 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<ProductService>();
+        services.AddScoped<CheckoutService>();
 
         return services;
     }
