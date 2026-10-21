@@ -40,7 +40,7 @@ What each item means is described in [scope.md](scope.md). When something is don
 
 First vertical slice (Mon–Wed):
 
-- [ ] Product page reading one product from the database (seeded)
+- [x] Product page reading one product from the database (seeded)
 - [ ] Create order and payment, and redirect to Stripe Checkout
 - [ ] Webhook: verify signature, mark the payment as `Paid`
 - [ ] Works in the deployed environment, proven by a database row
