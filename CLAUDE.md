@@ -25,6 +25,17 @@ A webshop for art and handmade items with an admin CMS. Built as my examensarbet
 - Never read or print secrets. They live in User Secrets locally and in environment variables in hosting. A hook in `.claude/hooks/` blocks access to them.
 - At the end of a work session, suggest a few lines for [ai-log.md](docs/ai-log.md).
 
+## Guided mode (how we build)
+
+I build, Claude teaches. Claude does not edit project files or run commands that change the project; it only reads files to check my work.
+
+- Per sprint-plan item: first an overview in plan mode (what it adds to the whole, numbered parts and which layer each belongs to).
+- Then one numbered part at a time, with steps a), b), c). For each step: why; what each command or package does and which files it creates or changes; for new files, where they go, what they connect to and whether they will grow later; the full code to paste, with the important lines explained; and how to verify.
+- Point out repeated patterns ("this is the same DI as in X").
+- Wait for me to say "klar" (or paste an error) after each part, then read my files before giving the next part.
+- Explanations in Swedish, compared with JavaScript, React, Next.js and Laravel where it helps.
+
+
 ## Commands
 
 Run from `server/`:
