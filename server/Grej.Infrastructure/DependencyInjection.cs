@@ -1,9 +1,13 @@
 using Grej.Application.Catalog;
-using Grej.Infrastructure.Persistence.Repositories;
+using Grej.Application.Orders;
+using Grej.Application.Payments;
 using Grej.Infrastructure.Persistence;
+using Grej.Infrastructure.Persistence.Repositories;
+using Grej.Infrastructure.Stripe;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Stripe;
 
 namespace Grej.Infrastructure;
 
@@ -22,7 +26,16 @@ public static class DependencyInjection
             .UseSeeding((context, _) => DemoData.Seed(context)));
 
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+
+        // One StripeClient for the whole API, as Stripe recommends. The factory only runs
+        // the first time the client is needed, so tests and CI work without a Stripe key.
+        // "Stripe:SecretKey" comes from User Secrets locally and Stripe__SecretKey in hosting.
+        services.AddSingleton(_ => new StripeClient(
+            configuration["Stripe:SecretKey"] ?? throw new InvalidOperationException("Stripe:SecretKey is not configured.")));
+        services.AddScoped<IPaymentProvider, StripePaymentProvider>();
 
         return services;
     }
 }
+
