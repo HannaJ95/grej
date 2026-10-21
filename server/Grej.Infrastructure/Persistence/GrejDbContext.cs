@@ -1,4 +1,6 @@
 using Grej.Domain.Catalog;
+using Grej.Domain.Orders;
+using Grej.Domain.Payments;
 using Microsoft.EntityFrameworkCore;
 
 namespace Grej.Infrastructure.Persistence;
@@ -8,6 +10,8 @@ namespace Grej.Infrastructure.Persistence;
 public class GrejDbContext(DbContextOptions<GrejDbContext> options) : DbContext(options)
 {
     public DbSet<Product> Products => Set<Product>();
+    public DbSet<Order> Orders => Set<Order>();
+    public DbSet<Payment> Payments => Set<Payment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
