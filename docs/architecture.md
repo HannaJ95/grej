@@ -106,9 +106,10 @@ sequenceDiagram
     C->>F: "Go to checkout"
     F->>A: POST /api/checkout (product ids + quantities)
     A->>A: Prices and stock from database
-    A->>A: Create Order (Pending) + Payment (Pending)
+    A->>A: Build Order in memory
     A->>S: Create Checkout session
     S-->>A: Session id + URL
+    A->>A: Save Order (Pending) + Payment (Pending) in one transaction
     A-->>F: URL
     F->>S: Redirect
     C->>S: Pays
@@ -117,6 +118,7 @@ sequenceDiagram
     A->>A: Verify signature, skip if already handled
     A->>A: Payment → Paid, stock decreased
 ```
+The order is saved only after Stripe has created the session, together with its rows and payment in one transaction. If Stripe does not answer, nothing is saved, so there is never an order whose payment can never be paid. If the database fails after Stripe has answered, the customer never gets the URL and the unused session expires in Stripe, so the webhook must ignore sessions it does not know.
 
 The other webhook events update the payment the same way:
 - `checkout.session.expired` sets the payment to `Expired` and the order to `Cancelled`.
