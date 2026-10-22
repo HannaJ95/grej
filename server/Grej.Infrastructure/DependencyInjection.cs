@@ -27,6 +27,7 @@ public static class DependencyInjection
 
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IPaymentRepository, PaymentRepository>();
 
         // One StripeClient for the whole API, as Stripe recommends. The factory only runs
         // the first time the client is needed, so tests and CI work without a Stripe key.
@@ -34,6 +35,7 @@ public static class DependencyInjection
         services.AddSingleton(_ => new StripeClient(
             configuration["Stripe:SecretKey"] ?? throw new InvalidOperationException("Stripe:SecretKey is not configured.")));
         services.AddScoped<IPaymentProvider, StripePaymentProvider>();
+        services.AddScoped<IPaymentWebhookReader, StripeWebhookReader>();
 
         return services;
     }

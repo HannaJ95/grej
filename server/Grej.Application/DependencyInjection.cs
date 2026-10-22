@@ -1,5 +1,6 @@
 using Grej.Application.Catalog;
 using Grej.Application.Orders;
+using Grej.Application.Payments;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Grej.Application;
@@ -11,6 +12,7 @@ public static class DependencyInjection
     {
         services.AddScoped<ProductService>();
         services.AddScoped<CheckoutService>();
+        services.AddScoped<PaymentWebhookService>();
 
         return services;
     }
