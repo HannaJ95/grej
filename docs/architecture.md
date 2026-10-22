@@ -118,6 +118,7 @@ sequenceDiagram
     A->>A: Verify signature, skip if already handled
     A->>A: Payment → Paid, stock decreased
 ```
+
 The order is saved only after Stripe has created the session, together with its rows and payment in one transaction. If Stripe does not answer, nothing is saved, so there is never an order whose payment can never be paid. If the database fails after Stripe has answered, the customer never gets the URL and the unused session expires in Stripe, so the webhook must ignore sessions it does not know.
 
 The other webhook events update the payment the same way:

@@ -25,6 +25,26 @@ public class Payment
         Currency = currency;
     }
 
+        // Called when the provider confirms the payment (webhook checkout.session.completed).
+    public void MarkAsPaid()
+    {
+        // The same event may arrive twice (constraints.md). The second time changes nothing.
+        if (Status == PaymentStatus.Paid)
+        {
+            return;
+        }
+
+        // Only Pending → Paid is allowed (constraints.md).
+        if (Status != PaymentStatus.Pending)
+        {
+            throw new InvalidOperationException($"A payment that is {Status} cannot be marked as paid.");
+        }
+
+        Status = PaymentStatus.Paid;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+
     // Used by EF Core when it reads a row from the database.
     private Payment() { }
 }
