@@ -42,8 +42,8 @@ First vertical slice (Mon–Wed):
 
 - [x] Product page reading one product from the database (seeded)
 - [x] Create order and payment, and redirect to Stripe Checkout
-- [ ] Webhook: verify signature, mark the payment as `Paid`
-- [ ] Works in the deployed environment, proven by a database row
+- [x] Webhook: verify signature, mark the payment as `Paid`
+- [x] Works in the deployed environment, proven by a database row
 
 Cart and checkout (Wed–Fri):
 
