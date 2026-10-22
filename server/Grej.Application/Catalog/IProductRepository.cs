@@ -1,3 +1,4 @@
+using Grej.Application.Common;
 using Grej.Domain.Catalog;
 
 namespace Grej.Application.Catalog;
@@ -7,4 +8,7 @@ namespace Grej.Application.Catalog;
 public interface IProductRepository
 {
     Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken);
+
+    // Only active products, newest first.
+    Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken);
 }

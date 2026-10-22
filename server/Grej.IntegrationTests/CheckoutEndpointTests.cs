@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using Grej.Application.Catalog;
+using Grej.Application.Common;
 using Grej.Application.Orders;
 using Grej.Application.Payments;
 using Grej.Domain.Catalog;
@@ -82,7 +83,12 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
     {
         public Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
             Task.FromResult(products.FirstOrDefault(p => p.Id == id));
+
+        // Checkout never lists products.
+        public Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
     }
+
 
     // Remembers saved orders instead of writing them to the database.
     private class FakeOrderRepository : IOrderRepository
