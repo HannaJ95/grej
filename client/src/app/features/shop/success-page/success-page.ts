@@ -1,4 +1,5 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
+import { CartService } from '../../../core/cart.service';
 
 // The page Stripe sends the customer to after paying, e.g. /kassa/tack?order=GREJ-3F9A1C2B.
 // It never says that the order is paid, since only the webhook knows that (constraints.md).
@@ -16,5 +17,11 @@ import { Component, input } from '@angular/core';
 export class SuccessPage {
   // The ?order= in the URL, set by the router (withComponentInputBinding in app.config.ts).
   readonly order = input<string>();
+
+  constructor() {
+    // Stripe only sends the customer here after paying, so the cart is emptied
+    // (ambiguity.md). Cancelling in Stripe goes to / instead and keeps the cart.
+    inject(CartService).clear();
+  }
 }
 

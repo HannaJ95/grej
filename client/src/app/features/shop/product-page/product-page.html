@@ -13,12 +13,13 @@
     @if (p.isSoldOut) {
       <p>Slutsåld</p>
     } @else {
-      <button type="button" (click)="buy(p.id)" [disabled]="isBuying()">
-        {{ isBuying() ? 'Skickar dig till betalningen…' : 'Köp' }}
-      </button>
-      @if (buyFailed()) {
-        <p role="alert">Det gick inte att gå till betalningen. Försök igen.</p>
-      }
+      <button type="button" (click)="addToCart(p)">Lägg i varukorgen</button>
+      <!-- Always in the page, so screen readers announce the text when it appears. -->
+      <p role="status">
+        @if (added()) {
+          Tillagd i varukorgen.
+        }
+      </p>
     }
   </article>
 }

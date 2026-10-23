@@ -1,0 +1,20 @@
+// The panel lies along the right edge in full height, and in full width on
+// narrow screens. Only the basics; the real design comes in sprint 3.
+dialog {
+  margin: 0 0 0 auto;
+  width: min(24rem, 100%);
+  max-width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  border: none;
+}
+
+// The dark layer behind the open panel.
+dialog::backdrop {
+  background: rgb(0 0 0 / 40%);
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
