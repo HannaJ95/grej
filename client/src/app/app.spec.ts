@@ -10,7 +10,6 @@ describe('App', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [App],
-      // Replaces real HTTP calls with a fake backend that the test controls.
       providers: [
         // The links in the navigation need a router. No routes are needed here.
         provideRouter([]),
