@@ -1,0 +1,39 @@
+<!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
+<h2>Produkter</h2>
+
+@if (result.isLoading()) {
+  <!-- Render's free tier can take up to a minute to wake up. -->
+  <p role="status">Laddar produkterna…</p>
+} @else if (result.error()) {
+  <p role="alert">Produkterna kunde inte visas.</p>
+} @else if (result.hasValue()) {
+  @let r = result.value();
+  @if (r.items.length === 0) {
+    <p>Det finns inga produkter att visa.</p>
+  } @else {
+    <ul>
+      @for (p of r.items; track p.id) {
+        <li>
+          <a [routerLink]="['/produkter', p.id]">{{ p.title }}</a>
+          {{ p.price | currency: p.currency }}
+          @if (p.isSoldOut) {
+            (slutsåld)
+          }
+        </li>
+      }
+    </ul>
+  }
+
+  <!-- Only shown when there is more than one page. -->
+  @if (r.totalPages > 1) {
+    <nav aria-label="Sidor">
+      @if (r.page > 1) {
+        <a routerLink="/produkter" [queryParams]="{ sida: r.page - 1 }">Föregående</a>
+      }
+      Sida {{ r.page }} av {{ r.totalPages }}
+      @if (r.page < r.totalPages) {
+        <a routerLink="/produkter" [queryParams]="{ sida: r.page + 1 }">Nästa</a>
+      }
+    </nav>
+  }
+}

@@ -89,7 +89,6 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
             throw new NotImplementedException();
     }
 
-
     // Remembers saved orders instead of writing them to the database.
     private class FakeOrderRepository : IOrderRepository
     {

@@ -84,4 +84,3 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
             Task.FromResult(new PagedResult<Product>(products, page, pageSize, products.Length));
     }
 }
-
