@@ -66,7 +66,7 @@ Infrastructure
 ```
 server/
   Grej.Api/              Controllers per module, Program.cs
-  Grej.Application/      Catalog/, Orders/, Payments/, Identity/
+  Grej.Application/      Catalog/, Orders/, Payments/, Identity/, Common/ (e.g. PagedResult)
   Grej.Domain/           Catalog/, Orders/, Payments/
   Grej.Infrastructure/   Persistence/ (DbContext, migrations, seed), Stripe/, Images/
   Grej.UnitTests/        Domain and application rules
