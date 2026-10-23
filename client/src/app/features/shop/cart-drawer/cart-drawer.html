@@ -1,0 +1,45 @@
+<button type="button" aria-haspopup="dialog" (click)="open()">Varukorg ({{ cart.count() }})</button>
+
+<dialog #dialog aria-labelledby="cart-title">
+  <h2 id="cart-title">Varukorg</h2>
+  <button type="button" (click)="close()">Stäng</button>
+
+  @if (cart.items().length === 0) {
+    <p>Varukorgen är tom.</p>
+  } @else {
+    <ul>
+      @for (item of cart.items(); track item.productId) {
+        <li>
+          <!-- Closes the panel, since the new page is shown behind it. -->
+          <a [routerLink]="['/produkter', item.productId]" (click)="close()">{{ item.title }}</a>
+          <p>{{ item.price | currency: item.currency }}</p>
+          <button
+            type="button"
+            [attr.aria-label]="'Minska antal ' + item.title"
+            [disabled]="item.quantity <= 1"
+            (click)="cart.setQuantity(item.productId, item.quantity - 1)"
+          >
+            −
+          </button>
+          {{ item.quantity }}
+          <button
+            type="button"
+            [attr.aria-label]="'Öka antal ' + item.title"
+            (click)="cart.setQuantity(item.productId, item.quantity + 1)"
+          >
+            +
+          </button>
+          <button
+            type="button"
+            [attr.aria-label]="'Ta bort ' + item.title"
+            (click)="cart.remove(item.productId)"
+          >
+            Ta bort
+          </button>
+        </li>
+      }
+    </ul>
+    <!-- Every price is in SEK in this version (constraints.md). -->
+    <p>Summa: {{ cart.total() | currency: 'SEK' }}</p>
+  }
+</dialog>

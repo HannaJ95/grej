@@ -1,13 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
 import { HealthService } from './core/health.service';
+import { CartDrawer } from './features/shop/cart-drawer/cart-drawer';
 
 type ConnectionStatus = 'checking' | 'ok' | 'error';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterLink, CartDrawer],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
