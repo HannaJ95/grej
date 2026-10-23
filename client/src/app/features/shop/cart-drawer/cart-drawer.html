@@ -41,5 +41,11 @@
     </ul>
     <!-- Every price is in SEK in this version (constraints.md). -->
     <p>Summa: {{ cart.total() | currency: 'SEK' }}</p>
+    <button type="button" [disabled]="isBuying()" (click)="goToCheckout()">
+      {{ isBuying() ? 'Skickar dig till betalningen…' : 'Till kassan' }}
+    </button>
+    @if (buyFailed()) {
+      <p role="alert">Det gick inte att gå till betalningen. Försök igen.</p>
+    }
   }
 </dialog>
