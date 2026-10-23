@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { App } from './app';
 
 describe('App', () => {
@@ -10,7 +11,13 @@ describe('App', () => {
     TestBed.configureTestingModule({
       imports: [App],
       // Replaces real HTTP calls with a fake backend that the test controls.
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        // The links in the navigation need a router. No routes are needed here.
+        provideRouter([]),
+        // Replaces real HTTP calls with a fake backend that the test controls.
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     });
     httpTesting = TestBed.inject(HttpTestingController);
   });
