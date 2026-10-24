@@ -4,6 +4,13 @@
   <h2 id="cart-title">Varukorg</h2>
   <button type="button" (click)="close()">Stäng</button>
 
+  <!-- Outside the list, so it is shown even if every product was removed. -->
+  @if (cartChanged()) {
+    <p role="alert">
+      Några produkter finns inte kvar i det antal du valde. Varukorgen har uppdaterats.
+    </p>
+  }
+
   @if (cart.items().length === 0) {
     <p>Varukorgen är tom.</p>
   } @else {
@@ -25,6 +32,7 @@
           <button
             type="button"
             [attr.aria-label]="'Öka antal ' + item.title"
+            [disabled]="item.quantity >= item.maxQuantity"
             (click)="cart.setQuantity(item.productId, item.quantity + 1)"
           >
             +

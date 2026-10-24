@@ -10,6 +10,8 @@ export interface Product {
   description: string;
   price: number;
   currency: string;
+  // How many can be bought. Never below 0 (ProductService.ToDto in the API).
+  stock: number;
   isSoldOut: boolean;
 }
 

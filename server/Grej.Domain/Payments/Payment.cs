@@ -26,12 +26,14 @@ public class Payment
     }
 
     // Called when the provider confirms the payment (webhook checkout.session.completed).
-    public void MarkAsPaid()
+    // Returns true only when the payment changes to Paid, so the caller knows
+    // whether the stock should be decreased.
+    public bool MarkAsPaid()
     {
         // The same event may arrive twice (constraints.md). The second time changes nothing.
         if (Status == PaymentStatus.Paid)
         {
-            return;
+            return false;
         }
 
         // Only Pending → Paid is allowed (constraints.md).
@@ -42,6 +44,7 @@ public class Payment
 
         Status = PaymentStatus.Paid;
         UpdatedAt = DateTime.UtcNow;
+        return true;
     }
 
     // Used by EF Core when it reads a row from the database.

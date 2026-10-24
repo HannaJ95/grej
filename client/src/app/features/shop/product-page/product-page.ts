@@ -12,7 +12,7 @@ import { Product, ProductService } from '../../../core/product.service';
 })
 export class ProductPage {
   private readonly products = inject(ProductService);
-  private readonly cart = inject(CartService);
+  protected readonly cart = inject(CartService);
 
   // The :id from the URL, set by the router (withComponentInputBinding in app.config.ts).
   readonly id = input.required<string>();

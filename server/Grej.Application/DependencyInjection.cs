@@ -12,6 +12,7 @@ public static class DependencyInjection
     {
         services.AddScoped<ProductService>();
         services.AddScoped<CheckoutService>();
+        services.AddScoped<OrderService>();
         services.AddScoped<PaymentWebhookService>();
 
         return services;

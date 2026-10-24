@@ -25,7 +25,7 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
     [Fact]
     public async Task Create_ActiveProduct_SavesPendingOrderAndReturnsPaymentUrl()
     {
-        var client = CreateClient(new Product { Id = 1, Title = "Skål", Price = 450m, Stock = 1, IsActive = true });
+        var client = CreateClient(new Product { Id = 1, Title = "Skål", Price = 450m, Stock = 2, IsActive = true });
 
         var response = await client.PostAsJsonAsync("/api/checkout", Request(productId: 1, quantity: 2));
 
@@ -49,6 +49,19 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         var response = await client.PostAsJsonAsync("/api/checkout", Request(productId: 1, quantity: 1));
 
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Equal([new UnavailableItem(1, 0)], await UnavailableItemsAsync(response));
+        Assert.Empty(orders.Saved);
+    }
+
+    [Fact]
+    public async Task Create_MoreThanInStock_ReturnsConflictWithHowManyAreLeft()
+    {
+        var client = CreateClient(new Product { Id = 1, Title = "Skål", Price = 450m, Stock = 2, IsActive = true });
+
+        var response = await client.PostAsJsonAsync("/api/checkout", Request(productId: 1, quantity: 3));
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Equal([new UnavailableItem(1, 2)], await UnavailableItemsAsync(response));
         Assert.Empty(orders.Saved);
     }
 
@@ -87,7 +100,9 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
 
         var response = await client.PostAsJsonAsync("/api/checkout", new CheckoutRequest([new(1, 1), new(2, 1)]));
 
+        // Only the hidden product is listed; the other one can be bought.
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Equal([new UnavailableItem(2, 0)], await UnavailableItemsAsync(response));
         Assert.Empty(orders.Saved);
     }
 
@@ -148,8 +163,15 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
             }))
             .CreateClient();
 
+    // Reads the list of rows from a 409 answer.
+    private static async Task<List<UnavailableItem>?> UnavailableItemsAsync(HttpResponseMessage response) =>
+        (await response.Content.ReadFromJsonAsync<ConflictResponse>())?.UnavailableItems;
+
     // The JSON that POST /api/checkout returns.
     private record CheckoutResponse(string Url);
+
+    // The JSON that POST /api/checkout returns with 409 Conflict.
+    private record ConflictResponse(List<UnavailableItem> UnavailableItems);
 
     private class FakeProductRepository(Product[] products) : IProductRepository
     {
@@ -175,6 +197,10 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
             Saved.Add(order);
             return Task.CompletedTask;
         }
+
+        // Checkout never reads orders back.
+        public Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
     }
 
     // Returns a fixed session instead of calling Stripe.

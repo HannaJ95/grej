@@ -12,13 +12,14 @@ public class CheckoutController(CheckoutService checkout) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(CheckoutRequest request, CancellationToken cancellationToken)
     {
-        var url = await checkout.CreateCheckoutAsync(request, cancellationToken);
-        if (url is null)
+        var result = await checkout.CreateCheckoutAsync(request, cancellationToken);
+        if (result.UnavailableItems.Count > 0)
         {
-            // The request is valid, but a product cannot be bought right now.
-            return Conflict();
+            // The request is valid, but some rows cannot be bought right now. The list
+            // tells the frontend how many are left of each, so it can fix the cart.
+            return Conflict(new { result.UnavailableItems });
         }
 
-        return Ok(new { url });
+        return Ok(new { url = result.Url });
     }
 }

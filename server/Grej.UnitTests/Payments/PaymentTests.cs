@@ -6,23 +6,25 @@ namespace Grej.UnitTests.Payments;
 public class PaymentTests
 {
     [Fact]
-    public void MarkAsPaid_Pending_BecomesPaid()
+    public void MarkAsPaid_Pending_BecomesPaidAndReturnsTrue()
     {
         var payment = NewPayment();
 
-        payment.MarkAsPaid();
+        var changed = payment.MarkAsPaid();
 
+        Assert.True(changed);
         Assert.Equal(PaymentStatus.Paid, payment.Status);
     }
 
     [Fact]
-    public void MarkAsPaid_Twice_StaysPaid()
+    public void MarkAsPaid_Twice_StaysPaidAndReturnsFalse()
     {
         var payment = NewPayment();
-
-        payment.MarkAsPaid();
         payment.MarkAsPaid();
 
+        var changed = payment.MarkAsPaid();
+
+        Assert.False(changed);
         Assert.Equal(PaymentStatus.Paid, payment.Status);
     }
 

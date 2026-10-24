@@ -1,10 +1,11 @@
+using Grej.Application.Orders;
 using Grej.Domain.Payments;
 
 namespace Grej.Application.Payments;
 
 // The webhook use case: updates a payment when the provider tells us what happened.
 // The webhook is the source of truth for payments, never the browser (constraints.md).
-public class PaymentWebhookService(IPaymentWebhookReader webhookReader, IPaymentRepository payments)
+public class PaymentWebhookService(IPaymentWebhookReader webhookReader, IPaymentRepository payments, OrderService orders)
 {
     // Returns false if the webhook was not sent by the provider.
     public async Task<bool> HandleAsync(string payload, string signature, CancellationToken cancellationToken)
@@ -33,9 +34,15 @@ public class PaymentWebhookService(IPaymentWebhookReader webhookReader, IPayment
         // Expired and Refunded are added here in later sprint items.
         if (update.Status == PaymentStatus.Paid)
         {
-            payment.MarkAsPaid();
+            // False if the payment was already Paid, so an event that arrives
+            // twice never decreases the stock twice (constraints.md).
+            if (payment.MarkAsPaid())
+            {
+                await orders.HandlePaidAsync(payment.OrderId, cancellationToken);
+            }
         }
 
+        // Saves the payment and the stock together, in one transaction.
         await payments.SaveChangesAsync(cancellationToken);
         return true;
     }

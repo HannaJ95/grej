@@ -8,8 +8,9 @@ namespace Grej.Application.Orders;
 // returns the payment page that the customer is sent to.
 public class CheckoutService(ProductService products, IOrderRepository orders, IPaymentProvider paymentProvider)
 {
-    // Returns null if a product does not exist, is hidden or is sold out.
-    public async Task<string?> CreateCheckoutAsync(CheckoutRequest request, CancellationToken cancellationToken)
+    // If any row cannot be bought, nothing is created and all such rows are
+    // returned, so the customer can fix the whole cart at once.
+    public async Task<CheckoutResult> CreateCheckoutAsync(CheckoutRequest request, CancellationToken cancellationToken)
     {
         // One database query for the whole cart, through Catalog's application
         // service, not its repository (architecture.md).
@@ -18,17 +19,31 @@ public class CheckoutService(ProductService products, IOrderRepository orders, I
         var productsById = found.ToDictionary(product => product.Id);
 
         var order = new Order();
+        var unavailable = new List<UnavailableItem>();
 
         foreach (var item in request.Items)
         {
             // Not in the dictionary = the product does not exist or is hidden.
-            if (!productsById.TryGetValue(item.ProductId, out var product) || product.IsSoldOut)
+            if (!productsById.TryGetValue(item.ProductId, out var product))
             {
-                return null;
+                unavailable.Add(new UnavailableItem(item.ProductId, 0));
             }
+            // The stock may have changed while the product was in the cart, so it is
+            // checked again here (constraints.md). A sold-out product has stock 0.
+            else if (item.Quantity > product.Stock)
+            {
+                unavailable.Add(new UnavailableItem(item.ProductId, product.Stock));
+            }
+            else
+            {
+                // The price comes from the database, never from the browser (constraints.md).
+                order.AddItem(product.Id, product.Title, product.Price, item.Quantity);
+            }
+        }
 
-            // The price comes from the database, never from the browser (constraints.md).
-            order.AddItem(product.Id, product.Title, product.Price, item.Quantity);
+        if (unavailable.Count > 0)
+        {
+            return CheckoutResult.Unavailable(unavailable);
         }
 
         // The order only exists in memory until the provider has created the session,
@@ -39,6 +54,6 @@ public class CheckoutService(ProductService products, IOrderRepository orders, I
         // Saves the order, its rows and its payment in one transaction.
         await orders.AddAsync(order, cancellationToken);
 
-        return session.Url;
+        return CheckoutResult.Success(session.Url);
     }
 }

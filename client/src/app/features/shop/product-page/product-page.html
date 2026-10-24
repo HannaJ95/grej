@@ -13,11 +13,16 @@
     @if (p.isSoldOut) {
       <p>Slutsåld</p>
     } @else {
-      <button type="button" (click)="addToCart(p)">Lägg i varukorgen</button>
+      <button type="button" [disabled]="!cart.canAdd(p)" (click)="addToCart(p)">
+        Lägg i varukorgen
+      </button>
       <!-- Always in the page, so screen readers announce the text when it appears. -->
       <p role="status">
         @if (added()) {
           Tillagd i varukorgen.
+        }
+        @if (!cart.canAdd(p)) {
+          Det finns inte fler i lager.
         }
       </p>
     }
