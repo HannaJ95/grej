@@ -11,6 +11,10 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
     public Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
         db.Products.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
 
+    // One SQL query for all ids, instead of one query per product.
+    public async Task<IReadOnlyList<Product>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken) =>
+        await db.Products.Where(p => ids.Contains(p.Id)).ToListAsync(cancellationToken);
+
     public async Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken)
     {
         // Nothing is sent to the database yet; the query is only described here.

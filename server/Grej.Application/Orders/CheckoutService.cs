@@ -11,13 +11,18 @@ public class CheckoutService(ProductService products, IOrderRepository orders, I
     // Returns null if a product does not exist, is hidden or is sold out.
     public async Task<string?> CreateCheckoutAsync(CheckoutRequest request, CancellationToken cancellationToken)
     {
+        // One database query for the whole cart, through Catalog's application
+        // service, not its repository (architecture.md).
+        var ids = request.Items.Select(item => item.ProductId).ToList();
+        var found = await products.GetProductsByIdsAsync(ids, cancellationToken);
+        var productsById = found.ToDictionary(product => product.Id);
+
         var order = new Order();
 
         foreach (var item in request.Items)
         {
-            // Through Catalog's application service, not its repository (architecture.md).
-            var product = await products.GetProductAsync(item.ProductId, cancellationToken);
-            if (product is null || product.IsSoldOut)
+            // Not in the dictionary = the product does not exist or is hidden.
+            if (!productsById.TryGetValue(item.ProductId, out var product) || product.IsSoldOut)
             {
                 return null;
             }

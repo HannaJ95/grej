@@ -48,7 +48,7 @@ First vertical slice (Mon–Wed):
 Cart and checkout (Wed–Fri):
 
 - [x] Product list (paginated)
-- [ ] Cart in localStorage: add, remove, change quantity
+- [x] Cart in localStorage: add, remove, change quantity
 - [ ] Checkout with several products; prices always taken from the database
 - [ ] Stock: checked before checkout, decreased on `Paid`; sold-out products cannot be bought
 - [ ] Customer details and Swedish address from Stripe stored on the order

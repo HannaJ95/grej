@@ -13,3 +13,12 @@ Content-Type: application/json
 }
 
 ###
+
+POST {{Grej.Api_HostAddress}}/api/checkout
+Content-Type: application/json
+
+{
+  "items": [{ "productId": 1, "quantity": 1 }, { "productId": 1, "quantity": 1 }]
+}
+
+###
