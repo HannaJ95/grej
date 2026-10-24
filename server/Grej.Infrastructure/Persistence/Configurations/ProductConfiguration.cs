@@ -14,5 +14,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         // numeric(10,2) is exact, never floating point (constraints.md).
         builder.Property(p => p.Price).HasPrecision(10, 2);
         builder.Property(p => p.Currency).HasMaxLength(3);
+        // Two webhooks at the same time could both read stock 1 and both save 0, which
+        // would hide a double sale (constraints.md). With this, EF Core adds the stock it
+        // read to the UPDATE's WHERE, so the second one saves nothing and throws instead.
+        builder.Property(p => p.Stock).IsConcurrencyToken();
     }
 }
