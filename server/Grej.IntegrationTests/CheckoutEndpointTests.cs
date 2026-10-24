@@ -102,6 +102,39 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Empty(orders.Saved);
     }
 
+        [Fact]
+    public async Task Create_SameProductTwice_ReturnsBadRequest()
+    {
+        var client = CreateClient(new Product { Id = 1, Title = "Skål", Price = 450m, Stock = 1, IsActive = true });
+
+        var response = await client.PostAsJsonAsync("/api/checkout", new CheckoutRequest([new(1, 1), new(1, 1)]));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Empty(orders.Saved);
+    }
+
+    [Fact]
+    public async Task Create_MoreThan100Rows_ReturnsBadRequest()
+    {
+        var client = CreateClient();
+        var items = Enumerable.Range(1, 101).Select(id => new CheckoutItemRequest(id, 1)).ToList();
+
+        var response = await client.PostAsJsonAsync("/api/checkout", new CheckoutRequest(items));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Create_NullRow_ReturnsBadRequest()
+    {
+        var client = CreateClient();
+
+        // Sends {"items":[null]}. The ! tells the compiler that the null is on purpose.
+        var response = await client.PostAsJsonAsync("/api/checkout", new CheckoutRequest([null!]));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
     private static CheckoutRequest Request(int productId, int quantity) =>
         new([new CheckoutItemRequest(productId, quantity)]);
 
