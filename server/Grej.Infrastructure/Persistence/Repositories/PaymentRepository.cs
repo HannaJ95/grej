@@ -14,7 +14,9 @@ public class PaymentRepository(GrejDbContext db) : IPaymentRepository
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         // EF Core remembers the payment it read above and sees which properties changed,
-        // so this becomes an UPDATE of only those columns.
+        // so this becomes an UPDATE of only those columns. All repositories in a request
+        // share the same DbContext, so the products changed by ProductService are
+        // saved here too, in the same transaction.
         await db.SaveChangesAsync(cancellationToken);
     }
 }

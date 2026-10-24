@@ -9,6 +9,7 @@ public interface IPaymentRepository
     // Null if no payment has this reference.
     Task<Payment?> GetByReferenceAsync(string reference, CancellationToken cancellationToken);
 
-    // Saves the changes made to payments fetched above.
+    // Saves the changes made to payments fetched above, together with all other
+    // changes in the same request (e.g. the stock), in one transaction.
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }

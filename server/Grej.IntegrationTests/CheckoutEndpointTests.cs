@@ -197,6 +197,10 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
             Saved.Add(order);
             return Task.CompletedTask;
         }
+
+        // Checkout never reads orders back.
+        public Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
     }
 
     // Returns a fixed session instead of calling Stripe.
