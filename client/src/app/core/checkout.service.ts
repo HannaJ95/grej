@@ -10,6 +10,13 @@ export interface CheckoutItem {
   quantity: number;
 }
 
+// A row the API cannot sell in the quantity asked for. available is how many
+// can be bought right now: 0 if the product is sold out or hidden.
+export interface UnavailableItem {
+  productId: number;
+  available: number;
+}
+
 // The JSON that POST /api/checkout returns.
 interface CheckoutResponse {
   url: string;
