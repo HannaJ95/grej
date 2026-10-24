@@ -29,6 +29,8 @@ export class CartDrawer {
   // True while the API creates the order, so the button cannot be clicked twice.
   protected readonly isBuying = signal(false);
   protected readonly buyFailed = signal(false);
+  // True when the API has changed the cart because some products ran out.
+  protected readonly cartChanged = signal(false);
 
   protected open(): void {
     this.dialog().nativeElement.showModal();
@@ -41,14 +43,22 @@ export class CartDrawer {
   protected async goToCheckout(): Promise<void> {
     this.isBuying.set(true);
     this.buyFailed.set(false);
+    this.cartChanged.set(false);
     try {
       // Only ids and quantities are sent; the API takes the prices from the database.
       const items = this.cart
         .items()
         .map((item) => ({ productId: item.productId, quantity: item.quantity }));
-      const url = await this.checkout.startCheckout(items);
+      const result = await this.checkout.startCheckout(items);
+      if ('unavailableItems' in result) {
+        // The customer sees the changed cart before trying again (constraints.md).
+        this.cart.limitTo(result.unavailableItems);
+        this.cartChanged.set(true);
+        this.isBuying.set(false);
+        return;
+      }
       // Leaves the app for Stripe's payment page, so isBuying is never reset here.
-      this.document.location.href = url;
+      this.document.location.href = result.url;
     } catch {
       this.buyFailed.set(true);
       this.isBuying.set(false);
