@@ -102,7 +102,7 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Empty(orders.Saved);
     }
 
-        [Fact]
+    [Fact]
     public async Task Create_SameProductTwice_ReturnsBadRequest()
     {
         var client = CreateClient(new Product { Id = 1, Title = "Skål", Price = 450m, Stock = 1, IsActive = true });
@@ -153,8 +153,12 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
 
     private class FakeProductRepository(Product[] products) : IProductRepository
     {
+        // Checkout fetches all its products at once, with GetByIdsAsync.
         public Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
-            Task.FromResult(products.FirstOrDefault(p => p.Id == id));
+            throw new NotImplementedException();
+
+        public Task<IReadOnlyList<Product>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken) =>
+            Task.FromResult<IReadOnlyList<Product>>(products.Where(p => ids.Contains(p.Id)).ToList());
 
         // Checkout never lists products.
         public Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken) =>

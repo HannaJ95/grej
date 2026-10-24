@@ -19,6 +19,14 @@ public class ProductService(IProductRepository products)
         return ToDto(product);
     }
 
+    // The products in the shop with these ids. Missing and hidden products are
+    // left out, so the caller can see which ids it did not get back.
+    public async Task<IReadOnlyList<ProductDto>> GetProductsByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken)
+    {
+        var found = await products.GetByIdsAsync(ids, cancellationToken);
+        return found.Where(product => product.IsActive).Select(ToDto).ToList();
+    }
+
     // One page of the products in the shop. Hidden products are never included.
     public async Task<PagedResult<ProductDto>> GetProductsAsync(ProductListQuery query, CancellationToken cancellationToken)
     {

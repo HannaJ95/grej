@@ -41,6 +41,19 @@ public class ProductRepositoryTests
         Assert.Equal(2, page.TotalPages);
     }
 
+    [Fact]
+    public async Task GetByIds_ReturnsTheAskedFor_IncludingHidden()
+    {
+        db.Products.AddRange(NewProduct(1, "Skål"), NewProduct(2, "Utkast", isActive: false), NewProduct(3, "Vas"));
+        await db.SaveChangesAsync();
+
+        // Id 99 does not exist and is skipped.
+        var products = await new ProductRepository(db).GetByIdsAsync([1, 2, 99], CancellationToken.None);
+
+        // The order from the database is not fixed, so the titles are sorted first.
+        Assert.Equal(["Skål", "Utkast"], products.Select(p => p.Title).Order());
+    }
+
     private static Product NewProduct(int id, string title, bool isActive = true) =>
         new() { Id = id, Title = title, Price = 100m, Stock = 1, IsActive = isActive };
 }

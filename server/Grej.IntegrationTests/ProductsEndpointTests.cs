@@ -78,6 +78,10 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
         public Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
             Task.FromResult(products.FirstOrDefault(p => p.Id == id));
 
+        // The product endpoints never fetch several products by id.
+        public Task<IReadOnlyList<Product>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
         // Returns the products as they are. Filtering and paging are tested
         // against EF Core in ProductRepositoryTests.
         public Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
