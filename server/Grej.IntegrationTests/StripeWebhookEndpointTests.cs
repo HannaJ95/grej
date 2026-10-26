@@ -41,6 +41,32 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
+    public async Task Post_PaidSession_StoresCustomerDetailsOnOrder()
+    {
+        var response = await PostAsync(CheckoutCompleted(Reference), signedWith: Secret);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var order = payments.Order;
+        Assert.Equal("Anna Andersson", order.CustomerName);
+        Assert.Equal("anna@example.com", order.CustomerEmail);
+        Assert.Equal("Storgatan 1", order.AddressLine1);
+        Assert.Null(order.AddressLine2);
+        Assert.Equal("111 22", order.PostalCode);
+        Assert.Equal("Stockholm", order.City);
+        Assert.Equal("SE", order.Country);
+    }
+
+    [Fact]
+    public async Task Post_PaidSessionWithoutAddress_MarksPaymentAsPaid()
+    {
+        var response = await PostAsync(CheckoutCompleted(Reference, withAddress: false), signedWith: Secret);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(PaymentStatus.Paid, payments.Payment.Status);
+        Assert.Null(payments.Order.CustomerName);
+    }
+
+    [Fact]
     public async Task Post_SameEventTwice_DecreasesStockOnce()
     {
         await PostAsync(CheckoutCompleted(Reference), signedWith: Secret);
@@ -73,14 +99,31 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         Assert.False(payments.Saved);
     }
 
-    // The parts of a checkout.session.completed event that the API reads.
-    private static string CheckoutCompleted(string sessionId) => $$"""
+    // The parts of a checkout.session.completed event that the API reads. Sessions created
+    // before Checkout asked for a shipping address have no collected_information.
+    private static string CheckoutCompleted(string sessionId, bool withAddress = true) => $$"""
         {
           "id": "evt_test",
           "object": "event",
           "type": "checkout.session.completed",
           "data": {
-            "object": { "id": "{{sessionId}}", "object": "checkout.session", "payment_status": "paid" }
+            "object": {
+              "id": "{{sessionId}}",
+              "object": "checkout.session",
+              "payment_status": "paid",
+              "customer_details": { "email": "anna@example.com" },
+              "collected_information": {{(withAddress ? CollectedInformation : "null")}}
+            }
+          }
+        }
+        """;
+
+    // The name and the Swedish address the customer typed in Stripe Checkout.
+    private const string CollectedInformation = """
+        {
+          "shipping_details": {
+            "name": "Anna Andersson",
+            "address": { "line1": "Storgatan 1", "line2": null, "postal_code": "111 22", "city": "Stockholm", "country": "SE" }
           }
         }
         """;

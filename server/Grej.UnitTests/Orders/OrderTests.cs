@@ -51,4 +51,28 @@ public class OrderTests
         Assert.Equal("SEK", order.Payment.Currency);
         Assert.Equal("cs_test_123", order.Payment.ProviderReference);
     }
+
+    [Fact]
+    public void SetCustomerDetails_StoresNameEmailAndAddress()
+    {
+        var order = new Order();
+        var customer = new CustomerDetails(
+            Name: "Anna Andersson",
+            Email: "anna@example.com",
+            AddressLine1: "Storgatan 1",
+            AddressLine2: null,
+            PostalCode: "111 22",
+            City: "Stockholm",
+            Country: "SE");
+
+        order.SetCustomerDetails(customer);
+
+        Assert.Equal("Anna Andersson", order.CustomerName);
+        Assert.Equal("anna@example.com", order.CustomerEmail);
+        Assert.Equal("Storgatan 1", order.AddressLine1);
+        Assert.Null(order.AddressLine2);
+        Assert.Equal("111 22", order.PostalCode);
+        Assert.Equal("Stockholm", order.City);
+        Assert.Equal("SE", order.Country);
+    }
 }

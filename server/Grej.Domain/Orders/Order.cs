@@ -12,6 +12,18 @@ public class Order
     public int Id { get; private set; }
     public string OrderNumber { get; private set; } = NewOrderNumber();
     public OrderStatus Status { get; private set; } = OrderStatus.Pending;
+
+    // Collected by the payment provider, so null until the order is paid.
+    // Stripe Checkout only accepts Swedish addresses in this version (constraints.md).
+    public string? CustomerName { get; private set; }
+    public string? CustomerEmail { get; private set; }
+    public string? AddressLine1 { get; private set; }
+    public string? AddressLine2 { get; private set; }
+    public string? PostalCode { get; private set; }
+    public string? City { get; private set; }
+    // Two-letter country code, always "SE" for now.
+    public string? Country { get; private set; }
+
     public decimal Total { get; private set; }
     public string Currency { get; private set; } = "SEK";
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
@@ -44,6 +56,20 @@ public class Order
         }
 
         Payment = new Payment(provider, providerReference, Total, Currency);
+    }
+
+    // Called by the webhook when the order is paid. The order is saved before the customer
+    // reaches Stripe, so this is the first time we know who they are and where to ship.
+    public void SetCustomerDetails(CustomerDetails customer)
+    {
+        CustomerName = customer.Name;
+        CustomerEmail = customer.Email;
+        AddressLine1 = customer.AddressLine1;
+        AddressLine2 = customer.AddressLine2;
+        PostalCode = customer.PostalCode;
+        City = customer.City;
+        Country = customer.Country;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     // E.g. GREJ-3F9A1C2B. Random instead of based on Id, since the Id is only set

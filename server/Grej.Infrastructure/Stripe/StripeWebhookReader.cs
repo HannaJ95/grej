@@ -1,4 +1,5 @@
 using Grej.Application.Payments;
+using Grej.Domain.Orders;
 using Grej.Domain.Payments;
 using Microsoft.Extensions.Configuration;
 using Stripe;
@@ -48,6 +49,27 @@ public class StripeWebhookReader(IConfiguration configuration) : IPaymentWebhook
             return null;
         }
 
-        return new PaymentUpdate(session.Id, PaymentStatus.Paid);
+        return new PaymentUpdate(session.Id, PaymentStatus.Paid, ReadCustomer(session));
+    }
+
+    // The name is taken from the shipping address, not from the card: it is the name
+    // the package is sent to, and the card holder may be someone else.
+    private static CustomerDetails? ReadCustomer(Session session)
+    {
+        // Missing for sessions created before Checkout asked for a shipping address.
+        var shipping = session.CollectedInformation?.ShippingDetails;
+        if (shipping is null)
+        {
+            return null;
+        }
+
+        return new CustomerDetails(
+            Name: shipping.Name,
+            Email: session.CustomerDetails.Email,
+            AddressLine1: shipping.Address.Line1,
+            AddressLine2: shipping.Address.Line2,
+            PostalCode: shipping.Address.PostalCode,
+            City: shipping.Address.City,
+            Country: shipping.Address.Country);
     }
 }

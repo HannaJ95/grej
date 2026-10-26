@@ -35,6 +35,12 @@ public class StripePaymentProvider(StripeClient stripe, IConfiguration configura
                     },
                 },
             }).ToList(),
+            // Checkout asks for a shipping address and only accepts Swedish ones (constraints.md).
+            // The email is always asked for, and the name is part of the shipping address.
+            ShippingAddressCollection = new SessionShippingAddressCollectionOptions
+            {
+                AllowedCountries = ["SE"],
+            },
             SuccessUrl = $"{frontendUrl}/kassa/tack?order={order.OrderNumber}",
             CancelUrl = $"{frontendUrl}/",
             // Makes the order easy to find in the Stripe dashboard.
