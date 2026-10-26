@@ -1,0 +1,43 @@
+<!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
+<h2>Logga in som admin</h2>
+
+<!-- formRoot turns off the browser's own validation and runs the submission in login-page.ts. -->
+<form [formRoot]="loginForm">
+  <p>
+    <label for="email">E-postadress</label>
+    <!-- aria-invalid and aria-describedby let screen readers tell that the field is wrong, and why. -->
+    <input
+      id="email"
+      type="email"
+      autocomplete="username"
+      [formField]="loginForm.email"
+      [attr.aria-invalid]="emailError() ? true : null"
+      [attr.aria-describedby]="emailError() ? 'email-error' : null"
+    />
+  </p>
+  @if (emailError(); as message) {
+    <p id="email-error">{{ message }}</p>
+  }
+
+  <p>
+    <label for="password">Lösenord</label>
+    <input
+      id="password"
+      type="password"
+      autocomplete="current-password"
+      [formField]="loginForm.password"
+      [attr.aria-invalid]="passwordError() ? true : null"
+      [attr.aria-describedby]="passwordError() ? 'password-error' : null"
+    />
+  </p>
+  @if (passwordError(); as message) {
+    <p id="password-error">{{ message }}</p>
+  }
+
+  <button type="submit" [disabled]="loginForm().submitting()">Logga in</button>
+
+  <!-- role="alert" makes screen readers read the message as soon as it appears. -->
+  @if (loginError(); as message) {
+    <p role="alert">{{ message }}</p>
+  }
+</form>

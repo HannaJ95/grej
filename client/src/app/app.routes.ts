@@ -16,4 +16,12 @@ export const routes: Routes = [
     path: 'kassa/tack',
     loadComponent: () => import('./features/shop/success-page/success-page').then((m) => m.SuccessPage),
   },
+  {
+    path: 'admin/logga-in',
+    loadComponent: () => import('./features/admin/login-page/login-page').then((m) => m.LoginPage),
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./features/admin/admin-home/admin-home').then((m) => m.AdminHome),
+  },
 ];
