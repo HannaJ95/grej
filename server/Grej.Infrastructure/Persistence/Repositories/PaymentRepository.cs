@@ -11,6 +11,14 @@ public class PaymentRepository(GrejDbContext db) : IPaymentRepository
         // Fast, since ProviderReference has a unique index (PaymentConfiguration).
         db.Payments.SingleOrDefaultAsync(p => p.ProviderReference == reference, cancellationToken);
 
+    public Task<bool> IsEventProcessedAsync(string eventId, CancellationToken cancellationToken) =>
+        // Fast, since EventId is the primary key.
+        db.ProcessedWebhookEvents.AnyAsync(e => e.EventId == eventId, cancellationToken);
+
+    public void AddProcessedEvent(string eventId) =>
+        // Only tracked here. The INSERT happens in SaveChangesAsync.
+        db.ProcessedWebhookEvents.Add(new ProcessedWebhookEvent(eventId));
+
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         // EF Core remembers the payment it read above and sees which properties changed,

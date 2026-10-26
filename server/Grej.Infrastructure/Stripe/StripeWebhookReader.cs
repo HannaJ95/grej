@@ -46,7 +46,7 @@ public class StripeWebhookReader(IConfiguration configuration) : IPaymentWebhook
                 return null;
             }
 
-            return new PaymentUpdate(session.Id, PaymentStatus.Paid, ReadCustomer(session));
+            return new PaymentUpdate(stripeEvent.Id, session.Id, PaymentStatus.Paid, ReadCustomer(session));
         }
 
         // Sent when the customer never paid, e.g. closed Stripe Checkout, and the
@@ -54,7 +54,7 @@ public class StripeWebhookReader(IConfiguration configuration) : IPaymentWebhook
         if (stripeEvent.Type == EventTypes.CheckoutSessionExpired)
         {
             var session = (Session)stripeEvent.Data.Object;
-            return new PaymentUpdate(session.Id, PaymentStatus.Expired);
+            return new PaymentUpdate(stripeEvent.Id, session.Id, PaymentStatus.Expired);
         }
 
         return null;

@@ -23,6 +23,13 @@ public class PaymentWebhookService(IPaymentWebhookReader webhookReader, IPayment
             return true;
         }
 
+        // The same event may arrive twice (constraints.md), e.g. when Stripe did not get
+        // our answer in time and sends it again. The second time nothing is done.
+        if (await payments.IsEventProcessedAsync(update.EventId, cancellationToken))
+        {
+            return true;
+        }
+
         var payment = await payments.GetByReferenceAsync(update.Reference, cancellationToken);
         if (payment is null)
         {
@@ -50,7 +57,12 @@ public class PaymentWebhookService(IPaymentWebhookReader webhookReader, IPayment
             }
         }
 
-        // Saves the payment together with the order and the stock, in one transaction.
+        // If the same event is handled by two requests at the same time, both get past the
+        // check above, but only one can save the event id (it is the primary key). The other
+        // save fails, nothing in that request is saved, and Stripe sends the event again later.
+        payments.AddProcessedEvent(update.EventId);
+
+        // Saves the payment, the order, the stock and the event id together, in one transaction.
         await payments.SaveChangesAsync(cancellationToken);
         return true;
     }
