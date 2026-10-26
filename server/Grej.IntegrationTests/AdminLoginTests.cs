@@ -1,3 +1,6 @@
+using System.Net;
+using System.Net.Http.Json;
+using System.Text;
 using Grej.Application.Identity;
 using Grej.Infrastructure.Identity;
 using Grej.Infrastructure.Persistence;
@@ -9,6 +12,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Grej.IntegrationTests;
 
@@ -18,6 +23,8 @@ public class AdminLoginTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private const string Email = "admin@example.com";
     private const string Password = "Test-password-1";
+    // HMAC-SHA256 needs a key of at least 32 bytes.
+    private const string SigningKey = "test-signing-key-that-is-at-least-32-bytes";
 
     private readonly WebApplicationFactory<Program> app;
 
@@ -34,6 +41,7 @@ public class AdminLoginTests : IClassFixture<WebApplicationFactory<Program>>
                 {
                     ["Admin:Email"] = Email,
                     ["Admin:Password"] = Password,
+                    ["Jwt:SigningKey"] = SigningKey,
                 }));
             builder.ConfigureTestServices(services =>
             {
@@ -58,5 +66,64 @@ public class AdminLoginTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.True(await users.IsInRoleAsync(admin, Roles.Admin));
         // Only the hash is stored, never the password itself (constraints.md).
         Assert.NotEqual(Password, admin.PasswordHash);
+    }
+
+    [Fact]
+    public async Task Login_RightPassword_ReturnsSignedTokenWithAdminRole()
+    {
+        await AdminSeeder.SeedAsync(app.Services);
+
+        var response = await app.CreateClient().PostAsJsonAsync("/api/auth/login", new LoginRequest(Email, Password));
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var body = await response.Content.ReadFromJsonAsync<LoginResult>();
+        Assert.NotNull(body);
+
+        // Checks the token the same way the API will check it on admin requests:
+        // signed with our key, made by us, for us, and not expired.
+        var validation = await new JsonWebTokenHandler().ValidateTokenAsync(body.Token, new TokenValidationParameters
+        {
+            ValidIssuer = "grej-api",
+            ValidAudience = "grej-api",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SigningKey)),
+        });
+        Assert.True(validation.IsValid);
+        Assert.Equal(Roles.Admin, validation.Claims["role"]);
+        Assert.Equal(Email, validation.Claims["email"]);
+    }
+
+    [Fact]
+    public async Task Login_WrongPassword_ReturnsUnauthorized()
+    {
+        await AdminSeeder.SeedAsync(app.Services);
+
+        var response = await app.CreateClient().PostAsJsonAsync("/api/auth/login", new LoginRequest(Email, "Wrong-password-1"));
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Login_UnknownEmail_ReturnsUnauthorized()
+    {
+        await AdminSeeder.SeedAsync(app.Services);
+
+        var response = await app.CreateClient().PostAsJsonAsync("/api/auth/login", new LoginRequest("someone@example.com", Password));
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Login_AfterFiveWrongPasswords_IsLockedEvenWithRightPassword()
+    {
+        await AdminSeeder.SeedAsync(app.Services);
+        var client = app.CreateClient();
+
+        for (var attempt = 0; attempt < 5; attempt++)
+        {
+            await client.PostAsJsonAsync("/api/auth/login", new LoginRequest(Email, "Wrong-password-1"));
+        }
+        var response = await client.PostAsJsonAsync("/api/auth/login", new LoginRequest(Email, Password));
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 }

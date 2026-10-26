@@ -1,6 +1,8 @@
 using Grej.Application.Catalog;
+using Grej.Application.Identity;
 using Grej.Application.Orders;
 using Grej.Application.Payments;
+using Grej.Infrastructure.Identity;
 using Grej.Infrastructure.Persistence;
 using Grej.Infrastructure.Persistence.Repositories;
 using Grej.Infrastructure.Stripe;
@@ -31,6 +33,7 @@ public static class DependencyInjection
         services.AddIdentityCore<IdentityUser>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<GrejDbContext>();
+        services.AddScoped<ILoginService, IdentityLoginService>();
 
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();

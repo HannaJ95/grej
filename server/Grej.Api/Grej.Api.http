@@ -1,11 +1,11 @@
-@Grej.Api_HostAddress = http://localhost:5200
+@apiUrl = http://localhost:5200
 
-GET {{Grej.Api_HostAddress}}/api/health
+GET {{apiUrl}}/api/health
 Accept: application/json
 
 ###
 
-POST {{Grej.Api_HostAddress}}/api/checkout
+POST {{apiUrl}}/api/checkout
 Content-Type: application/json
 
 {
@@ -14,11 +14,24 @@ Content-Type: application/json
 
 ###
 
-POST {{Grej.Api_HostAddress}}/api/checkout
+POST {{apiUrl}}/api/checkout
 Content-Type: application/json
 
 {
   "items": [{ "productId": 1, "quantity": 1 }, { "productId": 1, "quantity": 1 }]
+}
+
+###
+
+# REST Client asks for the email and password when sending, so they are never saved here.
+# @prompt email
+# @prompt password
+POST {{apiUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
 }
 
 ###
