@@ -12,6 +12,7 @@ public class GrejDbContext(DbContextOptions<GrejDbContext> options) : DbContext(
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<Payment> Payments => Set<Payment>();
+    public DbSet<ProcessedWebhookEvent> ProcessedWebhookEvents => Set<ProcessedWebhookEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
