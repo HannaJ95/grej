@@ -1,9 +1,12 @@
 using Grej.Application.Catalog;
+using Grej.Application.Identity;
 using Grej.Application.Orders;
 using Grej.Application.Payments;
+using Grej.Infrastructure.Identity;
 using Grej.Infrastructure.Persistence;
 using Grej.Infrastructure.Persistence.Repositories;
 using Grej.Infrastructure.Stripe;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +27,13 @@ public static class DependencyInjection
             // Runs after `dotnet ef database update`. Only the synchronous version
             // is needed, since the API never migrates the database itself.
             .UseSeeding((context, _) => DemoData.Seed(context)));
+
+        // ASP.NET Core Identity: users, roles and password hashing, stored with EF Core.
+        // AddIdentityCore skips the cookie login that AddIdentity adds, since the API uses JWT.
+        services.AddIdentityCore<IdentityUser>()
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<GrejDbContext>();
+        services.AddScoped<ILoginService, IdentityLoginService>();
 
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();

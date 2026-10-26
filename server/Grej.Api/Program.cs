@@ -1,5 +1,6 @@
 using Grej.Application;
 using Grej.Infrastructure;
+using Grej.Infrastructure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,15 @@ builder.Services.AddCors(options =>
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// `dotnet run --project Grej.Api -- seed-admin` creates the admin account and stops,
+// instead of starting the web server.
+if (args.Contains("seed-admin"))
+{
+    await AdminSeeder.SeedAsync(app.Services);
+    Console.WriteLine("The admin account is ready.");
+    return;
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
