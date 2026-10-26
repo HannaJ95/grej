@@ -53,7 +53,7 @@ Cart and checkout (Wed–Fri):
 - [x] Stock: checked before checkout, decreased on `Paid`; sold-out products cannot be bought
 - [x] Customer details and Swedish address from Stripe stored on the order
 - [x] Success page with order number ("your order is being confirmed")
-- [ ] Webhook: expired sessions (`Expired` / `Cancelled`) and the same event handled twice
+- [x] Webhook: expired sessions (`Expired` / `Cancelled`) and the same event handled twice
 
 ## Sprint 2 – Admin and catalog (Mon 26 – Fri 30 Oct)
 
