@@ -38,11 +38,11 @@ public class PaymentWebhookService(IPaymentWebhookReader webhookReader, IPayment
             // twice never decreases the stock twice (constraints.md).
             if (payment.MarkAsPaid())
             {
-                await orders.HandlePaidAsync(payment.OrderId, cancellationToken);
+                await orders.HandlePaidAsync(payment.OrderId, update.Customer, cancellationToken);
             }
         }
 
-        // Saves the payment and the stock together, in one transaction.
+        // Saves the payment, the customer details and the stock together, in one transaction.
         await payments.SaveChangesAsync(cancellationToken);
         return true;
     }
