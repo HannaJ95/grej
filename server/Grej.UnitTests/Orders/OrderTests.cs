@@ -75,4 +75,25 @@ public class OrderTests
         Assert.Equal("Stockholm", order.City);
         Assert.Equal("SE", order.Country);
     }
+
+    [Fact]
+    public void Cancel_Pending_BecomesCancelled()
+    {
+        var order = new Order();
+
+        order.Cancel();
+
+        Assert.Equal(OrderStatus.Cancelled, order.Status);
+    }
+
+    [Fact]
+    public void Cancel_Twice_StaysCancelled()
+    {
+        var order = new Order();
+        order.Cancel();
+
+        order.Cancel();
+
+        Assert.Equal(OrderStatus.Cancelled, order.Status);
+    }
 }

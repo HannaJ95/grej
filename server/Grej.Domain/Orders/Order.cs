@@ -72,6 +72,26 @@ public class Order
         UpdatedAt = DateTime.UtcNow;
     }
 
+    // Called by the webhook when the order's payment expires. The admin will
+    // also cancel orders in the CMS (sprint 3).
+    public void Cancel()
+    {
+        // Already cancelled: nothing changes.
+        if (Status == OrderStatus.Cancelled)
+        {
+            return;
+        }
+
+        // Only Pending → Cancelled is allowed (constraints.md).
+        if (Status != OrderStatus.Pending)
+        {
+            throw new InvalidOperationException($"An order that is {Status} cannot be cancelled.");
+        }
+
+        Status = OrderStatus.Cancelled;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
     // E.g. GREJ-3F9A1C2B. Random instead of based on Id, since the Id is only set
     // when the order is saved, and the number is sent to Stripe before that.
     private static string NewOrderNumber() =>
