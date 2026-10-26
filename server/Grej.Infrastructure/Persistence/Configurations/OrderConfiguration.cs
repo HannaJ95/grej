@@ -18,6 +18,12 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(o => o.Total).HasPrecision(10, 2);
         builder.Property(o => o.Currency).HasMaxLength(3);
 
+        // Only the country has a fixed length: Stripe always sends a two-letter code ("SE").
+        // Name, email and address are typed by the customer in Stripe Checkout, not in our
+        // forms, so they are stored as text without a max length. A value too long for its
+        // column would make the webhook fail, and Stripe would send it again and again.
+        builder.Property(o => o.Country).HasMaxLength(2);
+
         // An order has many rows; each row has the order's id in OrderId.
         builder.HasMany(o => o.Items).WithOne().HasForeignKey(i => i.OrderId);
 
