@@ -36,20 +36,28 @@ public class StripeWebhookReader(IConfiguration configuration) : IPaymentWebhook
         var stripeEvent = EventUtility.ConstructEventWithoutVerification(payload);
 
         // Sent when the customer has finished Stripe Checkout.
-        if (stripeEvent.Type != EventTypes.CheckoutSessionCompleted)
+        if (stripeEvent.Type == EventTypes.CheckoutSessionCompleted)
         {
-            return null;
+            // With cards the money is taken at once, but some payment methods pay later,
+            // so Stripe's own payment status is checked as well.
+            var session = (Session)stripeEvent.Data.Object;
+            if (session.PaymentStatus != "paid")
+            {
+                return null;
+            }
+
+            return new PaymentUpdate(session.Id, PaymentStatus.Paid, ReadCustomer(session));
         }
 
-        // With cards the money is taken at once, but some payment methods pay later,
-        // so Stripe's own payment status is checked as well.
-        var session = (Session)stripeEvent.Data.Object;
-        if (session.PaymentStatus != "paid")
+        // Sent when the customer never paid, e.g. closed Stripe Checkout, and the
+        // session ran out of time (after 24 hours, Stripe's default).
+        if (stripeEvent.Type == EventTypes.CheckoutSessionExpired)
         {
-            return null;
+            var session = (Session)stripeEvent.Data.Object;
+            return new PaymentUpdate(session.Id, PaymentStatus.Expired);
         }
 
-        return new PaymentUpdate(session.Id, PaymentStatus.Paid, ReadCustomer(session));
+        return null;
     }
 
     // The name is taken from the shipping address, not from the card: it is the name

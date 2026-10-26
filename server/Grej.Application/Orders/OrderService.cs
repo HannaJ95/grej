@@ -26,4 +26,16 @@ public class OrderService(IOrderRepository orders, ProductService products)
         var items = order.Items.Select(item => new ProductQuantity(item.ProductId, item.Quantity)).ToList();
         await products.DecreaseStockAsync(items, cancellationToken);
     }
+
+    // Called by the webhook the first time the order's payment becomes Expired.
+    // Like HandlePaidAsync, nothing is saved here.
+    public async Task HandleExpiredAsync(int orderId, CancellationToken cancellationToken)
+    {
+        var order = await orders.GetByIdAsync(orderId, cancellationToken)
+            ?? throw new InvalidOperationException($"Order {orderId} does not exist.");
+
+        // The customer never paid, so the order will never be shipped (constraints.md).
+        // The stock is not touched: it only decreases when an order is paid.
+        order.Cancel();
+    }
 }

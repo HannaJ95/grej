@@ -78,6 +78,18 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
+    public async Task Post_ExpiredSession_ExpiresPaymentAndCancelsOrder()
+    {
+        var response = await PostAsync(CheckoutExpired(Reference), signedWith: Secret);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(PaymentStatus.Expired, payments.Payment.Status);
+        Assert.Equal(OrderStatus.Cancelled, payments.Order.Status);
+        Assert.Equal(1, product.Stock);
+        Assert.True(payments.Saved);
+    }
+
+    [Fact]
     public async Task Post_WrongSignature_ReturnsBadRequestAndChangesNothing()
     {
         var response = await PostAsync(CheckoutCompleted(Reference), signedWith: "whsec_someone_else");
@@ -113,6 +125,22 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
               "payment_status": "paid",
               "customer_details": { "email": "anna@example.com" },
               "collected_information": {{(withAddress ? CollectedInformation : "null")}}
+            }
+          }
+        }
+        """;
+
+    // The parts of a checkout.session.expired event that the API reads.
+    private static string CheckoutExpired(string sessionId) => $$"""
+        {
+          "id": "evt_test_expired",
+          "object": "event",
+          "type": "checkout.session.expired",
+          "data": {
+            "object": {
+              "id": "{{sessionId}}",
+              "object": "checkout.session",
+              "payment_status": "unpaid"
             }
           }
         }

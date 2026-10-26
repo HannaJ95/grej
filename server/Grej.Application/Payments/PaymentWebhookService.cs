@@ -31,7 +31,7 @@ public class PaymentWebhookService(IPaymentWebhookReader webhookReader, IPayment
             return true;
         }
 
-        // Expired and Refunded are added here in later sprint items.
+        // Refunded is added here in sprint 3.
         if (update.Status == PaymentStatus.Paid)
         {
             // False if the payment was already Paid, so an event that arrives
@@ -41,8 +41,16 @@ public class PaymentWebhookService(IPaymentWebhookReader webhookReader, IPayment
                 await orders.HandlePaidAsync(payment.OrderId, update.Customer, cancellationToken);
             }
         }
+        else if (update.Status == PaymentStatus.Expired)
+        {
+            // False if the payment was already Expired. Same pattern as Paid above.
+            if (payment.MarkAsExpired())
+            {
+                await orders.HandleExpiredAsync(payment.OrderId, cancellationToken);
+            }
+        }
 
-        // Saves the payment, the customer details and the stock together, in one transaction.
+        // Saves the payment together with the order and the stock, in one transaction.
         await payments.SaveChangesAsync(cancellationToken);
         return true;
     }
