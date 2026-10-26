@@ -47,6 +47,28 @@ public class Payment
         return true;
     }
 
+    // Called when the customer never paid and the Checkout session ran out of time
+    // (webhook checkout.session.expired). Returns true only when the payment changes
+    // to Expired, so the caller knows whether the order should be cancelled.
+    public bool MarkAsExpired()
+    {
+        // The same event may arrive twice (constraints.md). The second time changes nothing.
+        if (Status == PaymentStatus.Expired)
+        {
+            return false;
+        }
+
+        // Only Pending → Expired is allowed (constraints.md).
+        if (Status != PaymentStatus.Pending)
+        {
+            throw new InvalidOperationException($"A payment that is {Status} cannot be marked as expired.");
+        }
+
+        Status = PaymentStatus.Expired;
+        UpdatedAt = DateTime.UtcNow;
+        return true;
+    }
+
     // Used by EF Core when it reads a row from the database.
     private Payment() { }
 }

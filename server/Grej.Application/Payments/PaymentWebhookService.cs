@@ -23,6 +23,13 @@ public class PaymentWebhookService(IPaymentWebhookReader webhookReader, IPayment
             return true;
         }
 
+        // The same event may arrive twice (constraints.md), e.g. when Stripe did not get
+        // our answer in time and sends it again. The second time nothing is done.
+        if (await payments.IsEventProcessedAsync(update.EventId, cancellationToken))
+        {
+            return true;
+        }
+
         var payment = await payments.GetByReferenceAsync(update.Reference, cancellationToken);
         if (payment is null)
         {
@@ -31,7 +38,7 @@ public class PaymentWebhookService(IPaymentWebhookReader webhookReader, IPayment
             return true;
         }
 
-        // Expired and Refunded are added here in later sprint items.
+        // Refunded is added here in sprint 3.
         if (update.Status == PaymentStatus.Paid)
         {
             // False if the payment was already Paid, so an event that arrives
@@ -41,8 +48,21 @@ public class PaymentWebhookService(IPaymentWebhookReader webhookReader, IPayment
                 await orders.HandlePaidAsync(payment.OrderId, update.Customer, cancellationToken);
             }
         }
+        else if (update.Status == PaymentStatus.Expired)
+        {
+            // False if the payment was already Expired. Same pattern as Paid above.
+            if (payment.MarkAsExpired())
+            {
+                await orders.HandleExpiredAsync(payment.OrderId, cancellationToken);
+            }
+        }
 
-        // Saves the payment, the customer details and the stock together, in one transaction.
+        // If the same event is handled by two requests at the same time, both get past the
+        // check above, but only one can save the event id (it is the primary key). The other
+        // save fails, nothing in that request is saved, and Stripe sends the event again later.
+        payments.AddProcessedEvent(update.EventId);
+
+        // Saves the payment, the order, the stock and the event id together, in one transaction.
         await payments.SaveChangesAsync(cancellationToken);
         return true;
     }

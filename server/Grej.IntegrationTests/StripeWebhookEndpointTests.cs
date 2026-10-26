@@ -78,6 +78,40 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
+    public async Task Post_ExpiredSession_ExpiresPaymentAndCancelsOrder()
+    {
+        var response = await PostAsync(CheckoutExpired(Reference), signedWith: Secret);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(PaymentStatus.Expired, payments.Payment.Status);
+        Assert.Equal(OrderStatus.Cancelled, payments.Order.Status);
+        Assert.Equal(1, product.Stock);
+        Assert.True(payments.Saved);
+    }
+
+    [Fact]
+    public async Task Post_PaidSession_RemembersEvent()
+    {
+        await PostAsync(CheckoutCompleted(Reference), signedWith: Secret);
+
+        Assert.Contains("evt_test", payments.ProcessedEvents);
+    }
+
+    [Fact]
+    public async Task Post_AlreadyProcessedEvent_ReturnsOkAndChangesNothing()
+    {
+        // As if the event had been handled before, e.g. by an earlier request.
+        payments.ProcessedEvents.Add("evt_test");
+
+        var response = await PostAsync(CheckoutCompleted(Reference), signedWith: Secret);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(PaymentStatus.Pending, payments.Payment.Status);
+        Assert.Equal(1, product.Stock);
+        Assert.False(payments.Saved);
+    }
+
+    [Fact]
     public async Task Post_WrongSignature_ReturnsBadRequestAndChangesNothing()
     {
         var response = await PostAsync(CheckoutCompleted(Reference), signedWith: "whsec_someone_else");
@@ -113,6 +147,22 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
               "payment_status": "paid",
               "customer_details": { "email": "anna@example.com" },
               "collected_information": {{(withAddress ? CollectedInformation : "null")}}
+            }
+          }
+        }
+        """;
+
+    // The parts of a checkout.session.expired event that the API reads.
+    private static string CheckoutExpired(string sessionId) => $$"""
+        {
+          "id": "evt_test_expired",
+          "object": "event",
+          "type": "checkout.session.expired",
+          "data": {
+            "object": {
+              "id": "{{sessionId}}",
+              "object": "checkout.session",
+              "payment_status": "unpaid"
             }
           }
         }
@@ -169,9 +219,16 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         public Order Order { get; }
         public Payment Payment { get; }
         public bool Saved { get; private set; }
+        // The ids of the events that have been handled, like the ProcessedWebhookEvents table.
+        public HashSet<string> ProcessedEvents { get; } = [];
 
         public Task<Payment?> GetByReferenceAsync(string reference, CancellationToken cancellationToken) =>
             Task.FromResult(reference == Payment.ProviderReference ? Payment : null);
+
+        public Task<bool> IsEventProcessedAsync(string eventId, CancellationToken cancellationToken) =>
+            Task.FromResult(ProcessedEvents.Contains(eventId));
+
+        public void AddProcessedEvent(string eventId) => ProcessedEvents.Add(eventId);
 
         public Task SaveChangesAsync(CancellationToken cancellationToken)
         {

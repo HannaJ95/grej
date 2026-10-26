@@ -210,6 +210,20 @@ namespace Grej.Infrastructure.Persistence.Migrations
                     b.ToTable("Payments");
                 });
 
+            modelBuilder.Entity("Grej.Domain.Payments.ProcessedWebhookEvent", b =>
+                {
+                    b.Property<string>("EventId")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<DateTime>("ProcessedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("EventId");
+
+                    b.ToTable("ProcessedWebhookEvents");
+                });
+
             modelBuilder.Entity("Grej.Domain.Orders.OrderItem", b =>
                 {
                     b.HasOne("Grej.Domain.Orders.Order", null)

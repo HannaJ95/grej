@@ -28,6 +28,49 @@ public class PaymentTests
         Assert.Equal(PaymentStatus.Paid, payment.Status);
     }
 
+    [Fact]
+    public void MarkAsExpired_Pending_BecomesExpiredAndReturnsTrue()
+    {
+        var payment = NewPayment();
+
+        var changed = payment.MarkAsExpired();
+
+        Assert.True(changed);
+        Assert.Equal(PaymentStatus.Expired, payment.Status);
+    }
+
+    [Fact]
+    public void MarkAsExpired_Twice_StaysExpiredAndReturnsFalse()
+    {
+        var payment = NewPayment();
+        payment.MarkAsExpired();
+
+        var changed = payment.MarkAsExpired();
+
+        Assert.False(changed);
+        Assert.Equal(PaymentStatus.Expired, payment.Status);
+    }
+
+    [Fact]
+    public void MarkAsExpired_Paid_Throws()
+    {
+        var payment = NewPayment();
+        payment.MarkAsPaid();
+
+        Assert.Throws<InvalidOperationException>(() => payment.MarkAsExpired());
+        Assert.Equal(PaymentStatus.Paid, payment.Status);
+    }
+
+    [Fact]
+    public void MarkAsPaid_Expired_Throws()
+    {
+        var payment = NewPayment();
+        payment.MarkAsExpired();
+
+        Assert.Throws<InvalidOperationException>(() => payment.MarkAsPaid());
+        Assert.Equal(PaymentStatus.Expired, payment.Status);
+    }
+
     // Payments are only created through an order (Order.AddPayment).
     private static Payment NewPayment()
     {
