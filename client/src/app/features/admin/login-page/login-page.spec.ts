@@ -50,8 +50,16 @@ describe('LoginPage', () => {
 
     httpTesting
       .expectOne((req) => req.url.endsWith('/api/auth/login'))
-      .flush({ token: 'header.payload.signature', expiresAt: '2026-10-26T23:00:00Z' });
-    await settle();
+      // An expiry in the future, so adminGuard lets the admin in.
+      .flush({ token: 'header.payload.signature', expiresAt: '2999-01-01T00:00:00Z' });
+
+    // The router opens /admin, which asks the API who is logged in. waitFor tries
+    // again until that request has been made.
+    const me = await vi.waitFor(() =>
+      httpTesting.expectOne((req) => req.url.endsWith('/api/auth/me')),
+    );
+    me.flush({ email: 'admin@example.com' });
+    await harness.fixture.whenStable();
 
     expect(TestBed.inject(Router).url).toBe('/admin');
   });
