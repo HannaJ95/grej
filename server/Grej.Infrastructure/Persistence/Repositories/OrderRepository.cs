@@ -18,4 +18,8 @@ public class OrderRepository(GrejDbContext db) : IOrderRepository
     public Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
         // Include also fetches the order's rows (a JOIN). Without it, Items would be empty.
         db.Orders.Include(o => o.Items).FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
+
+    public Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken) =>
+        // Becomes SQL EXISTS: the database only answers yes or no, no rows are fetched.
+        db.Orders.AnyAsync(o => o.Items.Any(i => i.ProductId == productId), cancellationToken);
 }

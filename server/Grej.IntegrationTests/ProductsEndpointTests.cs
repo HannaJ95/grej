@@ -86,5 +86,12 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
         // against EF Core in ProductRepositoryTests.
         public Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
             Task.FromResult(new PagedResult<Product>(products, page, pageSize, products.Length));
+
+        // Only the CMS uses these.
+        public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+        public void Add(Product product) => throw new NotImplementedException();
+        public void Remove(Product product) => throw new NotImplementedException();
+        public Task SaveChangesAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
     }
 }

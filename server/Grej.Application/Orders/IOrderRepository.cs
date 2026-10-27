@@ -11,4 +11,7 @@ public interface IOrderRepository
 
     // Null if no order has this id. The order's rows are included.
     Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken);
+
+    // True if any order, whatever its status, has a row with this product.
+    Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken);
 }
