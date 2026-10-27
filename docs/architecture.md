@@ -68,7 +68,7 @@ server/
   Grej.Api/              Controllers per module, Program.cs
   Grej.Application/      Catalog/, Orders/, Payments/, Identity/, Common/ (e.g. PagedResult)
   Grej.Domain/           Catalog/, Orders/, Payments/
-  Grej.Infrastructure/   Persistence/ (DbContext, migrations, seed), Stripe/, Images/
+  Grej.Infrastructure/   Persistence/ (DbContext, migrations, seed), Identity/ (admin seed, login), Stripe/, Images/
   Grej.UnitTests/        Domain and application rules
   Grej.IntegrationTests/ API, checkout and webhook against a test database
 client/
@@ -233,3 +233,5 @@ erDiagram
 ### Identity
 
 Users and roles use the standard ASP.NET Core Identity tables. The only role in this version is `Admin`.
+
+The admin account is created with `dotnet run --project Grej.Api -- seed-admin` from `Admin:Email` and `Admin:Password` in User Secrets. `POST /api/auth/login` returns a JWT with the `Admin` role, valid for 8 hours, signed with `Jwt:SigningKey`. Five wrong passwords in a row lock the account for 5 minutes.
