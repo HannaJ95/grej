@@ -33,4 +33,17 @@ public class OrderRepositoryTests
         var item = Assert.Single(found.Items);
         Assert.Equal(2, item.Quantity);
     }
+
+    [Fact]
+    public async Task ContainsProduct_TrueOnlyForOrderedProducts()
+    {
+        var order = new Order();
+        order.AddItem(productId: 1, title: "Skål", unitPrice: 450m, quantity: 1);
+        await using var db = new GrejDbContext(options);
+        var orders = new OrderRepository(db);
+        await orders.AddAsync(order, CancellationToken.None);
+
+        Assert.True(await orders.ContainsProductAsync(1, CancellationToken.None));
+        Assert.False(await orders.ContainsProductAsync(2, CancellationToken.None));
+    }
 }

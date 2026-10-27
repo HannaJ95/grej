@@ -185,6 +185,13 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         // Checkout never lists products.
         public Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
+
+        // Only the CMS uses these.
+        public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+        public void Add(Product product) => throw new NotImplementedException();
+        public void Remove(Product product) => throw new NotImplementedException();
+        public Task SaveChangesAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
     }
 
     // Remembers saved orders instead of writing them to the database.
@@ -200,6 +207,10 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
 
         // Checkout never reads orders back.
         public Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        // Only the CMS uses this.
+        public Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
     }
 

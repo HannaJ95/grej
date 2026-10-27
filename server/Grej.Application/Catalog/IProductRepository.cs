@@ -14,4 +14,14 @@ public interface IProductRepository
 
     // Only active products, newest first.
     Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken);
+
+    // All products, hidden ones too, newest first. For the CMS.
+    Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken);
+
+    // Only remembered here. The INSERT or DELETE happens in SaveChangesAsync.
+    void Add(Product product);
+    void Remove(Product product);
+
+    // Saves the products added or removed above, and the changes made to products fetched above.
+    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -42,6 +42,18 @@ public class ProductRepositoryTests
     }
 
     [Fact]
+    public async Task GetPage_IncludesHiddenProducts_NewestFirst()
+    {
+        db.Products.AddRange(NewProduct(1, "Skål"), NewProduct(2, "Utkast", isActive: false), NewProduct(3, "Vas"));
+        await db.SaveChangesAsync();
+
+        var page = await new ProductRepository(db).GetPageAsync(1, 12, CancellationToken.None);
+
+        Assert.Equal(["Vas", "Utkast", "Skål"], page.Items.Select(p => p.Title));
+        Assert.Equal(3, page.TotalCount);
+    }
+
+    [Fact]
     public async Task GetByIds_ReturnsTheAskedFor_IncludingHidden()
     {
         db.Products.AddRange(NewProduct(1, "Skål"), NewProduct(2, "Utkast", isActive: false), NewProduct(3, "Vas"));

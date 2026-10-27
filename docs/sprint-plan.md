@@ -60,7 +60,7 @@ Cart and checkout (Wed–Fri):
 **Goal:** the admin can log in and manage products, categories and properties.
 
 - [x] Admin user created by a seed script; login with JWT and the Admin role
-- [ ] Admin endpoints protected by role; route guard in Angular
+- [x] Admin endpoints protected by role; route guard in Angular
 - [ ] CMS: create, edit, delete (or hide) products, with validation in form and API
 - [ ] Image upload to Supabase Storage (one image per product)
 - [ ] CMS: categories (no deleting categories with products)

@@ -1,0 +1,57 @@
+<!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
+<h2>Produkter</h2>
+<p><a routerLink="/admin/produkter/ny">Ny produkt</a></p>
+
+@if (result.isLoading()) {
+  <p role="status">Laddar produkterna…</p>
+} @else if (result.error()) {
+  <p role="alert">Produkterna kunde inte visas.</p>
+} @else if (result.hasValue()) {
+  @let r = result.value();
+  @if (r.items.length === 0) {
+    <p>Det finns inga produkter än.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Titel</th>
+          <th scope="col">Pris</th>
+          <th scope="col">Lager</th>
+          <th scope="col">I butiken</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of r.items; track p.id) {
+          <tr>
+            <!-- The title is the link, so a screen reader hears which product it opens. -->
+            <td>
+              <a [routerLink]="['/admin/produkter', p.id]">{{ p.title }}</a>
+            </td>
+            <td>{{ p.price | currency: p.currency }}</td>
+            <td>
+              {{ p.stock }}
+              <!-- Below 0: the last item was sold twice, and one order must be refunded. -->
+              @if (p.stock < 0) {
+                (fler sålda än det fanns)
+              }
+            </td>
+            <td>{{ p.isActive ? 'Synlig' : 'Dold' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  <!-- Only shown when there is more than one page. -->
+  @if (r.totalPages > 1) {
+    <nav aria-label="Sidor">
+      @if (r.page > 1) {
+        <a routerLink="/admin/produkter" [queryParams]="{ sida: r.page - 1 }">Föregående</a>
+      }
+      Sida {{ r.page }} av {{ r.totalPages }}
+      @if (r.page < r.totalPages) {
+        <a routerLink="/admin/produkter" [queryParams]="{ sida: r.page + 1 }">Nästa</a>
+      }
+    </nav>
+  }
+}

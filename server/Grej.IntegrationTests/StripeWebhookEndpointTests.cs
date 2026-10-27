@@ -247,6 +247,10 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         // The webhook never creates orders.
         public Task AddAsync(Order order, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
+
+        // Only the CMS uses this.
+        public Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
     }
 
     // Holds the ordered product, so the tests can check its stock.
@@ -262,5 +266,12 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         // The webhook never lists products.
         public Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
+
+        // Only the CMS uses these.
+        public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+        public void Add(Product product) => throw new NotImplementedException();
+        public void Remove(Product product) => throw new NotImplementedException();
+        public Task SaveChangesAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
     }
 }

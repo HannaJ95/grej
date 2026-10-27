@@ -30,6 +30,28 @@ export const routes: Routes = [
         path: '',
         loadComponent: () => import('./features/admin/admin-home/admin-home').then((m) => m.AdminHome),
       },
+      {
+        path: 'produkter',
+        loadComponent: () =>
+          import('./features/admin/admin-product-list/admin-product-list').then(
+            (m) => m.AdminProductList,
+          ),
+      },
+      {
+        // Before 'produkter/:id', otherwise "ny" would be read as an id.
+        path: 'produkter/ny',
+        loadComponent: () =>
+          import('./features/admin/admin-product-form/admin-product-form').then(
+            (m) => m.AdminProductForm,
+          ),
+      },
+      {
+        path: 'produkter/:id',
+        loadComponent: () =>
+          import('./features/admin/admin-product-form/admin-product-form').then(
+            (m) => m.AdminProductForm,
+          ),
+      },
     ],
   },
 ];

@@ -38,4 +38,9 @@ public class OrderService(IOrderRepository orders, ProductService products)
         // The stock is not touched: it only decreases when an order is paid.
         order.Cancel();
     }
+
+    // Called by the CMS before a product is deleted, since a product on an
+    // order is never hard deleted (constraints.md).
+    public Task<bool> IsProductOrderedAsync(int productId, CancellationToken cancellationToken) =>
+        orders.ContainsProductAsync(productId, cancellationToken);
 }

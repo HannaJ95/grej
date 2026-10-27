@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Grej.Infrastructure.Persistence.Repositories;
 
-// Reads products from PostgreSQL with EF Core.
+// Reads and saves products in PostgreSQL with EF Core.
 public class ProductRepository(GrejDbContext db) : IProductRepository
 {
     public Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
@@ -15,14 +15,31 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
     public async Task<IReadOnlyList<Product>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken) =>
         await db.Products.Where(p => ids.Contains(p.Id)).ToListAsync(cancellationToken);
 
-    public async Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken)
-    {
-        // Nothing is sent to the database yet; the query is only described here.
-        var active = db.Products.Where(p => p.IsActive);
+    // Nothing is sent to the database yet; the query is only described here.
+    public Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
+        ToPageAsync(db.Products.Where(p => p.IsActive), page, pageSize, cancellationToken);
 
-        // Two SQL queries: one counts all active products, one fetches only this page.
-        var totalCount = await active.CountAsync(cancellationToken);
-        var items = await active
+    public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
+        ToPageAsync(db.Products, page, pageSize, cancellationToken);
+
+    public void Add(Product product) => db.Products.Add(product);
+
+    public void Remove(Product product) => db.Products.Remove(product);
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        // EF Core remembers the products it read and sees which properties changed,
+        // so a changed product becomes an UPDATE of only those columns.
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
+    // One page of the products in the query. Shared by both lists above.
+    private static async Task<PagedResult<Product>> ToPageAsync(
+        IQueryable<Product> query, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        // Two SQL queries: one counts all products in the query, one fetches only this page.
+        var totalCount = await query.CountAsync(cancellationToken);
+        var items = await query
             // A fixed order is needed, otherwise PostgreSQL may return the rows in any order
             // and a product could show up on two pages. Highest id = newest.
             .OrderByDescending(p => p.Id)

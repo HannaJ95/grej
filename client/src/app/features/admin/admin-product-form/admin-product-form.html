@@ -1,0 +1,91 @@
+<!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
+<h2>{{ isNew() ? 'Ny produkt' : 'Redigera produkt' }}</h2>
+<p><a routerLink="/admin/produkter">Tillbaka till produkterna</a></p>
+
+@if (product.isLoading()) {
+  <p role="status">Laddar produkten…</p>
+} @else if (product.error()) {
+  <p role="alert">Produkten kunde inte visas.</p>
+} @else {
+  <!-- formRoot turns off the browser's own validation and runs save() in admin-product-form.ts. -->
+  <form [formRoot]="productForm">
+    <p>
+      <label for="title">Titel</label>
+      <!-- aria-invalid and aria-describedby, as on the login page. -->
+      <input
+        id="title"
+        type="text"
+        [formField]="productForm.title"
+        [attr.aria-invalid]="titleError() ? true : null"
+        [attr.aria-describedby]="titleError() ? 'title-error' : null"
+      />
+    </p>
+    @if (titleError(); as message) {
+      <p id="title-error">{{ message }}</p>
+    }
+
+    <p>
+      <label for="description">Beskrivning</label>
+      <textarea
+        id="description"
+        rows="5"
+        [formField]="productForm.description"
+        [attr.aria-invalid]="descriptionError() ? true : null"
+        [attr.aria-describedby]="descriptionError() ? 'description-error' : null"
+      ></textarea>
+    </p>
+    @if (descriptionError(); as message) {
+      <p id="description-error">{{ message }}</p>
+    }
+
+    <p>
+      <label for="price">Pris (kr)</label>
+      <input
+        id="price"
+        type="number"
+        step="0.01"
+        [formField]="productForm.price"
+        [attr.aria-invalid]="priceError() ? true : null"
+        [attr.aria-describedby]="priceError() ? 'price-error' : null"
+      />
+    </p>
+    @if (priceError(); as message) {
+      <p id="price-error">{{ message }}</p>
+    }
+
+    <p>
+      <label for="stock">Lagersaldo</label>
+      <input
+        id="stock"
+        type="number"
+        step="1"
+        [formField]="productForm.stock"
+        [attr.aria-invalid]="stockError() ? true : null"
+        [attr.aria-describedby]="stockError() ? 'stock-error' : null"
+      />
+    </p>
+    @if (stockError(); as message) {
+      <p id="stock-error">{{ message }}</p>
+    }
+
+    <p>
+      <input id="isActive" type="checkbox" [formField]="productForm.isActive" />
+      <label for="isActive">Visa i butiken</label>
+    </p>
+
+    <button type="submit" [disabled]="productForm().submitting()">Spara</button>
+
+    <!-- role="alert" makes screen readers read the message as soon as it appears. -->
+    @if (saveError(); as message) {
+      <p role="alert">{{ message }}</p>
+    }
+  </form>
+
+  <!-- Outside the form, so it never sends the form. -->
+  @if (!isNew()) {
+    <button type="button" (click)="remove()">Ta bort produkten</button>
+    @if (removeError(); as message) {
+      <p role="alert">{{ message }}</p>
+    }
+  }
+}
