@@ -47,3 +47,63 @@ Authorization: Bearer {{login.response.body.token}}
 GET {{apiUrl}}/api/auth/me
 
 ###
+
+# The CMS's products, hidden ones too. Send the login request above first.
+GET {{apiUrl}}/api/admin/products
+Authorization: Bearer {{login.response.body.token}}
+
+###
+
+# Creates a hidden test product. The database is shared with production,
+# so delete it with the DELETE request below when you are done.
+# @name created
+POST {{apiUrl}}/api/admin/products
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "title": "Testprodukt från REST Client",
+  "description": "",
+  "price": 100,
+  "stock": 1,
+  "isActive": false
+}
+
+###
+
+# Price 0 breaks the rules: 400, and nothing is saved.
+POST {{apiUrl}}/api/admin/products
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "title": "Gratis",
+  "price": 0,
+  "stock": 1,
+  "isActive": false
+}
+
+###
+
+# Saves changes to the product created above. The first time gives 204. Sent again,
+# it gives 409, since the stock is 2 by then and no longer the originalStock 1.
+PUT {{apiUrl}}/api/admin/products/{{created.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "title": "Testprodukt, ändrad",
+  "description": "Ändrad från REST Client",
+  "price": 120,
+  "stock": 2,
+  "isActive": false,
+  "originalStock": 1
+}
+
+###
+
+# Deletes the product created above. A product that is on an order gives 409.
+DELETE {{apiUrl}}/api/admin/products/{{created.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+
+###
