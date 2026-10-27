@@ -1,7 +1,8 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { email, FieldTree, form, FormField, FormRoot, required } from '@angular/forms/signals';
+import { email, form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
+import { firstError } from '../../../shared/first-error';
 
 // The admin's login page, /admin/logga-in. Customers never log in, since they buy as guests.
 @Component({
@@ -55,10 +56,4 @@ export class LoginPage {
   protected readonly emailError = computed(() => firstError(this.loginForm.email));
   protected readonly passwordError = computed(() => firstError(this.loginForm.password));
   protected readonly loginError = computed(() => this.loginForm().errors()[0]?.message);
-}
-
-// The message to show under a field, once the admin has left it or tried to send the form.
-function firstError(field: FieldTree<string>): string | undefined {
-  const state = field();
-  return state.touched() ? state.errors()[0]?.message : undefined;
 }

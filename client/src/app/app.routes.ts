@@ -37,6 +37,21 @@ export const routes: Routes = [
             (m) => m.AdminProductList,
           ),
       },
+      {
+        // Before 'produkter/:id', otherwise "ny" would be read as an id.
+        path: 'produkter/ny',
+        loadComponent: () =>
+          import('./features/admin/admin-product-form/admin-product-form').then(
+            (m) => m.AdminProductForm,
+          ),
+      },
+      {
+        path: 'produkter/:id',
+        loadComponent: () =>
+          import('./features/admin/admin-product-form/admin-product-form').then(
+            (m) => m.AdminProductForm,
+          ),
+      },
     ],
   },
 ];
