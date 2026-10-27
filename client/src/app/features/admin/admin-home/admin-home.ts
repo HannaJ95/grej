@@ -1,18 +1,21 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
 
-// The admin's start page, /admin. A placeholder until the CMS pages are built.
+// The admin's start page, /admin, with links to the CMS pages.
 // Only a logged-in admin gets here (adminGuard in app.routes.ts).
 @Component({
   selector: 'app-admin-home',
+  imports: [RouterLink],
   template: `
     <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
     <h2>Admin</h2>
     @if (admin.hasValue()) {
       <p>Inloggad som {{ admin.value().email }}.</p>
     }
-    <p>Här kommer du att hantera produkter, kategorier och ordrar.</p>
+    <nav aria-label="Admin">
+      <a routerLink="/admin/produkter">Produkter</a>
+    </nav>
     <button type="button" (click)="logout()">Logga ut</button>
   `,
 })
