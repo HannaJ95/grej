@@ -11,6 +11,7 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<ProductService>();
+        services.AddScoped<AdminProductService>();
         services.AddScoped<CheckoutService>();
         services.AddScoped<OrderService>();
         services.AddScoped<PaymentWebhookService>();
