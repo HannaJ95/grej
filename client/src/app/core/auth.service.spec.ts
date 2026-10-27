@@ -57,6 +57,27 @@ describe('AuthService', () => {
     await expect(result).rejects.toThrow();
   });
 
+  it('gives the saved token until it expires', () => {
+    localStorage.setItem('grej.auth', '{"token":"t","expiresAt":"2999-01-01T00:00:00Z"}');
+
+    expect(auth.token()).toBe('t');
+    expect(auth.isLoggedIn()).toBe(true);
+  });
+
+  it('gives no token when the saved one has expired', () => {
+    localStorage.setItem('grej.auth', '{"token":"t","expiresAt":"2000-01-01T00:00:00Z"}');
+
+    expect(auth.token()).toBeNull();
+    expect(auth.isLoggedIn()).toBe(false);
+  });
+
+  it('gives no token when nothing or something unreadable is saved', () => {
+    expect(auth.token()).toBeNull();
+
+    localStorage.setItem('grej.auth', 'inte json');
+    expect(auth.token()).toBeNull();
+  });
+
   it('forgets the token on logout', () => {
     localStorage.setItem('grej.auth', '{"token":"t","expiresAt":"2026-10-26T23:00:00Z"}');
 
