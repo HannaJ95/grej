@@ -1,5 +1,7 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Text;
 using Grej.Application.Identity;
 using Grej.Infrastructure.Identity;
@@ -17,8 +19,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Grej.IntegrationTests;
 
-// Tests the admin seed and POST /api/auth/login through the real API and the real
-// ASP.NET Core Identity, with EF Core's in-memory database instead of PostgreSQL.
+// Tests the admin seed, POST /api/auth/login and the role check on admin endpoints
+// through the real API and the real ASP.NET Core Identity, with EF Core's in-memory
+// database instead of PostgreSQL.
 public class AdminLoginTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private const string Email = "admin@example.com";
@@ -126,4 +129,71 @@ public class AdminLoginTests : IClassFixture<WebApplicationFactory<Program>>
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
+
+    [Fact]
+    public async Task Me_WithoutToken_ReturnsUnauthorized()
+    {
+        var response = await app.CreateClient().GetAsync("/api/auth/me");
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Me_WithTokenFromLogin_ReturnsAdminEmail()
+    {
+        await AdminSeeder.SeedAsync(app.Services);
+        var login = await app.CreateClient().PostAsJsonAsync("/api/auth/login", new LoginRequest(Email, Password));
+        var token = (await login.Content.ReadFromJsonAsync<LoginResult>())!.Token;
+
+        var response = await GetMe(token);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var body = await response.Content.ReadFromJsonAsync<MeResponse>();
+        Assert.Equal(Email, body?.Email);
+    }
+
+    [Fact]
+    public async Task Me_AdminTokenSignedWithAnotherKey_ReturnsUnauthorized()
+    {
+        // Someone who does not know our key cannot make their own admin token.
+        var token = CreateToken("another-signing-key-that-is-at-least-32-bytes", new Claim("role", Roles.Admin));
+
+        var response = await GetMe(token);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Me_TokenWithoutAdminRole_ReturnsForbidden()
+    {
+        // Signed with our key, so the API knows who is asking, but that user is not an admin.
+        var token = CreateToken(SigningKey, new Claim("email", "someone@example.com"));
+
+        var response = await GetMe(token);
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    // Sends the token the same way the frontend does: "Authorization: Bearer <token>".
+    private Task<HttpResponseMessage> GetMe(string token)
+    {
+        var client = app.CreateClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        return client.GetAsync("/api/auth/me");
+    }
+
+    // A token made like IdentityLoginService makes it, but with any key and claims.
+    private static string CreateToken(string signingKey, params Claim[] claims) =>
+        new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Issuer = "grej-api",
+            Audience = "grej-api",
+            Expires = DateTime.UtcNow.AddHours(1),
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey)),
+                SecurityAlgorithms.HmacSha256),
+        });
+
+    private record MeResponse(string Email);
 }
