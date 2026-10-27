@@ -43,6 +43,7 @@ Run from `server/`:
 - `dotnet build` – build the solution
 - `dotnet test` – run unit and integration tests
 - `dotnet run --project Grej.Api` – start the API (health checks: `GET /api/health` and `GET /api/health/database`)
+- `dotnet run --project Grej.Api -- seed-admin` – create the admin account from `Admin:Email` and `Admin:Password` in User Secrets (the database is shared, so this also creates it in production)
 - `stripe listen --forward-to http://localhost:5200/api/webhooks/stripe` – forward Stripe webhooks to the local API; prints the `whsec_…` secret for `Stripe:WebhookSecret` in User Secrets
 - `dotnet tool restore` – install the local `dotnet-ef` tool (once per machine)
 - `dotnet ef migrations add <Name> --project Grej.Infrastructure --startup-project Grej.Api --output-dir Persistence/Migrations` – create a migration
@@ -60,6 +61,6 @@ Run from `client/` (Angular; `client/CLAUDE.md` has the Angular team's best prac
 
 Both deploy automatically when `main` changes.
 
-- **API:** https://grej-api.onrender.com (Render, Docker, root directory `server`, health check `/api/health`). Environment variables: `ConnectionStrings__Grej`, `Cors__AllowedOrigins__0` (the Vercel URL), `PORT=8080`, `Stripe__SecretKey`, `Frontend__Url`, `Stripe__WebhookSecret`.
+- **API:** https://grej-api.onrender.com (Render, Docker, root directory `server`, health check `/api/health`). Environment variables: `ConnectionStrings__Grej`, `Cors__AllowedOrigins__0` (the Vercel URL), `PORT=8080`, `Stripe__SecretKey`, `Frontend__Url`, `Stripe__WebhookSecret`, `Jwt__SigningKey`.
 - **Frontend:** https://grej-xi.vercel.app (Vercel, root directory `client`, output `dist/grej/browser`). The API URL is in `client/src/environments/environment.ts`.
 - Render's free tier sleeps after 15 minutes without traffic, so the first request can take up to a minute.

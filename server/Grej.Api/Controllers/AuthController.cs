@@ -1,5 +1,8 @@
+using System.Security.Claims;
 using Grej.Application.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Grej.Api.Controllers;
 
@@ -18,4 +21,10 @@ public class AuthController(ILoginService login) : ControllerBase
         // so the API never tells anyone which email addresses have an account.
         return result is null ? Unauthorized() : Ok(result);
     }
+
+    // Who is logged in. Only answers requests with a valid admin token, so the
+    // frontend can use it to show the admin's email.
+    [HttpGet("me")]
+    [Authorize(Roles = Roles.Admin)]
+    public IActionResult Me() => Ok(new { email = User.FindFirstValue(JwtRegisteredClaimNames.Email) });
 }

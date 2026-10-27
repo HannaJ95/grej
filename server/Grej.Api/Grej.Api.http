@@ -24,6 +24,7 @@ Content-Type: application/json
 ###
 
 # REST Client asks for the email and password when sending, so they are never saved here.
+# @name login
 # @prompt email
 # @prompt password
 POST {{apiUrl}}/api/auth/login
@@ -33,5 +34,16 @@ Content-Type: application/json
   "email": "{{email}}",
   "password": "{{password}}"
 }
+
+###
+
+# Send the login request above first. Its token is used here.
+GET {{apiUrl}}/api/auth/me
+Authorization: Bearer {{login.response.body.token}}
+
+###
+
+# Without a token the API answers 401.
+GET {{apiUrl}}/api/auth/me
 
 ###

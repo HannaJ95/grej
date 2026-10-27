@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './core/admin.guard';
 
 export const routes: Routes = [
   // The start page is the product list. Stripe's cancel URL (/) also ends up here.
@@ -22,6 +23,13 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    loadComponent: () => import('./features/admin/admin-home/admin-home').then((m) => m.AdminHome),
+    // Every admin page is a child here, so the guard protects them all.
+    canActivateChild: [adminGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/admin/admin-home/admin-home').then((m) => m.AdminHome),
+      },
+    ],
   },
 ];
