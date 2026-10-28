@@ -39,6 +39,36 @@
     }
 
     <p>
+      <label for="category">Kategori</label>
+      <select
+        id="category"
+        [formField]="productForm.categoryId"
+        [attr.aria-invalid]="categoryError() ? true : null"
+        [attr.aria-describedby]="categoryError() ? 'category-error' : null"
+      >
+        <!-- value "" is what required() sees as empty. -->
+        <option value="">Välj en kategori</option>
+        <!-- The options arrive after the form. Signal Forms then selects the product's category. -->
+        @if (categoryList.hasValue()) {
+          @for (c of categoryList.value().items; track c.id) {
+            <option [value]="c.id">{{ c.name }}</option>
+          }
+        }
+      </select>
+    </p>
+    @if (categoryError(); as message) {
+      <p id="category-error">{{ message }}</p>
+    }
+    @if (categoryList.error()) {
+      <p role="alert">Kategorierna kunde inte visas.</p>
+    } @else if (categoryList.hasValue() && categoryList.value().items.length === 0) {
+      <p>
+        Det finns inga kategorier än.
+        <a routerLink="/admin/kategorier/ny">Skapa en kategori</a> först.
+      </p>
+    }
+
+    <p>
       <label for="price">Pris (kr)</label>
       <input
         id="price"

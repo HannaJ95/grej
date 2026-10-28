@@ -13,6 +13,7 @@ describe('AdminProductService', () => {
     price: 300,
     stock: 2,
     isActive: true,
+    categoryId: 1,
   };
 
   beforeEach(() => {

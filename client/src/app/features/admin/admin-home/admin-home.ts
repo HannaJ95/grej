@@ -14,7 +14,10 @@ import { AuthService } from '../../../core/auth.service';
       <p>Inloggad som {{ admin.value().email }}.</p>
     }
     <nav aria-label="Admin">
-      <a routerLink="/admin/produkter">Produkter</a>
+      <ul>
+        <li><a routerLink="/admin/produkter">Produkter</a></li>
+        <li><a routerLink="/admin/kategorier">Kategorier</a></li>
+      </ul>
     </nav>
     <button type="button" (click)="logout()">Logga ut</button>
   `,

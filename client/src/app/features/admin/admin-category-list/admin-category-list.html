@@ -1,0 +1,36 @@
+<!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
+<h2>Kategorier</h2>
+<p><a routerLink="/admin/kategorier/ny">Ny kategori</a></p>
+
+@if (result.isLoading()) {
+  <p role="status">Laddar kategorierna…</p>
+} @else if (result.error()) {
+  <p role="alert">Kategorierna kunde inte visas.</p>
+} @else if (result.hasValue()) {
+  @let r = result.value();
+  @if (r.items.length === 0) {
+    <p>Det finns inga kategorier än.</p>
+  } @else {
+    <!-- A list instead of a table, since a category only has a name. -->
+    <ul>
+      @for (c of r.items; track c.id) {
+        <li>
+          <a [routerLink]="['/admin/kategorier', c.id]">{{ c.name }}</a>
+        </li>
+      }
+    </ul>
+  }
+
+  <!-- Only shown when there are more than 100 categories. -->
+  @if (r.totalPages > 1) {
+    <nav aria-label="Sidor">
+      @if (r.page > 1) {
+        <a routerLink="/admin/kategorier" [queryParams]="{ sida: r.page - 1 }">Föregående</a>
+      }
+      Sida {{ r.page }} av {{ r.totalPages }}
+      @if (r.page < r.totalPages) {
+        <a routerLink="/admin/kategorier" [queryParams]="{ sida: r.page + 1 }">Nästa</a>
+      }
+    </nav>
+  }
+}

@@ -15,6 +15,7 @@ export interface AdminProduct {
   currency: string;
   stock: number;
   isActive: boolean;
+  categoryId: number;
   image: ProductImage | null;
 }
 
@@ -25,6 +26,7 @@ export interface ProductInput {
   price: number;
   stock: number;
   isActive: boolean;
+  categoryId: number;
 }
 
 // Reads and changes products through the API's admin endpoints. authInterceptor adds

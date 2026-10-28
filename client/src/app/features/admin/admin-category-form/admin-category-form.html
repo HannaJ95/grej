@@ -1,0 +1,41 @@
+<!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
+<h2>{{ isNew() ? 'Ny kategori' : 'Redigera kategori' }}</h2>
+<p><a routerLink="/admin/kategorier">Tillbaka till kategorierna</a></p>
+
+@if (category.isLoading()) {
+  <p role="status">Laddar kategorin…</p>
+} @else if (category.error()) {
+  <p role="alert">Kategorin kunde inte visas.</p>
+} @else {
+  <!-- formRoot turns off the browser's own validation and runs save() in admin-category-form.ts. -->
+  <form [formRoot]="categoryForm">
+    <p>
+      <label for="name">Namn</label>
+      <!-- aria-invalid and aria-describedby, as in the product form. -->
+      <input
+        id="name"
+        type="text"
+        [formField]="categoryForm.name"
+        [attr.aria-invalid]="nameError() ? true : null"
+        [attr.aria-describedby]="nameError() ? 'name-error' : null"
+      />
+    </p>
+    @if (nameError(); as message) {
+      <p id="name-error">{{ message }}</p>
+    }
+
+    <button type="submit" [disabled]="categoryForm().submitting()">Spara</button>
+
+    @if (saveError(); as message) {
+      <p role="alert">{{ message }}</p>
+    }
+  </form>
+
+  <!-- Outside the form, so it never sends the form. -->
+  @if (!isNew()) {
+    <button type="button" (click)="remove()">Ta bort kategorin</button>
+    @if (removeError(); as message) {
+      <p role="alert">{{ message }}</p>
+    }
+  }
+}
