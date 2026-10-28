@@ -270,6 +270,8 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         // Only the CMS uses these.
         public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
+        public Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
         public void Add(Product product) => throw new NotImplementedException();
         public void Remove(Product product) => throw new NotImplementedException();
         public Task SaveChangesAsync(CancellationToken cancellationToken) => throw new NotImplementedException();

@@ -6,7 +6,11 @@ namespace Grej.Application.Catalog;
 
 // Use cases for products in the CMS. Unlike ProductService, which is for the shop,
 // the admin sees every product, hidden ones too. Only admin endpoints use it.
-public class AdminProductService(IProductRepository products, OrderService orders, IImageStorage images)
+public class AdminProductService(
+    IProductRepository products,
+    ICategoryRepository categories,
+    OrderService orders,
+    IImageStorage images)
 {
     // One page of all products, newest first.
     public async Task<PagedResult<AdminProductDto>> GetProductsAsync(ProductListQuery query, CancellationToken cancellationToken)
@@ -27,10 +31,18 @@ public class AdminProductService(IProductRepository products, OrderService order
         return product is null ? null : ToDto(product);
     }
 
-    public async Task<AdminProductDto> CreateAsync(ProductRequest request, CancellationToken cancellationToken)
+    // sellerId is the logged-in admin, who becomes the product's owner. Null if no category
+    // has the request's CategoryId; nothing is saved then.
+    public async Task<AdminProductDto?> CreateAsync(ProductRequest request, string sellerId, CancellationToken cancellationToken)
     {
-        // Title is required when a Product is created. Apply then sets every field.
-        var product = new Product { Title = request.Title };
+        if (!await categories.ExistsAsync(request.CategoryId, cancellationToken))
+        {
+            return null;
+        }
+
+        // Title is required when a Product is created. Apply then sets every other field.
+        // The owner is only set here, so editing a product never changes it.
+        var product = new Product { Title = request.Title, SellerId = sellerId };
         Apply(request, product);
 
         products.Add(product);
@@ -48,6 +60,12 @@ public class AdminProductService(IProductRepository products, OrderService order
             return UpdateProductResult.NotFound;
         }
 
+        // E.g. a category deleted after the form was opened, or an id sent from outside the form.
+        if (!await categories.ExistsAsync(request.CategoryId, cancellationToken))
+        {
+            return UpdateProductResult.CategoryNotFound;
+        }
+
         // The stock has changed since the form was opened, e.g. a customer has paid.
         // Saving the form's stock would undo that sale, so nothing is saved. (A sale in the
         // milliseconds between here and SaveChangesAsync makes it throw instead, since
@@ -58,6 +76,7 @@ public class AdminProductService(IProductRepository products, OrderService order
         }
 
         Apply(request, product);
+        product.MarkAsUpdated();
         await products.SaveChangesAsync(cancellationToken);
         return UpdateProductResult.Updated;
     }
@@ -150,6 +169,7 @@ public class AdminProductService(IProductRepository products, OrderService order
         product.Price = request.Price;
         product.Stock = request.Stock;
         product.IsActive = request.IsActive;
+        product.CategoryId = request.CategoryId;
     }
 
     private static AdminProductDto ToDto(Product product) => new(
@@ -160,5 +180,6 @@ public class AdminProductService(IProductRepository products, OrderService order
         product.Currency,
         product.Stock,
         product.IsActive,
+        product.CategoryId,
         ProductImageDto.From(product.MainImage));
 }

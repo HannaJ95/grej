@@ -16,6 +16,7 @@ describe('AdminProductImage', () => {
     currency: 'SEK',
     stock: 2,
     isActive: true,
+    categoryId: 1,
     image: null,
   };
 

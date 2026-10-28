@@ -11,6 +11,7 @@ import {
   validate,
 } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
+import { AdminCategoryService } from '../../../core/admin-category.service';
 import {
   AdminProduct,
   AdminProductService,
@@ -23,6 +24,8 @@ import { AdminProductImage } from '../admin-product-image/admin-product-image';
 interface ProductFormModel {
   title: string;
   description: string;
+  // The chosen category's id as text, since a <select>'s value is always text. '' = none chosen.
+  categoryId: string;
   price: number | null;
   stock: number | null;
   isActive: boolean;
@@ -32,6 +35,7 @@ interface ProductFormModel {
 const NEW_PRODUCT: ProductFormModel = {
   title: '',
   description: '',
+  categoryId: '',
   price: null,
   stock: 1,
   isActive: false,
@@ -45,6 +49,7 @@ const NEW_PRODUCT: ProductFormModel = {
 })
 export class AdminProductForm {
   private readonly products = inject(AdminProductService);
+  private readonly categories = inject(AdminCategoryService);
   private readonly router = inject(Router);
 
   // The :id in the URL, set by the router. Undefined on /admin/produkter/ny.
@@ -53,6 +58,9 @@ export class AdminProductForm {
 
   // The product as the API had it when the page was opened. Nothing is fetched for a new one.
   protected readonly product = this.products.getProduct(this.id);
+
+  // The choices in the category menu. The first page holds up to 100 categories (CategoryListQuery).
+  protected readonly categoryList = this.categories.getCategories(signal(1));
 
   // Empty for a new product. Filled in again whenever the product has been fetched.
   private readonly model = linkedSignal<ProductFormModel>(() =>
@@ -68,6 +76,7 @@ export class AdminProductForm {
       pattern(field.title, /\S/, { message: 'Fyll i en titel.' });
       maxLength(field.title, 200, { message: 'Titeln får vara högst 200 tecken.' });
       maxLength(field.description, 4000, { message: 'Beskrivningen får vara högst 4000 tecken.' });
+      required(field.categoryId, { message: 'Välj en kategori.' });
       required(field.price, { message: 'Fyll i ett pris.' });
       min(field.price, 0.01, { message: 'Priset måste vara större än 0.' });
       max(field.price, 999_999.99, { message: 'Priset får vara högst 999 999,99 kr.' });
@@ -86,6 +95,7 @@ export class AdminProductForm {
 
   protected readonly titleError = computed(() => firstError(this.productForm.title));
   protected readonly descriptionError = computed(() => firstError(this.productForm.description));
+  protected readonly categoryError = computed(() => firstError(this.productForm.categoryId));
   protected readonly priceError = computed(() => firstError(this.productForm.price));
   protected readonly stockError = computed(() => firstError(this.productForm.stock));
   protected readonly saveError = computed(() => this.productForm().errors()[0]?.message);
@@ -149,13 +159,20 @@ function toModel(product: AdminProduct): ProductFormModel {
   return {
     title: product.title,
     description: product.description,
+    categoryId: String(product.categoryId),
     price: product.price,
     stock: product.stock,
     isActive: product.isActive,
   };
 }
 
-// The form is only sent when price and stock are filled in (required above), so they are never null here.
+// The form is only sent when every required field is filled in, so price and stock are never
+// null here, and categoryId is never ''.
 function toInput(model: ProductFormModel): ProductInput {
-  return { ...model, price: model.price!, stock: model.stock! };
+  return {
+    ...model,
+    categoryId: Number(model.categoryId),
+    price: model.price!,
+    stock: model.stock!,
+  };
 }

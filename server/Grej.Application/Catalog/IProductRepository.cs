@@ -18,6 +18,9 @@ public interface IProductRepository
     // All products, hidden ones too, newest first. For the CMS.
     Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken);
 
+    // True if any product, hidden or not, is in the category.
+    Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken cancellationToken);
+
     // Only remembered here. The INSERT or DELETE happens in SaveChangesAsync.
     void Add(Product product);
     void Remove(Product product);

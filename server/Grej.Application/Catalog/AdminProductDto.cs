@@ -10,4 +10,5 @@ public record AdminProductDto(
     string Currency,
     int Stock,
     bool IsActive,
+    int CategoryId,
     ProductImageDto? Image);

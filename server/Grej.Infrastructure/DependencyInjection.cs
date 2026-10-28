@@ -23,11 +23,7 @@ public static class DependencyInjection
     {
         // "ConnectionStrings:Grej" comes from User Secrets locally and from an
         // environment variable (ConnectionStrings__Grej) in hosting.
-        services.AddDbContext<GrejDbContext>(options => options
-            .UseNpgsql(configuration.GetConnectionString("Grej"))
-            // Runs after `dotnet ef database update`. Only the synchronous version
-            // is needed, since the API never migrates the database itself.
-            .UseSeeding((context, _) => DemoData.Seed(context)));
+        services.AddDbContext<GrejDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("Grej")));
 
         // ASP.NET Core Identity: users, roles and password hashing, stored with EF Core.
         // AddIdentityCore skips the cookie login that AddIdentity adds, since the API uses JWT.
@@ -37,6 +33,7 @@ public static class DependencyInjection
         services.AddScoped<ILoginService, IdentityLoginService>();
 
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
 

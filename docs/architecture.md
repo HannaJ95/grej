@@ -25,7 +25,7 @@ flowchart LR
 
 The API runs on Render as a Docker container, since Render has no built-in .NET support. It connects to the database through Supabase's session pooler, because Render can only reach IPv4 addresses.
 
-Local development and production currently use the same Supabase database, so migrations applied locally also apply to production. A separate production database is decided before real demo content is added.
+Local development and production currently use the same Supabase database and image bucket, so migrations applied locally also apply to production, and images uploaded locally are shown in production too. A separate production database is decided before real demo content is added.
 
 ## Modular monolith
 
@@ -165,7 +165,7 @@ erDiagram
 | ProductId | → Product | At most 10 per product |
 | Url | string | Public URL in Supabase Storage |
 | StoragePath | string | Path in Supabase Storage, used to delete the image |
-| AltText | string | |
+| AltText | string | Required, at most 200 characters |
 | SortOrder | int | First image is the main image |
 
 **Category**
@@ -248,3 +248,14 @@ The CMS has its own endpoints under `/api/admin/` (e.g. `/api/admin/products`), 
 - When the admin saves a product, the form sends the stock it was opened with. If a customer has bought the product since then, the API answers 409 and saves nothing, so a sale is never overwritten.
 
 Known limitation: the stock must be 0 or more when the admin saves. A product with stock below 0 (the last item sold twice) therefore gets at least 0 if the admin edits it before the order is handled.
+
+### Product images
+
+The admin uploads one image per product with `PUT /api/admin/products/{id}/image` (a form with `file` and `altText`) and removes it with `DELETE /api/admin/products/{id}/image`. The file goes through the API, so the Supabase secret key (`Supabase:SecretKey`) stays on the server. Each file gets a new random name under `products/{id}/` in the public bucket `product-images`, and the browser loads it straight from its public URL.
+
+- The API reads the file type from the file's first bytes, not its name. Only jpg, png and webp of at most 5 MB are accepted (400), and a larger request gets 413. The bucket has the same rules in Supabase.
+- A new image is uploaded first, then the row is saved, and only then is the old file deleted. The database never points to a missing file; at worst an unused file is left in Storage (the same idea as in the checkout). Deleting a product deletes its file the same way, after the delete is saved.
+- The images are always loaded with their product (`AutoInclude` in `ProductConfiguration`), so no query can forget them.
+- The shop uses a plain `<img>`, not `NgOptimizedImage`, since the image sizes are not stored and Supabase's free tier cannot resize images.
+
+Known limitation: the alt text can only be changed by uploading the image again.

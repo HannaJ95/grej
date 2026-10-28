@@ -1,7 +1,6 @@
 namespace Grej.Domain.Catalog;
 
-// A product in the shop. Category, seller and timestamps are added in sprint 2,
-// when the CMS is built.
+// A product in the shop.
 public class Product
 {
     // The real list, like Order._items. Only this class can change it.
@@ -14,6 +13,17 @@ public class Product
     public string Currency { get; set; } = "SEK";
     public int Stock { get; set; }
     public bool IsActive { get; set; }
+
+    // Exactly one category per product (constraints.md). The foreign key is in ProductConfiguration.
+    public int CategoryId { get; set; }
+
+    // The owner, always the admin in this version (constraints.md). A string, since that is
+    // what Identity's user ids are. Set by AdminProductService when the product is created.
+    public string SellerId { get; set; } = "";
+
+    // Like Order and Payment. UpdatedAt changes in MarkAsUpdated.
+    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
 
     // A list, so several images (Should) need no new table. At most one for now
     // (constraints.md), since SetImage replaces the image.
@@ -37,6 +47,7 @@ public class Product
         // No check against 0 on purpose: if two customers paid for the last item,
         // a stock below 0 shows the admin that one order must be refunded (constraints.md).
         Stock -= quantity;
+        MarkAsUpdated();
     }
 
     // One image per product in this version (constraints.md), so a new image replaces
@@ -45,6 +56,7 @@ public class Product
     {
         var old = RemoveImage();
         _images.Add(new ProductImage(url, storagePath, altText, sortOrder: 0));
+        MarkAsUpdated();
         return old;
     }
 
@@ -53,6 +65,11 @@ public class Product
     {
         var old = MainImage;
         _images.Clear();
+        MarkAsUpdated();
         return old;
     }
+
+    // The methods above call this themselves. The admin's fields (Title, Price ...) have
+    // public setters, so AdminProductService calls it when it saves them.
+    public void MarkAsUpdated() => UpdatedAt = DateTime.UtcNow;
 }

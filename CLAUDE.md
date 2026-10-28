@@ -61,6 +61,6 @@ Run from `client/` (Angular; `client/CLAUDE.md` has the Angular team's best prac
 
 Both deploy automatically when `main` changes.
 
-- **API:** https://grej-api.onrender.com (Render, Docker, root directory `server`, health check `/api/health`). Environment variables: `ConnectionStrings__Grej`, `Cors__AllowedOrigins__0` (the Vercel URL), `PORT=8080`, `Stripe__SecretKey`, `Frontend__Url`, `Stripe__WebhookSecret`, `Jwt__SigningKey`.
+- **API:** https://grej-api.onrender.com (Render, Docker, root directory `server`, health check `/api/health`). Environment variables: `ConnectionStrings__Grej`, `Cors__AllowedOrigins__0` (the Vercel URL), `PORT=8080`, `Stripe__SecretKey`, `Frontend__Url`, `Stripe__WebhookSecret`, `Jwt__SigningKey`, `Supabase__SecretKey`.
 - **Frontend:** https://grej-xi.vercel.app (Vercel, root directory `client`, output `dist/grej/browser`). The API URL is in `client/src/environments/environment.ts`.
 - Render's free tier sleeps after 15 minutes without traffic, so the first request can take up to a minute.

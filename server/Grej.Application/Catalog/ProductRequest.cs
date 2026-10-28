@@ -4,7 +4,6 @@ namespace Grej.Application.Catalog;
 
 // What the CMS form sends to create a product. The form checks the same rules, but the
 // API never trusts the browser: invalid data gives 400 and nothing is saved (constraints.md).
-// A category becomes required when categories are built (sprint 2).
 public record ProductRequest
 {
     // [Required] also stops a title with only spaces.
@@ -24,6 +23,11 @@ public record ProductRequest
 
     // False = a draft or a hidden product (ambiguity.md).
     public bool IsActive { get; init; }
+
+    // Exactly one category (constraints.md). A missing id is 0, which gives 400 here.
+    // An id that no category has gives 400 from AdminProductsController.
+    [Range(1, int.MaxValue)]
+    public int CategoryId { get; init; }
 }
 
 // What the CMS form sends to save changes: the same fields and rules, plus the
