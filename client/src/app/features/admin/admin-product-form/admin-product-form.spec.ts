@@ -17,6 +17,7 @@ describe('AdminProductForm', () => {
     currency: 'SEK',
     stock: 2,
     isActive: true,
+    image: null,
   };
 
   beforeEach(async () => {
@@ -49,7 +50,7 @@ describe('AdminProductForm', () => {
     expect(page().textContent).toContain('Fyll i ett pris.');
   });
 
-  it('creates a hidden product and goes back to the list', async () => {
+  it('creates a hidden product and opens it, so an image can be added', async () => {
     await harness.navigateByUrl('/admin/produkter/ny');
 
     type('#title', 'Vas');
@@ -68,12 +69,14 @@ describe('AdminProductForm', () => {
     });
     request.flush({ ...vase, price: 250, stock: 1, isActive: false });
 
-    // The list page asks the API for its products. waitFor tries again until it has.
-    const list = await vi.waitFor(() =>
-      httpTesting.expectOne((req) => req.url.endsWith('/api/admin/products')),
+    // The new product's page asks the API for it. waitFor tries again until it has.
+    const opened = await vi.waitFor(() =>
+      httpTesting.expectOne((req) => req.url.endsWith('/api/admin/products/5')),
     );
-    list.flush({ items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 });
-    expect(TestBed.inject(Router).url).toBe('/admin/produkter');
+    opened.flush({ ...vase, price: 250, stock: 1, isActive: false });
+    await harness.fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe('/admin/produkter/5');
+    expect(page().textContent).toContain('Produkten har ingen bild än.');
   });
 
   it('saves nothing and says so when the stock has changed (409)', async () => {

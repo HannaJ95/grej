@@ -57,6 +57,21 @@ describe('AdminProductService', () => {
     expect(await result).toBe('onOrder');
   });
 
+  it('sends the image and its alt text as a form', async () => {
+    const file = new File(['png'], 'vas.png', { type: 'image/png' });
+    const result = products.uploadImage(5, file, 'En blå vas');
+
+    const request = httpTesting.expectOne((req) => req.url.endsWith('/api/admin/products/5/image'));
+    expect(request.request.method).toBe('PUT');
+    // The same names as the parameters in AdminProductsController.SetImage.
+    const form = request.request.body as FormData;
+    expect(form.get('file')).toBe(file);
+    expect(form.get('altText')).toBe('En blå vas');
+    request.flush({ url: 'https://storage.test/vas.png', altText: 'En blå vas' });
+
+    expect(await result).toEqual({ url: 'https://storage.test/vas.png', altText: 'En blå vas' });
+  });
+
   it('throws on other errors, e.g. when the API is down', async () => {
     const result = products.update(5, vase, 1);
 

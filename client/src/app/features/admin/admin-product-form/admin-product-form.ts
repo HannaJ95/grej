@@ -17,6 +17,7 @@ import {
   ProductInput,
 } from '../../../core/admin-product.service';
 import { firstError } from '../../../shared/first-error';
+import { AdminProductImage } from '../admin-product-image/admin-product-image';
 
 // What the form's fields hold. Price and stock are null while their fields are empty.
 interface ProductFormModel {
@@ -39,7 +40,7 @@ const NEW_PRODUCT: ProductFormModel = {
 // Creates a product (/admin/produkter/ny), or edits and deletes one (/admin/produkter/7).
 @Component({
   selector: 'app-admin-product-form',
-  imports: [FormRoot, FormField, RouterLink],
+  imports: [FormRoot, FormField, RouterLink, AdminProductImage],
   templateUrl: './admin-product-form.html',
 })
 export class AdminProductForm {
@@ -105,10 +106,12 @@ export class AdminProductForm {
               'Lagersaldot har ändrats sedan du öppnade sidan, troligen för att någon har köpt produkten. Inget sparades. Ladda om sidan och gör ändringen igen.',
           };
         }
+        await this.router.navigateByUrl('/admin/produkter');
       } else {
-        await this.products.create(input);
+        // Opens the new product's page, where the admin can add an image.
+        const created = await this.products.create(input);
+        await this.router.navigate(['/admin/produkter', created.id]);
       }
-      await this.router.navigateByUrl('/admin/produkter');
       return undefined;
     } catch {
       return {

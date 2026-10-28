@@ -3,6 +3,7 @@ import { inject, Service, Signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PagedResult } from './paged-result';
+import { ProductImage } from './product-image';
 
 // A product as the CMS sees it (AdminProductDto in the API): hidden products too,
 // and the real stock, which is below 0 if the last item was sold twice.
@@ -14,6 +15,7 @@ export interface AdminProduct {
   currency: string;
   stock: number;
   isActive: boolean;
+  image: ProductImage | null;
 }
 
 // What the CMS form sends when a product is created or saved (ProductRequest in the API).
@@ -85,5 +87,21 @@ export class AdminProductService {
       }
       throw error;
     }
+  }
+
+  // Replaces the product's image and resolves with the new one. Sent as a form with a
+  // file (multipart/form-data), like a <form> with <input type="file">, since JSON cannot
+  // carry a file. Throws on errors, e.g. when the API says the file is not an image.
+  uploadImage(id: number, file: File, altText: string): Promise<ProductImage> {
+    const form = new FormData();
+    form.append('file', file);
+    form.append('altText', altText);
+    // No Content-Type here: the browser sets it, together with the separator between the parts.
+    return firstValueFrom(this.http.put<ProductImage>(`${this.url}/${id}/image`, form));
+  }
+
+  // Removes the image from the product, and its file from Supabase Storage.
+  async removeImage(id: number): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.url}/${id}/image`));
   }
 }
