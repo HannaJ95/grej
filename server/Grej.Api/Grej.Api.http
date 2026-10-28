@@ -54,8 +54,38 @@ Authorization: Bearer {{login.response.body.token}}
 
 ###
 
-# Creates a hidden test product. The database is shared with production,
-# so delete it with the DELETE request below when you are done.
+# The CMS's categories, sorted by name, at most 100 per page.
+GET {{apiUrl}}/api/admin/categories
+Authorization: Bearer {{login.response.body.token}}
+
+###
+
+# Creates a test category. The database is shared with production,
+# so delete it with the last request in this file when you are done.
+# @name category
+POST {{apiUrl}}/api/admin/categories
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "Testkategori från REST Client"
+}
+
+###
+
+# Renames the category created above: 204.
+PUT {{apiUrl}}/api/admin/categories/{{category.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "Testkategori, ändrad"
+}
+
+###
+
+# Creates a hidden test product in the test category above. The database is shared
+# with production, so delete it with the DELETE request below when you are done.
 # @name created
 POST {{apiUrl}}/api/admin/products
 Authorization: Bearer {{login.response.body.token}}
@@ -66,7 +96,8 @@ Content-Type: application/json
   "description": "",
   "price": 100,
   "stock": 1,
-  "isActive": false
+  "isActive": false,
+  "categoryId": {{category.response.body.id}}
 }
 
 ###
@@ -80,7 +111,8 @@ Content-Type: application/json
   "title": "Gratis",
   "price": 0,
   "stock": 1,
-  "isActive": false
+  "isActive": false,
+  "categoryId": {{category.response.body.id}}
 }
 
 ###
@@ -97,6 +129,7 @@ Content-Type: application/json
   "price": 120,
   "stock": 2,
   "isActive": false,
+  "categoryId": {{category.response.body.id}},
   "originalStock": 1
 }
 
@@ -131,6 +164,13 @@ Authorization: Bearer {{login.response.body.token}}
 # Deletes the product created above, and its image file if it has one.
 # A product that is on an order gives 409.
 DELETE {{apiUrl}}/api/admin/products/{{created.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+
+###
+
+# Deletes the category created above. A category that has products gives 409,
+# so delete the test product first.
+DELETE {{apiUrl}}/api/admin/categories/{{category.response.body.id}}
 Authorization: Bearer {{login.response.body.token}}
 
 ###

@@ -22,6 +22,10 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
     public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
         ToPageAsync(db.Products, page, pageSize, cancellationToken);
 
+    // EXISTS in SQL: PostgreSQL stops at the first product it finds.
+    public Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken cancellationToken) =>
+        db.Products.AnyAsync(p => p.CategoryId == categoryId, cancellationToken);
+
     public void Add(Product product) => db.Products.Add(product);
 
     public void Remove(Product product) => db.Products.Remove(product);

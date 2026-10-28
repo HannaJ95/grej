@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using Grej.Application.Catalog;
 using Grej.Application.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Grej.Api.Controllers;
 
@@ -39,7 +41,15 @@ public class AdminProductsController(AdminProductService products) : ControllerB
     [HttpPost]
     public async Task<IActionResult> Create(ProductRequest request, CancellationToken cancellationToken)
     {
-        var product = await products.CreateAsync(request, cancellationToken);
+        // The logged-in admin's user id, from the token's "sub" claim (IdentityLoginService).
+        // [Authorize] has already checked the token, so the claim is always there.
+        var sellerId = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
+
+        var product = await products.CreateAsync(request, sellerId, cancellationToken);
+        if (product is null)
+        {
+            return CategoryNotFound();
+        }
 
         // 201 Created, with the new product's URL in the Location header.
         return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
@@ -55,6 +65,7 @@ public class AdminProductsController(AdminProductService products) : ControllerB
         return result switch
         {
             UpdateProductResult.NotFound => NotFound(),
+            UpdateProductResult.CategoryNotFound => CategoryNotFound(),
             UpdateProductResult.StockChanged => Conflict(),
             _ => NoContent(),
         };
@@ -113,5 +124,13 @@ public class AdminProductsController(AdminProductService products) : ControllerB
         var found = await products.RemoveImageAsync(id, cancellationToken);
 
         return found ? NoContent() : NotFound();
+    }
+
+    // The same kind of 400 answer as when a rule in ProductRequest is broken, so the
+    // frontend handles both the same way.
+    private IActionResult CategoryNotFound()
+    {
+        ModelState.AddModelError(nameof(ProductRequest.CategoryId), "The category does not exist.");
+        return ValidationProblem(ModelState);
     }
 }
