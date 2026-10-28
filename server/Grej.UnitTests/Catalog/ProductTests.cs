@@ -47,4 +47,43 @@ public class ProductTests
         Assert.Throws<ArgumentOutOfRangeException>(() => product.DecreaseStock(quantity));
         Assert.Equal(1, product.Stock);
     }
+
+    [Fact]
+    public void SetImage_ProductWithoutImage_MakesItTheMainImage()
+    {
+        var product = new Product { Title = "Skål" };
+
+        var old = product.SetImage("https://example.com/a.png", "products/1/a.png", "En blå skål");
+
+        Assert.Null(old);
+        var image = Assert.Single(product.Images);
+        Assert.Same(image, product.MainImage);
+        Assert.Equal("En blå skål", image.AltText);
+    }
+
+    [Fact]
+    public void SetImage_ProductWithImage_ReplacesItAndReturnsTheOldOne()
+    {
+        var product = new Product { Title = "Skål" };
+        product.SetImage("https://example.com/a.png", "products/1/a.png", "Gammal bild");
+
+        var old = product.SetImage("https://example.com/b.png", "products/1/b.png", "Ny bild");
+
+        // The old image is returned, so its file can be deleted.
+        Assert.Equal("products/1/a.png", old?.StoragePath);
+        Assert.Equal("products/1/b.png", Assert.Single(product.Images).StoragePath);
+    }
+
+    [Fact]
+    public void RemoveImage_ReturnsTheRemovedImage()
+    {
+        var product = new Product { Title = "Skål" };
+        product.SetImage("https://example.com/a.png", "products/1/a.png", "En blå skål");
+
+        var removed = product.RemoveImage();
+
+        Assert.Equal("products/1/a.png", removed?.StoragePath);
+        Assert.Empty(product.Images);
+        Assert.Null(product.MainImage);
+    }
 }

@@ -1,0 +1,6 @@
+// The same square for every product. object-fit crops the image instead of stretching it.
+.product-thumbnail {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}

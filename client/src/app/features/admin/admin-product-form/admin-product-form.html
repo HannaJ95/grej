@@ -81,6 +81,14 @@
     }
   </form>
 
+  <!-- The image has its own form, since it is uploaded on its own. A new product has
+       no id yet, so it gets its image after the first save. -->
+  @if (product.hasValue()) {
+    <app-admin-product-image [product]="product.value()" />
+  } @else {
+    <p>Spara produkten först. Sedan kan du lägga till en bild.</p>
+  }
+
   <!-- Outside the form, so it never sends the form. -->
   @if (!isNew()) {
     <button type="button" (click)="remove()">Ta bort produkten</button>

@@ -1,0 +1,56 @@
+<section aria-labelledby="image-heading">
+  <h3 id="image-heading">Bild</h3>
+
+  @if (image(); as current) {
+    <!-- Only the width is set, so the browser keeps the image's proportions. -->
+    <img [src]="current.url" [alt]="current.altText" width="200" />
+    <!-- Outside the form below, so it never sends it. -->
+    <p><button type="button" (click)="remove()">Ta bort bilden</button></p>
+    @if (removeError(); as message) {
+      <p role="alert">{{ message }}</p>
+    }
+  } @else {
+    <p>Produkten har ingen bild än.</p>
+  }
+
+  <form [formRoot]="imageForm">
+    <p>
+      <label for="image-file">{{ image() ? 'Byt bild' : 'Välj bild' }}</label>
+      <!-- accept only filters the file picker; the rules in admin-product-image.ts still apply. -->
+      <input
+        #fileInput
+        id="image-file"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        (change)="chooseFile($event)"
+        [attr.aria-invalid]="fileError() ? true : null"
+        [attr.aria-describedby]="
+          fileError() ? 'image-file-hint image-file-error' : 'image-file-hint'
+        "
+      />
+    </p>
+    <p id="image-file-hint">jpg, png eller webp, högst 5 MB.</p>
+    @if (fileError(); as message) {
+      <p id="image-file-error">{{ message }}</p>
+    }
+
+    <p>
+      <label for="alt-text">Beskrivning av bilden (alt-text)</label>
+      <input
+        id="alt-text"
+        type="text"
+        [formField]="imageForm.altText"
+        [attr.aria-invalid]="altTextError() ? true : null"
+        [attr.aria-describedby]="altTextError() ? 'alt-text-error' : null"
+      />
+    </p>
+    @if (altTextError(); as message) {
+      <p id="alt-text-error">{{ message }}</p>
+    }
+
+    <button type="submit" [disabled]="imageForm().submitting()">Ladda upp bilden</button>
+    @if (uploadError(); as message) {
+      <p role="alert">{{ message }}</p>
+    }
+  </form>
+</section>

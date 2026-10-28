@@ -3,6 +3,7 @@ using Grej.Application.Identity;
 using Grej.Application.Orders;
 using Grej.Application.Payments;
 using Grej.Infrastructure.Identity;
+using Grej.Infrastructure.Images;
 using Grej.Infrastructure.Persistence;
 using Grej.Infrastructure.Persistence.Repositories;
 using Grej.Infrastructure.Stripe;
@@ -46,6 +47,10 @@ public static class DependencyInjection
             configuration["Stripe:SecretKey"] ?? throw new InvalidOperationException("Stripe:SecretKey is not configured.")));
         services.AddScoped<IPaymentProvider, StripePaymentProvider>();
         services.AddScoped<IPaymentWebhookReader, StripeWebhookReader>();
+
+        // A typed HttpClient: IHttpClientFactory gives SupabaseImageStorage an HttpClient
+        // and reuses its connections, instead of opening new ones for every request.
+        services.AddHttpClient<IImageStorage, SupabaseImageStorage>();
 
         return services;
     }

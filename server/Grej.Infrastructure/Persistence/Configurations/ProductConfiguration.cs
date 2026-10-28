@@ -18,5 +18,13 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         // would hide a double sale (constraints.md). With this, EF Core adds the stock it
         // read to the UPDATE's WHERE, so the second one saves nothing and throws instead.
         builder.Property(p => p.Stock).IsConcurrencyToken();
+
+        // A product has many images; each image has the product's id in ProductId. When a
+        // product is deleted, the database deletes its image rows too (cascade). The files
+        // in Supabase Storage are deleted by AdminProductService.
+        builder.HasMany(p => p.Images).WithOne().HasForeignKey(i => i.ProductId);
+        // Every query for products also fetches their images, since both the shop and the
+        // CMS show them. Without this, Images would be empty unless a query asks for them.
+        builder.Navigation(p => p.Images).AutoInclude();
     }
 }

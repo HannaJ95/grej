@@ -14,6 +14,10 @@
     <ul>
       @for (p of r.items; track p.id) {
         <li>
+          <!-- loading="lazy": images further down are only fetched when the customer scrolls to them. -->
+          @if (p.image; as image) {
+            <img class="product-thumbnail" [src]="image.url" [alt]="image.altText" loading="lazy" />
+          }
           <a [routerLink]="['/produkter', p.id]">{{ p.title }}</a>
           {{ p.price | currency: p.currency }}
           @if (p.isSoldOut) {

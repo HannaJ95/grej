@@ -9,4 +9,6 @@ public record ProductDto(
     decimal Price,
     string Currency,
     int Stock,
-    bool IsSoldOut);
+    bool IsSoldOut,
+    // Null if the product has no image.
+    ProductImageDto? Image);

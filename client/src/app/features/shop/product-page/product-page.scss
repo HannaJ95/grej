@@ -1,0 +1,6 @@
+// Never wider than the page, and the height follows the image's proportions.
+.product-image {
+  display: block;
+  max-width: min(100%, 600px);
+  height: auto;
+}

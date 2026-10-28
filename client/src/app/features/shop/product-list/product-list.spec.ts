@@ -41,4 +41,33 @@ describe('ProductList', () => {
     expect(links).toEqual(['/produkter/7', '/produkter?sida=1', '/produkter?sida=3']);
     expect(harness.routeNativeElement!.textContent).toContain('Sida 2 av 3');
   });
+
+  it('shows the image of each product, with its alt text', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/produkter');
+
+    httpTesting.expectOne((req) => req.url.endsWith('/api/products')).flush({
+      items: [
+        {
+          id: 7,
+          title: 'Vas',
+          description: '',
+          price: 300,
+          currency: 'SEK',
+          stock: 1,
+          isSoldOut: false,
+          image: { url: 'https://storage.test/vas.png', altText: 'En blå vas' },
+        },
+      ],
+      page: 1,
+      pageSize: 12,
+      totalCount: 1,
+      totalPages: 1,
+    });
+    await harness.fixture.whenStable();
+
+    const image = harness.routeNativeElement!.querySelector('img')!;
+    expect(image.getAttribute('src')).toBe('https://storage.test/vas.png');
+    expect(image.getAttribute('alt')).toBe('En blå vas');
+  });
 });

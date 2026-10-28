@@ -2,6 +2,7 @@ import { httpResource } from '@angular/common/http';
 import { Service, Signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { PagedResult } from './paged-result';
+import { ProductImage } from './product-image';
 
 // A product as the API returns it (ProductDto), both alone and in the list.
 export interface Product {
@@ -13,6 +14,8 @@ export interface Product {
   // How many can be bought. Never below 0 (ProductService.ToDto in the API).
   stock: number;
   isSoldOut: boolean;
+  // Null if the product has no image.
+  image: ProductImage | null;
 }
 
 // Fetches products from the API.
