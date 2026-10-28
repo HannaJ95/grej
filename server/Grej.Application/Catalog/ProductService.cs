@@ -63,5 +63,6 @@ public class ProductService(IProductRepository products)
         // Below 0 means the last item was sold twice (constraints.md). That is for
         // the admin; the customer only needs to know that none are left.
         Math.Max(product.Stock, 0),
-        product.IsSoldOut);
+        product.IsSoldOut,
+        ProductImageDto.From(product.MainImage));
 }

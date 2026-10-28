@@ -102,7 +102,34 @@ Content-Type: application/json
 
 ###
 
-# Deletes the product created above. A product that is on an order gives 409.
+# Uploads an image to the product created above, or replaces its image. Put any jpg, png or
+# webp image next to this file as test-image.png (it is in .gitignore). The name does not
+# matter to the API, which reads the format from the file's content.
+PUT {{apiUrl}}/api/admin/products/{{created.response.body.id}}/image
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: multipart/form-data; boundary=grej
+
+--grej
+Content-Disposition: form-data; name="altText"
+
+En testbild från REST Client
+--grej
+Content-Disposition: form-data; name="file"; filename="test-image.png"
+Content-Type: image/png
+
+< ./test-image.png
+--grej--
+
+###
+
+# Removes the image from the product above, and its file from Supabase Storage.
+DELETE {{apiUrl}}/api/admin/products/{{created.response.body.id}}/image
+Authorization: Bearer {{login.response.body.token}}
+
+###
+
+# Deletes the product created above, and its image file if it has one.
+# A product that is on an order gives 409.
 DELETE {{apiUrl}}/api/admin/products/{{created.response.body.id}}
 Authorization: Bearer {{login.response.body.token}}
 

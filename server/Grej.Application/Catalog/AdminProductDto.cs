@@ -9,4 +9,5 @@ public record AdminProductDto(
     decimal Price,
     string Currency,
     int Stock,
-    bool IsActive);
+    bool IsActive,
+    ProductImageDto? Image);

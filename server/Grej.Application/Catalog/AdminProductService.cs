@@ -6,7 +6,7 @@ namespace Grej.Application.Catalog;
 
 // Use cases for products in the CMS. Unlike ProductService, which is for the shop,
 // the admin sees every product, hidden ones too. Only admin endpoints use it.
-public class AdminProductService(IProductRepository products, OrderService orders)
+public class AdminProductService(IProductRepository products, OrderService orders, IImageStorage images)
 {
     // One page of all products, newest first.
     public async Task<PagedResult<AdminProductDto>> GetProductsAsync(ProductListQuery query, CancellationToken cancellationToken)
@@ -79,9 +79,67 @@ public class AdminProductService(IProductRepository products, OrderService order
             return DeleteProductResult.OnOrder;
         }
 
+        // Read before the delete, while the product still has its images.
+        var imagePaths = product.Images.Select(image => image.StoragePath).ToList();
+
         products.Remove(product);
         await products.SaveChangesAsync(cancellationToken);
+
+        // The database has deleted the image rows (cascade), but not the files.
+        foreach (var path in imagePaths)
+        {
+            await images.DeleteAsync(path, cancellationToken);
+        }
+
         return DeleteProductResult.Deleted;
+    }
+
+    // Replaces the product's image. Null if no product has this id.
+    public async Task<ProductImageDto?> SetImageAsync(int id, ImageFile file, string altText, CancellationToken cancellationToken)
+    {
+        var product = await products.GetByIdAsync(id, cancellationToken);
+        if (product is null)
+        {
+            return null;
+        }
+
+        // A new name for every upload, so a browser or Supabase's cache never shows an old
+        // image at the same address. The extension comes from the file's content, not its name.
+        var path = $"products/{product.Id}/{Guid.NewGuid():N}{file.Extension}";
+
+        // Upload first, save after. If the save fails, the new file is only unused, but the
+        // database never points to a file that does not exist (like the checkout in architecture.md).
+        var url = await images.UploadAsync(path, file, cancellationToken);
+        var old = product.SetImage(url, path, altText.Trim());
+        await products.SaveChangesAsync(cancellationToken);
+
+        // Last, when nothing points to the old file any more.
+        if (old is not null)
+        {
+            await images.DeleteAsync(old.StoragePath, cancellationToken);
+        }
+
+        return ProductImageDto.From(product.MainImage);
+    }
+
+    // False if no product has this id. A product without an image is fine: nothing to remove.
+    public async Task<bool> RemoveImageAsync(int id, CancellationToken cancellationToken)
+    {
+        var product = await products.GetByIdAsync(id, cancellationToken);
+        if (product is null)
+        {
+            return false;
+        }
+
+        var removed = product.RemoveImage();
+        if (removed is not null)
+        {
+            // The row first, then the file, as in SetImageAsync.
+            await products.SaveChangesAsync(cancellationToken);
+            await images.DeleteAsync(removed.StoragePath, cancellationToken);
+        }
+
+        return true;
     }
 
     // Copies the form's fields to the product. Used by both create and update.
@@ -101,5 +159,6 @@ public class AdminProductService(IProductRepository products, OrderService order
         product.Price,
         product.Currency,
         product.Stock,
-        product.IsActive);
+        product.IsActive,
+        ProductImageDto.From(product.MainImage));
 }

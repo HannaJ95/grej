@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Grej.Application.Catalog;
 using Grej.Application.Identity;
 using Microsoft.AspNetCore.Authorization;
@@ -71,5 +72,46 @@ public class AdminProductsController(AdminProductService products) : ControllerB
             DeleteProductResult.OnOrder => Conflict(),
             _ => NoContent(),
         };
+    }
+
+    // E.g. PUT /api/admin/products/7/image. Sent as a form with a file (multipart/form-data),
+    // since JSON cannot carry a file. Replaces the product's image (one per product).
+    [HttpPut("{id}/image")]
+    // Larger requests are refused (413) before they are read. A bit more than ImageFile.MaxBytes,
+    // since the request also holds the alt text and the form's separators.
+    [RequestSizeLimit(ImageFile.MaxBytes + 100_000)]
+    public async Task<IActionResult> SetImage(
+        int id,
+        IFormFile file,
+        [FromForm, MaxLength(200)] string altText,
+        CancellationToken cancellationToken)
+    {
+        // [ApiController] has already answered 400 if the file or the alt text is missing,
+        // since neither is nullable.
+        using var memory = new MemoryStream();
+        await file.CopyToAsync(memory, cancellationToken);
+        var image = ImageFile.FromBytes(memory.ToArray());
+        if (image is null)
+        {
+            // The same kind of 400 answer as when a rule in ProductRequest is broken.
+            ModelState.AddModelError(nameof(file), "The file must be a jpg, png or webp image of at most 5 MB.");
+            return ValidationProblem(ModelState);
+        }
+
+        var saved = await products.SetImageAsync(id, image, altText, cancellationToken);
+        if (saved is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(saved);
+    }
+
+    [HttpDelete("{id}/image")]
+    public async Task<IActionResult> RemoveImage(int id, CancellationToken cancellationToken)
+    {
+        var found = await products.RemoveImageAsync(id, cancellationToken);
+
+        return found ? NoContent() : NotFound();
     }
 }
