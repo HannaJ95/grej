@@ -12,6 +12,7 @@ namespace Grej.Infrastructure.Persistence;
 public class GrejDbContext(DbContextOptions<GrejDbContext> options) : IdentityDbContext(options)
 {
     public DbSet<Product> Products => Set<Product>();
+    public DbSet<Category> Categories => Set<Category>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<ProcessedWebhookEvent> ProcessedWebhookEvents => Set<ProcessedWebhookEvent>();

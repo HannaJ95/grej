@@ -1,4 +1,5 @@
 using Grej.Domain.Catalog;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -26,5 +27,15 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         // Every query for products also fetches their images, since both the shop and the
         // CMS show them. Without this, Images would be empty unless a query asks for them.
         builder.Navigation(p => p.Images).AutoInclude();
+
+        // Restrict: the database refuses to delete a category that has products (constraints.md).
+        // AdminCategoryService checks it first and answers 409; this also stops a delete while a
+        // product is being saved into the category. HasOne<Category>() needs no property on Product.
+        builder.HasOne<Category>().WithMany().HasForeignKey(p => p.CategoryId).OnDelete(DeleteBehavior.Restrict);
+
+        // The owner is a user in Identity's AspNetUsers table. The Domain project knows nothing
+        // about Identity, so the link is only described here. Restrict: a user who owns products
+        // cannot be deleted.
+        builder.HasOne<IdentityUser>().WithMany().HasForeignKey(p => p.SellerId).OnDelete(DeleteBehavior.Restrict);
     }
 }
