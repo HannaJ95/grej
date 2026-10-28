@@ -13,6 +13,7 @@ const vase: Product = {
   currency: 'SEK',
   stock: 3,
   isSoldOut: false,
+  image: null,
 };
 
 describe('SuccessPage', () => {

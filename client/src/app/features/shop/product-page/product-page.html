@@ -8,6 +8,12 @@
   <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
   <article>
     <h2>{{ p.title }}</h2>
+    <!-- A plain img, not NgOptimizedImage: that needs each image's width and height,
+         which are not stored, and its resizing needs an image service Supabase's free
+         tier does not have (constraints.md). -->
+    @if (p.image; as image) {
+      <img class="product-image" [src]="image.url" [alt]="image.altText" />
+    }
     <p>{{ p.description }}</p>
     <p>{{ p.price | currency: p.currency }}</p>
     @if (p.isSoldOut) {

@@ -9,6 +9,7 @@ const vase: Product = {
   currency: 'SEK',
   stock: 3,
   isSoldOut: false,
+  image: null,
 };
 const plate: Product = {
   id: 2,
@@ -18,6 +19,7 @@ const plate: Product = {
   currency: 'SEK',
   stock: 1,
   isSoldOut: false,
+  image: null,
 };
 
 describe('CartService', () => {
