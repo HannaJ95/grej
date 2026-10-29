@@ -18,6 +18,9 @@ describe('AdminProductForm', () => {
     stock: 2,
     isActive: true,
     categoryId: 1,
+    // Lera and Blå in answerChoices().
+    materialIds: [3],
+    colorIds: [2],
     image: null,
   };
 
@@ -44,7 +47,7 @@ describe('AdminProductForm', () => {
 
   it('shows what is missing and sends nothing when the form is empty', async () => {
     await harness.navigateByUrl('/admin/produkter/ny');
-    await answerCategories();
+    await answerChoices();
 
     await send();
 
@@ -55,7 +58,7 @@ describe('AdminProductForm', () => {
 
   it('creates a hidden product and opens it, so an image can be added', async () => {
     await harness.navigateByUrl('/admin/produkter/ny');
-    await answerCategories();
+    await answerChoices();
 
     type('#title', 'Vas');
     choose('#category', '2');
@@ -73,6 +76,8 @@ describe('AdminProductForm', () => {
       price: 250,
       stock: 1,
       isActive: false,
+      materialIds: [],
+      colorIds: [],
     });
     request.flush({ ...vase, categoryId: 2, price: 250, stock: 1, isActive: false });
 
@@ -81,7 +86,7 @@ describe('AdminProductForm', () => {
       httpTesting.expectOne((req) => req.url.endsWith('/api/admin/products/5')),
     );
     opened.flush({ ...vase, categoryId: 2, price: 250, stock: 1, isActive: false });
-    await answerCategories();
+    await answerChoices();
     expect(TestBed.inject(Router).url).toBe('/admin/produkter/5');
     expect(page().textContent).toContain('Produkten har ingen bild än.');
   });
@@ -93,9 +98,26 @@ describe('AdminProductForm', () => {
     // The form is shown, but the menu only has "Välj en kategori" so far.
     expect(page().querySelectorAll('#category option').length).toBe(1);
 
-    await answerCategories();
+    await answerChoices();
 
     expect(page().querySelector<HTMLSelectElement>('#category')?.value).toBe('1');
+  });
+
+  it("ticks the product's materials and colors, and sends the changes", async () => {
+    await openVase();
+    expect(checkbox('Lera').checked).toBe(true);
+    expect(checkbox('Glasyr').checked).toBe(false);
+    expect(checkbox('Blå').checked).toBe(true);
+
+    // Clicks the way a user does: one unticks Lera, the other ticks Glasyr.
+    checkbox('Lera').click();
+    checkbox('Glasyr').click();
+    await send();
+
+    const request = httpTesting.expectOne((req) => req.url.endsWith('/api/admin/products/5'));
+    expect(request.request.body.materialIds).toEqual([4]);
+    // Blå was not touched, so it is sent as it was.
+    expect(request.request.body.colorIds).toEqual([2]);
   });
 
   it('saves nothing and says so when the stock has changed (409)', async () => {
@@ -143,24 +165,38 @@ describe('AdminProductForm', () => {
   async function openVase(): Promise<void> {
     await harness.navigateByUrl('/admin/produkter/5');
     httpTesting.expectOne((req) => req.url.endsWith('/api/admin/products/5')).flush(vase);
-    await answerCategories();
+    await answerChoices();
   }
 
-  // Answers the form's request for the categories in the menu.
-  async function answerCategories(): Promise<void> {
-    httpTesting
-      .expectOne((req) => req.url.endsWith('/api/admin/categories'))
-      .flush({
-        items: [
-          { id: 1, name: 'Keramik' },
-          { id: 2, name: 'Glas' },
-        ],
-        page: 1,
-        pageSize: 100,
-        totalCount: 2,
-        totalPages: 1,
-      });
+  // Answers the form's requests for what it offers: the categories in the menu, and the
+  // materials and colors in the checkboxes.
+  async function answerChoices(): Promise<void> {
+    await answerList('/api/admin/categories', [
+      { id: 1, name: 'Keramik' },
+      { id: 2, name: 'Glas' },
+    ]);
+    await answerList('/api/admin/materials', [
+      { id: 4, name: 'Glasyr' },
+      { id: 3, name: 'Lera' },
+    ]);
+    await answerList('/api/admin/colors', [{ id: 2, name: 'Blå' }]);
     await harness.fixture.whenStable();
+  }
+
+  // Answers a request for a list with one page that holds all the items. The checkboxes
+  // only ask once the form is shown, after the product has arrived, so waitFor tries
+  // again until the request has been sent.
+  async function answerList(url: string, items: { id: number; name: string }[]): Promise<void> {
+    const request = await vi.waitFor(() => httpTesting.expectOne((req) => req.url.endsWith(url)));
+    request.flush({ items, page: 1, pageSize: 100, totalCount: items.length, totalPages: 1 });
+  }
+
+  // The checkbox whose label has this text.
+  function checkbox(label: string): HTMLInputElement {
+    const found = [...page().querySelectorAll('label')].find(
+      (l) => l.textContent?.trim() === label,
+    );
+    return found!.querySelector('input')!;
   }
 
   // Types into an input the way a user does, so Signal Forms sees the change.

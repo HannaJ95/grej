@@ -17,6 +17,8 @@ describe('AdminProductImage', () => {
     stock: 2,
     isActive: true,
     categoryId: 1,
+    materialIds: [],
+    colorIds: [],
     image: null,
   };
 

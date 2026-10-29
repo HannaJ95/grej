@@ -16,6 +16,9 @@ export interface AdminProduct {
   stock: number;
   isActive: boolean;
   categoryId: number;
+  // The ids of the product's materials and colors. Empty if it has none.
+  materialIds: number[];
+  colorIds: number[];
   image: ProductImage | null;
 }
 
@@ -27,6 +30,9 @@ export interface ProductInput {
   stock: number;
   isActive: boolean;
   categoryId: number;
+  // Several of each, or none (ambiguity.md). They replace the product's old ones.
+  materialIds: number[];
+  colorIds: number[];
 }
 
 // Reads and changes products through the API's admin endpoints. authInterceptor adds

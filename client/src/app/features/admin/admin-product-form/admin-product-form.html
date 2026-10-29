@@ -68,6 +68,10 @@
       </p>
     }
 
+    <!-- Several of each, or none. Each group fetches its own choices from the API. -->
+    <app-property-checkboxes [kind]="'materials'" [formField]="productForm.materialIds" />
+    <app-property-checkboxes [kind]="'colors'" [formField]="productForm.colorIds" />
+
     <p>
       <label for="price">Pris (kr)</label>
       <input
