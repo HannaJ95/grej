@@ -28,6 +28,24 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         // CMS show them. Without this, Images would be empty unless a query asks for them.
         builder.Navigation(p => p.Images).AutoInclude();
 
+        // Many-to-many: a product has several materials, and a material is on several products.
+        // The join table has one row per pair, e.g. (ProductId 7, MaterialId 2). The two lambdas
+        // name its foreign keys; without them EF Core would call them "MaterialsId" and "ProductsId".
+        // Deleting a product or a material deletes its rows here too (cascade, the default), so a
+        // deleted material simply disappears from its products.
+        builder.HasMany(p => p.Materials).WithMany(m => m.Products).UsingEntity(
+            "ProductMaterials",
+            material => material.HasOne(typeof(Material)).WithMany().HasForeignKey("MaterialId"),
+            product => product.HasOne(typeof(Product)).WithMany().HasForeignKey("ProductId"));
+        builder.HasMany(p => p.Colors).WithMany(c => c.Products).UsingEntity(
+            "ProductColors",
+            color => color.HasOne(typeof(Color)).WithMany().HasForeignKey("ColorId"),
+            product => product.HasOne(typeof(Product)).WithMany().HasForeignKey("ProductId"));
+        // Fetched with every product, like the images. The CMS form and the product page show
+        // them, and SetMaterials/SetColors must see the old rows to know which ones to delete.
+        builder.Navigation(p => p.Materials).AutoInclude();
+        builder.Navigation(p => p.Colors).AutoInclude();
+
         // Restrict: the database refuses to delete a category that has products (constraints.md).
         // AdminCategoryService checks it first and answers 409; this also stops a delete while a
         // product is being saved into the category. HasOne<Category>() needs no property on Product.

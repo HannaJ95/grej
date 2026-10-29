@@ -10,6 +10,8 @@ const vase: Product = {
   stock: 3,
   isSoldOut: false,
   image: null,
+  materials: [],
+  colors: [],
 };
 const plate: Product = {
   id: 2,
@@ -20,6 +22,8 @@ const plate: Product = {
   stock: 1,
   isSoldOut: false,
   image: null,
+  materials: [],
+  colors: [],
 };
 
 describe('CartService', () => {

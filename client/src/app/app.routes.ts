@@ -74,6 +74,57 @@ export const routes: Routes = [
             (m) => m.AdminCategoryForm,
           ),
       },
+      {
+        path: 'material',
+        loadComponent: () =>
+          import('./features/admin/admin-property-list/admin-property-list').then(
+            (m) => m.AdminPropertyList,
+          ),
+        // The same page as 'farger'. withComponentInputBinding passes data to the page's
+        // kind input, which picks the API's URL and the words.
+        data: { kind: 'materials' },
+      },
+      {
+        // Before 'material/:id', like 'produkter/ny'.
+        path: 'material/ny',
+        loadComponent: () =>
+          import('./features/admin/admin-property-form/admin-property-form').then(
+            (m) => m.AdminPropertyForm,
+          ),
+        data: { kind: 'materials' },
+      },
+      {
+        path: 'material/:id',
+        loadComponent: () =>
+          import('./features/admin/admin-property-form/admin-property-form').then(
+            (m) => m.AdminPropertyForm,
+          ),
+        data: { kind: 'materials' },
+      },
+      {
+        path: 'farger',
+        loadComponent: () =>
+          import('./features/admin/admin-property-list/admin-property-list').then(
+            (m) => m.AdminPropertyList,
+          ),
+        data: { kind: 'colors' },
+      },
+      {
+        path: 'farger/ny',
+        loadComponent: () =>
+          import('./features/admin/admin-property-form/admin-property-form').then(
+            (m) => m.AdminPropertyForm,
+          ),
+        data: { kind: 'colors' },
+      },
+      {
+        path: 'farger/:id',
+        loadComponent: () =>
+          import('./features/admin/admin-property-form/admin-property-form').then(
+            (m) => m.AdminPropertyForm,
+          ),
+        data: { kind: 'colors' },
+      },
     ],
   },
 ];

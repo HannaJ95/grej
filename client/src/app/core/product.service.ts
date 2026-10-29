@@ -16,6 +16,9 @@ export interface Product {
   isSoldOut: boolean;
   // Null if the product has no image.
   image: ProductImage | null;
+  // Only the names, sorted, e.g. ["Glasyr", "Lera"]. Empty if the product has none.
+  materials: string[];
+  colors: string[];
 }
 
 // Fetches products from the API.

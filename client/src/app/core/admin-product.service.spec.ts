@@ -14,6 +14,8 @@ describe('AdminProductService', () => {
     stock: 2,
     isActive: true,
     categoryId: 1,
+    materialIds: [3],
+    colorIds: [],
   };
 
   beforeEach(() => {

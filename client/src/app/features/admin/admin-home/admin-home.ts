@@ -17,6 +17,8 @@ import { AuthService } from '../../../core/auth.service';
       <ul>
         <li><a routerLink="/admin/produkter">Produkter</a></li>
         <li><a routerLink="/admin/kategorier">Kategorier</a></li>
+        <li><a routerLink="/admin/material">Material</a></li>
+        <li><a routerLink="/admin/farger">Färger</a></li>
       </ul>
     </nav>
     <button type="button" (click)="logout()">Logga ut</button>

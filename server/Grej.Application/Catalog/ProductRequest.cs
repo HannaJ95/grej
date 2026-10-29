@@ -28,6 +28,11 @@ public record ProductRequest
     // An id that no category has gives 400 from AdminProductsController.
     [Range(1, int.MaxValue)]
     public int CategoryId { get; init; }
+
+    // Several of each, or none (ambiguity.md). Left out of the JSON = none. An id that does
+    // not exist gives 400 from AdminProductsController, like CategoryId.
+    public IReadOnlyList<int> MaterialIds { get; init; } = [];
+    public IReadOnlyList<int> ColorIds { get; init; } = [];
 }
 
 // What the CMS form sends to save changes: the same fields and rules, plus the

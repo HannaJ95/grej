@@ -7,8 +7,8 @@ public enum UpdateProductResult
     NotFound,
     // A customer has bought the product since the admin opened the form.
     StockChanged,
-    // No category has the id in the request.
-    CategoryNotFound,
+    // The category, a material or a color in the request does not exist.
+    ChoiceNotFound,
 }
 
 // How AdminProductService.DeleteAsync ended.

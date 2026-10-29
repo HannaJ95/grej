@@ -14,6 +14,8 @@ const vase: Product = {
   stock: 3,
   isSoldOut: false,
   image: null,
+  materials: [],
+  colors: [],
 };
 
 describe('SuccessPage', () => {

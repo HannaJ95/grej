@@ -58,6 +58,20 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
+    public async Task GetById_ReturnsMaterialAndColorNamesSortedByName()
+    {
+        var product = new Product { Id = 1, Title = "Skål", Price = 450m, Stock = 1, IsActive = true };
+        product.SetMaterials([new Material { Name = "Lera" }, new Material { Name = "Glasyr" }]);
+        product.SetColors([new Color { Name = "Vit" }, new Color { Name = "Blå" }]);
+        var client = CreateClient(product);
+
+        var found = await client.GetFromJsonAsync<ProductDto>("/api/products/1");
+
+        Assert.Equal(["Glasyr", "Lera"], found!.Materials);
+        Assert.Equal(["Blå", "Vit"], found.Colors);
+    }
+
+    [Fact]
     public async Task GetById_InactiveProduct_ReturnsNotFound()
     {
         var client = CreateClient(new Product { Id = 1, Title = "Utkast", Price = 450m, Stock = 1, IsActive = false });

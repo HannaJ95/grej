@@ -107,6 +107,43 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         Assert.Equal(0, await CountProductsAsync());
     }
 
+    [Fact]
+    public async Task Create_WithMaterialsAndColors_SavesThem()
+    {
+        var categoryId = await AddCategoryAsync();
+        var clay = await AddMaterialAsync("Lera");
+        var glaze = await AddMaterialAsync("Glasyr");
+        var blue = await AddColorAsync("Blå");
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsJsonAsync("/api/admin/products",
+            new { title = "Skål", price = 300m, stock = 1, isActive = true, categoryId, materialIds = new[] { clay, glaze }, colorIds = new[] { blue } });
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        var created = await response.Content.ReadFromJsonAsync<AdminProductDto>();
+        // Read again in a new request, so this is what was really saved.
+        var saved = await client.GetFromJsonAsync<AdminProductDto>($"/api/admin/products/{created!.Id}");
+        Assert.Equal([clay, glaze], saved!.MaterialIds.Order());
+        Assert.Equal([blue], saved.ColorIds);
+    }
+
+    [Theory]
+    // A material that does not exist, e.g. one deleted after the form was opened.
+    [InlineData(new[] { 99 }, new int[] { })]
+    // The same for a color.
+    [InlineData(new int[] { }, new[] { 99 })]
+    public async Task Create_UnknownMaterialOrColor_ReturnsBadRequestAndSavesNothing(int[] materialIds, int[] colorIds)
+    {
+        var categoryId = await AddCategoryAsync();
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsJsonAsync("/api/admin/products",
+            new { title = "Skål", price = 300m, stock = 1, isActive = true, categoryId, materialIds, colorIds });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(0, await CountProductsAsync());
+    }
+
     [Theory]
     [InlineData("", 100, 1)]
     [InlineData("   ", 100, 1)]
@@ -145,6 +182,28 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         Assert.True(saved?.IsActive);
         Assert.Equal(newCategoryId, saved?.CategoryId);
         Assert.True(saved?.UpdatedAt > product.UpdatedAt);
+    }
+
+    [Fact]
+    public async Task Update_ReplacesMaterialsAndColors()
+    {
+        var categoryId = await AddCategoryAsync();
+        var clay = await AddMaterialAsync("Lera");
+        var glass = await AddMaterialAsync("Glas");
+        var blue = await AddColorAsync("Blå");
+        var client = await CreateAdminClientAsync();
+        // Created through the API with clay and blue, the way the form does it.
+        var created = await (await client.PostAsJsonAsync("/api/admin/products",
+                new { title = "Skål", price = 300m, stock = 1, isActive = true, categoryId, materialIds = new[] { clay }, colorIds = new[] { blue } }))
+            .Content.ReadFromJsonAsync<AdminProductDto>();
+
+        var response = await client.PutAsJsonAsync($"/api/admin/products/{created!.Id}",
+            new { title = "Skål", price = 300m, stock = 1, isActive = true, categoryId, materialIds = new[] { glass }, colorIds = Array.Empty<int>(), originalStock = 1 });
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        var saved = await client.GetFromJsonAsync<AdminProductDto>($"/api/admin/products/{created.Id}");
+        Assert.Equal([glass], saved!.MaterialIds);
+        Assert.Empty(saved.ColorIds);
     }
 
     [Fact]
@@ -261,6 +320,26 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         db.Categories.Add(category);
         await db.SaveChangesAsync();
         return category.Id;
+    }
+
+    private async Task<int> AddMaterialAsync(string name)
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<GrejDbContext>();
+        var material = new Material { Name = name };
+        db.Materials.Add(material);
+        await db.SaveChangesAsync();
+        return material.Id;
+    }
+
+    private async Task<int> AddColorAsync(string name)
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<GrejDbContext>();
+        var color = new Color { Name = name };
+        db.Colors.Add(color);
+        await db.SaveChangesAsync();
+        return color.Id;
     }
 
     private async Task<int> AddProductAsync(Product product)

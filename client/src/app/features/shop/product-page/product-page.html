@@ -15,6 +15,20 @@
       <img class="product-image" [src]="image.url" [alt]="image.altText" />
     }
     <p>{{ p.description }}</p>
+    <!-- Only what the product has. A description list, since each row is a heading and
+         its value, e.g. "Färg: Blå, Vit". -->
+    @if (p.materials.length > 0 || p.colors.length > 0) {
+      <dl>
+        @if (p.materials.length > 0) {
+          <dt>Material</dt>
+          <dd>{{ p.materials.join(', ') }}</dd>
+        }
+        @if (p.colors.length > 0) {
+          <dt>Färg</dt>
+          <dd>{{ p.colors.join(', ') }}</dd>
+        }
+      </dl>
+    }
     <p>{{ p.price | currency: p.currency }}</p>
     @if (p.isSoldOut) {
       <p>Slutsåld</p>

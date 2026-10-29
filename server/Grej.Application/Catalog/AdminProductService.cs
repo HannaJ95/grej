@@ -9,6 +9,8 @@ namespace Grej.Application.Catalog;
 public class AdminProductService(
     IProductRepository products,
     ICategoryRepository categories,
+    IPropertyRepository<Material> materials,
+    IPropertyRepository<Color> colors,
     OrderService orders,
     IImageStorage images)
 {
@@ -31,19 +33,17 @@ public class AdminProductService(
         return product is null ? null : ToDto(product);
     }
 
-    // sellerId is the logged-in admin, who becomes the product's owner. Null if no category
-    // has the request's CategoryId; nothing is saved then.
+    // sellerId is the logged-in admin, who becomes the product's owner. Null if the category,
+    // a material or a color in the request does not exist; nothing is saved then.
     public async Task<AdminProductDto?> CreateAsync(ProductRequest request, string sellerId, CancellationToken cancellationToken)
     {
-        if (!await categories.ExistsAsync(request.CategoryId, cancellationToken))
+        // Title is required when a Product is created. TryApplyAsync then sets every other field.
+        // The owner is only set here, so editing a product never changes it.
+        var product = new Product { Title = request.Title, SellerId = sellerId };
+        if (!await TryApplyAsync(request, product, cancellationToken))
         {
             return null;
         }
-
-        // Title is required when a Product is created. Apply then sets every other field.
-        // The owner is only set here, so editing a product never changes it.
-        var product = new Product { Title = request.Title, SellerId = sellerId };
-        Apply(request, product);
 
         products.Add(product);
         await products.SaveChangesAsync(cancellationToken);
@@ -60,12 +60,6 @@ public class AdminProductService(
             return UpdateProductResult.NotFound;
         }
 
-        // E.g. a category deleted after the form was opened, or an id sent from outside the form.
-        if (!await categories.ExistsAsync(request.CategoryId, cancellationToken))
-        {
-            return UpdateProductResult.CategoryNotFound;
-        }
-
         // The stock has changed since the form was opened, e.g. a customer has paid.
         // Saving the form's stock would undo that sale, so nothing is saved. (A sale in the
         // milliseconds between here and SaveChangesAsync makes it throw instead, since
@@ -75,7 +69,13 @@ public class AdminProductService(
             return UpdateProductResult.StockChanged;
         }
 
-        Apply(request, product);
+        // E.g. a category or a color deleted after the form was opened, or an id sent from
+        // outside the form.
+        if (!await TryApplyAsync(request, product, cancellationToken))
+        {
+            return UpdateProductResult.ChoiceNotFound;
+        }
+
         product.MarkAsUpdated();
         await products.SaveChangesAsync(cancellationToken);
         return UpdateProductResult.Updated;
@@ -161,15 +161,35 @@ public class AdminProductService(
         return true;
     }
 
-    // Copies the form's fields to the product. Used by both create and update.
-    private static void Apply(ProductRequest request, Product product)
+    // Copies the form's fields to the product. Used by both create and update. False if the
+    // category, a material or a color does not exist; the product is not changed then.
+    // "Try" as in int.TryParse: it answers with true or false instead of throwing.
+    private async Task<bool> TryApplyAsync(ProductRequest request, Product product, CancellationToken cancellationToken)
     {
+        if (!await categories.ExistsAsync(request.CategoryId, cancellationToken))
+        {
+            return false;
+        }
+
+        // GetByIdsAsync skips ids that do not exist, so fewer rows than ids means one is missing.
+        // Distinct, since the same id sent twice is still only one row.
+        var chosenMaterials = await materials.GetByIdsAsync(request.MaterialIds, cancellationToken);
+        var chosenColors = await colors.GetByIdsAsync(request.ColorIds, cancellationToken);
+        if (chosenMaterials.Count != request.MaterialIds.Distinct().Count()
+            || chosenColors.Count != request.ColorIds.Distinct().Count())
+        {
+            return false;
+        }
+
         product.Title = request.Title.Trim();
         product.Description = request.Description?.Trim() ?? "";
         product.Price = request.Price;
         product.Stock = request.Stock;
         product.IsActive = request.IsActive;
         product.CategoryId = request.CategoryId;
+        product.SetMaterials(chosenMaterials);
+        product.SetColors(chosenColors);
+        return true;
     }
 
     private static AdminProductDto ToDto(Product product) => new(
@@ -181,5 +201,7 @@ public class AdminProductService(
         product.Stock,
         product.IsActive,
         product.CategoryId,
+        product.Materials.Select(material => material.Id).ToList(),
+        product.Colors.Select(color => color.Id).ToList(),
         ProductImageDto.From(product.MainImage));
 }

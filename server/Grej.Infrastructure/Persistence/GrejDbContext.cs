@@ -13,6 +13,8 @@ public class GrejDbContext(DbContextOptions<GrejDbContext> options) : IdentityDb
 {
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Category> Categories => Set<Category>();
+    public DbSet<Material> Materials => Set<Material>();
+    public DbSet<Color> Colors => Set<Color>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<ProcessedWebhookEvent> ProcessedWebhookEvents => Set<ProcessedWebhookEvent>();

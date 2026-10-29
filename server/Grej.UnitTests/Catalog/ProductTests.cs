@@ -86,4 +86,28 @@ public class ProductTests
         Assert.Empty(product.Images);
         Assert.Null(product.MainImage);
     }
+
+    [Fact]
+    public void SetMaterials_ReplacesTheOldMaterials()
+    {
+        var product = new Product { Title = "Skål" };
+        var clay = new Material { Name = "Lera" };
+        var glass = new Material { Name = "Glas" };
+        product.SetMaterials([clay]);
+
+        product.SetMaterials([glass]);
+
+        Assert.Same(glass, Assert.Single(product.Materials));
+    }
+
+    [Fact]
+    public void SetColors_EmptyList_RemovesAllColors()
+    {
+        var product = new Product { Title = "Skål" };
+        product.SetColors([new Color { Name = "Blå" }, new Color { Name = "Vit" }]);
+
+        product.SetColors([]);
+
+        Assert.Empty(product.Colors);
+    }
 }
