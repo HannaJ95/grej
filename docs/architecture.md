@@ -68,7 +68,7 @@ server/
   Grej.Api/              Controllers per module, Program.cs
   Grej.Application/      Catalog/, Orders/, Payments/, Identity/, Common/ (e.g. PagedResult)
   Grej.Domain/           Catalog/, Orders/, Payments/
-  Grej.Infrastructure/   Persistence/ (DbContext, migrations, seed), Identity/ (admin seed, login), Stripe/, Images/
+  Grej.Infrastructure/   Persistence/ (DbContext, migrations, repositories), Identity/ (admin seed, login), Stripe/, Images/
   Grej.UnitTests/        Domain and application rules
   Grej.IntegrationTests/ API, checkout and webhook against a test database
 client/
@@ -173,8 +173,8 @@ erDiagram
 | Column | Type | Note |
 |---|---|---|
 | Id | int | |
-| Name | string | |
-| ParentId | → Category, nullable | Only one level: a subcategory cannot have subcategories |
+| Name | string | At most 100 characters |
+| ParentId | → Category, nullable | Only one level: a subcategory cannot have subcategories. Not built yet (Should, sprint 3) |
 
 **Material**, **Color**: `Id`, `Name`.
 
@@ -259,3 +259,13 @@ The admin uploads one image per product with `PUT /api/admin/products/{id}/image
 - The shop uses a plain `<img>`, not `NgOptimizedImage`, since the image sizes are not stored and Supabase's free tier cannot resize images.
 
 Known limitation: the alt text can only be changed by uploading the image again.
+
+### Categories
+
+The admin creates, renames and deletes categories with `/api/admin/categories`. The list is sorted by name and, like every list, paginated, with up to 100 categories per page, so the menu in the product form gets them all from the first page. A product must have a category that exists: a missing or unknown `categoryId` gives 400.
+
+- A category that has products cannot be deleted. `AdminCategoryService` asks the product repository directly, since both are in the Catalog module, and the API answers 409; the admin moves the products first. The foreign key from products to categories (`Restrict`) also stops the delete.
+- A new product gets the logged-in admin as its owner (`SellerId`, from the token's `sub` claim). Editing a product never changes its owner.
+- The migration `AddCategories` gave every existing product a new category "Övrigt", the admin as owner and the time of the migration as `CreatedAt`/`UpdatedAt`, since the new columns cannot be empty. The demo product seed was removed, since a product needs an owner and the admin is created after the migrations.
+
+Known limitations: two categories can have the same name, and the product form's menu shows at most 100 categories.

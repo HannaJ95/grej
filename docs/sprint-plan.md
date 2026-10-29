@@ -63,7 +63,7 @@ Cart and checkout (Wed–Fri):
 - [x] Admin endpoints protected by role; route guard in Angular
 - [x] CMS: create, edit, delete (or hide) products, with validation in form and API
 - [x] Image upload to Supabase Storage (one image per product)
-- [ ] CMS: categories (no deleting categories with products)
+- [x] CMS: categories (no deleting categories with products)
 - [ ] CMS: materials and colors, and choosing several per product
 - [ ] Component library and shared style variables (colors, typography, spacing)
 - [ ] Own visual design of the main customer pages, if chosen at the checkpoint Fri 23 Oct (Should, about one day)
