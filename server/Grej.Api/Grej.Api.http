@@ -84,6 +84,54 @@ Content-Type: application/json
 
 ###
 
+# The CMS's materials, sorted by name. /api/admin/colors works the same way.
+GET {{apiUrl}}/api/admin/materials
+Authorization: Bearer {{login.response.body.token}}
+
+###
+
+# Creates a test material. The database is shared with production,
+# so delete it with the requests at the end of this file when you are done.
+# @name material
+POST {{apiUrl}}/api/admin/materials
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "Testmaterial från REST Client"
+}
+
+###
+
+# Creates a test color the same way.
+# @name color
+POST {{apiUrl}}/api/admin/colors
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "Testfärg från REST Client"
+}
+
+###
+
+# Renames the material created above: 204.
+PUT {{apiUrl}}/api/admin/materials/{{material.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "Testmaterial, ändrat"
+}
+
+###
+
+# The material with productCount, the number of products that have it.
+GET {{apiUrl}}/api/admin/materials/{{material.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+
+###
+
 # Creates a hidden test product in the test category above. The database is shared
 # with production, so delete it with the DELETE request below when you are done.
 # @name created
@@ -97,7 +145,9 @@ Content-Type: application/json
   "price": 100,
   "stock": 1,
   "isActive": false,
-  "categoryId": {{category.response.body.id}}
+  "categoryId": {{category.response.body.id}},
+  "materialIds": [{{material.response.body.id}}],
+  "colorIds": [{{color.response.body.id}}]
 }
 
 ###
@@ -130,6 +180,8 @@ Content-Type: application/json
   "stock": 2,
   "isActive": false,
   "categoryId": {{category.response.body.id}},
+  "materialIds": [{{material.response.body.id}}],
+  "colorIds": [],
   "originalStock": 1
 }
 
@@ -171,6 +223,18 @@ Authorization: Bearer {{login.response.body.token}}
 # Deletes the category created above. A category that has products gives 409,
 # so delete the test product first.
 DELETE {{apiUrl}}/api/admin/categories/{{category.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+
+###
+
+# Deletes the material and the color created above. Unlike a category, this works even
+# if products have them: they are removed from those products too.
+DELETE {{apiUrl}}/api/admin/materials/{{material.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+
+###
+
+DELETE {{apiUrl}}/api/admin/colors/{{color.response.body.id}}
 Authorization: Bearer {{login.response.body.token}}
 
 ###

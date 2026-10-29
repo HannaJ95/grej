@@ -48,7 +48,7 @@ public class AdminProductsController(AdminProductService products) : ControllerB
         var product = await products.CreateAsync(request, sellerId, cancellationToken);
         if (product is null)
         {
-            return CategoryNotFound();
+            return ChoiceNotFound();
         }
 
         // 201 Created, with the new product's URL in the Location header.
@@ -65,7 +65,7 @@ public class AdminProductsController(AdminProductService products) : ControllerB
         return result switch
         {
             UpdateProductResult.NotFound => NotFound(),
-            UpdateProductResult.CategoryNotFound => CategoryNotFound(),
+            UpdateProductResult.ChoiceNotFound => ChoiceNotFound(),
             UpdateProductResult.StockChanged => Conflict(),
             _ => NoContent(),
         };
@@ -127,10 +127,11 @@ public class AdminProductsController(AdminProductService products) : ControllerB
     }
 
     // The same kind of 400 answer as when a rule in ProductRequest is broken, so the
-    // frontend handles both the same way.
-    private IActionResult CategoryNotFound()
+    // frontend handles both the same way. The key "" means the error is about the request
+    // as a whole, not one field.
+    private IActionResult ChoiceNotFound()
     {
-        ModelState.AddModelError(nameof(ProductRequest.CategoryId), "The category does not exist.");
+        ModelState.AddModelError(string.Empty, "The category, a material or a color does not exist.");
         return ValidationProblem(ModelState);
     }
 }

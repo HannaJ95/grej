@@ -23,7 +23,12 @@ public static class DependencyInjection
     {
         // "ConnectionStrings:Grej" comes from User Secrets locally and from an
         // environment variable (ConnectionStrings__Grej) in hosting.
-        services.AddDbContext<GrejDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("Grej")));
+        services.AddDbContext<GrejDbContext>(options => options.UseNpgsql(
+            configuration.GetConnectionString("Grej"),
+            // A product is read with three lists (images, materials and colors). One SQL query with
+            // joins is fine for a small shop, and faster than one trip to Supabase per list. Set
+            // explicitly, since EF Core otherwise logs a warning for every such query.
+            npgsql => npgsql.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
         // ASP.NET Core Identity: users, roles and password hashing, stored with EF Core.
         // AddIdentityCore skips the cookie login that AddIdentity adds, since the API uses JWT.
@@ -34,6 +39,8 @@ public static class DependencyInjection
 
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        // IPropertyRepository<Material> gets a PropertyRepository<Material>, and the same for Color.
+        services.AddScoped(typeof(IPropertyRepository<>), typeof(PropertyRepository<>));
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
 

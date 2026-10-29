@@ -5,6 +5,8 @@ public class Product
 {
     // The real list, like Order._items. Only this class can change it.
     private readonly List<ProductImage> _images = [];
+    private readonly List<Material> _materials = [];
+    private readonly List<Color> _colors = [];
 
     public int Id { get; set; }
     public required string Title { get; set; }
@@ -31,6 +33,11 @@ public class Product
 
     // The image shown in the shop. Null if the product has no image.
     public ProductImage? MainImage => _images.MinBy(image => image.SortOrder);
+
+    // Several of each, or none (ambiguity.md). Stored in the join tables ProductMaterials
+    // and ProductColors (ProductConfiguration).
+    public IReadOnlyList<Material> Materials => _materials;
+    public IReadOnlyList<Color> Colors => _colors;
 
     // Sold-out products are still shown, but cannot be bought (ambiguity.md).
     // Below 0 means the last item was sold twice (constraints.md).
@@ -67,6 +74,21 @@ public class Product
         _images.Clear();
         MarkAsUpdated();
         return old;
+    }
+
+    // The CMS form always sends the whole choice, so the old list is replaced.
+    public void SetMaterials(IEnumerable<Material> materials)
+    {
+        _materials.Clear();
+        _materials.AddRange(materials);
+        MarkAsUpdated();
+    }
+
+    public void SetColors(IEnumerable<Color> colors)
+    {
+        _colors.Clear();
+        _colors.AddRange(colors);
+        MarkAsUpdated();
     }
 
     // The methods above call this themselves. The admin's fields (Title, Price ...) have

@@ -11,4 +11,7 @@ public record AdminProductDto(
     int Stock,
     bool IsActive,
     int CategoryId,
+    // The ids the form ticks in its checkboxes.
+    IReadOnlyList<int> MaterialIds,
+    IReadOnlyList<int> ColorIds,
     ProductImageDto? Image);
