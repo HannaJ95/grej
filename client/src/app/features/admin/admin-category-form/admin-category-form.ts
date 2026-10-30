@@ -2,6 +2,7 @@ import { Component, computed, inject, input, linkedSignal, signal } from '@angul
 import { form, FormField, FormRoot, maxLength, pattern, required } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import { AdminCategoryService } from '../../../core/admin-category.service';
+import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
 
 // What the form's field holds.
@@ -13,7 +14,7 @@ interface CategoryFormModel {
 // Built the same way as AdminProductForm.
 @Component({
   selector: 'app-admin-category-form',
-  imports: [FormRoot, FormField, RouterLink],
+  imports: [FormRoot, FormField, RouterLink, Button],
   templateUrl: './admin-category-form.html',
 })
 export class AdminCategoryForm {

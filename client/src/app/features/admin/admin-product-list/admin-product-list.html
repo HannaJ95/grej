@@ -1,6 +1,6 @@
 <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
 <h2>Produkter</h2>
-<p><a routerLink="/admin/produkter/ny">Ny produkt</a></p>
+<p><a appButton routerLink="/admin/produkter/ny">Ny produkt</a></p>
 
 @if (result.isLoading()) {
   <p role="status">Laddar produkterna…</p>

@@ -5,7 +5,9 @@
     <!-- Only the width is set, so the browser keeps the image's proportions. -->
     <img [src]="current.url" [alt]="current.altText" width="200" />
     <!-- Outside the form below, so it never sends it. -->
-    <p><button type="button" (click)="remove()">Ta bort bilden</button></p>
+    <p>
+      <button appButton variant="danger" type="button" (click)="remove()">Ta bort bilden</button>
+    </p>
     @if (removeError(); as message) {
       <p role="alert">{{ message }}</p>
     }
@@ -48,7 +50,7 @@
       <p id="alt-text-error">{{ message }}</p>
     }
 
-    <button type="submit" [disabled]="imageForm().submitting()">Ladda upp bilden</button>
+    <button appButton type="submit" [disabled]="imageForm().submitting()">Ladda upp bilden</button>
     @if (uploadError(); as message) {
       <p role="alert">{{ message }}</p>
     }

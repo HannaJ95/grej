@@ -3,12 +3,13 @@ import { Component, DOCUMENT, ElementRef, inject, signal, viewChild } from '@ang
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../../core/cart.service';
 import { CheckoutService } from '../../../core/checkout.service';
+import { Button } from '../../../shared/button/button';
 
 // The cart button in the navigation and the panel it opens. The panel is a
 // native <dialog>: the browser closes it on Escape, keeps the focus inside it
 // while it is open and puts a backdrop behind it.
 @Component({
-  imports: [CurrencyPipe, RouterLink],
+  imports: [CurrencyPipe, RouterLink, Button],
   selector: 'app-cart-drawer',
   styleUrl: './cart-drawer.scss',
   templateUrl: './cart-drawer.html',

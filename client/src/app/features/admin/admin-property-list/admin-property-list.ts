@@ -3,6 +3,7 @@ import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminPropertyService } from '../../../core/admin-property.service';
 import { PropertyKind } from '../../../core/product-property';
+import { Button } from '../../../shared/button/button';
 import { toPageNumber } from '../../../shared/page-number';
 import { PROPERTY_TEXTS } from '../property-texts';
 
@@ -10,7 +11,7 @@ import { PROPERTY_TEXTS } from '../property-texts';
 // Built the same way as AdminCategoryList, but one component serves both lists.
 @Component({
   selector: 'app-admin-property-list',
-  imports: [RouterLink, TitleCasePipe],
+  imports: [RouterLink, TitleCasePipe, Button],
   templateUrl: './admin-property-list.html',
 })
 export class AdminPropertyList {

@@ -4,6 +4,7 @@ import { form, FormField, FormRoot, maxLength, pattern, required } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { AdminPropertyService } from '../../../core/admin-property.service';
 import { ProductPropertyDetails, PropertyKind } from '../../../core/product-property';
+import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
 import { PROPERTY_TEXTS } from '../property-texts';
 
@@ -17,7 +18,7 @@ interface PropertyFormModel {
 // one component serves both lists.
 @Component({
   selector: 'app-admin-property-form',
-  imports: [FormRoot, FormField, RouterLink, TitleCasePipe],
+  imports: [FormRoot, FormField, RouterLink, TitleCasePipe, Button],
   templateUrl: './admin-property-form.html',
 })
 export class AdminPropertyForm {

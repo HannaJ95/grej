@@ -107,7 +107,7 @@
       <label for="isActive">Visa i butiken</label>
     </p>
 
-    <button type="submit" [disabled]="productForm().submitting()">Spara</button>
+    <button appButton type="submit" [disabled]="productForm().submitting()">Spara</button>
 
     <!-- role="alert" makes screen readers read the message as soon as it appears. -->
     @if (saveError(); as message) {
@@ -125,7 +125,7 @@
 
   <!-- Outside the form, so it never sends the form. -->
   @if (!isNew()) {
-    <button type="button" (click)="remove()">Ta bort produkten</button>
+    <button appButton variant="danger" type="button" (click)="remove()">Ta bort produkten</button>
     @if (removeError(); as message) {
       <p role="alert">{{ message }}</p>
     }

@@ -2,13 +2,14 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminProductService } from '../../../core/admin-product.service';
+import { Button } from '../../../shared/button/button';
 import { toPageNumber } from '../../../shared/page-number';
 
 // The CMS's product list, /admin/produkter. Unlike the shop's list, it shows hidden
 // products and the real stock.
 @Component({
   selector: 'app-admin-product-list',
-  imports: [CurrencyPipe, RouterLink],
+  imports: [CurrencyPipe, RouterLink, Button],
   templateUrl: './admin-product-list.html',
 })
 export class AdminProductList {
