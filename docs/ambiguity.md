@@ -44,8 +44,12 @@ Decision: The admin creates the lists of materials and colors in the CMS, and ea
 Why: More flexible than fixed fields, simpler than fully custom properties.
 
 **Can a product have several colors and materials?**
-Decision: Yes, several of each.
+Decision: Yes, several of each, or none.
 Why: Handmade items are often multi-colored, e.g. a bowl that is red, white and blue.
+
+**What happens to products if the admin deletes a material or a color?**
+Decision: It is deleted and removed from the products that have it; the products stay. If products have it, the CMS first says how many and asks the admin to confirm.
+Why: Unlike a category, a product does not need a material or a color, so nothing breaks. The warning lets the admin cancel and check the products first, instead of finding out afterwards.
 
 **How does filtering on several colors or materials work?**
 Decision (Should): Within one property it is "or", between properties it is "and". Filtering on red + blue shows everything that is red or blue. Filtering on red + ceramics shows everything that is red and made of ceramics.

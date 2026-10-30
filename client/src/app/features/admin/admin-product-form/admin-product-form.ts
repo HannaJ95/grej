@@ -17,6 +17,7 @@ import {
   AdminProductService,
   ProductInput,
 } from '../../../core/admin-product.service';
+import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
 import { AdminProductImage } from '../admin-product-image/admin-product-image';
 import { PropertyCheckboxes } from '../property-checkboxes/property-checkboxes';
@@ -50,7 +51,7 @@ const NEW_PRODUCT: ProductFormModel = {
 // Creates a product (/admin/produkter/ny), or edits and deletes one (/admin/produkter/7).
 @Component({
   selector: 'app-admin-product-form',
-  imports: [FormRoot, FormField, RouterLink, AdminProductImage, PropertyCheckboxes],
+  imports: [FormRoot, FormField, RouterLink, Button, AdminProductImage, PropertyCheckboxes],
   templateUrl: './admin-product-form.html',
 })
 export class AdminProductForm {

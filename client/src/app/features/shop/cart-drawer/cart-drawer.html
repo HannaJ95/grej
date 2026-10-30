@@ -1,8 +1,10 @@
-<button type="button" aria-haspopup="dialog" (click)="open()">Varukorg ({{ cart.count() }})</button>
+<button appButton variant="secondary" type="button" aria-haspopup="dialog" (click)="open()">
+  Varukorg ({{ cart.count() }})
+</button>
 
 <dialog #dialog aria-labelledby="cart-title">
   <h2 id="cart-title">Varukorg</h2>
-  <button type="button" (click)="close()">Stäng</button>
+  <button appButton variant="secondary" type="button" (click)="close()">Stäng</button>
 
   <!-- Outside the list, so it is shown even if every product was removed. -->
   @if (cartChanged()) {
@@ -21,6 +23,8 @@
           <a [routerLink]="['/produkter', item.productId]" (click)="close()">{{ item.title }}</a>
           <p>{{ item.price | currency: item.currency }}</p>
           <button
+            appButton
+            variant="secondary"
             type="button"
             [attr.aria-label]="'Minska antal ' + item.title"
             [disabled]="item.quantity <= 1"
@@ -30,6 +34,8 @@
           </button>
           {{ item.quantity }}
           <button
+            appButton
+            variant="secondary"
             type="button"
             [attr.aria-label]="'Öka antal ' + item.title"
             [disabled]="item.quantity >= item.maxQuantity"
@@ -38,6 +44,8 @@
             +
           </button>
           <button
+            appButton
+            variant="secondary"
             type="button"
             [attr.aria-label]="'Ta bort ' + item.title"
             (click)="cart.remove(item.productId)"
@@ -49,7 +57,7 @@
     </ul>
     <!-- Every price is in SEK in this version (constraints.md). -->
     <p>Summa: {{ cart.total() | currency: 'SEK' }}</p>
-    <button type="button" [disabled]="isBuying()" (click)="goToCheckout()">
+    <button appButton type="button" [disabled]="isBuying()" (click)="goToCheckout()">
       {{ isBuying() ? 'Skickar dig till betalningen…' : 'Till kassan' }}
     </button>
     @if (buyFailed()) {

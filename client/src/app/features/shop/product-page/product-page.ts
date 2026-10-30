@@ -2,11 +2,12 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, inject, input, linkedSignal } from '@angular/core';
 import { CartService } from '../../../core/cart.service';
 import { Product, ProductService } from '../../../core/product.service';
+import { Button } from '../../../shared/button/button';
 
 // The page for one product, e.g. /produkter/1.
 @Component({
   selector: 'app-product-page',
-  imports: [CurrencyPipe],
+  imports: [CurrencyPipe, Button],
   templateUrl: './product-page.html',
   styleUrl: './product-page.scss',
 })

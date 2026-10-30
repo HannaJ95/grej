@@ -34,7 +34,7 @@
     <p id="password-error">{{ message }}</p>
   }
 
-  <button type="submit" [disabled]="loginForm().submitting()">Logga in</button>
+  <button appButton type="submit" [disabled]="loginForm().submitting()">Logga in</button>
 
   <!-- role="alert" makes screen readers read the message as soon as it appears. -->
   @if (loginError(); as message) {

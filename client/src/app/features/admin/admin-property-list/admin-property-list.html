@@ -1,7 +1,7 @@
 <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
 <h2>{{ texts().plural | titlecase }}</h2>
 <p>
-  <a [routerLink]="[texts().path, 'ny']">{{ texts().newOne }}</a>
+  <a appButton [routerLink]="[texts().path, 'ny']">{{ texts().newOne }}</a>
 </p>
 
 @if (result.isLoading()) {
@@ -24,15 +24,5 @@
   }
 
   <!-- Only shown when there are more than 100. -->
-  @if (r.totalPages > 1) {
-    <nav aria-label="Sidor">
-      @if (r.page > 1) {
-        <a [routerLink]="texts().path" [queryParams]="{ sida: r.page - 1 }">Föregående</a>
-      }
-      Sida {{ r.page }} av {{ r.totalPages }}
-      @if (r.page < r.totalPages) {
-        <a [routerLink]="texts().path" [queryParams]="{ sida: r.page + 1 }">Nästa</a>
-      }
-    </nav>
-  }
+  <app-pagination [path]="texts().path" [page]="r.page" [totalPages]="r.totalPages" />
 }

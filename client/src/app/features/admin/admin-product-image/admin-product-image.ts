@@ -18,6 +18,7 @@ import {
   validate,
 } from '@angular/forms/signals';
 import { AdminProduct, AdminProductService } from '../../../core/admin-product.service';
+import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
 
 // The same rules as ImageFile in the API (constraints.md). The browser only knows the file's
@@ -36,7 +37,7 @@ const EMPTY: ImageFormModel = { file: null, altText: '' };
 // The product's image on the edit page: shows it, uploads a new one and removes it.
 @Component({
   selector: 'app-admin-product-image',
-  imports: [FormRoot, FormField],
+  imports: [FormRoot, FormField, Button],
   templateUrl: './admin-product-image.html',
 })
 export class AdminProductImage {

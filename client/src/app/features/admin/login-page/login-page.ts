@@ -2,12 +2,13 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { email, form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
+import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
 
 // The admin's login page, /admin/logga-in. Customers never log in, since they buy as guests.
 @Component({
   selector: 'app-login-page',
-  imports: [FormRoot, FormField],
+  imports: [FormRoot, FormField, Button],
   templateUrl: './login-page.html',
 })
 export class LoginPage {

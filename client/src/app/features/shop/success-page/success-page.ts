@@ -1,12 +1,13 @@
 import { Component, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../../core/cart.service';
+import { Button } from '../../../shared/button/button';
 
 // The page Stripe sends the customer to after paying, e.g. /kassa/tack?order=GREJ-3F9A1C2B.
 // It never says that the order is paid, since only the webhook knows that (constraints.md).
 @Component({
   selector: 'app-success-page',
-  imports: [RouterLink],
+  imports: [RouterLink, Button],
   template: `
     <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
     <h2>Tack för din beställning!</h2>
@@ -16,7 +17,7 @@ import { CartService } from '../../../core/cart.service';
       <p>Spara numret. Du behöver det om du kontaktar oss om beställningen.</p>
     }
     <p>Din beställning håller på att bekräftas.</p>
-    <p><a routerLink="/produkter">Fortsätt handla</a></p>
+    <p><a appButton routerLink="/produkter">Fortsätt handla</a></p>
   `,
 })
 export class SuccessPage {

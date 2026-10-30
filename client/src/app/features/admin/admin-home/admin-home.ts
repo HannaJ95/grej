@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
+import { Button } from '../../../shared/button/button';
 
 // The admin's start page, /admin, with links to the CMS pages.
 // Only a logged-in admin gets here (adminGuard in app.routes.ts).
 @Component({
   selector: 'app-admin-home',
-  imports: [RouterLink],
+  imports: [RouterLink, Button],
   template: `
     <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
     <h2>Admin</h2>
@@ -21,7 +22,7 @@ import { AuthService } from '../../../core/auth.service';
         <li><a routerLink="/admin/farger">Färger</a></li>
       </ul>
     </nav>
-    <button type="button" (click)="logout()">Logga ut</button>
+    <button appButton variant="secondary" type="button" (click)="logout()">Logga ut</button>
   `,
 })
 export class AdminHome {

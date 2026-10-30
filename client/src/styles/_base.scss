@@ -1,0 +1,108 @@
+// Global rules for plain HTML elements, built on the variables in _tokens.scss. This is only
+// the common ground; each page gets its own look in its component's styles.
+
+// Width and height include padding and border, which makes sizes easier to predict.
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// The page is centered and never wider than --content-width. The padding keeps the text off
+// the screen's edges on a phone.
+body {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-4);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-body);
+}
+
+h1,
+h2,
+h3 {
+  margin: var(--space-6) 0 var(--space-4);
+  font-family: var(--font-heading);
+  line-height: var(--line-height-heading);
+}
+
+h1 {
+  font-size: var(--font-size-2xl);
+}
+
+h2 {
+  font-size: var(--font-size-xl);
+}
+
+h3 {
+  font-size: var(--font-size-lg);
+}
+
+a {
+  color: var(--color-primary);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+// A clear ring around whatever has keyboard focus. :focus-visible skips it for mouse clicks.
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+// Form controls do not use the page's font unless they are told to.
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='number'],
+select,
+textarea {
+  max-width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+// The forms set aria-invalid on a field with an error. Written with the element names, so it
+// is as specific as the rule above and wins because it comes after it.
+input[aria-invalid='true'],
+select[aria-invalid='true'],
+textarea[aria-invalid='true'] {
+  border-color: var(--color-danger);
+}
+
+// Error messages, which screen readers read at once (role="alert" in the templates).
+[role='alert'] {
+  color: var(--color-danger);
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border-subtle);
+  text-align: left;
+}
+
+// An image is never wider than the space it is in, and keeps its proportions.
+img {
+  max-width: 100%;
+  height: auto;
+}

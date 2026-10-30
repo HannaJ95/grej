@@ -1,6 +1,6 @@
 <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
 <h2>Kategorier</h2>
-<p><a routerLink="/admin/kategorier/ny">Ny kategori</a></p>
+<p><a appButton routerLink="/admin/kategorier/ny">Ny kategori</a></p>
 
 @if (result.isLoading()) {
   <p role="status">Laddar kategorierna…</p>
@@ -22,15 +22,5 @@
   }
 
   <!-- Only shown when there are more than 100 categories. -->
-  @if (r.totalPages > 1) {
-    <nav aria-label="Sidor">
-      @if (r.page > 1) {
-        <a routerLink="/admin/kategorier" [queryParams]="{ sida: r.page - 1 }">Föregående</a>
-      }
-      Sida {{ r.page }} av {{ r.totalPages }}
-      @if (r.page < r.totalPages) {
-        <a routerLink="/admin/kategorier" [queryParams]="{ sida: r.page + 1 }">Nästa</a>
-      }
-    </nav>
-  }
+  <app-pagination path="/admin/kategorier" [page]="r.page" [totalPages]="r.totalPages" />
 }
