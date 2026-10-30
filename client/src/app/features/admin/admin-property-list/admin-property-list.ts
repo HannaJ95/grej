@@ -5,13 +5,14 @@ import { AdminPropertyService } from '../../../core/admin-property.service';
 import { PropertyKind } from '../../../core/product-property';
 import { Button } from '../../../shared/button/button';
 import { toPageNumber } from '../../../shared/page-number';
+import { Pagination } from '../../../shared/pagination/pagination';
 import { PROPERTY_TEXTS } from '../property-texts';
 
 // The CMS's list of materials (/admin/material) or colors (/admin/farger), sorted by name.
 // Built the same way as AdminCategoryList, but one component serves both lists.
 @Component({
   selector: 'app-admin-property-list',
-  imports: [RouterLink, TitleCasePipe, Button],
+  imports: [RouterLink, TitleCasePipe, Button, Pagination],
   templateUrl: './admin-property-list.html',
 })
 export class AdminPropertyList {

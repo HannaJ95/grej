@@ -43,15 +43,5 @@
   }
 
   <!-- Only shown when there is more than one page. -->
-  @if (r.totalPages > 1) {
-    <nav aria-label="Sidor">
-      @if (r.page > 1) {
-        <a routerLink="/admin/produkter" [queryParams]="{ sida: r.page - 1 }">Föregående</a>
-      }
-      Sida {{ r.page }} av {{ r.totalPages }}
-      @if (r.page < r.totalPages) {
-        <a routerLink="/admin/produkter" [queryParams]="{ sida: r.page + 1 }">Nästa</a>
-      }
-    </nav>
-  }
+  <app-pagination path="/admin/produkter" [page]="r.page" [totalPages]="r.totalPages" />
 }

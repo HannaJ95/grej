@@ -24,15 +24,5 @@
   }
 
   <!-- Only shown when there are more than 100. -->
-  @if (r.totalPages > 1) {
-    <nav aria-label="Sidor">
-      @if (r.page > 1) {
-        <a [routerLink]="texts().path" [queryParams]="{ sida: r.page - 1 }">Föregående</a>
-      }
-      Sida {{ r.page }} av {{ r.totalPages }}
-      @if (r.page < r.totalPages) {
-        <a [routerLink]="texts().path" [queryParams]="{ sida: r.page + 1 }">Nästa</a>
-      }
-    </nav>
-  }
+  <app-pagination [path]="texts().path" [page]="r.page" [totalPages]="r.totalPages" />
 }
