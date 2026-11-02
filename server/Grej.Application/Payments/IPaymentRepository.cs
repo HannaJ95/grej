@@ -6,7 +6,7 @@ namespace Grej.Application.Payments;
 // Implemented in Infrastructure with EF Core (PaymentRepository).
 public interface IPaymentRepository
 {
-    // Null if no payment has this reference.
+    // Null if no payment has this reference, as its ProviderReference or its ProviderPaymentId.
     Task<Payment?> GetByReferenceAsync(string reference, CancellationToken cancellationToken);
 
     // True if a webhook event with this id has already been handled.
