@@ -1,11 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { Pagination } from './pagination';
 
 describe('Pagination', () => {
-  // Shows the pagination of the list at /produkter, on page `page` of `totalPages`.
-  async function show(page: number, totalPages: number): Promise<HTMLElement> {
+  // Shows the pagination of the list at /produkter, on page `page` of `totalPages`,
+  // while the browser is at `url`.
+  async function show(page: number, totalPages: number, url = '/'): Promise<HTMLElement> {
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    await TestBed.inject(Router).navigateByUrl(url);
     const fixture = TestBed.createComponent(Pagination);
     fixture.componentRef.setInput('path', '/produkter');
     fixture.componentRef.setInput('page', page);
@@ -42,5 +44,11 @@ describe('Pagination', () => {
 
   it('has no link after the last page', async () => {
     expect(links(await show(2, 2))).toEqual([['Föregående', '/produkter?sida=1']]);
+  });
+
+  it("keeps the list's other query parameters, e.g. a filter", async () => {
+    expect(links(await show(1, 2, '/?visa=alla'))).toEqual([
+      ['Nästa', '/produkter?visa=alla&sida=2'],
+    ]);
   });
 });

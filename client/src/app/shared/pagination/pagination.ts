@@ -4,7 +4,8 @@ import { Button } from '../button/button';
 
 // Links to the page before and after, for every paginated list. Shows nothing when the whole
 // list fits on one page. The page number goes in ?sida=, which each list page reads with
-// toPageNumber (page-number.ts).
+// toPageNumber (page-number.ts). The links keep the list's other query parameters, e.g.
+// ?visa=alla in the CMS's order list, and only change sida.
 @Component({
   selector: 'app-pagination',
   imports: [RouterLink, Button],
@@ -17,6 +18,7 @@ import { Button } from '../button/button';
             variant="secondary"
             [routerLink]="path()"
             [queryParams]="{ sida: page() - 1 }"
+            queryParamsHandling="merge"
           >
             Föregående
           </a>
@@ -28,6 +30,7 @@ import { Button } from '../button/button';
             variant="secondary"
             [routerLink]="path()"
             [queryParams]="{ sida: page() + 1 }"
+            queryParamsHandling="merge"
           >
             Nästa
           </a>
