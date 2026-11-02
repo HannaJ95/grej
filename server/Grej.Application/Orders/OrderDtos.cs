@@ -11,7 +11,9 @@ public record OrderSummaryDto(
     decimal Total,
     string Currency,
     string Status,
-    string PaymentStatus);
+    string PaymentStatus,
+    // Cancelled but still paid, shown as "needs refund" (Order.NeedsRefund).
+    bool NeedsRefund);
 
 // One order with everything the admin needs to pack and send it.
 public record OrderDetailsDto(
@@ -22,6 +24,11 @@ public record OrderDetailsDto(
     string Currency,
     string Status,
     string PaymentStatus,
+    // Order's own answers to its rules, so the CMS shows the right buttons without
+    // knowing the rules itself.
+    bool NeedsRefund,
+    bool CanBeShipped,
+    bool CanBeCancelled,
     // All null until the order is paid, like CustomerName above.
     string? CustomerName,
     string? CustomerEmail,

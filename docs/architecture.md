@@ -244,14 +244,17 @@ In Angular, `authInterceptor` adds `Authorization: Bearer <token>` to requests t
 
 ### Demo data
 
-`dotnet run --project Grej.Api -- reset-demo` empties the shop and fills it with the content in `Grej.Infrastructure/DemoData/`: `demo-catalog.json` (categories, materials, colors and products) and one placeholder image per category. It asks the developer to type `RESET` first, since the database is shared with the deployed shop.
+`dotnet run --project Grej.Api -- reset-demo` empties the shop and fills it with the content in `Grej.Infrastructure/DemoData/`: `demo-catalog.json` (categories, materials, colors, products and orders) and one placeholder image per category. It asks the developer to type `RESET` first, since the database is shared with the deployed shop.
 
 - The shop's tables are emptied with `TRUNCATE … RESTART IDENTITY` in the same transaction as the seed, so the ids start at 1 and a failure leaves the old content. Identity's tables are not in the list, so the admin account is kept, and it owns every product.
 - Every product gets its own copy of its category's image under `products/{id}/`, like an upload in the CMS. The old files are deleted after the commit.
 - The products are saved in turns across the categories, so the shop's first page (newest first) shows every category.
+- The demo orders are built with the same `Order` methods as real ones: paid, and then shipped or cancelled as the file says. Their `CreatedAt` is set to a number of days ago, so the list shows different dates. The stock in the file is what is left after the orders, so the seed does not change it.
 - `DemoCatalogTests` checks the file against the CMS's rules, so a typo is found by `dotnet test`. The files are copied to the build output but not to the published API.
 
-Demo orders are added with the order list in sprint 3. Before the presentation, `reset-demo` is run once after the feature freeze and then left alone.
+Known limitation: the demo orders' payments have the provider `Demo` and no Stripe session, so they cannot be refunded in Stripe.
+
+Before the presentation, `reset-demo` is run once after the feature freeze and then left alone.
 
 ## CMS
 
@@ -293,6 +296,20 @@ The admin creates, renames and deletes materials with `/api/admin/materials` and
 - The materials and colors are always loaded with their product (`AutoInclude`), as one SQL query (`QuerySplittingBehavior.SingleQuery`), since a product has few of each.
 
 Known limitations: two materials or colors can have the same name, the product form shows at most 100 of each, and the number in the warning is from when the page was opened.
+
+### Orders
+
+The admin reads orders with `/api/admin/orders` and `/api/admin/orders/{id}`, at `/admin/ordrar` in the CMS. The admin changes the order status with `POST /api/admin/orders/{id}/ship` and `POST /api/admin/orders/{id}/cancel`. Both answer 204, 404 if the order does not exist, and 409 if the order's status or payment does not allow the change.
+
+- By default the list ("Att göra") shows what the admin has to do: paid orders that are not shipped, oldest first, so the order that has waited longest is at the top. These are the orders to ship and the cancelled ones that need a refund. `?all=true` (`?visa=alla` in the CMS) shows every order, also unpaid and cancelled ones, newest first (ambiguity.md).
+- The order page shows the customer, the address and each row with its title and price from the time of purchase. The customer details are empty until the webhook has stored them from Stripe.
+- The rules are in `Order`. `CanBeShipped` and `CanBeCancelledByAdmin` are true for a pending, paid order, and `NeedsRefund` for a cancelled, paid one. `MarkAsShipped` and `CancelByAdmin` refuse when a rule is broken. `AdminOrderService` checks first, so a refused change becomes 409 and not an exception.
+- The API sends these answers to the CMS (`canBeShipped`, `canBeCancelled`, `needsRefund`). The CMS shows only the buttons the order allows and has no rules of its own.
+- Cancelling puts the order's products back in stock through `ProductService`, and the order and the stock are saved in one transaction. The admin refunds the customer in the Stripe dashboard (ambiguity.md).
+- The statuses are sent as text (`"Paid"`), and the CMS shows them in Swedish (`order-texts.ts`). Row totals are calculated in the API, like every price.
+- The pagination keeps the list's other query parameters, so `?visa=alla` is kept on the next page.
+
+Known limitation: if the same order is shipped and cancelled at the same time (e.g. in two tabs), both changes can be saved, and the last one decides the status. Two cancels at the same time cannot both be saved, because of the concurrency token on `Product.Stock`, so the stock is never increased twice.
 
 ## Styles
 

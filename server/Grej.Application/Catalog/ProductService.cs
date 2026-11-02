@@ -41,7 +41,18 @@ public class ProductService(IProductRepository products)
 
     // Called when an order is paid. Hidden products are included, since a product
     // can be hidden after it was ordered. Nothing is saved here; the caller saves.
-    public async Task DecreaseStockAsync(IReadOnlyCollection<ProductQuantity> items, CancellationToken cancellationToken)
+    public Task DecreaseStockAsync(IReadOnlyCollection<ProductQuantity> items, CancellationToken cancellationToken) =>
+        ChangeStockAsync(items, (product, quantity) => product.DecreaseStock(quantity), cancellationToken);
+
+    // Called when the admin cancels a paid order. Like DecreaseStockAsync, nothing is saved here.
+    public Task IncreaseStockAsync(IReadOnlyCollection<ProductQuantity> items, CancellationToken cancellationToken) =>
+        ChangeStockAsync(items, (product, quantity) => product.IncreaseStock(quantity), cancellationToken);
+
+    // Shared by the two methods above. change is called once per row, like a callback in JavaScript.
+    private async Task ChangeStockAsync(
+        IReadOnlyCollection<ProductQuantity> items,
+        Action<Product, int> change,
+        CancellationToken cancellationToken)
     {
         var ids = items.Select(item => item.ProductId).ToList();
         var found = await products.GetByIdsAsync(ids, cancellationToken);
@@ -50,7 +61,7 @@ public class ProductService(IProductRepository products)
         foreach (var item in items)
         {
             // An ordered product is never hard deleted (constraints.md), so it is always found.
-            productsById[item.ProductId].DecreaseStock(item.Quantity);
+            change(productsById[item.ProductId], item.Quantity);
         }
     }
 

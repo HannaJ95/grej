@@ -1,10 +1,7 @@
 <p><a routerLink="/admin/ordrar">Tillbaka till ordrarna</a></p>
 
-@if (order.isLoading()) {
-  <p role="status">Laddar ordern…</p>
-} @else if (order.error()) {
-  <p role="alert">Ordern kunde inte visas.</p>
-} @else if (order.hasValue()) {
+<!-- hasValue first, so the order stays on the page while it is fetched again after a change. -->
+@if (order.hasValue()) {
   @let o = order.value();
   <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
   <h2>Order {{ o.orderNumber }}</h2>
@@ -18,6 +15,32 @@
     <dt>Betalning</dt>
     <dd>{{ paymentStatusTexts[o.paymentStatus] }}</dd>
   </dl>
+
+  @if (o.needsRefund) {
+    <p>
+      <strong>Behöver återbetalas.</strong> Ordern är avbruten men betald. Återbetala kunden i
+      Stripe.
+    </p>
+  }
+
+  <!-- Only what the API says the order allows (Order.CanBeShipped, CanBeCancelledByAdmin). -->
+  @if (o.canBeShipped || o.canBeCancelled) {
+    <div class="actions">
+      @if (o.canBeShipped) {
+        <button appButton type="button" [disabled]="changing()" (click)="ship()">
+          Markera som skickad
+        </button>
+      }
+      @if (o.canBeCancelled) {
+        <button appButton variant="danger" type="button" [disabled]="changing()" (click)="cancel()">
+          Avbryt ordern
+        </button>
+      }
+    </div>
+  }
+  <!-- Always on the page, so a screen reader reads out what is put in it. tabindex="-1" lets
+       change() move the focus here without adding it to the Tab order. -->
+  <p #feedback role="status" tabindex="-1">{{ message() }}</p>
 
   <h3>Kund</h3>
   <!-- Stripe Checkout collects the name and address, and the webhook stores them on the
@@ -71,4 +94,8 @@
       </tr>
     </tfoot>
   </table>
+} @else if (order.error()) {
+  <p role="alert">Ordern kunde inte visas.</p>
+} @else {
+  <p role="status">Laddar ordern…</p>
 }

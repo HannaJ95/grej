@@ -216,6 +216,8 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
             throw new NotImplementedException();
         public Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
+        public Task SaveChangesAsync(CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
     }
 
     // Returns a fixed session instead of calling Stripe.

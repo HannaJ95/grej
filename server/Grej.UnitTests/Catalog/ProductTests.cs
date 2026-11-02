@@ -49,6 +49,29 @@ public class ProductTests
     }
 
     [Fact]
+    public void IncreaseStock_IncreasesByQuantity()
+    {
+        // Below 0 after the last item was sold twice. Cancelling one of the orders fixes it.
+        var product = new Product { Title = "Skål", Stock = -1 };
+
+        product.IncreaseStock(2);
+
+        Assert.Equal(1, product.Stock);
+        Assert.False(product.IsSoldOut);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void IncreaseStock_QuantityNotPositive_Throws(int quantity)
+    {
+        var product = new Product { Title = "Skål", Stock = 1 };
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => product.IncreaseStock(quantity));
+        Assert.Equal(1, product.Stock);
+    }
+
+    [Fact]
     public void SetImage_ProductWithoutImage_MakesItTheMainImage()
     {
         var product = new Product { Title = "Skål" };

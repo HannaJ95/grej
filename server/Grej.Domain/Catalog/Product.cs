@@ -57,6 +57,19 @@ public class Product
         MarkAsUpdated();
     }
 
+    // Called when the admin cancels a paid order that was never shipped (constraints.md).
+    public void IncreaseStock(int quantity)
+    {
+        // The same check as in DecreaseStock.
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be greater than 0.");
+        }
+
+        Stock += quantity;
+        MarkAsUpdated();
+    }
+
     // One image per product in this version (constraints.md), so a new image replaces
     // the old one. Returns the old image, so the caller can delete its file.
     public ProductImage? SetImage(string url, string storagePath, string altText)

@@ -7,7 +7,8 @@ import { Pagination } from '../../../shared/pagination/pagination';
 import { ORDER_STATUS_TEXTS, PAYMENT_STATUS_TEXTS } from '../order-texts';
 
 // The CMS's order list, /admin/ordrar. By default it shows what the admin has to do: paid
-// orders that are not shipped yet, oldest first. /admin/ordrar?visa=alla shows every order.
+// orders that are not shipped yet (to ship or to refund), oldest first. /admin/ordrar?visa=alla
+// shows every order.
 @Component({
   selector: 'app-admin-order-list',
   imports: [CurrencyPipe, DatePipe, RouterLink, Pagination],
@@ -33,7 +34,7 @@ export class AdminOrderList {
 
   // The ?sida= in the URL, the same way as in AdminProductList.
   readonly page = input(1, { alias: 'sida', transform: toPageNumber });
-  // The ?visa= in the URL. "alla" shows every order; anything else, or nothing, the ones to ship.
+  // The ?visa= in the URL. "alla" shows every order; anything else, or nothing, the ones to handle.
   readonly all = input(false, {
     alias: 'visa',
     transform: (value: string | undefined) => value === 'alla',

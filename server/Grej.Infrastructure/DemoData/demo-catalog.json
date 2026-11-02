@@ -428,5 +428,100 @@
         }
       ]
     }
+  ],
+  "orders": [
+    {
+      "daysAgo": 12,
+      "status": "Shipped",
+      "customer": {
+        "name": "Lars Persson",
+        "email": "lars.persson@example.com",
+        "addressLine1": "Drottninggatan 14",
+        "addressLine2": null,
+        "postalCode": "702 10",
+        "city": "Örebro",
+        "country": "SE"
+      },
+      "items": [{ "product": "Mugg med stort öra", "quantity": 4 }]
+    },
+    {
+      "daysAgo": 8,
+      "status": "Shipped",
+      "customer": {
+        "name": "Maria Karlsson",
+        "email": "maria.karlsson@example.com",
+        "addressLine1": "Hornsgatan 52",
+        "addressLine2": "Lägenhet 1203",
+        "postalCode": "118 21",
+        "city": "Stockholm",
+        "country": "SE"
+      },
+      "items": [
+        { "product": "Skärbräda i ek", "quantity": 1 },
+        { "product": "Smörkniv i björk", "quantity": 2 }
+      ]
+    },
+    {
+      "daysAgo": 4,
+      "status": "NeedsRefund",
+      "customer": {
+        "name": "Johan Berg",
+        "email": "johan.berg@example.com",
+        "addressLine1": "Storgatan 3",
+        "addressLine2": null,
+        "postalCode": "903 26",
+        "city": "Umeå",
+        "country": "SE"
+      },
+      "items": [{ "product": "Vävd kudde i ull", "quantity": 1 }]
+    },
+    {
+      "daysAgo": 3,
+      "status": "ToShip",
+      "customer": {
+        "name": "Sara Nilsson",
+        "email": "sara.nilsson@example.com",
+        "addressLine1": "Svartbäcksgatan 20",
+        "addressLine2": null,
+        "postalCode": "753 32",
+        "city": "Uppsala",
+        "country": "SE"
+      },
+      "items": [
+        { "product": "Fåglar, linoleumtryck", "quantity": 1 },
+        { "product": "Blommor, konsttryck", "quantity": 2 }
+      ]
+    },
+    {
+      "daysAgo": 2,
+      "status": "ToShip",
+      "customer": {
+        "name": "Erik Johansson",
+        "email": "erik.johansson@example.com",
+        "addressLine1": "Södra Förstadsgatan 40",
+        "addressLine2": null,
+        "postalCode": "211 43",
+        "city": "Malmö",
+        "country": "SE"
+      },
+      "items": [{ "product": "Droppörhängen i silver", "quantity": 1 }]
+    },
+    {
+      "daysAgo": 1,
+      "status": "ToShip",
+      "customer": {
+        "name": "Anna Lindqvist",
+        "email": "anna.lindqvist@example.com",
+        "addressLine1": "Linnégatan 7",
+        "addressLine2": null,
+        "postalCode": "413 04",
+        "city": "Göteborg",
+        "country": "SE"
+      },
+      "items": [
+        { "product": "Skål i blå glasyr", "quantity": 2 },
+        { "product": "Kökshandduk i linne", "quantity": 1 }
+      ]
+    }
   ]
 }

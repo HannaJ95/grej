@@ -49,6 +49,27 @@ public class DemoCatalogTests
     }
 
     [Fact]
+    public void Orders_HaveProductsFromTheCatalog()
+    {
+        var titles = catalog.Categories.SelectMany(c => c.Products).Select(p => p.Title).ToList();
+
+        // The seed finds an order row's product by its title, so a title may only be used once.
+        Assert.Distinct(titles);
+        Assert.All(catalog.Orders, order =>
+        {
+            Assert.NotEmpty(order.Items);
+            Assert.All(order.Items, item =>
+            {
+                Assert.Contains(item.Product, titles);
+                // The same rule as Order.AddItem.
+                Assert.True(item.Quantity > 0, $"{item.Product}: the quantity must be greater than 0.");
+            });
+            // Only Swedish addresses in this version (constraints.md).
+            Assert.Equal("SE", order.Customer.Country);
+        });
+    }
+
+    [Fact]
     public void Names_AreUniqueAndFitTheDatabase()
     {
         AssertNames(catalog.Materials);

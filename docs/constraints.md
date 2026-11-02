@@ -47,7 +47,7 @@ Expired
 |---|---|---|
 | `Pending` | Order created, not yet handled | API, when the order is created |
 | `Shipped` | Admin has sent the order | Admin |
-| `Cancelled` | The order will not be shipped | Admin, or automatically when the payment expires |
+| `Cancelled` | The order will not be shipped | Admin (paid orders only), or automatically when the payment expires |
 
 ```
 Pending ──► Shipped
@@ -60,6 +60,7 @@ Cancelled
 
 - No other transitions than the ones above are allowed.
 - An order can only be set to `Shipped` if its payment is `Paid`.
+- The admin can only set an order to `Cancelled` if its payment is `Paid` (ambiguity.md).
 - When the payment becomes `Expired`, the order becomes `Cancelled`.
 - An order that is `Cancelled` with payment `Paid` is shown to the admin as "needs refund".
 - If the last item was already sold when the payment becomes `Paid`, the order is flagged for the admin, who cancels it and refunds it in Stripe (Should).
