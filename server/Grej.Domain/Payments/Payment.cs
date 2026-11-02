@@ -8,8 +8,11 @@ public class Payment
     public int Id { get; private set; }
     public int OrderId { get; private set; }
     public string Provider { get; private set; } = "";
-    // For Stripe: the Checkout session id (cs_test_…). The webhook finds the payment by it.
+    // For Stripe: the Checkout session id (cs_test_…). The Checkout events find the payment by it.
     public string ProviderReference { get; private set; } = "";
+    // For Stripe: the PaymentIntent id (pi_…), Stripe's id for the money itself. Null until
+    // the payment is Paid. A refund event only carries this id, so it finds the payment by it.
+    public string? ProviderPaymentId { get; private set; }
     public PaymentStatus Status { get; private set; } = PaymentStatus.Pending;
     public decimal Amount { get; private set; }
     public string Currency { get; private set; } = "";
@@ -26,9 +29,10 @@ public class Payment
     }
 
     // Called when the provider confirms the payment (webhook checkout.session.completed).
-    // Returns true only when the payment changes to Paid, so the caller knows
+    // providerPaymentId is stored so a later refund can find the payment; the demo orders
+    // have none. Returns true only when the payment changes to Paid, so the caller knows
     // whether the stock should be decreased.
-    public bool MarkAsPaid()
+    public bool MarkAsPaid(string? providerPaymentId = null)
     {
         // The same event may arrive twice (constraints.md). The second time changes nothing.
         if (Status == PaymentStatus.Paid)
@@ -43,6 +47,7 @@ public class Payment
         }
 
         Status = PaymentStatus.Paid;
+        ProviderPaymentId = providerPaymentId;
         UpdatedAt = DateTime.UtcNow;
         return true;
     }
@@ -67,6 +72,28 @@ public class Payment
         Status = PaymentStatus.Expired;
         UpdatedAt = DateTime.UtcNow;
         return true;
+    }
+
+    // Called when the money has been returned to the customer, e.g. when the admin refunds
+    // in the Stripe dashboard (webhook charge.refunded). Returns nothing, since nothing else
+    // changes with it: the admin decides what happens to the order, and a refund never
+    // changes the stock (constraints.md).
+    public void MarkAsRefunded()
+    {
+        // The same event may arrive twice (constraints.md). The second time changes nothing.
+        if (Status == PaymentStatus.Refunded)
+        {
+            return;
+        }
+
+        // Only Paid → Refunded is allowed (constraints.md).
+        if (Status != PaymentStatus.Paid)
+        {
+            throw new InvalidOperationException($"A payment that is {Status} cannot be marked as refunded.");
+        }
+
+        Status = PaymentStatus.Refunded;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     // Used by EF Core when it reads a row from the database.

@@ -175,6 +175,36 @@ public class OrderTests
         Assert.Throws<InvalidOperationException>(() => order.CancelByAdmin());
     }
 
+    [Fact]
+    public void CancelByAdmin_Refunded_BecomesCancelled()
+    {
+        // The admin refunded in Stripe before cancelling the order in the CMS.
+        var order = PaidOrder();
+        order.Payment!.MarkAsRefunded();
+        Assert.True(order.NeedsCancelling);
+        Assert.True(order.CanBeCancelledByAdmin);
+        Assert.False(order.CanBeShipped);
+
+        order.CancelByAdmin();
+
+        Assert.Equal(OrderStatus.Cancelled, order.Status);
+        Assert.False(order.NeedsCancelling);
+        Assert.False(order.NeedsRefund);
+    }
+
+    [Fact]
+    public void NeedsRefund_CancelledAndRefunded_IsFalse()
+    {
+        // The usual way: cancelled in the CMS first, then refunded in Stripe.
+        var order = PaidOrder();
+        order.CancelByAdmin();
+
+        order.Payment!.MarkAsRefunded();
+
+        Assert.False(order.NeedsRefund);
+        Assert.False(order.NeedsCancelling);
+    }
+
     // An order with one row and a payment that is not paid yet, as the checkout saves it.
     private static Order UnpaidOrder()
     {
