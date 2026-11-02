@@ -18,6 +18,7 @@ public static class DependencyInjection
         services.AddScoped(typeof(AdminPropertyService<>));
         services.AddScoped<CheckoutService>();
         services.AddScoped<OrderService>();
+        services.AddScoped<AdminOrderService>();
         services.AddScoped<PaymentWebhookService>();
 
         return services;

@@ -211,7 +211,9 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         public Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
-        // Only the CMS uses this.
+        // Only the CMS uses these.
+        public Task<PagedResult<Order>> GetPageAsync(bool all, int page, int pageSize, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
         public Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
     }
