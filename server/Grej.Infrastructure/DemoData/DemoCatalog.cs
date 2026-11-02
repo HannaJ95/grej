@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Grej.Application.Catalog;
+using Grej.Domain.Orders;
 
 namespace Grej.Infrastructure.DemoData;
 
@@ -9,7 +10,8 @@ namespace Grej.Infrastructure.DemoData;
 public record DemoCatalog(
     IReadOnlyList<string> Materials,
     IReadOnlyList<string> Colors,
-    IReadOnlyList<DemoCategory> Categories)
+    IReadOnlyList<DemoCategory> Categories,
+    IReadOnlyList<DemoOrder> Orders)
 {
     // The csproj copies the DemoData folder next to the built program (bin/...), so the
     // files are found wherever the program is started from.
@@ -57,3 +59,27 @@ public record DemoProduct(
     bool IsActive,
     IReadOnlyList<string> Materials,
     IReadOnlyList<string> Colors);
+
+// An order in the demo shop, paid DaysAgo days ago and then handled as Status says. The stock
+// in the file is what is left after these orders, so the seed does not change it. The customer
+// is the same record the webhook gets from Stripe.
+public record DemoOrder(
+    int DaysAgo,
+    DemoOrderStatus Status,
+    CustomerDetails Customer,
+    IReadOnlyList<DemoOrderItem> Items);
+
+// The product is given by its title, since its id is not known until the seed has saved it.
+public record DemoOrderItem(string Product, int Quantity);
+
+// Read from the file as text, e.g. "ToShip", instead of a number. Upper and lower case do not
+// matter, but an unknown value stops the load.
+[JsonConverter(typeof(JsonStringEnumConverter<DemoOrderStatus>))]
+public enum DemoOrderStatus
+{
+    // Paid, waiting to be shipped.
+    ToShip,
+    Shipped,
+    // Cancelled by the admin after it was paid (Order.NeedsRefund).
+    NeedsRefund,
+}

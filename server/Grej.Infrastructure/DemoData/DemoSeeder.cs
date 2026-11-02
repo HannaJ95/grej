@@ -1,6 +1,7 @@
 using Grej.Application.Catalog;
 using Grej.Application.Identity;
 using Grej.Domain.Catalog;
+using Grej.Domain.Orders;
 using Grej.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -107,5 +108,48 @@ public static class DemoSeeder
             product.SetImage(url, path, demoCategory.ImageAltText);
         }
         await db.SaveChangesAsync();
+
+        // Last, since the orders' rows point to the products' ids. Every title is unique
+        // (DemoCatalogTests), so the products can be found by it.
+        var productsByTitle = products.ToDictionary(entry => entry.Product.Title, entry => entry.Product);
+        var now = DateTime.UtcNow;
+        foreach (var demoOrder in catalog.Orders)
+        {
+            var order = CreateOrder(demoOrder, productsByTitle);
+            var entry = db.Orders.Add(order);
+            // Only Order can set CreatedAt, but EF Core can write any property through its
+            // change tracker. Only the seed does this, so the demo orders get different days.
+            entry.Property(o => o.CreatedAt).CurrentValue = now.AddDays(-demoOrder.DaysAgo);
+        }
+        await db.SaveChangesAsync();
+    }
+
+    // Built with the same methods as a real order: the checkout adds the rows and the payment,
+    // the webhook marks it as paid and stores the customer, and the admin ships or cancels it.
+    private static Order CreateOrder(DemoOrder demoOrder, Dictionary<string, Product> productsByTitle)
+    {
+        var order = new Order();
+        foreach (var item in demoOrder.Items)
+        {
+            var product = productsByTitle[item.Product];
+            order.AddItem(product.Id, product.Title, product.Price, item.Quantity);
+        }
+
+        // Not a real Checkout session, so Stripe never sends a webhook for it, and it cannot
+        // be refunded in Stripe. The reference must be unique (PaymentConfiguration).
+        order.AddPayment("Demo", $"demo_{Guid.NewGuid():N}");
+        order.Payment!.MarkAsPaid();
+        order.SetCustomerDetails(demoOrder.Customer);
+
+        if (demoOrder.Status == DemoOrderStatus.Shipped)
+        {
+            order.MarkAsShipped();
+        }
+        else if (demoOrder.Status == DemoOrderStatus.NeedsRefund)
+        {
+            order.CancelByAdmin();
+        }
+
+        return order;
     }
 }

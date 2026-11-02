@@ -1,4 +1,5 @@
 using Grej.Application.Catalog;
+using Grej.Domain.Orders;
 using Grej.Infrastructure.DemoData;
 using Grej.Infrastructure.Persistence;
 using Grej.Infrastructure.Persistence.Repositories;
@@ -69,6 +70,29 @@ public class DemoSeederTests
         var firstPage = await new ProductRepository(db).GetActivePageAsync(1, 12, CancellationToken.None);
 
         Assert.Equal(catalog.Categories.Count, firstPage.Items.Select(p => p.CategoryId).Distinct().Count());
+    }
+
+    [Fact]
+    public async Task SeedAsync_SavesTheDemoOrders_PaidAndHandled()
+    {
+        await SeedAsync();
+
+        await using var db = new GrejDbContext(options);
+        var orders = await db.Orders.Include(o => o.Items).Include(o => o.Payment).OrderBy(o => o.Id).ToListAsync();
+
+        // In the file's order. Zip pairs each demo order with the saved one in the same place.
+        Assert.Equal(catalog.Orders.Count, orders.Count);
+        Assert.All(catalog.Orders.Zip(orders), pair =>
+        {
+            var (demo, order) = pair;
+            Assert.Equal(demo.Customer.Name, order.CustomerName);
+            Assert.Equal(demo.Items.Count, order.Items.Count);
+            // Every demo order is paid, and then handled as the file says.
+            Assert.Equal(demo.Status == DemoOrderStatus.ToShip, order.CanBeShipped);
+            Assert.Equal(demo.Status == DemoOrderStatus.Shipped, order.Status == OrderStatus.Shipped);
+            Assert.Equal(demo.Status == DemoOrderStatus.NeedsRefund, order.NeedsRefund);
+            Assert.Equal(DateTime.UtcNow.AddDays(-demo.DaysAgo), order.CreatedAt, TimeSpan.FromMinutes(1));
+        });
     }
 
     private async Task SeedAsync()
