@@ -23,6 +23,7 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
 {
     private const string Secret = "whsec_test";
     private const string Reference = "cs_test_fake";
+    private const string PaymentIntent = "pi_test_fake";
 
     // New instances per test (like in CheckoutEndpointTests), so each test starts with
     // a Pending payment for an order of one item, of a product with stock 1.
@@ -57,6 +58,14 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
+    public async Task Post_PaidSession_StoresPaymentIntentId()
+    {
+        await PostAsync(CheckoutCompleted(Reference), signedWith: Secret);
+
+        Assert.Equal(PaymentIntent, payments.Payment.ProviderPaymentId);
+    }
+
+    [Fact]
     public async Task Post_PaidSessionWithoutAddress_MarksPaymentAsPaid()
     {
         var response = await PostAsync(CheckoutCompleted(Reference, withAddress: false), signedWith: Secret);
@@ -87,6 +96,31 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal(OrderStatus.Cancelled, payments.Order.Status);
         Assert.Equal(1, product.Stock);
         Assert.True(payments.Saved);
+    }
+
+    [Fact]
+    public async Task Post_RefundedCharge_RefundsPaymentAndKeepsOrderAndStock()
+    {
+        await PostAsync(CheckoutCompleted(Reference), signedWith: Secret);
+
+        var response = await PostAsync(ChargeRefunded(PaymentIntent), signedWith: Secret);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(PaymentStatus.Refunded, payments.Payment.Status);
+        // A refund never changes the order or the stock (constraints.md).
+        Assert.Equal(OrderStatus.Pending, payments.Order.Status);
+        Assert.Equal(0, product.Stock);
+    }
+
+    [Fact]
+    public async Task Post_PartlyRefundedCharge_ChangesNothing()
+    {
+        await PostAsync(CheckoutCompleted(Reference), signedWith: Secret);
+
+        var response = await PostAsync(ChargeRefunded(PaymentIntent, fully: false), signedWith: Secret);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(PaymentStatus.Paid, payments.Payment.Status);
     }
 
     [Fact]
@@ -145,6 +179,7 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
               "id": "{{sessionId}}",
               "object": "checkout.session",
               "payment_status": "paid",
+              "payment_intent": "{{PaymentIntent}}",
               "customer_details": { "email": "anna@example.com" },
               "collected_information": {{(withAddress ? CollectedInformation : "null")}}
             }
@@ -163,6 +198,24 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
               "id": "{{sessionId}}",
               "object": "checkout.session",
               "payment_status": "unpaid"
+            }
+          }
+        }
+        """;
+
+    // The parts of a charge.refunded event that the API reads. "refunded" is false
+    // when only part of the amount has been returned.
+    private static string ChargeRefunded(string paymentIntentId, bool fully = true) => $$"""
+        {
+          "id": "evt_test_refunded",
+          "object": "event",
+          "type": "charge.refunded",
+          "data": {
+            "object": {
+              "id": "ch_test_fake",
+              "object": "charge",
+              "payment_intent": "{{paymentIntentId}}",
+              "refunded": {{(fully ? "true" : "false")}}
             }
           }
         }
@@ -222,8 +275,9 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         // The ids of the events that have been handled, like the ProcessedWebhookEvents table.
         public HashSet<string> ProcessedEvents { get; } = [];
 
+        // Both of the payment's ids, like PaymentRepository.
         public Task<Payment?> GetByReferenceAsync(string reference, CancellationToken cancellationToken) =>
-            Task.FromResult(reference == Payment.ProviderReference ? Payment : null);
+            Task.FromResult(reference == Payment.ProviderReference || reference == Payment.ProviderPaymentId ? Payment : null);
 
         public Task<bool> IsEventProcessedAsync(string eventId, CancellationToken cancellationToken) =>
             Task.FromResult(ProcessedEvents.Contains(eventId));

@@ -46,7 +46,10 @@ public class StripeWebhookReader(IConfiguration configuration) : IPaymentWebhook
                 return null;
             }
 
-            return new PaymentUpdate(stripeEvent.Id, session.Id, PaymentStatus.Paid, ReadCustomer(session));
+            // The PaymentIntent (pi_…) is Stripe's id for the money itself. A refund event only
+            // carries that id, so it is stored together with the payment.
+            return new PaymentUpdate(
+                stripeEvent.Id, session.Id, PaymentStatus.Paid, ReadCustomer(session), session.PaymentIntentId);
         }
 
         // Sent when the customer never paid, e.g. closed Stripe Checkout, and the
@@ -55,6 +58,21 @@ public class StripeWebhookReader(IConfiguration configuration) : IPaymentWebhook
         {
             var session = (Session)stripeEvent.Data.Object;
             return new PaymentUpdate(stripeEvent.Id, session.Id, PaymentStatus.Expired);
+        }
+
+        // Sent when the admin refunds the payment in the Stripe dashboard. The event carries
+        // the charge, which knows its PaymentIntent but not the Checkout session.
+        if (stripeEvent.Type == EventTypes.ChargeRefunded)
+        {
+            // Also sent for a partial refund, which this version does not handle (scope.md).
+            // Refunded is only true when the whole amount has been returned.
+            var charge = (Charge)stripeEvent.Data.Object;
+            if (!charge.Refunded)
+            {
+                return null;
+            }
+
+            return new PaymentUpdate(stripeEvent.Id, charge.PaymentIntentId, PaymentStatus.Refunded);
         }
 
         return null;
