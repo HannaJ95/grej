@@ -96,4 +96,99 @@ public class OrderTests
 
         Assert.Equal(OrderStatus.Cancelled, order.Status);
     }
+
+    [Fact]
+    public void MarkAsShipped_Paid_BecomesShipped()
+    {
+        var order = PaidOrder();
+        Assert.True(order.CanBeShipped);
+
+        order.MarkAsShipped();
+
+        Assert.Equal(OrderStatus.Shipped, order.Status);
+        // A shipped order can be neither shipped nor cancelled again.
+        Assert.False(order.CanBeShipped);
+        Assert.False(order.CanBeCancelledByAdmin);
+    }
+
+    [Fact]
+    public void MarkAsShipped_NotPaid_Throws()
+    {
+        var order = UnpaidOrder();
+
+        Assert.False(order.CanBeShipped);
+        Assert.Throws<InvalidOperationException>(() => order.MarkAsShipped());
+        Assert.Equal(OrderStatus.Pending, order.Status);
+    }
+
+    [Fact]
+    public void MarkAsShipped_Cancelled_Throws()
+    {
+        var order = PaidOrder();
+        order.CancelByAdmin();
+
+        Assert.Throws<InvalidOperationException>(() => order.MarkAsShipped());
+        Assert.Equal(OrderStatus.Cancelled, order.Status);
+    }
+
+    [Fact]
+    public void CancelByAdmin_Paid_BecomesCancelledAndNeedsRefund()
+    {
+        var order = PaidOrder();
+        Assert.True(order.CanBeCancelledByAdmin);
+        Assert.False(order.NeedsRefund);
+
+        order.CancelByAdmin();
+
+        Assert.Equal(OrderStatus.Cancelled, order.Status);
+        Assert.True(order.NeedsRefund);
+    }
+
+    [Fact]
+    public void CancelByAdmin_NotPaid_Throws()
+    {
+        var order = UnpaidOrder();
+
+        Assert.False(order.CanBeCancelledByAdmin);
+        Assert.Throws<InvalidOperationException>(() => order.CancelByAdmin());
+        Assert.Equal(OrderStatus.Pending, order.Status);
+    }
+
+    [Fact]
+    public void CancelByAdmin_Shipped_Throws()
+    {
+        var order = PaidOrder();
+        order.MarkAsShipped();
+
+        Assert.Throws<InvalidOperationException>(() => order.CancelByAdmin());
+        Assert.Equal(OrderStatus.Shipped, order.Status);
+    }
+
+    [Fact]
+    public void CancelByAdmin_Twice_Throws()
+    {
+        // Unlike Cancel, which the webhook may call twice. Here a second cancel would put
+        // the products back in stock twice, so it is refused.
+        var order = PaidOrder();
+        order.CancelByAdmin();
+
+        Assert.Throws<InvalidOperationException>(() => order.CancelByAdmin());
+    }
+
+    // An order with one row and a payment that is not paid yet, as the checkout saves it.
+    private static Order UnpaidOrder()
+    {
+        var order = new Order();
+        order.AddItem(1, "Skål", 450m, 2);
+        order.AddPayment("Stripe", "cs_test_123");
+        return order;
+    }
+
+    // What the webhook does when the payment provider confirms the payment.
+    private static Order PaidOrder()
+    {
+        var order = UnpaidOrder();
+        order.Payment!.MarkAsPaid();
+        return order;
+    }
 }

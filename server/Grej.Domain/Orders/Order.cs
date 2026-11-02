@@ -35,6 +35,17 @@ public class Order
     // Null until the customer is sent to the payment provider.
     public Payment? Payment { get; private set; }
 
+    // The admin can ship an order that is paid and not handled yet (constraints.md).
+    public bool CanBeShipped => Status == OrderStatus.Pending && Payment?.Status == PaymentStatus.Paid;
+
+    // The admin can only cancel a paid order (ambiguity.md). An unpaid one is cancelled
+    // automatically when its payment expires, so a customer never pays for a cancelled order.
+    public bool CanBeCancelledByAdmin => Status == OrderStatus.Pending && Payment?.Status == PaymentStatus.Paid;
+
+    // Cancelled, but the customer's money has not been returned yet (constraints.md). False
+    // again when the payment provider says the payment is Refunded.
+    public bool NeedsRefund => Status == OrderStatus.Cancelled && Payment?.Status == PaymentStatus.Paid;
+
     public void AddItem(int productId, string title, decimal unitPrice, int quantity)
     {
         // Quantity comes from the browser, so it is never trusted (constraints.md).
@@ -72,8 +83,8 @@ public class Order
         UpdatedAt = DateTime.UtcNow;
     }
 
-    // Called by the webhook when the order's payment expires. The admin will
-    // also cancel orders in the CMS (sprint 3).
+    // Called by the webhook when the order's payment expires. The admin cancels
+    // with CancelByAdmin, which has its own rule.
     public void Cancel()
     {
         // Already cancelled: nothing changes.
@@ -90,6 +101,33 @@ public class Order
 
         Status = OrderStatus.Cancelled;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    // Called when the admin has sent the order (CMS).
+    public void MarkAsShipped()
+    {
+        // AdminOrderService checks CanBeShipped first and answers 409, so this only
+        // throws if some code forgets to check.
+        if (!CanBeShipped)
+        {
+            throw new InvalidOperationException($"An order that is {Status} with payment {Payment?.Status} cannot be shipped.");
+        }
+
+        Status = OrderStatus.Shipped;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    // Called when the admin cancels the order in the CMS. The order was paid, so the
+    // caller puts its products back in stock (constraints.md).
+    public void CancelByAdmin()
+    {
+        // The same safety net as in MarkAsShipped.
+        if (!CanBeCancelledByAdmin)
+        {
+            throw new InvalidOperationException($"An order that is {Status} with payment {Payment?.Status} cannot be cancelled by the admin.");
+        }
+
+        Cancel();
     }
 
     // E.g. GREJ-3F9A1C2B. Random instead of based on Id, since the Id is only set
