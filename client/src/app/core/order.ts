@@ -14,10 +14,15 @@ export interface OrderSummary {
   currency: string;
   status: OrderStatus;
   paymentStatus: PaymentStatus;
+  // Cancelled but still paid, so the admin must refund it in Stripe.
+  needsRefund: boolean;
 }
 
 // One order with its customer and rows (OrderDetailsDto in the API).
 export interface OrderDetails extends OrderSummary {
+  // The API's answers to the order's rules, so the CMS needs no rules of its own.
+  canBeShipped: boolean;
+  canBeCancelled: boolean;
   // All null until the order is paid, like customerName.
   customerEmail: string | null;
   addressLine1: string | null;

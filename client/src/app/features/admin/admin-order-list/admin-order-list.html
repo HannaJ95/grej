@@ -5,7 +5,7 @@
 <nav aria-label="Visa ordrar">
   <ul class="filters">
     <li>
-      <a routerLink="/admin/ordrar" [attr.aria-current]="all() ? null : 'page'">Att skicka</a>
+      <a routerLink="/admin/ordrar" [attr.aria-current]="all() ? null : 'page'">Att göra</a>
     </li>
     <li>
       <a
@@ -26,7 +26,7 @@
 } @else if (result.hasValue()) {
   @let r = result.value();
   @if (r.items.length === 0) {
-    <p>{{ all() ? 'Det finns inga ordrar än.' : 'Det finns inga ordrar att skicka.' }}</p>
+    <p>{{ all() ? 'Det finns inga ordrar än.' : 'Det finns inget att göra just nu.' }}</p>
   } @else {
     <table>
       <thead>
@@ -51,7 +51,13 @@
             <td>{{ o.customerName ?? 'Okänd' }}</td>
             <td>{{ o.total | currency: o.currency }}</td>
             <td>{{ paymentStatusTexts[o.paymentStatus] }}</td>
-            <td>{{ orderStatusTexts[o.status] }}</td>
+            <td>
+              {{ orderStatusTexts[o.status] }}
+              <!-- Bold, so it stands out without relying on color. -->
+              @if (o.needsRefund) {
+                <br /><strong>Behöver återbetalas</strong>
+              }
+            </td>
           </tr>
         }
       </tbody>

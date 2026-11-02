@@ -19,6 +19,7 @@ describe('AdminOrderList', () => {
     currency: 'SEK',
     status: 'Pending',
     paymentStatus: 'Paid',
+    needsRefund: false,
   };
 
   beforeEach(() => {
@@ -50,12 +51,12 @@ describe('AdminOrderList', () => {
     return { page: harness.routeNativeElement!, all: request.request.params.get('all') };
   }
 
-  it('asks for the orders to ship by default and links to each one', async () => {
+  it('asks for the orders to handle by default and links to each one', async () => {
     const { page, all } = await show('/admin/ordrar', [paidOrder]);
 
     expect(all).toBe('false');
     expect(page.querySelector('a[href="/admin/ordrar/7"]')?.textContent).toBe('GREJ-AB12CD34');
-    expect(page.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('Att skicka');
+    expect(page.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('Att göra');
     // The date and the sum are left out: the tests run without the app's Swedish locale
     // (app.config.ts), so the pipes format them in English here.
     const cells = [...page.querySelectorAll('tbody td')].map((td) => td.textContent?.trim());
@@ -77,9 +78,17 @@ describe('AdminOrderList', () => {
     expect(page.textContent).toContain('Väntar på betalning');
   });
 
-  it('says when there is nothing to ship', async () => {
+  it('says when there is nothing to do', async () => {
     const { page } = await show('/admin/ordrar', []);
 
-    expect(page.textContent).toContain('Det finns inga ordrar att skicka.');
+    expect(page.textContent).toContain('Det finns inget att göra just nu.');
+  });
+
+  it('shows which orders need a refund', async () => {
+    const cancelledOrder: OrderSummary = { ...paidOrder, status: 'Cancelled', needsRefund: true };
+    const { page } = await show('/admin/ordrar', [cancelledOrder]);
+
+    const status = page.querySelector('tbody td:last-child')?.textContent;
+    expect(status).toMatch(/Avbruten\s+Behöver återbetalas/);
   });
 });
