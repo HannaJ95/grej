@@ -1,3 +1,4 @@
+using Grej.Application.Common;
 using Grej.Domain.Orders;
 
 namespace Grej.Application.Orders;
@@ -9,8 +10,12 @@ public interface IOrderRepository
     // Saves a new order together with its rows and payment, in one transaction.
     Task AddAsync(Order order, CancellationToken cancellationToken);
 
-    // Null if no order has this id. The order's rows are included.
+    // Null if no order has this id. The order's rows and payment are included.
     Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken);
+
+    // One page of orders with their payments, for the CMS. all = false gives only paid
+    // orders that are not shipped yet, oldest first; all = true gives every order, newest first.
+    Task<PagedResult<Order>> GetPageAsync(bool all, int page, int pageSize, CancellationToken cancellationToken);
 
     // True if any order, whatever its status, has a row with this product.
     Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken);

@@ -32,7 +32,7 @@
 Render's free tier sleeps after inactivity (slow first request) and its file system is cleared on every deploy. Supabase's free tier pauses a project after about a week without database traffic.
 
 **Mitigation:** the database and images are stored in Supabase, not on Render. Stripe retries webhooks that fail while the server wakes up (in test mode only a few times over some hours), and events can be resent from the Stripe dashboard. Open the deployed site a few minutes before the presentation, and keep the project active until it has been graded (early December).
-**Plan B:** restore a paused project from the Supabase dashboard. Migrations and seed scripts mean the database can be recreated at any time.
+**Plan B:** restore a paused project from the Supabase dashboard. Migrations, `seed-admin` and `reset-demo` mean the database and its demo content can be recreated at any time.
 
 ## 5. Deployment problems found late (CORS, environment variables, secrets)
 

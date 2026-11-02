@@ -1,0 +1,63 @@
+<!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
+<h2>Ordrar</h2>
+
+<!-- aria-current tells a screen reader which of the two lists is shown. -->
+<nav aria-label="Visa ordrar">
+  <ul class="filters">
+    <li>
+      <a routerLink="/admin/ordrar" [attr.aria-current]="all() ? null : 'page'">Att skicka</a>
+    </li>
+    <li>
+      <a
+        routerLink="/admin/ordrar"
+        [queryParams]="{ visa: 'alla' }"
+        [attr.aria-current]="all() ? 'page' : null"
+      >
+        Alla ordrar
+      </a>
+    </li>
+  </ul>
+</nav>
+
+@if (result.isLoading()) {
+  <p role="status">Laddar ordrarna…</p>
+} @else if (result.error()) {
+  <p role="alert">Ordrarna kunde inte visas.</p>
+} @else if (result.hasValue()) {
+  @let r = result.value();
+  @if (r.items.length === 0) {
+    <p>{{ all() ? 'Det finns inga ordrar än.' : 'Det finns inga ordrar att skicka.' }}</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Ordernummer</th>
+          <th scope="col">Datum</th>
+          <th scope="col">Kund</th>
+          <th scope="col">Summa</th>
+          <th scope="col">Betalning</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (o of r.items; track o.id) {
+          <tr>
+            <!-- The order number is the link, like the title in the product list. -->
+            <td>
+              <a [routerLink]="['/admin/ordrar', o.id]">{{ o.orderNumber }}</a>
+            </td>
+            <td>{{ o.createdAt | date: 'short' }}</td>
+            <!-- Stripe sends the name when the order is paid, so an unpaid order has none. -->
+            <td>{{ o.customerName ?? 'Okänd' }}</td>
+            <td>{{ o.total | currency: o.currency }}</td>
+            <td>{{ paymentStatusTexts[o.paymentStatus] }}</td>
+            <td>{{ orderStatusTexts[o.status] }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  <!-- Only shown when there is more than one page. The links keep ?visa=alla (Pagination). -->
+  <app-pagination path="/admin/ordrar" [page]="r.page" [totalPages]="r.totalPages" />
+}

@@ -16,6 +16,7 @@ import { Button } from '../../../shared/button/button';
     }
     <nav aria-label="Admin">
       <ul>
+        <li><a routerLink="/admin/ordrar">Ordrar</a></li>
         <li><a routerLink="/admin/produkter">Produkter</a></li>
         <li><a routerLink="/admin/kategorier">Kategorier</a></li>
         <li><a routerLink="/admin/material">Material</a></li>

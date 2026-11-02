@@ -63,7 +63,7 @@ Cancelled
 - When the payment becomes `Expired`, the order becomes `Cancelled`.
 - An order that is `Cancelled` with payment `Paid` is shown to the admin as "needs refund".
 - If the last item was already sold when the payment becomes `Paid`, the order is flagged for the admin, who cancels it and refunds it in Stripe (Should).
-- An order is never deleted.
+- An order is never deleted in the shop or the CMS. Only the developer's `reset-demo` command empties the database (architecture.md).
 - Each order row stores the product's title and price at the time of purchase. Later changes to a product never change old orders.
 - The customer's name, email and address (including country) are taken from Stripe Checkout and stored on the order. Only Swedish addresses are allowed in this version.
 - If shipping cost is built, the order stores the shipping method, cost and currency.

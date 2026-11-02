@@ -25,7 +25,7 @@ flowchart LR
 
 The API runs on Render as a Docker container, since Render has no built-in .NET support. It connects to the database through Supabase's session pooler, because Render can only reach IPv4 addresses.
 
-Local development and production currently use the same Supabase database and image bucket, so migrations applied locally also apply to production, and images uploaded locally are shown in production too. A separate production database is decided before real demo content is added.
+Local development and production use the same Supabase database and image bucket, so migrations applied locally also apply to production, and images uploaded locally are shown in production too. There is no separate production database, since everything in the shop is demo content, so `reset-demo` resets the deployed shop too (see Demo data).
 
 ## Modular monolith
 
@@ -68,7 +68,7 @@ server/
   Grej.Api/              Controllers per module, Program.cs
   Grej.Application/      Catalog/, Orders/, Payments/, Identity/, Common/ (e.g. PagedResult)
   Grej.Domain/           Catalog/, Orders/, Payments/
-  Grej.Infrastructure/   Persistence/ (DbContext, migrations, repositories), Identity/ (admin seed, login), Stripe/, Images/
+  Grej.Infrastructure/   Persistence/ (DbContext, migrations, repositories), Identity/ (admin seed, login), Stripe/, Images/, DemoData/ (demo content, reset-demo)
   Grej.UnitTests/        Domain and application rules
   Grej.IntegrationTests/ API, checkout and webhook against a test database
 client/
@@ -94,6 +94,7 @@ client/
 | **Supabase for database and images** | One service I already know for both; images cannot be stored on Render, whose file system is cleared on every deploy |
 | **Cart in localStorage** | Customers buy as guests, so there is no account to store the cart on |
 | **`SellerId` on every product** (always the admin) | Cheap now, keeps a future marketplace possible |
+| **One database** for development and the deployed shop, filled by `reset-demo` | Everything in the shop is demo content, so a second database would only add setup; the cost is that a reset or a migration reaches the deployed shop at once |
 
 ## Checkout flow
 
@@ -241,6 +242,17 @@ Every admin endpoint has `[Authorize(Roles = Roles.Admin)]`. The API checks the 
 
 In Angular, `authInterceptor` adds `Authorization: Bearer <token>` to requests to the API only, and logs the admin out if the API answers 401. `adminGuard` (`canActivateChild` on `/admin`) sends anyone without an unexpired token to `/admin/logga-in`. The guard only hides pages; the API is the real protection.
 
+### Demo data
+
+`dotnet run --project Grej.Api -- reset-demo` empties the shop and fills it with the content in `Grej.Infrastructure/DemoData/`: `demo-catalog.json` (categories, materials, colors and products) and one placeholder image per category. It asks the developer to type `RESET` first, since the database is shared with the deployed shop.
+
+- The shop's tables are emptied with `TRUNCATE … RESTART IDENTITY` in the same transaction as the seed, so the ids start at 1 and a failure leaves the old content. Identity's tables are not in the list, so the admin account is kept, and it owns every product.
+- Every product gets its own copy of its category's image under `products/{id}/`, like an upload in the CMS. The old files are deleted after the commit.
+- The products are saved in turns across the categories, so the shop's first page (newest first) shows every category.
+- `DemoCatalogTests` checks the file against the CMS's rules, so a typo is found by `dotnet test`. The files are copied to the build output but not to the published API.
+
+Demo orders are added with the order list in sprint 3. Before the presentation, `reset-demo` is run once after the feature freeze and then left alone.
+
 ## CMS
 
 The CMS has its own endpoints under `/api/admin/` (e.g. `/api/admin/products`), with `[Authorize(Roles = Roles.Admin)]` on the controller. The shop's endpoints stay open and only show active products. The same rules are checked in the Angular form and in the API, which answers 400 and saves nothing when a rule is broken.
@@ -267,7 +279,7 @@ The admin creates, renames and deletes categories with `/api/admin/categories`. 
 
 - A category that has products cannot be deleted. `AdminCategoryService` asks the product repository directly, since both are in the Catalog module, and the API answers 409; the admin moves the products first. The foreign key from products to categories (`Restrict`) also stops the delete.
 - A new product gets the logged-in admin as its owner (`SellerId`, from the token's `sub` claim). Editing a product never changes its owner.
-- The migration `AddCategories` gave every existing product a new category "Övrigt", the admin as owner and the time of the migration as `CreatedAt`/`UpdatedAt`, since the new columns cannot be empty. The demo product seed was removed, since a product needs an owner and the admin is created after the migrations.
+- The migration `AddCategories` gave every existing product a new category "Övrigt", the admin as owner and the time of the migration as `CreatedAt`/`UpdatedAt`, since the new columns cannot be empty. The old demo product seed was later replaced by `reset-demo` (see Demo data).
 
 Known limitations: two categories can have the same name, and the product form's menu shows at most 100 categories.
 

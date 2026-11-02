@@ -60,6 +60,24 @@ Authorization: Bearer {{login.response.body.token}}
 
 ###
 
+# The CMS's orders: only paid orders that are not shipped yet, oldest first, 20 per page.
+GET {{apiUrl}}/api/admin/orders
+Authorization: Bearer {{login.response.body.token}}
+
+###
+
+# Every order, also unpaid and cancelled ones, newest first.
+GET {{apiUrl}}/api/admin/orders?all=true
+Authorization: Bearer {{login.response.body.token}}
+
+###
+
+# One order with its customer, address and rows. Change 1 to an id from the list above.
+GET {{apiUrl}}/api/admin/orders/1
+Authorization: Bearer {{login.response.body.token}}
+
+###
+
 # Creates a test category. The database is shared with production,
 # so delete it with the last request in this file when you are done.
 # @name category

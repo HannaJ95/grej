@@ -44,6 +44,7 @@ Run from `server/`:
 - `dotnet test` – run unit and integration tests
 - `dotnet run --project Grej.Api` – start the API (health checks: `GET /api/health` and `GET /api/health/database`)
 - `dotnet run --project Grej.Api -- seed-admin` – create the admin account from `Admin:Email` and `Admin:Password` in User Secrets (the database is shared, so this also creates it in production)
+- `dotnet run --project Grej.Api -- reset-demo` – empty the shop's tables and fill them with the demo content in `Grej.Infrastructure/DemoData/` (asks for `RESET`; keeps the admin account; the database is shared, so this also resets the deployed shop)
 - `stripe listen --forward-to http://localhost:5200/api/webhooks/stripe` – forward Stripe webhooks to the local API; prints the `whsec_…` secret for `Stripe:WebhookSecret` in User Secrets
 - `dotnet tool restore` – install the local `dotnet-ef` tool (once per machine)
 - `dotnet ef migrations add <Name> --project Grej.Infrastructure --startup-project Grej.Api --output-dir Persistence/Migrations` – create a migration
