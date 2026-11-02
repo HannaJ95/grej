@@ -72,9 +72,10 @@ server/
   Grej.UnitTests/        Domain and application rules
   Grej.IntegrationTests/ API, checkout and webhook against a test database
 client/
+  src/styles/            Shared style variables and base styles
   src/app/
     core/                API services, auth interceptor, route guards
-    shared/              Reusable components
+    shared/              Reusable components (button, pagination) and helpers
     features/shop/       Product list, product page, cart, checkout, success page
     features/admin/      Login, products, categories, properties, orders
 ```
@@ -280,3 +281,14 @@ The admin creates, renames and deletes materials with `/api/admin/materials` and
 - The materials and colors are always loaded with their product (`AutoInclude`), as one SQL query (`QuerySplittingBehavior.SingleQuery`), since a product has few of each.
 
 Known limitations: two materials or colors can have the same name, the product form shows at most 100 of each, and the number in the warning is from when the page was opened.
+
+## Styles
+
+The look is built on shared style variables: CSS custom properties for colors, fonts, font sizes, spacing and corner radius in `client/src/styles/_tokens.scss`. Components use `var(--…)` instead of their own values, so the look is changed in one place, and dark mode (Could) only needs new values. Every text color has at least 4.5:1 contrast against its background, and field borders and the focus ring at least 3:1 (WCAG AA). `_base.scss` styles plain HTML elements with the variables: headings, links, form fields, tables and the keyboard focus ring.
+
+The component library is small and our own, in `shared/`, instead of e.g. Angular Material, so the Signal Forms forms keep their native fields:
+
+- `Button` is an attribute on a real `<button>` or `<a>` (`<button appButton variant="danger">`), so the element keeps the browser's keyboard handling, form submit, `disabled` and `routerLink`. It has three variants: primary, secondary and danger.
+- `Pagination` shows the links to the page before and after (`?sida=`) in every paginated list, and nothing when the list fits on one page.
+
+The pages themselves are styled in sprint 3.
