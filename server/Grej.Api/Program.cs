@@ -1,6 +1,7 @@
 using System.Text;
 using Grej.Application;
 using Grej.Infrastructure;
+using Grej.Infrastructure.DemoData;
 using Grej.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -51,6 +52,24 @@ if (args.Contains("seed-admin"))
 {
     await AdminSeeder.SeedAsync(app.Services);
     Console.WriteLine("The admin account is ready.");
+    return;
+}
+
+// `dotnet run --project Grej.Api -- reset-demo` empties the shop and fills it with the demo
+// content, then stops. It asks first, since the database is the deployed shop's too.
+if (args.Contains("reset-demo"))
+{
+    Console.WriteLine("This deletes all products, categories, materials, colors, orders and payments,");
+    Console.WriteLine("in the deployed shop too, and fills the shop with the demo content.");
+    Console.Write("Type RESET to continue: ");
+    if (Console.ReadLine() != "RESET")
+    {
+        Console.WriteLine("Nothing was changed.");
+        return;
+    }
+
+    await DemoSeeder.ResetAsync(app.Services);
+    Console.WriteLine("The demo content is ready.");
     return;
 }
 

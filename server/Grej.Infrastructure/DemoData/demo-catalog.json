@@ -1,0 +1,432 @@
+{
+  "materials": [
+    "Stengods",
+    "Lergods",
+    "Porslin",
+    "Linne",
+    "Bomull",
+    "Ull",
+    "Papper",
+    "Duk",
+    "Akrylfärg",
+    "Akvarellfärg",
+    "Silver",
+    "Mässing",
+    "Glas",
+    "Ek",
+    "Björk",
+    "Valnöt"
+  ],
+  "colors": [
+    "Vit",
+    "Svart",
+    "Grå",
+    "Beige",
+    "Brun",
+    "Blå",
+    "Grön",
+    "Röd",
+    "Gul",
+    "Rosa",
+    "Terrakotta",
+    "Guld",
+    "Silver"
+  ],
+  "categories": [
+    {
+      "name": "Keramik",
+      "image": "keramik.jpg",
+      "imageAltText": "Platshållarbild med texten Keramik",
+      "products": [
+        {
+          "title": "Skål i blå glasyr",
+          "description": "Handdrejad skål i stengods med en djupblå glasyr som blir ljusare mot kanten. Rymmer ungefär 4 dl och passar till frukost, soppa eller som serveringsskål. Tål diskmaskin.",
+          "price": 349,
+          "stock": 6,
+          "isActive": true,
+          "materials": ["Stengods"],
+          "colors": ["Blå"]
+        },
+        {
+          "title": "Mugg med stort öra",
+          "description": "Rejäl mugg i vitt stengods med ett öra som rymmer flera fingrar. Rymmer 3 dl. Varje mugg drejas för hand, så formen skiljer sig lite mellan dem.",
+          "price": 245,
+          "stock": 12,
+          "isActive": true,
+          "materials": ["Stengods"],
+          "colors": ["Vit"]
+        },
+        {
+          "title": "Hög vas i grönt",
+          "description": "Smal vas, 30 cm hög, med en matt grön glasyr. Vattentät på insidan, så den fungerar både till färska blommor och torkade kvistar.",
+          "price": 695,
+          "stock": 3,
+          "isActive": true,
+          "materials": ["Stengods"],
+          "colors": ["Grön"]
+        },
+        {
+          "title": "Kanna med pip",
+          "description": "Kanna i rött lergods med vit glasyr på insidan. Rymmer en liter och passar till vatten, mjölk eller som vas.",
+          "price": 545,
+          "stock": 0,
+          "isActive": true,
+          "materials": ["Lergods"],
+          "colors": ["Terrakotta", "Vit"]
+        },
+        {
+          "title": "Stort serveringsfat",
+          "description": "Runt fat, 34 cm i diameter, med en glasyr som går från grått till beige. Ett unikt exemplar som räcker till en hel middag.",
+          "price": 895,
+          "stock": 1,
+          "isActive": true,
+          "materials": ["Stengods"],
+          "colors": ["Grå", "Beige"]
+        },
+        {
+          "title": "Ljusstake för kronljus",
+          "description": "Låg ljusstake i oglaserat lergods för ett vanligt kronljus. Ytan är slipad för hand och känns mjuk och lite sandig.",
+          "price": 295,
+          "stock": 8,
+          "isActive": true,
+          "materials": ["Lergods"],
+          "colors": ["Terrakotta"]
+        },
+        {
+          "title": "Espressokoppar, två stycken",
+          "description": "Två små koppar i vitt porslin med en tunn svart kant. Rymmer 1 dl var och säljs i par.",
+          "price": 380,
+          "stock": 4,
+          "isActive": true,
+          "materials": ["Porslin"],
+          "colors": ["Vit", "Svart"]
+        },
+        {
+          "title": "Blomkruka med fat",
+          "description": "Kruka i terrakotta med hål i botten och ett fat som fångar vattnet. 14 cm i diameter, passar en mellanstor krukväxt.",
+          "price": 420,
+          "stock": 5,
+          "isActive": true,
+          "materials": ["Lergods"],
+          "colors": ["Terrakotta"]
+        },
+        {
+          "title": "Tekanna",
+          "description": "Tekanna i stengods med lock och inbyggd sil. Rymmer 8 dl. Glasyren provas fortfarande, så kannan är inte till salu än.",
+          "price": 1150,
+          "stock": 2,
+          "isActive": false,
+          "materials": ["Stengods"],
+          "colors": ["Blå", "Vit"]
+        }
+      ]
+    },
+    {
+      "name": "Textil",
+      "image": "textil.jpg",
+      "imageAltText": "Platshållarbild med texten Textil",
+      "products": [
+        {
+          "title": "Kökshandduk i linne",
+          "description": "Kökshandduk i tvättat linne som torkar bra och blir mjukare för varje tvätt. 50 × 70 cm med en hängare i hörnet.",
+          "price": 189,
+          "stock": 15,
+          "isActive": true,
+          "materials": ["Linne"],
+          "colors": ["Beige"]
+        },
+        {
+          "title": "Vävd kudde i ull",
+          "description": "Kuddfodral i handvävd ull med ett enkelt rutmönster. 50 × 50 cm, med dragkedja. Innerkudde ingår inte.",
+          "price": 595,
+          "stock": 4,
+          "isActive": true,
+          "materials": ["Ull"],
+          "colors": ["Grå", "Vit"]
+        },
+        {
+          "title": "Handvävd löpare",
+          "description": "Smal bordslöpare i bomull och linne, vävd på en gammal vävstol. 35 × 140 cm.",
+          "price": 450,
+          "stock": 3,
+          "isActive": true,
+          "materials": ["Bomull", "Linne"],
+          "colors": ["Blå", "Vit"]
+        },
+        {
+          "title": "Tygkasse med tryck",
+          "description": "Rymlig tygkasse i tjock bomull med ett handtryckt mönster av blad. Handtagen är långa nog att bära över axeln.",
+          "price": 159,
+          "stock": 20,
+          "isActive": true,
+          "materials": ["Bomull"],
+          "colors": ["Beige", "Grön"]
+        },
+        {
+          "title": "Pläd i ull",
+          "description": "Varm pläd i ren ull med fransar på kortsidorna. 130 × 180 cm. Vävd i ett enda exemplar.",
+          "price": 1450,
+          "stock": 1,
+          "isActive": true,
+          "materials": ["Ull"],
+          "colors": ["Röd", "Brun"]
+        },
+        {
+          "title": "Grytlappar, två stycken",
+          "description": "Två tjocka grytlappar i virkad bomull. Tål 60 grader i tvättmaskinen.",
+          "price": 129,
+          "stock": 0,
+          "isActive": true,
+          "materials": ["Bomull"],
+          "colors": ["Gul"]
+        },
+        {
+          "title": "Bordsduk i linne",
+          "description": "Bordsduk i tvättat linne för ett bord med sex platser. 150 × 250 cm.",
+          "price": 795,
+          "stock": 2,
+          "isActive": true,
+          "materials": ["Linne"],
+          "colors": ["Vit"]
+        },
+        {
+          "title": "Korg i bomullsrep",
+          "description": "Mjuk förvaringskorg sydd av bomullsrep. Passar till garn, leksaker eller tidningar. 25 cm hög.",
+          "price": 345,
+          "stock": 6,
+          "isActive": true,
+          "materials": ["Bomull"],
+          "colors": ["Vit", "Svart"]
+        }
+      ]
+    },
+    {
+      "name": "Konst",
+      "image": "konst.jpg",
+      "imageAltText": "Platshållarbild med texten Konst",
+      "products": [
+        {
+          "title": "Morgon vid sjön, akvarell",
+          "description": "Originalakvarell av en stilla sjö i gryningsljus. 30 × 40 cm på tjockt akvarellpapper. Levereras utan ram.",
+          "price": 1800,
+          "stock": 1,
+          "isActive": true,
+          "materials": ["Papper", "Akvarellfärg"],
+          "colors": ["Blå", "Rosa"]
+        },
+        {
+          "title": "Röda hus, akrylmålning",
+          "description": "Målning i akryl på duk av en rad röda hus längs en grusväg. 50 × 70 cm. Kanterna är målade, så den kan hängas utan ram.",
+          "price": 3200,
+          "stock": 1,
+          "isActive": true,
+          "materials": ["Duk", "Akrylfärg"],
+          "colors": ["Röd", "Grön"]
+        },
+        {
+          "title": "Fåglar, linoleumtryck",
+          "description": "Handtryckt linoleumtryck i en upplaga om 20 exemplar, signerat och numrerat. 21 × 30 cm.",
+          "price": 650,
+          "stock": 5,
+          "isActive": true,
+          "materials": ["Papper"],
+          "colors": ["Svart", "Vit"]
+        },
+        {
+          "title": "Blommor, konsttryck",
+          "description": "Tryck av en akvarell med vilda blommor, på matt papper. 30 × 40 cm, passar i en standardram.",
+          "price": 395,
+          "stock": 10,
+          "isActive": true,
+          "materials": ["Papper"],
+          "colors": ["Gul", "Rosa", "Grön"]
+        },
+        {
+          "title": "Höstlöv, akvarell",
+          "description": "Originalakvarell med löv i rött och gult. 24 × 32 cm.",
+          "price": 1400,
+          "stock": 0,
+          "isActive": true,
+          "materials": ["Papper", "Akvarellfärg"],
+          "colors": ["Röd", "Gul"]
+        },
+        {
+          "title": "Abstrakt i blått",
+          "description": "Stor abstrakt målning i akryl med lager av blått och grått. 80 × 100 cm på duk.",
+          "price": 4500,
+          "stock": 1,
+          "isActive": true,
+          "materials": ["Duk", "Akrylfärg"],
+          "colors": ["Blå", "Grå"]
+        },
+        {
+          "title": "Katten, blyertsteckning",
+          "description": "Detaljerad blyertsteckning av en sovande katt. 21 × 30 cm, levereras med en vit passepartout.",
+          "price": 850,
+          "stock": 1,
+          "isActive": true,
+          "materials": ["Papper"],
+          "colors": ["Grå"]
+        },
+        {
+          "title": "Små akvareller, serie",
+          "description": "En serie om sex små akvareller, 10 × 15 cm var. Bilderna är inte klara än.",
+          "price": 600,
+          "stock": 3,
+          "isActive": false,
+          "materials": ["Papper", "Akvarellfärg"],
+          "colors": ["Blå", "Grön"]
+        }
+      ]
+    },
+    {
+      "name": "Smycken",
+      "image": "smycken.jpg",
+      "imageAltText": "Platshållarbild med texten Smycken",
+      "products": [
+        {
+          "title": "Droppörhängen i silver",
+          "description": "Lätta örhängen i återvunnet silver, formade som droppar. 2 cm långa, med krokar i silver.",
+          "price": 495,
+          "stock": 7,
+          "isActive": true,
+          "materials": ["Silver"],
+          "colors": ["Silver"]
+        },
+        {
+          "title": "Halsband med mässingshänge",
+          "description": "Runt hänge i hamrad mässing på en 45 cm lång kedja.",
+          "price": 395,
+          "stock": 9,
+          "isActive": true,
+          "materials": ["Mässing"],
+          "colors": ["Guld"]
+        },
+        {
+          "title": "Hamrad silverring",
+          "description": "Bred ring i silver med en hamrad yta som fångar ljuset. Storlek 17.",
+          "price": 650,
+          "stock": 4,
+          "isActive": true,
+          "materials": ["Silver"],
+          "colors": ["Silver"]
+        },
+        {
+          "title": "Armband med glaspärlor",
+          "description": "Armband med handgjorda glaspärlor i blått och grönt på ett elastiskt band. Passar de flesta handleder.",
+          "price": 245,
+          "stock": 10,
+          "isActive": true,
+          "materials": ["Glas"],
+          "colors": ["Blå", "Grön"]
+        },
+        {
+          "title": "Cirkelörhängen i mässing",
+          "description": "Stora örhängen i mässing, formade som öppna cirklar. 4 cm i diameter.",
+          "price": 345,
+          "stock": 0,
+          "isActive": true,
+          "materials": ["Mässing"],
+          "colors": ["Guld"]
+        },
+        {
+          "title": "Brosch i silver",
+          "description": "Brosch i silver formad som ett blad, med säkerhetslås. Ett unikt exemplar.",
+          "price": 720,
+          "stock": 1,
+          "isActive": true,
+          "materials": ["Silver"],
+          "colors": ["Silver"]
+        },
+        {
+          "title": "Tunn silverkedja",
+          "description": "Fin kedja i silver, 50 cm lång. Bär den ensam eller med ett hänge.",
+          "price": 590,
+          "stock": 3,
+          "isActive": true,
+          "materials": ["Silver"],
+          "colors": ["Silver"]
+        },
+        {
+          "title": "Manschettknappar i mässing",
+          "description": "Fyrkantiga manschettknappar i borstad mässing. Säljs i par.",
+          "price": 425,
+          "stock": 5,
+          "isActive": true,
+          "materials": ["Mässing"],
+          "colors": ["Guld"]
+        }
+      ]
+    },
+    {
+      "name": "Trä",
+      "image": "tra.jpg",
+      "imageAltText": "Platshållarbild med texten Trä",
+      "products": [
+        {
+          "title": "Skärbräda i ek",
+          "description": "Kraftig skärbräda i massiv ek, behandlad med matolja. 25 × 40 cm. Diskas för hand.",
+          "price": 549,
+          "stock": 6,
+          "isActive": true,
+          "materials": ["Ek"],
+          "colors": ["Brun"]
+        },
+        {
+          "title": "Smörkniv i björk",
+          "description": "Täljd smörkniv i björk med ett rundat skaft som ligger bra i handen. Oljad med linolja.",
+          "price": 149,
+          "stock": 18,
+          "isActive": true,
+          "materials": ["Björk"],
+          "colors": ["Beige"]
+        },
+        {
+          "title": "Salladsbestick i björk",
+          "description": "Sked och gaffel i björk för att blanda och servera sallad. 30 cm långa.",
+          "price": 265,
+          "stock": 8,
+          "isActive": true,
+          "materials": ["Björk"],
+          "colors": ["Beige"]
+        },
+        {
+          "title": "Svarvad skål i valnöt",
+          "description": "Skål svarvad ur ett enda stycke valnöt, med synlig ådring. 22 cm i diameter. Till frukt och annat torrt.",
+          "price": 1250,
+          "stock": 1,
+          "isActive": true,
+          "materials": ["Valnöt"],
+          "colors": ["Brun"]
+        },
+        {
+          "title": "Ljusstake i ek",
+          "description": "Avlång ljusstake i ek för fyra kronljus. 40 cm lång.",
+          "price": 395,
+          "stock": 0,
+          "isActive": true,
+          "materials": ["Ek"],
+          "colors": ["Brun"]
+        },
+        {
+          "title": "Glasunderlägg, fyra stycken",
+          "description": "Fyra runda underlägg i ek som skyddar bordet mot ringar. 10 cm i diameter.",
+          "price": 299,
+          "stock": 5,
+          "isActive": true,
+          "materials": ["Ek"],
+          "colors": ["Brun"]
+        },
+        {
+          "title": "Klädkrok i ek",
+          "description": "Enkel krok i ek att skruva upp i hallen. Skruvar ingår.",
+          "price": 189,
+          "stock": 11,
+          "isActive": true,
+          "materials": ["Ek"],
+          "colors": ["Brun"]
+        }
+      ]
+    }
+  ]
+}

@@ -65,8 +65,7 @@ Cart and checkout (Wed–Fri):
 - [x] Image upload to Supabase Storage (one image per product)
 - [x] CMS: categories (no deleting categories with products)
 - [x] CMS: materials and colors, and choosing several per product
-- [ ] Component library and shared style variables (colors, typography, spacing)
-- [ ] Own visual design of the main customer pages, if chosen at the checkpoint Fri 23 Oct (Should, about one day)
+- [x] Component library and shared style variables (colors, typography, spacing)
 
 ## Sprint 3 – Orders and MVP (Mon 2 – Fri 6 Nov)
 
@@ -74,6 +73,7 @@ Cart and checkout (Wed–Fri):
 
 Must (Mon–Wed):
 
+- [ ] Demo data: a command that empties the database and fills it with demo categories, products and images
 - [ ] CMS: order list (default: paid, not shipped) and order details
 - [ ] Admin sets order status `Shipped` / `Cancelled` with the rules from constraints; cancelling a paid order restores the stock
 - [ ] Webhook: `charge.refunded` marks the payment as `Refunded`
@@ -81,6 +81,7 @@ Must (Mon–Wed):
 
 Should (Wed–Fri):
 
+- [ ] Own visual design of the main customer pages, or plan B (about one day; moved from sprint 2, decided by Wed 4 Nov)
 - [ ] Style the customer pages with the shared variables (own design or plan B)
 - [ ] Filter products by category
 - [ ] Subcategories (one level) in the CMS and as filters
@@ -105,7 +106,7 @@ Should (Wed–Fri):
 - [ ] Fix bugs, no new features
 - [ ] README: how to run the project locally
 - [ ] Update the planning documents to match what was built, including known limitations
-- [ ] Demo content: real products with images and texts in the deployed shop
+- [ ] Demo content: final texts and images in the demo data, reset once in the deployed shop
 - [ ] Prepare and rehearse the presentation (15–20 minutes), including a demo in the deployed environment (with a backup recording)
 
 ## Checkpoints
@@ -134,4 +135,4 @@ If time runs short, Should items are dropped from the bottom of this list first:
 9. Filter by price, material and color
 10. Flag double sale – a negative stock already shows it
 
-The own visual design is not in this list: it is decided at the checkpoint Fri 23 Oct, with a component library and own colors as plan B.
+The own visual design is not in this list. It was not decided at the checkpoint Fri 23 Oct, so it is decided by Wed 4 Nov, with the component library and own colors from sprint 2 as plan B.

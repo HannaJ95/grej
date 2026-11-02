@@ -13,6 +13,12 @@
     <PackageReference Include="Stripe.net" Version="53.0.0" />
   </ItemGroup>
 
+  <!-- The demo content is copied next to the built program, where DemoCatalog reads it.
+       Only the reset-demo command uses it, so it is left out of the deployed API. -->
+  <ItemGroup>
+    <None Update="DemoData\**" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
