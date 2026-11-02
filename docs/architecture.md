@@ -251,7 +251,7 @@ In Angular, `authInterceptor` adds `Authorization: Bearer <token>` to requests t
 - The products are saved in turns across the categories, so the shop's first page (newest first) shows every category.
 - `DemoCatalogTests` checks the file against the CMS's rules, so a typo is found by `dotnet test`. The files are copied to the build output but not to the published API.
 
-Demo orders are added with the order list in sprint 3. Before the presentation, `reset-demo` is run once after the feature freeze and then left alone.
+Demo orders are added with the order statuses in sprint 3, so they can be shipped and cancelled too. Before the presentation, `reset-demo` is run once after the feature freeze and then left alone.
 
 ## CMS
 
@@ -293,6 +293,15 @@ The admin creates, renames and deletes materials with `/api/admin/materials` and
 - The materials and colors are always loaded with their product (`AutoInclude`), as one SQL query (`QuerySplittingBehavior.SingleQuery`), since a product has few of each.
 
 Known limitations: two materials or colors can have the same name, the product form shows at most 100 of each, and the number in the warning is from when the page was opened.
+
+### Orders
+
+The admin reads orders with `/api/admin/orders` and `/api/admin/orders/{id}`, at `/admin/ordrar` in the CMS. Setting an order to `Shipped` or `Cancelled` is not built yet (sprint 3).
+
+- By default the list shows what the admin has to do: paid orders that are not shipped yet, oldest first, so the order that has waited longest is at the top. `?all=true` (`?visa=alla` in the CMS) shows every order, also unpaid and cancelled ones, newest first (ambiguity.md).
+- The order page shows the customer, the address and each row with its title and price from the time of purchase. The customer details are empty until the webhook has stored them from Stripe.
+- The statuses are sent as text (`"Paid"`), and the CMS shows them in Swedish (`order-texts.ts`). Row totals are calculated in the API, like every price.
+- The pagination keeps the list's other query parameters, so `?visa=alla` is kept on the next page.
 
 ## Styles
 
