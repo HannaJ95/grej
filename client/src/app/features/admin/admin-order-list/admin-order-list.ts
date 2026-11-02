@@ -7,8 +7,8 @@ import { Pagination } from '../../../shared/pagination/pagination';
 import { ORDER_STATUS_TEXTS, PAYMENT_STATUS_TEXTS } from '../order-texts';
 
 // The CMS's order list, /admin/ordrar. By default it shows what the admin has to do: paid
-// orders that are not shipped yet (to ship or to refund), oldest first. /admin/ordrar?visa=alla
-// shows every order.
+// orders that are not shipped yet (to ship or to refund) and refunded ones to cancel, oldest
+// first. /admin/ordrar?visa=alla shows every order.
 @Component({
   selector: 'app-admin-order-list',
   imports: [CurrencyPipe, DatePipe, RouterLink, Pagination],

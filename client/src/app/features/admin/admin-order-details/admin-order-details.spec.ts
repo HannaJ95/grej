@@ -24,6 +24,7 @@ describe('AdminOrderDetails', () => {
     status: 'Pending',
     paymentStatus: 'Paid',
     needsRefund: false,
+    needsCancelling: false,
     canBeShipped: true,
     canBeCancelled: true,
     customerName: 'Anna Svensson',
@@ -204,6 +205,22 @@ describe('AdminOrderDetails', () => {
     expect(texts(page, 'dd')[1]).toBe('Avbruten');
     expect(page.textContent).toContain('Behöver återbetalas.');
     expect(buttonTexts(page)).toEqual([]);
+  });
+
+  it('says that a refunded order needs cancelling and offers only to cancel it', async () => {
+    const page = await show((request) =>
+      request.flush({
+        ...paidOrder,
+        paymentStatus: 'Refunded',
+        needsCancelling: true,
+        canBeShipped: false,
+        canBeCancelled: true,
+      }),
+    );
+
+    expect(texts(page, 'dd')[2]).toBe('Återbetald');
+    expect(page.textContent).toContain('Behöver avbrytas.');
+    expect(buttonTexts(page)).toEqual(['Avbryt ordern']);
   });
 
   it('says so when the order cannot be shown, e.g. an unknown id', async () => {

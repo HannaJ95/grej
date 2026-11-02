@@ -22,6 +22,12 @@
       Stripe.
     </p>
   }
+  @if (o.needsCancelling) {
+    <p>
+      <strong>Behöver avbrytas.</strong> Ordern är återbetald men inte avbruten. Avbryt den, så
+      läggs produkterna tillbaka i lagret.
+    </p>
+  }
 
   <!-- Only what the API says the order allows (Order.CanBeShipped, CanBeCancelledByAdmin). -->
   @if (o.canBeShipped || o.canBeCancelled) {

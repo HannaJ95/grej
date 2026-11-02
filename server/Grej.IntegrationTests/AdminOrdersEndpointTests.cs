@@ -66,15 +66,19 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
         var third = await AddOrderAsync(Pay);
         await AddOrderAsync(Expire);
         var toRefund = await AddOrderAsync(CancelPaid);
+        var toCancel = await AddOrderAsync(Refund);
+        await AddOrderAsync(CancelAndRefund);
         await AddOrderAsync(Ship);
         var client = await CreateAdminClientAsync();
 
         var page = await client.GetFromJsonAsync<PagedResult<OrderSummaryDto>>("/api/admin/orders");
 
-        // The ones to ship and the one to refund, but not the unpaid, expired or shipped ones.
-        Assert.Equal([first.Id, third.Id, toRefund.Id], page!.Items.Select(o => o.Id));
-        Assert.Equal([false, false, true], page.Items.Select(o => o.NeedsRefund));
-        Assert.Equal(3, page.TotalCount);
+        // The ones to ship, to refund and to cancel, but not the unpaid, expired, shipped
+        // ones or the one that is both cancelled and refunded.
+        Assert.Equal([first.Id, third.Id, toRefund.Id, toCancel.Id], page!.Items.Select(o => o.Id));
+        Assert.Equal([false, false, true, false], page.Items.Select(o => o.NeedsRefund));
+        Assert.Equal([false, false, false, true], page.Items.Select(o => o.NeedsCancelling));
+        Assert.Equal(4, page.TotalCount);
     }
 
     [Fact]
@@ -177,6 +181,26 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
     }
 
     [Fact]
+    public async Task Cancel_RefundedOrder_RestoresStockAndLeavesTheDefaultList()
+    {
+        // The admin refunded in Stripe before cancelling in the CMS.
+        await AddProductAsync(stock: 1);
+        var order = await AddOrderAsync(Refund);
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsync($"/api/admin/orders/{order.Id}/cancel", null);
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.Equal(3, await GetStockAsync());
+        var details = await client.GetFromJsonAsync<OrderDetailsDto>($"/api/admin/orders/{order.Id}");
+        Assert.Equal(("Cancelled", "Refunded"), (details!.Status, details.PaymentStatus));
+        Assert.False(details.NeedsRefund);
+        Assert.False(details.NeedsCancelling);
+        var page = await client.GetFromJsonAsync<PagedResult<OrderSummaryDto>>("/api/admin/orders");
+        Assert.Empty(page!.Items);
+    }
+
+    [Fact]
     public async Task Cancel_Twice_ReturnsConflictAndRestoresStockOnce()
     {
         await AddProductAsync(stock: 1);
@@ -237,6 +261,13 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
         order.Cancel();
     }
 
+    // What the webhook does when the admin refunds in Stripe (charge.refunded).
+    private static void Refund(Order order)
+    {
+        Pay(order);
+        order.Payment!.MarkAsRefunded();
+    }
+
     // What the admin does in the CMS after the order was paid (AdminOrderService).
     private static void Ship(Order order)
     {
@@ -248,6 +279,13 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
     {
         Pay(order);
         order.CancelByAdmin();
+    }
+
+    // The usual way: cancelled in the CMS, then refunded in Stripe.
+    private static void CancelAndRefund(Order order)
+    {
+        CancelPaid(order);
+        order.Payment!.MarkAsRefunded();
     }
 
     // The product that AddOrderAsync's row points to (id 1). Only the tests that change the

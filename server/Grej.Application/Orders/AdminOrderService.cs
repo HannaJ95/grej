@@ -83,7 +83,8 @@ public class AdminOrderService(IOrderRepository orders, ProductService products)
         order.Currency,
         order.Status.ToString(),
         PaymentStatusOf(order),
-        order.NeedsRefund);
+        order.NeedsRefund,
+        order.NeedsCancelling);
 
     private static OrderDetailsDto ToDetailsDto(Order order) => new(
         order.Id,
@@ -94,6 +95,7 @@ public class AdminOrderService(IOrderRepository orders, ProductService products)
         order.Status.ToString(),
         PaymentStatusOf(order),
         order.NeedsRefund,
+        order.NeedsCancelling,
         order.CanBeShipped,
         order.CanBeCancelledByAdmin,
         order.CustomerName,

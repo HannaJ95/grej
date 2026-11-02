@@ -57,6 +57,9 @@
               @if (o.needsRefund) {
                 <br /><strong>Behöver återbetalas</strong>
               }
+              @if (o.needsCancelling) {
+                <br /><strong>Behöver avbrytas</strong>
+              }
             </td>
           </tr>
         }

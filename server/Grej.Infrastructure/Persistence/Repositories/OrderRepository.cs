@@ -29,15 +29,17 @@ public class OrderRepository(GrejDbContext db) : IOrderRepository
     public async Task<PagedResult<Order>> GetPageAsync(bool all, int page, int pageSize, CancellationToken cancellationToken)
     {
         // What the admin has to do is every paid order that is not shipped: Pending ones to ship,
-        // and Cancelled ones to refund (Order.NeedsRefund). Order's properties cannot become SQL,
-        // so the rule is written out here. It comes oldest first, so the order that has waited
+        // and Cancelled ones to refund (Order.NeedsRefund). And Pending ones that were refunded
+        // in Stripe, to cancel (Order.NeedsCancelling). Order's properties cannot become SQL,
+        // so the rules are written out here. It comes oldest first, so the order that has waited
         // longest is at the top (ambiguity.md). Every order comes newest first. The id decides
         // between two orders created at the same time, so the order never changes between pages.
         // The ! only quiets the compiler: in SQL, o.Payment is a JOIN, and every order has one.
         var query = all
             ? db.Orders.OrderByDescending(o => o.CreatedAt).ThenByDescending(o => o.Id)
             : db.Orders
-                .Where(o => o.Status != OrderStatus.Shipped && o.Payment!.Status == PaymentStatus.Paid)
+                .Where(o => (o.Status != OrderStatus.Shipped && o.Payment!.Status == PaymentStatus.Paid)
+                    || (o.Status == OrderStatus.Pending && o.Payment!.Status == PaymentStatus.Refunded))
                 .OrderBy(o => o.CreatedAt)
                 .ThenBy(o => o.Id);
 

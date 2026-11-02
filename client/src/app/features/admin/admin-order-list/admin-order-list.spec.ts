@@ -20,6 +20,7 @@ describe('AdminOrderList', () => {
     status: 'Pending',
     paymentStatus: 'Paid',
     needsRefund: false,
+    needsCancelling: false,
   };
 
   beforeEach(() => {
@@ -90,5 +91,17 @@ describe('AdminOrderList', () => {
 
     const status = page.querySelector('tbody td:last-child')?.textContent;
     expect(status).toMatch(/Avbruten\s+Behöver återbetalas/);
+  });
+
+  it('shows which refunded orders need cancelling', async () => {
+    const refundedOrder: OrderSummary = {
+      ...paidOrder,
+      paymentStatus: 'Refunded',
+      needsCancelling: true,
+    };
+    const { page } = await show('/admin/ordrar', [refundedOrder]);
+
+    const status = page.querySelector('tbody td:last-child')?.textContent;
+    expect(status).toMatch(/Ej skickad\s+Behöver avbrytas/);
   });
 });
