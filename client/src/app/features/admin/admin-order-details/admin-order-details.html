@@ -1,0 +1,74 @@
+<p><a routerLink="/admin/ordrar">Tillbaka till ordrarna</a></p>
+
+@if (order.isLoading()) {
+  <p role="status">Laddar ordern…</p>
+} @else if (order.error()) {
+  <p role="alert">Ordern kunde inte visas.</p>
+} @else if (order.hasValue()) {
+  @let o = order.value();
+  <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
+  <h2>Order {{ o.orderNumber }}</h2>
+
+  <!-- Description lists, as on the product page: each row is a heading and its value. -->
+  <dl>
+    <dt>Datum</dt>
+    <dd>{{ o.createdAt | date: 'short' }}</dd>
+    <dt>Status</dt>
+    <dd>{{ orderStatusTexts[o.status] }}</dd>
+    <dt>Betalning</dt>
+    <dd>{{ paymentStatusTexts[o.paymentStatus] }}</dd>
+  </dl>
+
+  <h3>Kund</h3>
+  <!-- Stripe Checkout collects the name and address, and the webhook stores them on the
+       order when it is paid. -->
+  @if (o.customerName) {
+    <dl>
+      <dt>Namn</dt>
+      <dd>{{ o.customerName }}</dd>
+      <dt>E-post</dt>
+      <dd>{{ o.customerEmail }}</dd>
+      <dt>Adress</dt>
+      <dd>
+        {{ o.addressLine1 }}<br />
+        @if (o.addressLine2) {
+          {{ o.addressLine2 }}<br />
+        }
+        {{ o.postalCode }} {{ o.city }}<br />
+        {{ o.country }}
+      </dd>
+    </dl>
+  } @else {
+    <p>Inga kunduppgifter. Stripe skickar dem när ordern betalas.</p>
+  }
+
+  <h3>Produkter</h3>
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Produkt</th>
+        <th scope="col">Antal</th>
+        <th scope="col">Styckpris</th>
+        <th scope="col">Summa</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- The rows have no id of their own, and the list never changes on this page. -->
+      @for (item of o.items; track $index) {
+        <tr>
+          <!-- The title and price from the time of purchase, not the product's current ones. -->
+          <td>{{ item.title }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.unitPrice | currency: o.currency }}</td>
+          <td>{{ item.lineTotal | currency: o.currency }}</td>
+        </tr>
+      }
+    </tbody>
+    <tfoot>
+      <tr>
+        <th scope="row" colspan="3">Totalt</th>
+        <td>{{ o.total | currency: o.currency }}</td>
+      </tr>
+    </tfoot>
+  </table>
+}

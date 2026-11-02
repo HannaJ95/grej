@@ -38,6 +38,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'ordrar/:id',
+        loadComponent: () =>
+          import('./features/admin/admin-order-details/admin-order-details').then(
+            (m) => m.AdminOrderDetails,
+          ),
+      },
+      {
         path: 'produkter',
         loadComponent: () =>
           import('./features/admin/admin-product-list/admin-product-list').then(
