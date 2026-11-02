@@ -1,0 +1,78 @@
+using System.ComponentModel.DataAnnotations;
+using Grej.Application.Catalog;
+using Grej.Infrastructure.DemoData;
+
+namespace Grej.IntegrationTests;
+
+// Reads the real demo-catalog.json and images and checks them against the CMS's rules,
+// so a typo in the file is found by `dotnet test` and not halfway through a reset-demo.
+public class DemoCatalogTests
+{
+    // If the file is missing or has a misspelled field, Load throws and every test fails.
+    private readonly DemoCatalog catalog = DemoCatalog.Load();
+
+    [Fact]
+    public void Products_FollowTheCmsRules()
+    {
+        var errors = new List<string>();
+        foreach (var product in catalog.Categories.SelectMany(c => c.Products))
+        {
+            // Runs the same [Required], [MaxLength] and [Range] attributes that [ApiController]
+            // checks when the CMS form sends a product. The category is set by the seed.
+            var request = new ProductRequest
+            {
+                Title = product.Title,
+                Description = product.Description,
+                Price = product.Price,
+                Stock = product.Stock,
+                CategoryId = 1,
+            };
+            var results = new List<ValidationResult>();
+            Validator.TryValidateObject(request, new ValidationContext(request), results, validateAllProperties: true);
+            errors.AddRange(results.Select(result => $"{product.Title}: {result.ErrorMessage}"));
+        }
+
+        // All errors at once, so one test run shows every mistake in the file.
+        Assert.Empty(errors);
+    }
+
+    [Fact]
+    public void ProductMaterialsAndColors_AreInTheLists()
+    {
+        var unknown = catalog.Categories
+            .SelectMany(c => c.Products)
+            .SelectMany(p => p.Materials.Except(catalog.Materials)
+                .Concat(p.Colors.Except(catalog.Colors))
+                .Select(name => $"{p.Title}: {name}"));
+
+        Assert.Empty(unknown);
+    }
+
+    [Fact]
+    public void Names_AreUniqueAndFitTheDatabase()
+    {
+        AssertNames(catalog.Materials);
+        AssertNames(catalog.Colors);
+        AssertNames(catalog.Categories.Select(c => c.Name).ToList());
+    }
+
+    [Fact]
+    public void CategoryImages_AreImagesTheCmsAccepts()
+    {
+        Assert.All(catalog.Categories, category =>
+        {
+            // Throws if the file is missing or is not a jpg, png or webp image of at most 5 MB.
+            DemoCatalog.ReadImage(category.Image);
+            // The same limit as the alt text in AdminProductsController.SetImage.
+            Assert.InRange(category.ImageAltText.Length, 1, 200);
+        });
+    }
+
+    // The seed finds materials and colors by name, so a name may only be used once.
+    // 100 is the limit in the database and the CMS (CategoryRequest, PropertyRequest).
+    private static void AssertNames(IReadOnlyList<string> names)
+    {
+        Assert.Distinct(names);
+        Assert.All(names, name => Assert.InRange(name.Length, 1, 100));
+    }
+}
