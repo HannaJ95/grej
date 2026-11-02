@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using Grej.Application.Common;
 using Grej.Application.Identity;
 using Grej.Application.Orders;
+using Grej.Domain.Catalog;
 using Grej.Domain.Orders;
 using Grej.Infrastructure.Identity;
 using Grej.Infrastructure.Persistence;
@@ -64,12 +65,16 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
         await AddOrderAsync();
         var third = await AddOrderAsync(Pay);
         await AddOrderAsync(Expire);
+        var toRefund = await AddOrderAsync(CancelPaid);
+        await AddOrderAsync(Ship);
         var client = await CreateAdminClientAsync();
 
         var page = await client.GetFromJsonAsync<PagedResult<OrderSummaryDto>>("/api/admin/orders");
 
-        Assert.Equal([first.Id, third.Id], page!.Items.Select(o => o.Id));
-        Assert.Equal(2, page.TotalCount);
+        // The ones to ship and the one to refund, but not the unpaid, expired or shipped ones.
+        Assert.Equal([first.Id, third.Id, toRefund.Id], page!.Items.Select(o => o.Id));
+        Assert.Equal([false, false, true], page.Items.Select(o => o.NeedsRefund));
+        Assert.Equal(3, page.TotalCount);
     }
 
     [Fact]
@@ -120,6 +125,109 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
+    [Fact]
+    public async Task Ship_PaidOrder_BecomesShippedAndLeavesTheDefaultList()
+    {
+        var order = await AddOrderAsync(Pay);
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsync($"/api/admin/orders/{order.Id}/ship", null);
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        var details = await client.GetFromJsonAsync<OrderDetailsDto>($"/api/admin/orders/{order.Id}");
+        Assert.Equal("Shipped", details!.Status);
+        Assert.False(details.CanBeShipped);
+        Assert.False(details.CanBeCancelled);
+        var page = await client.GetFromJsonAsync<PagedResult<OrderSummaryDto>>("/api/admin/orders");
+        Assert.Empty(page!.Items);
+    }
+
+    [Fact]
+    public async Task Ship_UnpaidOrder_ReturnsConflict()
+    {
+        var order = await AddOrderAsync();
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsync($"/api/admin/orders/{order.Id}/ship", null);
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        var details = await client.GetFromJsonAsync<OrderDetailsDto>($"/api/admin/orders/{order.Id}");
+        Assert.Equal("Pending", details!.Status);
+    }
+
+    [Fact]
+    public async Task Cancel_PaidOrder_RestoresStockAndNeedsRefund()
+    {
+        // The webhook decreased the stock from 3 to 1 when the order of 2 was paid.
+        await AddProductAsync(stock: 1);
+        var order = await AddOrderAsync(Pay);
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsync($"/api/admin/orders/{order.Id}/cancel", null);
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.Equal(3, await GetStockAsync());
+        var details = await client.GetFromJsonAsync<OrderDetailsDto>($"/api/admin/orders/{order.Id}");
+        Assert.Equal(("Cancelled", "Paid"), (details!.Status, details.PaymentStatus));
+        Assert.True(details.NeedsRefund);
+        Assert.False(details.CanBeCancelled);
+        // Still in the default list, since the admin has to refund it.
+        var page = await client.GetFromJsonAsync<PagedResult<OrderSummaryDto>>("/api/admin/orders");
+        Assert.Equal(order.Id, Assert.Single(page!.Items).Id);
+    }
+
+    [Fact]
+    public async Task Cancel_Twice_ReturnsConflictAndRestoresStockOnce()
+    {
+        await AddProductAsync(stock: 1);
+        var order = await AddOrderAsync(Pay);
+        var client = await CreateAdminClientAsync();
+        await client.PostAsync($"/api/admin/orders/{order.Id}/cancel", null);
+
+        var response = await client.PostAsync($"/api/admin/orders/{order.Id}/cancel", null);
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Equal(3, await GetStockAsync());
+    }
+
+    [Fact]
+    public async Task Cancel_UnpaidOrder_ReturnsConflict()
+    {
+        // An unpaid order is cancelled automatically when its payment expires (ambiguity.md).
+        await AddProductAsync(stock: 3);
+        var order = await AddOrderAsync();
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsync($"/api/admin/orders/{order.Id}/cancel", null);
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Equal(3, await GetStockAsync());
+    }
+
+    [Theory]
+    [InlineData("ship")]
+    [InlineData("cancel")]
+    public async Task ChangeStatus_UnknownId_ReturnsNotFound(string action)
+    {
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsync($"/api/admin/orders/999/{action}", null);
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Theory]
+    [InlineData("ship")]
+    [InlineData("cancel")]
+    public async Task ChangeStatus_WithoutToken_ReturnsUnauthorized(string action)
+    {
+        var order = await AddOrderAsync(Pay);
+
+        var response = await app.CreateClient().PostAsync($"/api/admin/orders/{order.Id}/{action}", null);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
     // What the webhook does when a Checkout session is paid or expires (OrderService).
     private static void Pay(Order order) => order.Payment!.MarkAsPaid();
 
@@ -127,6 +235,37 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
     {
         order.Payment!.MarkAsExpired();
         order.Cancel();
+    }
+
+    // What the admin does in the CMS after the order was paid (AdminOrderService).
+    private static void Ship(Order order)
+    {
+        Pay(order);
+        order.MarkAsShipped();
+    }
+
+    private static void CancelPaid(Order order)
+    {
+        Pay(order);
+        order.CancelByAdmin();
+    }
+
+    // The product that AddOrderAsync's row points to (id 1). Only the tests that change the
+    // stock need it, since the in-memory database does not check foreign keys.
+    private async Task AddProductAsync(int stock)
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<GrejDbContext>();
+        db.Products.Add(new Product { Id = 1, Title = "Skål", Price = 450m, Stock = stock, IsActive = true });
+        await db.SaveChangesAsync();
+    }
+
+    // Read in a new scope, so it is what was saved and not what a DbContext remembers.
+    private async Task<int> GetStockAsync()
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<GrejDbContext>();
+        return (await db.Products.SingleAsync()).Stock;
     }
 
     // Saves an order with one row and a payment, like the checkout does. handle can pay or

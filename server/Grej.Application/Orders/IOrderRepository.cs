@@ -14,9 +14,14 @@ public interface IOrderRepository
     Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken);
 
     // One page of orders with their payments, for the CMS. all = false gives only paid
-    // orders that are not shipped yet, oldest first; all = true gives every order, newest first.
+    // orders that are not shipped yet (to ship or to refund), oldest first; all = true gives
+    // every order, newest first.
     Task<PagedResult<Order>> GetPageAsync(bool all, int page, int pageSize, CancellationToken cancellationToken);
 
     // True if any order, whatever its status, has a row with this product.
     Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken);
+
+    // Saves the changes made to orders fetched above, together with all other changes
+    // in the same request (e.g. the stock), in one transaction. Like IPaymentRepository.
+    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

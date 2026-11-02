@@ -1,11 +1,12 @@
+using Grej.Application.Catalog;
 using Grej.Application.Common;
 using Grej.Domain.Orders;
 
 namespace Grej.Application.Orders;
 
-// Use cases for orders in the CMS. Only admin endpoints use it. Setting an order to
-// Shipped or Cancelled is added in the next sprint item.
-public class AdminOrderService(IOrderRepository orders)
+// Use cases for orders in the CMS. Only admin endpoints use it. What the admin may do
+// with an order is decided by Order itself (CanBeShipped, CanBeCancelledByAdmin).
+public class AdminOrderService(IOrderRepository orders, ProductService products)
 {
     public async Task<PagedResult<OrderSummaryDto>> GetOrdersAsync(OrderListQuery query, CancellationToken cancellationToken)
     {
@@ -25,6 +26,54 @@ public class AdminOrderService(IOrderRepository orders)
         return order is null ? null : ToDetailsDto(order);
     }
 
+    public async Task<ChangeOrderStatusResult> ShipAsync(int id, CancellationToken cancellationToken)
+    {
+        var order = await orders.GetByIdAsync(id, cancellationToken);
+        if (order is null)
+        {
+            return ChangeOrderStatusResult.NotFound;
+        }
+
+        // Asked first, so a refused change becomes an answer (409) and not an exception.
+        if (!order.CanBeShipped)
+        {
+            return ChangeOrderStatusResult.NotAllowed;
+        }
+
+        order.MarkAsShipped();
+        await orders.SaveChangesAsync(cancellationToken);
+        return ChangeOrderStatusResult.Changed;
+    }
+
+    public async Task<ChangeOrderStatusResult> CancelAsync(int id, CancellationToken cancellationToken)
+    {
+        var order = await orders.GetByIdAsync(id, cancellationToken);
+        if (order is null)
+        {
+            return ChangeOrderStatusResult.NotFound;
+        }
+
+        // The same as in ShipAsync. A second cancel is refused too, so the stock is never
+        // increased twice.
+        if (!order.CanBeCancelledByAdmin)
+        {
+            return ChangeOrderStatusResult.NotAllowed;
+        }
+
+        order.CancelByAdmin();
+
+        // The order was paid, so its stock decreased (OrderService.HandlePaidAsync). It will not
+        // be shipped, so the products go back in stock; the refund never changes the stock
+        // (constraints.md). Through ProductService, since the stock belongs to the Catalog module.
+        var items = order.Items.Select(item => new ProductQuantity(item.ProductId, item.Quantity)).ToList();
+        await products.IncreaseStockAsync(items, cancellationToken);
+
+        // The order and the stock in one transaction. If a webhook changed the same product's
+        // stock since it was read, nothing is saved and this throws (ProductConfiguration).
+        await orders.SaveChangesAsync(cancellationToken);
+        return ChangeOrderStatusResult.Changed;
+    }
+
     private static OrderSummaryDto ToSummaryDto(Order order) => new(
         order.Id,
         order.OrderNumber,
@@ -33,7 +82,8 @@ public class AdminOrderService(IOrderRepository orders)
         order.Total,
         order.Currency,
         order.Status.ToString(),
-        PaymentStatusOf(order));
+        PaymentStatusOf(order),
+        order.NeedsRefund);
 
     private static OrderDetailsDto ToDetailsDto(Order order) => new(
         order.Id,
@@ -43,6 +93,9 @@ public class AdminOrderService(IOrderRepository orders)
         order.Currency,
         order.Status.ToString(),
         PaymentStatusOf(order),
+        order.NeedsRefund,
+        order.CanBeShipped,
+        order.CanBeCancelledByAdmin,
         order.CustomerName,
         order.CustomerEmail,
         order.AddressLine1,

@@ -253,6 +253,8 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
             throw new NotImplementedException();
         public Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
+        public Task SaveChangesAsync(CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
     }
 
     // Holds the ordered product, so the tests can check its stock.
