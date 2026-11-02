@@ -81,8 +81,12 @@ Why: Products must always have a category, and nothing should disappear by accid
 Decision: Only changing the order status (`Pending` → `Shipped` or `Cancelled`). The admin never changes the payment status, products or prices on an order.
 
 **Which orders does the admin see first?**
-Decision: By default the list shows orders that are paid but not shipped, i.e. what needs to be done. All orders can be shown with a filter.
-Why: Cancelled and expired orders are never deleted, so the list grows over time.
+Decision: By default the list shows orders that are paid but not shipped, i.e. what needs to be done: orders to ship, and cancelled orders that need a refund. All orders can be shown with a filter.
+Why: Cancelled and expired orders are never deleted, so the list grows over time. A cancelled order that is still paid also needs the admin, until the refund is done.
+
+**Can the admin cancel an order that is not paid yet?**
+Decision: No. The admin can only cancel a paid order that is not shipped. An unpaid order is cancelled automatically when its payment expires.
+Why: While the payment is pending, the customer can still pay in Stripe Checkout. If the admin could cancel the order, the customer could pay for an order that will never be shipped. This way, every cancel in the CMS puts the products back in stock.
 
 **Does cancelling an order refund the customer?**
 Decision: Not automatically. The admin refunds in the Stripe dashboard, Stripe notifies the API, and the payment becomes `Refunded`. Cancelling an order that has not been shipped increases the stock again; the refund itself never changes the stock.
