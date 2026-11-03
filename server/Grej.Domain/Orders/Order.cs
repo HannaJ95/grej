@@ -40,11 +40,17 @@ public class Order
 
     // The admin can only cancel a paid order (ambiguity.md). An unpaid one is cancelled
     // automatically when its payment expires, so a customer never pays for a cancelled order.
-    public bool CanBeCancelledByAdmin => Status == OrderStatus.Pending && Payment?.Status == PaymentStatus.Paid;
+    // A refunded one can be cancelled too, in case the admin refunded it in Stripe first.
+    public bool CanBeCancelledByAdmin =>
+        Status == OrderStatus.Pending && (Payment?.Status is PaymentStatus.Paid or PaymentStatus.Refunded);
 
     // Cancelled, but the customer's money has not been returned yet (constraints.md). False
     // again when the payment provider says the payment is Refunded.
     public bool NeedsRefund => Status == OrderStatus.Cancelled && Payment?.Status == PaymentStatus.Paid;
+
+    // The opposite of NeedsRefund: refunded in Stripe but not cancelled here, so its products
+    // are not back in stock yet (constraints.md). False again when the admin cancels it.
+    public bool NeedsCancelling => Status == OrderStatus.Pending && Payment?.Status == PaymentStatus.Refunded;
 
     public void AddItem(int productId, string title, decimal unitPrice, int quantity)
     {
@@ -117,8 +123,8 @@ public class Order
         UpdatedAt = DateTime.UtcNow;
     }
 
-    // Called when the admin cancels the order in the CMS. The order was paid, so the
-    // caller puts its products back in stock (constraints.md).
+    // Called when the admin cancels the order in the CMS. The order was paid (and maybe
+    // refunded since), so the caller puts its products back in stock (constraints.md).
     public void CancelByAdmin()
     {
         // The same safety net as in MarkAsShipped.

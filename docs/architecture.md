@@ -125,7 +125,11 @@ The order is saved only after Stripe has created the session, together with its 
 
 The other webhook events update the payment the same way:
 - `checkout.session.expired` sets the payment to `Expired` and the order to `Cancelled`.
-- `charge.refunded` sets the payment to `Refunded`.
+- `charge.refunded` sets the payment to `Refunded` when the whole amount has been returned; a partial refund is ignored (scope.md). It never changes the order or the stock (constraints.md).
+
+A refund event carries the charge, which knows its PaymentIntent (`pi_…`) but not the Checkout session. So `checkout.session.completed` stores the session's PaymentIntent id on the payment (`ProviderPaymentId`), and `PaymentRepository.GetByReferenceAsync` finds a payment by either id.
+
+Known limitations: payments that were paid before the migration `AddProviderPaymentId` have no PaymentIntent id, so their refunds are ignored (`reset-demo` removes them). A refund that arrives before its payment's `checkout.session.completed` has been handled is ignored too; in practice the admin refunds much later.
 
 ## Data model
 
@@ -220,6 +224,7 @@ erDiagram
 | OrderId | → Order | One payment per order in this version; a new checkout creates a new order |
 | Provider | string | `Stripe` |
 | ProviderReference | string | Stripe Checkout session id |
+| ProviderPaymentId | string, nullable | Stripe PaymentIntent id, stored when paid; refund events find the payment by it |
 | Status | enum | `Pending`, `Paid`, `Expired`, `Refunded` |
 | Amount | decimal | |
 | Currency | string | `SEK` |
@@ -301,11 +306,11 @@ Known limitations: two materials or colors can have the same name, the product f
 
 The admin reads orders with `/api/admin/orders` and `/api/admin/orders/{id}`, at `/admin/ordrar` in the CMS. The admin changes the order status with `POST /api/admin/orders/{id}/ship` and `POST /api/admin/orders/{id}/cancel`. Both answer 204, 404 if the order does not exist, and 409 if the order's status or payment does not allow the change.
 
-- By default the list ("Att göra") shows what the admin has to do: paid orders that are not shipped, oldest first, so the order that has waited longest is at the top. These are the orders to ship and the cancelled ones that need a refund. `?all=true` (`?visa=alla` in the CMS) shows every order, also unpaid and cancelled ones, newest first (ambiguity.md).
+- By default the list ("Att göra") shows what the admin has to do: paid orders that are not shipped, oldest first, so the order that has waited longest is at the top. These are the orders to ship and the cancelled ones that need a refund, and also the refunded ones that are not cancelled yet. `?all=true` (`?visa=alla` in the CMS) shows every order, also unpaid and cancelled ones, newest first (ambiguity.md).
 - The order page shows the customer, the address and each row with its title and price from the time of purchase. The customer details are empty until the webhook has stored them from Stripe.
-- The rules are in `Order`. `CanBeShipped` and `CanBeCancelledByAdmin` are true for a pending, paid order, and `NeedsRefund` for a cancelled, paid one. `MarkAsShipped` and `CancelByAdmin` refuse when a rule is broken. `AdminOrderService` checks first, so a refused change becomes 409 and not an exception.
-- The API sends these answers to the CMS (`canBeShipped`, `canBeCancelled`, `needsRefund`). The CMS shows only the buttons the order allows and has no rules of its own.
-- Cancelling puts the order's products back in stock through `ProductService`, and the order and the stock are saved in one transaction. The admin refunds the customer in the Stripe dashboard (ambiguity.md).
+- The rules are in `Order`. `CanBeShipped` is true for a pending, paid order, and `CanBeCancelledByAdmin` for a pending order that is paid or refunded. `NeedsRefund` is true for a cancelled, paid order, and `NeedsCancelling` for a pending, refunded one (the admin refunded in Stripe before cancelling). `MarkAsShipped` and `CancelByAdmin` refuse when a rule is broken. `AdminOrderService` checks first, so a refused change becomes 409 and not an exception.
+- The API sends these answers to the CMS (`canBeShipped`, `canBeCancelled`, `needsRefund`, `needsCancelling`). The CMS shows only the buttons the order allows and has no rules of its own.
+- Cancelling puts the order's products back in stock through `ProductService`, and the order and the stock are saved in one transaction. The admin refunds the customer in the Stripe dashboard, and the webhook then marks the payment as `Refunded` (ambiguity.md).
 - The statuses are sent as text (`"Paid"`), and the CMS shows them in Swedish (`order-texts.ts`). Row totals are calculated in the API, like every price.
 - The pagination keeps the list's other query parameters, so `?visa=alla` is kept on the next page.
 

@@ -16,6 +16,8 @@ export interface OrderSummary {
   paymentStatus: PaymentStatus;
   // Cancelled but still paid, so the admin must refund it in Stripe.
   needsRefund: boolean;
+  // Refunded in Stripe but not cancelled, so the admin must cancel it to restock its products.
+  needsCancelling: boolean;
 }
 
 // One order with its customer and rows (OrderDetailsDto in the API).

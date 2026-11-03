@@ -33,17 +33,17 @@ public class PaymentWebhookService(IPaymentWebhookReader webhookReader, IPayment
         var payment = await payments.GetByReferenceAsync(update.Reference, cancellationToken);
         if (payment is null)
         {
-            // A session whose order was never saved, e.g. if the database failed
-            // after Stripe answered (architecture.md). There is nothing to update.
+            // A session whose order was never saved, e.g. if the database failed after Stripe
+            // answered (architecture.md), or a refund of a payment that was paid before its
+            // PaymentIntent id was stored. There is nothing to update.
             return true;
         }
 
-        // Refunded is added here in sprint 3.
         if (update.Status == PaymentStatus.Paid)
         {
             // False if the payment was already Paid, so an event that arrives
             // twice never decreases the stock twice (constraints.md).
-            if (payment.MarkAsPaid())
+            if (payment.MarkAsPaid(update.ProviderPaymentId))
             {
                 await orders.HandlePaidAsync(payment.OrderId, update.Customer, cancellationToken);
             }
@@ -55,6 +55,12 @@ public class PaymentWebhookService(IPaymentWebhookReader webhookReader, IPayment
             {
                 await orders.HandleExpiredAsync(payment.OrderId, cancellationToken);
             }
+        }
+        else if (update.Status == PaymentStatus.Refunded)
+        {
+            // Only the payment changes. The admin decides what happens to the order, and a
+            // refund never changes the stock (constraints.md).
+            payment.MarkAsRefunded();
         }
 
         // If the same event is handled by two requests at the same time, both get past the

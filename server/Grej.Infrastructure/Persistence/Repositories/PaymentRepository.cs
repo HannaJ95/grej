@@ -8,8 +8,11 @@ namespace Grej.Infrastructure.Persistence.Repositories;
 public class PaymentRepository(GrejDbContext db) : IPaymentRepository
 {
     public Task<Payment?> GetByReferenceAsync(string reference, CancellationToken cancellationToken) =>
-        // Fast, since ProviderReference has a unique index (PaymentConfiguration).
-        db.Payments.SingleOrDefaultAsync(p => p.ProviderReference == reference, cancellationToken);
+        // Checkout's events carry the session id (cs_…) and refund events the PaymentIntent id
+        // (pi_…), so both columns are searched. Stripe's ids start differently, so one never
+        // matches the other column. Fast, since both have a unique index (PaymentConfiguration).
+        db.Payments.SingleOrDefaultAsync(
+            p => p.ProviderReference == reference || p.ProviderPaymentId == reference, cancellationToken);
 
     public Task<bool> IsEventProcessedAsync(string eventId, CancellationToken cancellationToken) =>
         // Fast, since EventId is the primary key.

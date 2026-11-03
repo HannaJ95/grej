@@ -29,6 +29,16 @@ public class PaymentTests
     }
 
     [Fact]
+    public void MarkAsPaid_WithProviderPaymentId_StoresIt()
+    {
+        var payment = NewPayment();
+
+        payment.MarkAsPaid("pi_test_123");
+
+        Assert.Equal("pi_test_123", payment.ProviderPaymentId);
+    }
+
+    [Fact]
     public void MarkAsExpired_Pending_BecomesExpiredAndReturnsTrue()
     {
         var payment = NewPayment();
@@ -69,6 +79,38 @@ public class PaymentTests
 
         Assert.Throws<InvalidOperationException>(() => payment.MarkAsPaid());
         Assert.Equal(PaymentStatus.Expired, payment.Status);
+    }
+
+    [Fact]
+    public void MarkAsRefunded_Paid_BecomesRefunded()
+    {
+        var payment = NewPayment();
+        payment.MarkAsPaid();
+
+        payment.MarkAsRefunded();
+
+        Assert.Equal(PaymentStatus.Refunded, payment.Status);
+    }
+
+    [Fact]
+    public void MarkAsRefunded_Twice_StaysRefunded()
+    {
+        var payment = NewPayment();
+        payment.MarkAsPaid();
+        payment.MarkAsRefunded();
+
+        payment.MarkAsRefunded();
+
+        Assert.Equal(PaymentStatus.Refunded, payment.Status);
+    }
+
+    [Fact]
+    public void MarkAsRefunded_NotPaid_Throws()
+    {
+        var payment = NewPayment();
+
+        Assert.Throws<InvalidOperationException>(() => payment.MarkAsRefunded());
+        Assert.Equal(PaymentStatus.Pending, payment.Status);
     }
 
     // Payments are only created through an order (Order.AddPayment).

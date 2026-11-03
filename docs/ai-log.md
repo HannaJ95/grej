@@ -131,3 +131,6 @@ A few lines a day about how AI was used: what for, which tool, and what worked o
 - **Building:** Finished sprint 3 item 2. The CMS has an order list, showing by default the paid orders that are not shipped yet, oldest first, or all orders, and a page per order with the customer, address and rows. Verified locally with a test purchase.
 - **Design:** I moved the demo orders to the next item, so they can be shipped and cancelled too.
 - **Verification:** Built and tested in copies first, and the list's SQL was checked against a temporary local PostgreSQL.
+- **Building:** Finished sprint 3 item 3. The admin marks paid orders as shipped or cancels them in the CMS, and cancelling puts the products back in stock. A cancelled paid order is shown as "Behöver återbetalas". `reset-demo` now also adds six demo orders. Verified locally.
+- **Design:** I decided that the admin can only cancel paid orders, since an unpaid order can still be paid in Stripe, and that the default list "Att göra" also shows orders to refund. The rules are in `Order`, and the CMS only shows the buttons the API allows.
+- **Verification:** Every part was built and tested in a copy first. Removing the stock increase made two tests fail.

@@ -291,6 +291,10 @@ namespace Grej.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<string>("ProviderPaymentId")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
                     b.Property<string>("ProviderReference")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -307,6 +311,9 @@ namespace Grej.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.HasIndex("ProviderPaymentId")
                         .IsUnique();
 
                     b.HasIndex("ProviderReference")

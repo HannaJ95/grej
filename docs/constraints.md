@@ -39,6 +39,7 @@ Pending ──► Paid ──► Refunded
 Expired
 ```
 
+- Only a full refund makes the payment `Refunded`. A partial refund changes nothing, since partial refunds are not built (scope.md).
 - `Failed` is added when a payment method that can fail after the customer has left checkout is added. With Stripe Checkout and cards, a declined card does not end the session; the customer tries again or the session expires.
 
 ### Order status
@@ -47,7 +48,7 @@ Expired
 |---|---|---|
 | `Pending` | Order created, not yet handled | API, when the order is created |
 | `Shipped` | Admin has sent the order | Admin |
-| `Cancelled` | The order will not be shipped | Admin (paid orders only), or automatically when the payment expires |
+| `Cancelled` | The order will not be shipped | Admin (paid or refunded orders only), or automatically when the payment expires |
 
 ```
 Pending ──► Shipped
@@ -60,9 +61,10 @@ Cancelled
 
 - No other transitions than the ones above are allowed.
 - An order can only be set to `Shipped` if its payment is `Paid`.
-- The admin can only set an order to `Cancelled` if its payment is `Paid` (ambiguity.md).
+- The admin can only set an order to `Cancelled` if its payment is `Paid` or `Refunded` (ambiguity.md).
 - When the payment becomes `Expired`, the order becomes `Cancelled`.
 - An order that is `Cancelled` with payment `Paid` is shown to the admin as "needs refund".
+- An order that is `Pending` with payment `Refunded` is shown to the admin as "needs cancelling". A refund never changes the order status.
 - If the last item was already sold when the payment becomes `Paid`, the order is flagged for the admin, who cancels it and refunds it in Stripe (Should).
 - An order is never deleted in the shop or the CMS. Only the developer's `reset-demo` command empties the database (architecture.md).
 - Each order row stores the product's title and price at the time of purchase. Later changes to a product never change old orders.
@@ -89,7 +91,7 @@ Cancelled
 
 - Stock decreases only when a payment becomes `Paid`, not when a product is added to the cart.
 - If two customers buy the last item at the same time, the stock goes below 0. This shows the admin that one of the orders must be cancelled and refunded.
-- When the admin cancels a paid order that has not been shipped, the stock is increased again automatically. A refund never changes the stock.
+- When the admin cancels an order that has not been shipped (paid, or already refunded in Stripe), the stock is increased again automatically. A refund never changes the stock.
 - When a shipped order is returned, the admin adjusts the stock manually in the CMS.
 - A product with stock 0 or less is shown as sold out and cannot be added to the cart.
 - The API checks stock again before creating a Checkout session.

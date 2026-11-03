@@ -13,7 +13,8 @@ export class AdminOrderService {
   private readonly url = `${environment.apiUrl}/api/admin/orders`;
 
   // One page of orders. When all is false, only paid orders that are not shipped yet
-  // (to ship or to refund), oldest first; when it is true, every order, newest first.
+  // (to ship or to refund) and refunded ones to cancel, oldest first; when it is true,
+  // every order, newest first.
   getOrders(page: Signal<number>, all: Signal<boolean>) {
     return httpResource<PagedResult<OrderSummary>>(() => ({
       url: this.url,
