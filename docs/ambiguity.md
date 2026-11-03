@@ -81,16 +81,20 @@ Why: Products must always have a category, and nothing should disappear by accid
 Decision: Only changing the order status (`Pending` → `Shipped` or `Cancelled`). The admin never changes the payment status, products or prices on an order.
 
 **Which orders does the admin see first?**
-Decision: By default the list shows orders that are paid but not shipped, i.e. what needs to be done: orders to ship, and cancelled orders that need a refund. All orders can be shown with a filter.
+Decision: By default the list shows orders that are paid but not shipped, i.e. what needs to be done: orders to ship, and cancelled orders that need a refund. Refunded orders that are not cancelled yet are shown too. All orders can be shown with a filter.
 Why: Cancelled and expired orders are never deleted, so the list grows over time. A cancelled order that is still paid also needs the admin, until the refund is done.
 
 **Can the admin cancel an order that is not paid yet?**
-Decision: No. The admin can only cancel a paid order that is not shipped. An unpaid order is cancelled automatically when its payment expires.
+Decision: No. The admin can only cancel a paid order that is not shipped (or a refunded one, see below). An unpaid order is cancelled automatically when its payment expires.
 Why: While the payment is pending, the customer can still pay in Stripe Checkout. If the admin could cancel the order, the customer could pay for an order that will never be shipped. This way, every cancel in the CMS puts the products back in stock.
 
 **Does cancelling an order refund the customer?**
 Decision: Not automatically. The admin refunds in the Stripe dashboard, Stripe notifies the API, and the payment becomes `Refunded`. Cancelling an order that has not been shipped increases the stock again; the refund itself never changes the stock.
 Why: Automatic refunds are more code and more risk, and refunds are rare in a small shop.
+
+**What if the admin refunds in Stripe before cancelling the order?**
+Decision: The payment becomes `Refunded` and the order stays `Pending`. It can no longer be shipped, but the admin can cancel it, which puts the products back in stock. Until then the default list shows it as "needs cancelling".
+Why: Only the admin changes the order status (constraints.md). A refunded order can also be one that was shipped and returned, which must stay `Shipped`, so the refund itself never cancels the order.
 
 ## Shipping, money and countries
 
