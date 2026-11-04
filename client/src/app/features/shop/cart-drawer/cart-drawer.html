@@ -1,67 +1,130 @@
-<button appButton type="button" aria-haspopup="dialog" (click)="open()">
+<button appButton class="cart-button" type="button" aria-haspopup="dialog" (click)="open()">
   Varukorg ({{ cart.count() }})
 </button>
 
-<dialog #dialog aria-labelledby="cart-title">
-  <h2 id="cart-title">Varukorg</h2>
-  <button appButton variant="secondary" type="button" (click)="close()">Stäng</button>
+<dialog #dialog aria-labelledby="cart-title" (click)="closeOnBackdrop($event)">
+  <div class="panel">
+    <div class="panel-header">
+      <h2 class="panel-title" id="cart-title">Varukorg</h2>
+      <button
+        appIconButton
+        icon="close"
+        type="button"
+        aria-label="Stäng"
+        (click)="close()"
+      ></button>
+    </div>
 
-  <!-- Outside the list, so it is shown even if every product was removed. -->
-  @if (cartChanged()) {
-    <p role="alert">
-      Några produkter finns inte kvar i det antal du valde. Varukorgen har uppdaterats.
-    </p>
-  }
-
-  @if (cart.items().length === 0) {
-    <p>Varukorgen är tom.</p>
-  } @else {
-    <ul>
-      @for (item of cart.items(); track item.productId) {
-        <li>
-          <!-- Closes the panel, since the new page is shown behind it. -->
-          <a [routerLink]="['/produkter', item.productId]" (click)="close()">{{ item.title }}</a>
-          <p>{{ item.price | currency: item.currency }}</p>
-          <button
-            appButton
-            variant="secondary"
-            type="button"
-            [attr.aria-label]="'Minska antal ' + item.title"
-            [disabled]="item.quantity <= 1"
-            (click)="cart.setQuantity(item.productId, item.quantity - 1)"
-          >
-            −
-          </button>
-          {{ item.quantity }}
-          <button
-            appButton
-            variant="secondary"
-            type="button"
-            [attr.aria-label]="'Öka antal ' + item.title"
-            [disabled]="item.quantity >= item.maxQuantity"
-            (click)="cart.setQuantity(item.productId, item.quantity + 1)"
-          >
-            +
-          </button>
-          <button
-            appButton
-            variant="secondary"
-            type="button"
-            [attr.aria-label]="'Ta bort ' + item.title"
-            (click)="cart.remove(item.productId)"
-          >
-            Ta bort
-          </button>
-        </li>
-      }
-    </ul>
-    <!-- Every price is in SEK in this version (constraints.md). -->
-    <p>Summa: {{ cart.total() | currency: 'SEK' }}</p>
-    <button appButton type="button" [disabled]="isBuying()" (click)="goToCheckout()">
-      {{ isBuying() ? 'Skickar dig till betalningen…' : 'Till kassan' }}
-    </button>
-    @if (buyFailed()) {
-      <p role="alert">Det gick inte att gå till betalningen. Försök igen.</p>
+    <!-- Outside the list, so it is shown even if every product was removed. -->
+    @if (cartChanged()) {
+      <p class="notice" role="alert">
+        Några produkter finns inte kvar i det antal du valde. Varukorgen har uppdaterats.
+      </p>
     }
-  }
+
+    @if (cart.items().length === 0) {
+      <div class="empty">
+        <!-- A bag drawn with CSS, like the design. Decoration only. -->
+        <span class="bag" aria-hidden="true">
+          <span class="bag-handle"></span>
+          <span class="bag-body"></span>
+        </span>
+        <p class="empty-title">Din varukorg<br />är tom</p>
+        <p class="empty-text">Här hamnar dina grejer. Hitta något du gillar i shoppen.</p>
+        <a appButton size="large" class="full-width" routerLink="/produkter" (click)="close()">
+          Utforska shoppen
+        </a>
+      </div>
+    } @else {
+      <ul class="items">
+        @for (item of cart.items(); track item.productId) {
+          <li class="item">
+            <!-- The title says which product it is, so the picture has no alt text of its own. -->
+            @if (item.image; as image) {
+              <img class="thumbnail" [src]="image.url" alt="" />
+            } @else {
+              <span class="thumbnail"></span>
+            }
+            <div class="info">
+              <div class="name-price">
+                <!-- Closes the panel, since the new page is shown behind it. -->
+                <a class="name" [routerLink]="['/produkter', item.productId]" (click)="close()">
+                  {{ item.title }}
+                </a>
+                <span class="price">{{
+                  item.price | currency: item.currency : 'symbol' : '1.0-2'
+                }}</span>
+              </div>
+              <div class="actions">
+                <!-- The design's quantity stepper: − 1 + in one frame. -->
+                <div class="stepper">
+                  <button
+                    type="button"
+                    [attr.aria-label]="'Minska antal ' + item.title"
+                    [disabled]="item.quantity <= 1"
+                    (click)="cart.setQuantity(item.productId, item.quantity - 1)"
+                  >
+                    <app-icon name="minus" />
+                  </button>
+                  <span class="quantity">{{ item.quantity }}</span>
+                  <button
+                    type="button"
+                    [attr.aria-label]="'Öka antal ' + item.title"
+                    [disabled]="item.quantity >= item.maxQuantity"
+                    (click)="cart.setQuantity(item.productId, item.quantity + 1)"
+                  >
+                    <app-icon name="plus" />
+                  </button>
+                </div>
+                <button
+                  class="remove"
+                  type="button"
+                  [attr.aria-label]="'Ta bort ' + item.title"
+                  (click)="cart.remove(item.productId)"
+                >
+                  Ta bort
+                </button>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+
+      <div class="summary">
+        <!-- Every price is in SEK in this version (constraints.md). -->
+        <p class="total">
+          <span>Summa</span>
+          <span>{{ cart.total() | currency: 'SEK' : 'symbol' : '1.0-2' }}</span>
+        </p>
+        <button
+          appButton
+          size="large"
+          class="full-width"
+          type="button"
+          [disabled]="isBuying()"
+          (click)="goToCheckout()"
+        >
+          @if (isBuying()) {
+            Skickar dig till betalningen…
+          } @else {
+            Till kassan <span aria-hidden="true">→</span>
+          }
+        </button>
+        @if (buyFailed()) {
+          <p role="alert">Det gick inte att gå till betalningen. Försök igen.</p>
+        }
+        <button
+          appButton
+          variant="secondary"
+          size="large"
+          class="full-width"
+          type="button"
+          (click)="close()"
+        >
+          Fortsätt handla
+        </button>
+        <p class="secure">Säker betalning via Stripe</p>
+      </div>
+    }
+  </div>
 </dialog>
