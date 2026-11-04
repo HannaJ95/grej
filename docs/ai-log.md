@@ -134,3 +134,10 @@ A few lines a day about how AI was used: what for, which tool, and what worked o
 - **Building:** Finished sprint 3 item 3. The admin marks paid orders as shipped or cancels them in the CMS, and cancelling puts the products back in stock. A cancelled paid order is shown as "Behöver återbetalas". `reset-demo` now also adds six demo orders. Verified locally.
 - **Design:** I decided that the admin can only cancel paid orders, since an unpaid order can still be paid in Stripe, and that the default list "Att göra" also shows orders to refund. The rules are in `Order`, and the CMS only shows the buttons the API allows.
 - **Verification:** Every part was built and tested in a copy first. Removing the stock increase made two tests fail.
+
+## 2026-11-03
+
+- **Building:** Finished sprint 3 item 4. When the admin refunds a payment in Stripe, the webhook `charge.refunded` marks it as `Refunded`, and the order leaves "Att göra". Verified locally and in production.
+- **Design:** The refund event only knows Stripe's PaymentIntent, not the Checkout session, so I chose to store the PaymentIntent id when the order is paid instead of asking Stripe's API. I also decided that an order refunded before it is cancelled can still be cancelled, so its stock comes back, and that "Att göra" shows it as "Behöver avbrytas". Partial refunds are ignored.
+- **Verification:** Every part was built and tested in a copy first. In the local test, Render's old code sometimes handled the payment first and stored no id, and the event ids showed that I had once refunded the wrong payment in Stripe. Both were test problems, not bugs.
+- **Verification:** Finished sprint 3 item 5. In production I bought several products with a test card, saw the paid order in "Att göra", marked it as shipped and checked that the stock had decreased. I also tested both refund flows there. All Must items are done, one day before the checkpoint on Wed 4 Nov.

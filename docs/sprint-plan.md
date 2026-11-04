@@ -76,8 +76,8 @@ Must (Mon–Wed):
 - [x] Demo data: a command that empties the database and fills it with demo categories, products and images
 - [x] CMS: order list (default: paid, not shipped) and order details
 - [x] Admin sets order status `Shipped` / `Cancelled` with the rules from constraints; cancelling a paid order restores the stock
-- [ ] Webhook: `charge.refunded` marks the payment as `Refunded`
-- [ ] Full flow tested in production: buy → paid → shipped
+- [x] Webhook: `charge.refunded` marks the payment as `Refunded`
+- [x] Full flow tested in production: buy → paid → shipped
 
 Should (Wed–Fri):
 
