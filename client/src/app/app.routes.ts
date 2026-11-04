@@ -9,8 +9,13 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./features/shop/shop-layout/shop-layout').then((m) => m.ShopLayout),
     children: [
-      // The start page is the product list. Stripe's cancel URL (/) also ends up here.
-      { path: '', redirectTo: 'produkter', pathMatch: 'full' },
+      {
+        // The start page. Stripe's cancel URL (/) also ends up here.
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () =>
+          import('./features/shop/landing-page/landing-page').then((m) => m.LandingPage),
+      },
       {
         path: 'produkter',
         loadComponent: () =>
