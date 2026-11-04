@@ -21,6 +21,23 @@ body {
   line-height: var(--line-height-body);
 }
 
+// The shop's layout has bands of color from edge to edge, so the body does not limit it.
+// :has() matches the body when the shop's layout is somewhere inside it; the admin pages
+// keep the rule above.
+body:has(app-shop-layout) {
+  max-width: none;
+  padding: 0;
+}
+
+// Keeps the shop's content centered and at most --content-width wide, with --page-gutter on
+// each side. Used by the shop's pages and by the content inside the layout's bands.
+.page-width {
+  display: block;
+  max-width: calc(var(--content-width) + 2 * var(--page-gutter));
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
 h1,
 h2,
 h3 {
