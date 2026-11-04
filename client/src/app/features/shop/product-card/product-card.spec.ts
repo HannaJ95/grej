@@ -48,6 +48,12 @@ describe('ProductCard', () => {
     expect(card.querySelector<HTMLButtonElement>('.add')!.disabled).toBe(true);
   });
 
+  it('says "Få kvar" when one or two are left', async () => {
+    const card = await show({ ...vase, stock: 2 });
+
+    expect(card.querySelector('app-badge')!.textContent).toBe('Få kvar');
+  });
+
   it('adds the product to the cart', async () => {
     const card = await show(vase);
     const add = card.querySelector<HTMLButtonElement>('.add')!;

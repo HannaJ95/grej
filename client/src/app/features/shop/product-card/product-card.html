@@ -8,6 +8,8 @@
   }
   @if (p.isSoldOut) {
     <app-badge class="badge" tone="light">Slutsåld</app-badge>
+  } @else if (fewLeft()) {
+    <app-badge class="badge" tone="light">Få kvar</app-badge>
   }
 </div>
 <div class="meta">
