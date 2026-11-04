@@ -1,14 +1,17 @@
 import { computed, Service, signal } from '@angular/core';
 import { UnavailableItem } from './checkout.service';
 import { Product } from './product.service';
+import { ProductImage } from './product-image';
 
-// One row in the cart. Title and price are copied when the product is added,
+// One row in the cart. Title, price and image are copied when the product is added,
 // only to show them; the API always takes the price from the database.
 export interface CartItem {
   productId: number;
   title: string;
   price: number;
   currency: string;
+  // For the small picture in the cart. Null if the product has no image.
+  image: ProductImage | null;
   quantity: number;
   // The stock when the product was added, at most MAX_QUANTITY. The API checks
   // the stock again in the checkout, since it may have changed since then.
@@ -68,6 +71,7 @@ export class CartService {
         title: product.title,
         price: product.price,
         currency: product.currency,
+        image: product.image,
         quantity: 1,
         maxQuantity,
       };
@@ -136,9 +140,10 @@ function load(): CartItem[] {
   try {
     const saved: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]');
     // Carts saved before the stock limit have no maxQuantity. They get the
-    // largest one, and the API's stock check fixes them in the checkout.
+    // largest one, and the API's stock check fixes them in the checkout. Carts saved
+    // before the design have no image, and are shown without one.
     return Array.isArray(saved)
-      ? saved.map((item) => ({ maxQuantity: MAX_QUANTITY, ...item }))
+      ? saved.map((item) => ({ maxQuantity: MAX_QUANTITY, image: null, ...item }))
       : [];
   } catch {
     return [];

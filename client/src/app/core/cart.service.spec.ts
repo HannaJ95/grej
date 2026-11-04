@@ -114,17 +114,36 @@ describe('CartService', () => {
     const reloaded = new CartService();
 
     expect(reloaded.items()).toEqual([
-      { productId: 1, title: 'Vas', price: 300, currency: 'SEK', quantity: 1, maxQuantity: 3 },
+      {
+        productId: 1,
+        title: 'Vas',
+        price: 300,
+        currency: 'SEK',
+        image: null,
+        quantity: 1,
+        maxQuantity: 3,
+      },
     ]);
   });
 
-  it('gives a cart saved without maxQuantity the largest one', () => {
+  it("keeps the product's image for the cart's picture", () => {
+    const image = { url: 'https://storage.test/vas.png', altText: 'En blå vas' };
+    const cart = new CartService();
+
+    cart.add({ ...vase, image });
+
+    expect(cart.items()[0].image).toEqual(image);
+  });
+
+  it('gives a cart saved without maxQuantity the largest one, and no image', () => {
     localStorage.setItem(
       'grej.cart',
       JSON.stringify([{ productId: 1, title: 'Vas', price: 300, currency: 'SEK', quantity: 2 }]),
     );
 
-    expect(new CartService().items()[0].maxQuantity).toBe(99);
+    const item = new CartService().items()[0];
+    expect(item.maxQuantity).toBe(99);
+    expect(item.image).toBeNull();
   });
 
   it('starts empty when the saved cart is broken', () => {
