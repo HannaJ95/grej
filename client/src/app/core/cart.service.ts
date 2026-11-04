@@ -41,6 +41,12 @@ export class CartService {
     this.items().reduce((sum, item) => sum + item.price * item.quantity, 0),
   );
 
+  // The row that was added last, for the "Tillagd i varukorgen" popup. A new object every
+  // time, so the popup shows again even when the same product is added twice. Null when
+  // the popup is closed. Not saved, since it is only for the moment.
+  private readonly added = signal<CartItem | null>(null);
+  readonly lastAdded = this.added.asReadonly();
+
   // False if the product is sold out, or all that can be bought are already in the cart.
   canAdd(product: Product): boolean {
     const inCart = this.items().find((item) => item.productId === product.id)?.quantity ?? 0;
@@ -77,6 +83,13 @@ export class CartService {
       };
       this.save([...this.items(), item]);
     }
+    const row = this.items().find((item) => item.productId === product.id)!;
+    this.added.set({ ...row });
+  }
+
+  // Called when the popup closes.
+  forgetLastAdded(): void {
+    this.added.set(null);
   }
 
   // Keeps the quantity between 1 and the row's maxQuantity. Use remove() to take a product out.

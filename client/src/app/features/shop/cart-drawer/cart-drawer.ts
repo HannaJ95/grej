@@ -52,7 +52,8 @@ export class CartDrawer {
     this.dialog().nativeElement.close();
   }
 
-  protected async goToCheckout(): Promise<void> {
+  // Public, so the "Tillagd i varukorgen" popup's "Till kassan" can start it too.
+  async goToCheckout(): Promise<void> {
     this.isBuying.set(true);
     this.buyFailed.set(false);
     this.cartChanged.set(false);

@@ -1,0 +1,45 @@
+<!-- Always in the page, so screen readers notice when the content appears (aria-live). -->
+<div aria-live="polite">
+  @if (cart.lastAdded(); as item) {
+    <div
+      class="popup"
+      (mouseenter)="pause()"
+      (mouseleave)="startTimer()"
+      (focusin)="pause()"
+      (focusout)="startTimer()"
+    >
+      <div class="title-row">
+        <p class="title">
+          <span class="check"><app-icon name="check" /></span>
+          Tillagd i varukorgen
+        </p>
+        <button
+          appIconButton
+          icon="close"
+          type="button"
+          aria-label="Stäng"
+          (click)="close()"
+        ></button>
+      </div>
+
+      <div class="item">
+        @if (item.image; as image) {
+          <img class="thumbnail" [src]="image.url" alt="" />
+        } @else {
+          <span class="thumbnail"></span>
+        }
+        <div class="info">
+          <p class="name">{{ item.title }}</p>
+          <p class="price">{{ item.price | currency: item.currency : 'symbol' : '1.0-2' }}</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button appButton variant="secondary" type="button" (click)="goToCart()">
+          Visa varukorg ({{ cart.count() }})
+        </button>
+        <button appButton type="button" (click)="goToCheckout()">Till kassan</button>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,92 @@
+// fixed: stays under the header's cart button even when the page is scrolled. 360 px wide,
+// and the whole width except the page's sides on a phone.
+.popup {
+  position: fixed;
+  top: 4.5rem;
+  right: var(--page-gutter);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  width: min(22.5rem, calc(100% - 2 * var(--page-gutter)));
+  padding: 0.875rem var(--space-4) var(--space-4);
+  border: 2px solid var(--color-text);
+  background: var(--color-surface);
+  box-shadow: 0 8px 12px rgb(43 42 39 / 18%);
+
+  p {
+    margin: 0;
+  }
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  // The design's close button here is 32 px instead of 40 px.
+  button {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+// A 24 px dark square with a light check mark.
+.check {
+  --icon-size: 1rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.thumbnail {
+  flex-shrink: 0;
+  width: 4rem;
+  height: 4.75rem;
+  object-fit: cover;
+  background: #ffffff;
+}
+
+.info {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.price {
+  font-weight: 500;
+}
+
+// Two equally wide buttons.
+.actions {
+  display: flex;
+  gap: 0.625rem;
+
+  button {
+    flex: 1;
+    padding-block: 0.8125rem;
+    font-size: 0.9375rem;
+  }
+}

@@ -18,6 +18,8 @@
       <app-mobile-menu class="mobile-menu" (openCart)="cart.open()" />
     </div>
   </div>
+  <!-- "Till kassan" opens the cart first, so the customer sees what happens and any error. -->
+  <app-added-to-cart (viewCart)="cart.open()" (checkout)="cart.open(); cart.goToCheckout()" />
 </header>
 
 <main>

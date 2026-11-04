@@ -126,6 +126,18 @@ describe('CartService', () => {
     ]);
   });
 
+  it('remembers the row that was added last, until it is forgotten', () => {
+    const cart = new CartService();
+    expect(cart.lastAdded()).toBeNull();
+
+    cart.add(vase);
+    cart.add(vase);
+    expect(cart.lastAdded()).toMatchObject({ productId: 1, quantity: 2 });
+
+    cart.forgetLastAdded();
+    expect(cart.lastAdded()).toBeNull();
+  });
+
   it("keeps the product's image for the cart's picture", () => {
     const image = { url: 'https://storage.test/vas.png', altText: 'En blå vas' };
     const cart = new CartService();
