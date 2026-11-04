@@ -1,0 +1,23 @@
+@let p = product();
+<div class="media">
+  <!-- A plain img like in the product list: the images' sizes are not stored. -->
+  @if (p.image; as image) {
+    <img class="image" [src]="image.url" [alt]="image.altText" loading="lazy" />
+  } @else {
+    <span class="image"></span>
+  }
+  @if (p.isSoldOut) {
+    <app-badge class="badge" tone="light">Slutsåld</app-badge>
+  }
+</div>
+<div class="meta">
+  <!-- The link covers the whole card (see .title::after), so the image can be clicked too,
+       while screen readers only read the title. -->
+  <a class="title" [routerLink]="['/produkter', p.id]">{{ p.title }}</a>
+  <p class="price">
+    {{ p.price | currency: p.currency }}
+    @if (p.isSoldOut) {
+      · Slutsåld
+    }
+  </p>
+</div>

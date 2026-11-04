@@ -1,0 +1,97 @@
+// position: relative makes the title link's ::after cover this card and nothing else.
+:host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  color: var(--color-text);
+}
+
+.media {
+  position: relative;
+}
+
+// The design's 318 × 380 px, as a ratio so it shrinks with the card. object-fit crops the
+// image instead of stretching it. The span without an image is a white box of the same size.
+.image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 318 / 380;
+  object-fit: cover;
+  background: #ffffff;
+}
+
+.badge {
+  position: absolute;
+  top: 0.875rem;
+  left: 0.875rem;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  line-height: 1.4;
+}
+
+// 17 px on a computer and a tablet, 15 px on a phone, like the design.
+.title {
+  color: inherit;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  text-decoration: none;
+
+  @media (width < 48rem) {
+    font-size: 0.9375rem;
+  }
+
+  // An empty box over the whole card that belongs to the link, so a click anywhere on the
+  // card opens the product.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  &:hover {
+    color: inherit;
+    text-decoration: underline;
+  }
+}
+
+// The focus ring goes around the whole card, which is what the link covers.
+:host:has(.title:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+.title:focus-visible {
+  outline: none;
+}
+
+.price {
+  margin: 0;
+  font-weight: 500;
+
+  @media (width < 48rem) {
+    font-size: 0.9375rem;
+  }
+}
+
+// Sold out: a light layer over the image and greyer text, like the design. The text uses the
+// muted color instead of the design's 60 % opacity, which would only have 4:1 contrast.
+:host(.sold-out) {
+  color: var(--color-text-muted);
+
+  .media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgb(248 243 234 / 70%);
+  }
+
+  // Above the light layer.
+  .badge {
+    z-index: 1;
+  }
+}
