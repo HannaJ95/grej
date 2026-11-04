@@ -1,18 +1,15 @@
-import { CurrencyPipe } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { ProductService } from '../../../core/product.service';
 import { toPageNumber } from '../../../shared/page-number';
 import { Pagination } from '../../../shared/pagination/pagination';
+import { ProductCard } from '../product-card/product-card';
 
-// The list of products in the shop, e.g. /produkter or /produkter?sida=2.
+// The list of products in the shop, e.g. /produkter or /produkter?sida=2 (Figma: Shop page).
 @Component({
   selector: 'app-product-list',
-  imports: [CurrencyPipe, RouterLink, Pagination],
+  imports: [Pagination, ProductCard],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss',
-  // The page's width and side space (_base.scss), since the shop's layout has none.
-  host: { class: 'page-width' },
 })
 export class ProductList {
   private readonly products = inject(ProductService);

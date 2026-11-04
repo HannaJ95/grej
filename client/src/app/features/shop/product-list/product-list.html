@@ -1,32 +1,33 @@
-<h1>Produkter</h1>
+<header class="page-width page-title">
+  <!-- Written in normal case and made capital in the styles, like the start page. -->
+  <h1 class="title">Alla grejer</h1>
+  <p class="intro">Handgjorda grejer från små skapare, och aldrig två likadana.</p>
+</header>
 
-@if (result.isLoading()) {
-  <!-- Render's free tier can take up to a minute to wake up. -->
-  <p role="status">Laddar produkterna…</p>
-} @else if (result.error()) {
-  <p role="alert">Produkterna kunde inte visas.</p>
-} @else if (result.hasValue()) {
-  @let r = result.value();
-  @if (r.items.length === 0) {
-    <p>Det finns inga produkter att visa.</p>
-  } @else {
-    <ul>
-      @for (p of r.items; track p.id) {
-        <li>
-          <!-- loading="lazy": images further down are only fetched when the customer scrolls to them. -->
-          @if (p.image; as image) {
-            <img class="product-thumbnail" [src]="image.url" [alt]="image.altText" loading="lazy" />
+<!-- The line above goes across the whole screen, the products stay within the page width. -->
+<div class="results">
+  <div class="page-width">
+    @if (result.isLoading()) {
+      <!-- Render's free tier can take up to a minute to wake up. -->
+      <p role="status">Laddar produkterna…</p>
+    } @else if (result.error()) {
+      <p role="alert">Produkterna kunde inte visas.</p>
+    } @else if (result.hasValue()) {
+      @let r = result.value();
+      @if (r.items.length === 0) {
+        <p>Det finns inga produkter att visa.</p>
+      } @else {
+        <ul class="product-grid">
+          @for (p of r.items; track p.id) {
+            <li>
+              <app-product-card [product]="p" />
+            </li>
           }
-          <a [routerLink]="['/produkter', p.id]">{{ p.title }}</a>
-          {{ p.price | currency: p.currency }}
-          @if (p.isSoldOut) {
-            (slutsåld)
-          }
-        </li>
+        </ul>
       }
-    </ul>
-  }
 
-  <!-- Only shown when there is more than one page. -->
-  <app-pagination path="/produkter" [page]="r.page" [totalPages]="r.totalPages" />
-}
+      <!-- Only shown when there is more than one page. -->
+      <app-pagination path="/produkter" [page]="r.page" [totalPages]="r.totalPages" />
+    }
+  </div>
+</div>

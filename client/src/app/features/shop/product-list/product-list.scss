@@ -1,6 +1,64 @@
-// The same square for every product. object-fit crops the image instead of stretching it.
-.product-thumbnail {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
+// The design has three sizes: a phone (390 px), a tablet (768 px) and a computer (1440 px).
+// Sizes with clamp() go in a straight line from the phone's to the computer's, like on the
+// start page.
+
+:host {
+  display: block;
+}
+
+// The title, with the intro next to it on a computer and under it on smaller screens.
+// flex-wrap moves the intro down when the row is too narrow for both. display: flex wins over
+// .page-width's display: block, since Angular adds an attribute to this file's selectors,
+// which makes them more specific than the global class.
+.page-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-6);
+  padding-block: clamp(var(--space-5), 1rem + 1.5vw, 2.25rem)
+    clamp(var(--space-5), 1.2rem + 1.5vw, 2.5rem);
+}
+
+// 74 px on a phone, about 120 px on a tablet and 180 px on a computer.
+.title {
+  margin: 0;
+  font-size: clamp(4.625rem, 2.16rem + 10.1vw, 11.25rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+// 16 px on a phone, 20 px on a computer.
+.intro {
+  max-width: 26.25rem;
+  margin: 0;
+  font-size: clamp(1rem, 0.9rem + 0.38vw, 1.25rem);
+}
+
+.results {
+  padding-block: clamp(1.75rem, 1.3rem + 1.9vw, 3rem) clamp(var(--space-8), 2rem + 5.7vw, 7.5rem);
+  // The line between the title and the products, like the design's toolbar.
+  border-top: 2px solid var(--color-text);
+}
+
+// Two products per row on a phone, three on a tablet and four on a computer. The filters
+// will take the left column on a computer when they are built; until then the products use
+// the whole width.
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.75rem var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (width >= 48rem) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem 1.25rem;
+  }
+
+  @media (width >= 64rem) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-7) var(--space-5);
+  }
 }
