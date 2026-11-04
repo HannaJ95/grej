@@ -75,7 +75,7 @@ client/
   src/styles/            Shared style variables and base styles
   src/app/
     core/                API services, auth interceptor, route guards
-    shared/              Reusable components (button, pagination) and helpers
+    shared/              Reusable components (button, icon, badge, pagination) and helpers
     features/shop/       Shop layout, start page, product list, product page, cart, checkout, success page
     features/admin/      Login, products, categories, properties, orders
 ```
@@ -320,15 +320,20 @@ Known limitation: if the same order is shipped and cancelled at the same time (e
 
 The look is built on shared style variables: CSS custom properties for colors, fonts, font sizes, spacing and corner radius in `client/src/styles/_tokens.scss`. Components use `var(--…)` instead of their own values, so the look is changed in one place, and dark mode (Could) only needs new values. Every text color has at least 4.5:1 contrast against its background, and field borders and the focus ring at least 3:1 (WCAG AA). `_base.scss` styles plain HTML elements with the variables: headings, links, form fields, tables and the keyboard focus ring.
 
-The component library is small and our own, in `shared/`, instead of e.g. Angular Material, so the Signal Forms forms keep their native fields:
+The component library is small and our own, in `shared/`, instead of e.g. Angular Material, so the Signal Forms forms keep their native fields. Each component matches a component in the Figma file, so a change in the design changes one file:
 
-- `Button` is an attribute on a real `<button>` or `<a>` (`<button appButton variant="danger">`), so the element keeps the browser's keyboard handling, form submit, `disabled` and `routerLink`. It has three variants: primary, secondary and danger.
-- `Pagination` shows the links to the page before and after (`?sida=`) in every paginated list, and nothing when the list fits on one page.
+- `Button` is an attribute on a real `<button>` or `<a>` (`<button appButton variant="danger">`), so the element keeps the browser's keyboard handling, form submit, `disabled` and `routerLink`. It has three variants (primary, secondary with a 2 px frame, danger) and two sizes (normal for forms and the CMS, `size="large"` for the shop's big buttons).
+- `Icon` shows one of the design's icons from `public/icons/` as a CSS mask, so it takes the text color around it. `IconButton` is a square button with only an icon (e.g. close), and always needs an `aria-label`.
+- `Badge` is a small label on a product image, e.g. "Slutsåld" and "Få kvar".
+- `Pagination` shows the links to the page before and after and the page numbers (`?sida=`), e.g. 1 2 3 … 8, with a shorter list on a phone. It shows nothing when the list fits on one page.
 
-The shop's own design is made in Figma (GREJ – Webshop design), with neutral colors, Anton for headings, Inter for text and Space Mono for small print; the fonts are loaded from Google Fonts in `index.html`. The variables have the design's values, so the CMS gets the same colors and fonts.
+The shop's own design is made in Figma (GREJ – Webshop design) in three sizes: a phone (390 px), a tablet (768 px) and a computer (1440 px). It has neutral colors, Anton for headings, Inter for text and Space Mono for small print; the fonts are loaded from Google Fonts in `index.html`. The variables have the design's values, so the CMS gets the same colors and fonts. The Figma file also shows things that are not built yet (filters, sorting, makers, free shipping); only what has working code is shown in the shop.
 
-- `ShopLayout` (`features/shop/shop-layout/`) has the shop's header (logo, menu, cart) and footer. The shop's routes are its children in `app.routes.ts`, so the admin pages have no shop header. Its bands go from edge to edge, and the content inside them uses `.page-width`: centered, at most `--content-width`, with `--page-gutter` on the sides (16 px on a phone, 48 px on a large screen).
-- The start page (`/`, `LandingPage`) has a big title, a moving band of words, the four newest products (the first four from `GET /api/products`, which sorts the newest first) and links to the categories. The band stands still for people who have turned on "reduce motion". The categories are hard-coded until the category filter is built.
-- Big headings use `clamp()`, so they follow the screen width from a phone to 1440 px without media queries for the sizes.
+- `ShopLayout` (`features/shop/shop-layout/`) has the shop's header (logo, menu, cart) and footer. The shop's routes are its children in `app.routes.ts`, so the admin pages have no shop header. Its bands go from edge to edge, and the content inside them uses `.page-width`: centered, at most `--content-width`, with `--page-gutter` on the sides (20 px on a phone, 32 px on a tablet, 48 px on a computer). On a phone the menu links are in `MobileMenu`, a `<dialog>` like the cart.
+- `ProductCard` is used by both the start page and the product list: image, title, price, a "Slutsåld" or "Få kvar" (1–2 left) badge, and an add button. The add button is a bar over the image on hover or keyboard focus on a computer, and a "+" square on a tablet and a phone, where there is no hover.
+- The start page (`/`, `LandingPage`) has a big title, a moving band of words, the four newest products (the first four from `GET /api/products`, which sorts the newest first; a row to swipe through on a phone) and links to the categories. The band pauses on hover and stands still for people who have turned on "reduce motion". The categories are hard-coded until the category filter is built.
+- The product list (`/produkter`) has a breadcrumb, the title with the number of products, a toolbar with "Visar 1–12 av 40 grejer", and two, three or four products per row. The filters will take a column on the left when they are built.
+- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's image when it is added), a − 1 + stepper, the total, and an empty state. When something is added, `AddedToCart` shows a small popup under the cart button that closes itself after 5 seconds (paused on hover or focus), with the cross or with Escape; it never takes the focus and is read by screen readers through `aria-live`.
+- Big headings use `clamp()`, so they follow the screen width from a phone to 1440 px without media queries for the sizes. The layout changes (columns, the menu, the add button) use media queries at 48rem (768 px) and 64rem (1024 px).
 
-The product list, the product page and the cart are styled with the design next.
+The product page and the success page have no Figma design yet; they use the variables and the shared components until they do.
