@@ -16,9 +16,9 @@ describe('Pagination', () => {
     return fixture.nativeElement;
   }
 
-  // The text and address of each link.
+  // The text and address of the links to the page before and after.
   function links(element: HTMLElement): string[][] {
-    return [...element.querySelectorAll('a')].map((a) => [
+    return [...element.querySelectorAll('a.step')].map((a) => [
       a.textContent!.trim(),
       a.getAttribute('href')!,
     ]);
@@ -35,7 +35,31 @@ describe('Pagination', () => {
       ['Föregående', '/produkter?sida=1'],
       ['Nästa', '/produkter?sida=3'],
     ]);
-    expect(element.textContent).toContain('Sida 2 av 3');
+    expect(element.querySelector('[aria-current="page"]')!.textContent!.trim()).toBe('Sida 2');
+  });
+
+  // The page numbers on a computer, or on a phone (compact), with … where pages are left out.
+  function numbers(element: HTMLElement, compact = false): string[] {
+    const list = element.querySelector(compact ? '.pages.compact' : '.pages:not(.compact)')!;
+    return [...list.querySelectorAll('li')].map((li) => li.textContent!.replace('Sida', '').trim());
+  }
+
+  it('numbers the pages like the design, with fewer on a phone', async () => {
+    expect(numbers(await show(1, 8))).toEqual(['1', '2', '3', '…', '8']);
+  });
+
+  it('shows the pages next to the current one in the middle', async () => {
+    const element = await show(5, 8);
+    expect(numbers(element)).toEqual(['1', '…', '4', '5', '6', '…', '8']);
+    expect(numbers(element, true)).toEqual(['1', '…', '5', '…', '8']);
+  });
+
+  it('links each number to its page', async () => {
+    const element = await show(1, 3);
+    const hrefs = [...element.querySelectorAll('.pages:not(.compact) a')].map((a) =>
+      a.getAttribute('href'),
+    );
+    expect(hrefs).toEqual(['/produkter?sida=2', '/produkter?sida=3']);
   });
 
   it('has no link before the first page', async () => {
