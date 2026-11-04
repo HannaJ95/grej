@@ -84,9 +84,11 @@
   display: flex;
   gap: 0.625rem;
 
+  // 12 px on the sides like the design, so "Visa varukorg (1)" stays on one row.
   button {
     flex: 1;
-    padding-block: 0.8125rem;
+    padding: 0.8125rem var(--space-3);
     font-size: 0.9375rem;
+    white-space: nowrap;
   }
 }
