@@ -1,10 +1,22 @@
 <header class="header">
   <div class="page-width header-content">
     <a class="logo" routerLink="/" aria-label="GREJ, till startsidan">GREJ.</a>
-    <nav aria-label="Huvudmeny">
-      <a class="nav-link" routerLink="/produkter">Shop</a>
+    <!-- Hidden on phones, where the same link is in the menu. -->
+    <nav class="nav" aria-label="Huvudmeny">
+      <a
+        class="nav-link"
+        routerLink="/produkter"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
+        Shop
+      </a>
     </nav>
-    <app-cart-drawer />
+    <div class="actions">
+      <!-- #cart is the CartDrawer itself, so the menu's cart button can open it. -->
+      <app-cart-drawer #cart />
+      <app-mobile-menu class="mobile-menu" (openCart)="cart.open()" />
+    </div>
   </div>
 </header>
 

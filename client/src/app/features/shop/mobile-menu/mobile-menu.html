@@ -1,0 +1,51 @@
+<!-- Three bars drawn with CSS, like the design. -->
+<button class="menu-button" type="button" aria-label="Meny" aria-haspopup="dialog" (click)="open()">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<dialog #dialog aria-labelledby="menu-title" (click)="closeOnBackdrop($event)">
+  <div class="panel">
+    <div class="panel-header">
+      <h2 class="panel-title" id="menu-title">Meny</h2>
+      <button
+        appIconButton
+        icon="close"
+        tone="light"
+        type="button"
+        aria-label="Stäng"
+        (click)="close()"
+      ></button>
+    </div>
+
+    <nav aria-label="Huvudmeny">
+      <ul class="links">
+        <li>
+          <!-- Closes the menu, since the new page is shown behind it. -->
+          <a
+            class="link"
+            routerLink="/produkter"
+            routerLinkActive="active"
+            ariaCurrentWhenActive="page"
+            (click)="close()"
+          >
+            Shop
+            <app-icon name="arrow-right" />
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="panel-footer">
+      <button class="cart-button" type="button" (click)="goToCart()">
+        Varukorg
+        <span class="cart-count">
+          {{ cart.count() }} {{ cart.count() === 1 ? 'grej' : 'grejer' }}
+          <span aria-hidden="true">→</span>
+        </span>
+      </button>
+      <p class="legal">© 2026 GREJ — Handgjort i Sverige</p>
+    </div>
+  </div>
+</dialog>

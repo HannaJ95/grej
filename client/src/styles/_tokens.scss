@@ -57,7 +57,7 @@
   --radius: 0;
   // 1344 px: the design's 1440 px minus 48 px on each side.
   --content-width: 84rem;
-  // The space at the screen's edges in the shop: 16 px on a phone, growing with the screen
-  // width up to the design's 48 px.
-  --page-gutter: clamp(var(--space-4), 3.4vw, var(--space-7));
+  // The space at the screen's edges in the shop, like the design: 20 px on a phone (390 px),
+  // 32 px on a tablet (768 px) and 48 px on a computer (1440 px).
+  --page-gutter: clamp(1.25rem, 4.2vw, var(--space-7));
 }

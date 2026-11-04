@@ -33,7 +33,8 @@ export class CartDrawer {
   // True when the API has changed the cart because some products ran out.
   protected readonly cartChanged = signal(false);
 
-  protected open(): void {
+  // Public, so the layout can open the cart from the phone menu too.
+  open(): void {
     this.dialog().nativeElement.showModal();
   }
 

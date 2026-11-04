@@ -9,49 +9,89 @@
   background: var(--color-surface);
 }
 
-// The logo, the menu and the cart in a row. wrap puts the cart on its own row on a narrow
-// phone instead of squeezing the logo.
+// The logo, the menu and the cart in a row: 10 px above and below on a computer and a
+// tablet, 12 px on a phone, like the design.
 .header-content {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-2) var(--space-6);
-  min-height: 4.8rem;
-  padding-block: var(--space-2);
+  gap: var(--space-4);
+  padding-block: 0.625rem;
+
+  @media (width < 48rem) {
+    padding-block: var(--space-3);
+  }
 }
 
-// "GREJ." in the display font. clamp: 32 px on a phone, 50 px from about 1440 px.
+// "GREJ." in the display font: 50 px, and 40 px on a phone.
 .logo {
   color: var(--color-text);
   font-family: var(--font-heading);
-  font-size: clamp(2rem, 3.5vw, 3.125rem);
+  font-size: 3.125rem;
   line-height: var(--line-height-heading);
   letter-spacing: 2px;
   text-decoration: none;
+
+  @media (width < 48rem) {
+    font-size: 2.5rem;
+  }
+}
+
+// The links on a computer and a tablet. On a phone they are in the menu instead.
+.nav {
+  display: flex;
+  gap: clamp(1.75rem, 2.5vw, 2.25rem);
+
+  @media (width < 48rem) {
+    display: none;
+  }
 }
 
 .nav-link {
-  color: var(--color-ink);
+  color: var(--color-text);
   font-weight: 600;
+  line-height: 1.4;
   letter-spacing: 0.1em;
   text-decoration: none;
 }
 
-// The color is set again, since a:hover in _base.scss would change it.
+// The color is set again, since a:hover in _base.scss would change it. The current page is
+// underlined, like "Shop" on the shop's pages in the design.
 .logo:hover,
-.nav-link:hover {
+.nav-link:hover,
+.nav-link.active {
   color: var(--color-text);
+}
+
+.nav-link:hover,
+.nav-link.active {
   text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+// Only on phones.
+.mobile-menu {
+  display: none;
+
+  @media (width < 48rem) {
+    display: block;
+  }
 }
 
 // Footer
 
+// 88 px above on a computer, 64 px on a tablet and 56 px on a phone, and less below.
 .footer {
   // The focus ring needs another color to be seen on the dark background.
   --color-focus: var(--color-focus-on-dark);
 
-  padding-block: var(--space-8) var(--space-7);
+  padding-block: clamp(3.5rem, 6.1vw, 5.5rem) clamp(1.75rem, 2.8vw, 2.5rem);
   background: var(--color-primary);
   color: #ffffff;
 }
@@ -61,6 +101,7 @@
   flex-direction: column;
   gap: 0.625rem;
   font-size: var(--font-size-sm);
+  line-height: 1.4;
 
   a {
     color: inherit;
@@ -79,30 +120,35 @@
   font-family: var(--font-body);
   font-size: 0.9375rem;
   font-weight: 600;
-  line-height: var(--line-height-body);
+  line-height: 1.4;
 }
 
 // The big "GREJ." across the whole width. Each letter is its own span, and space-between
-// spreads them out like in the design. The font size follows the screen width (vw), up to
-// the design's 500 px.
+// spreads them out like in the design. The design has 150 px on a phone, 300 px on a tablet
+// and 500 px on a computer, which is about 38 % of the screen width up to 500 px.
 .footer-logo {
   display: flex;
   justify-content: space-between;
-  margin: var(--space-8) 0 var(--space-6);
+  margin: clamp(3rem, 7.8vw, 7rem) 0 clamp(1.25rem, 2.2vw, 2rem);
   font-family: var(--font-heading);
-  font-size: min(34vw, 31.25rem);
+  font-size: min(38vw, 31.25rem);
   line-height: 1;
 }
 
+// Side by side on a computer and a tablet, under each other on a phone.
 .footer-bottom {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--space-2) var(--space-6);
   font-family: var(--font-mono);
   font-size: 0.75rem;
+  line-height: 1;
   // 9:1 against the background.
   color: rgb(255 255 255 / 70%);
+
+  @media (width < 48rem) {
+    flex-direction: column;
+  }
 
   p {
     margin: 0;

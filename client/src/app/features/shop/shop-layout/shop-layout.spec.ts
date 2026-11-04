@@ -26,11 +26,34 @@ describe('ShopLayout', () => {
       a.getAttribute('aria-label') ?? a.textContent!.trim(),
       a.getAttribute('href'),
     ]);
+    // Shop twice: in the header, and in the phone menu, which is in the page but closed.
     expect(links).toEqual([
       ['GREJ, till startsidan', '/'],
       ['Shop', '/produkter'],
+      ['Shop', '/produkter'],
       ['Alla produkter', '/produkter'],
     ]);
+  });
+
+  it("opens the cart from the phone menu's cart button", async () => {
+    // jsdom, which the tests run in, has <dialog> but not showModal(). These stand-ins only
+    // set open, which is all the test looks at. Each spec file gets its own jsdom, so they do
+    // not reach other tests.
+    HTMLDialogElement.prototype.showModal = function (this: HTMLDialogElement) {
+      this.open = true;
+    };
+    HTMLDialogElement.prototype.close = function (this: HTMLDialogElement) {
+      this.open = false;
+    };
+    const element = await show();
+    const [cartDialog, menuDialog] = [...element.querySelectorAll('dialog')];
+
+    (element.querySelector('.menu-button') as HTMLButtonElement).click();
+    expect(menuDialog.open).toBe(true);
+
+    (element.querySelector('.cart-button') as HTMLButtonElement).click();
+    expect(menuDialog.open).toBe(false);
+    expect(cartDialog.open).toBe(true);
   });
 
   it('shows the cart button', async () => {
