@@ -43,7 +43,7 @@ describe('AdminPropertyList', () => {
     await harness.fixture.whenStable();
 
     const page = harness.routeNativeElement!;
-    expect(page.querySelector('h2')?.textContent).toBe('Färger');
+    expect(page.querySelector('h1')?.textContent).toBe('Färger');
     expect(page.querySelector('a[href="/admin/farger/ny"]')?.textContent).toBe('Ny färg');
     expect(page.querySelector('a[href="/admin/farger/2"]')?.textContent).toBe('Blå');
     expect(page.querySelector('a[href="/admin/farger/5"]')?.textContent).toBe('Vit');
@@ -59,7 +59,7 @@ describe('AdminPropertyList', () => {
     await harness.fixture.whenStable();
 
     const page = harness.routeNativeElement!;
-    expect(page.querySelector('h2')?.textContent).toBe('Material');
+    expect(page.querySelector('h1')?.textContent).toBe('Material');
     expect(page.textContent).toContain('Det finns inga material än.');
   });
 });

@@ -32,7 +32,7 @@ describe('AdminPropertyForm', () => {
 
   it('creates a color and goes back to the list', async () => {
     await harness.navigateByUrl('/admin/farger/ny');
-    expect(page().querySelector('h2')?.textContent).toBe('Ny färg');
+    expect(page().querySelector('h1')?.textContent).toBe('Ny färg');
 
     type('#name', 'Blå');
     await send();

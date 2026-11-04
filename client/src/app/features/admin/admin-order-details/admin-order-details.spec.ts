@@ -101,7 +101,7 @@ describe('AdminOrderDetails', () => {
   it('shows the order, its customer and its rows', async () => {
     const page = await show((request) => request.flush(paidOrder));
 
-    expect(page.querySelector('h2')?.textContent).toBe('Order GREJ-AB12CD34');
+    expect(page.querySelector('h1')?.textContent).toBe('Order GREJ-AB12CD34');
     expect(texts(page, 'dt')).toEqual(['Datum', 'Status', 'Betalning', 'Namn', 'E-post', 'Adress']);
     // The date is left out, as in AdminOrderList's spec.
     expect(texts(page, 'dd').slice(1, 5)).toEqual([

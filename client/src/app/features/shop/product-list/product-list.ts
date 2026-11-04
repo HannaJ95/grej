@@ -11,6 +11,8 @@ import { Pagination } from '../../../shared/pagination/pagination';
   imports: [CurrencyPipe, RouterLink, Pagination],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss',
+  // The page's width and side space (_base.scss), since the shop's layout has none.
+  host: { class: 'page-width' },
 })
 export class ProductList {
   private readonly products = inject(ProductService);

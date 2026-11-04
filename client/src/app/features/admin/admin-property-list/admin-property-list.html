@@ -1,5 +1,4 @@
-<!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
-<h2>{{ texts().plural | titlecase }}</h2>
+<h1>{{ texts().plural | titlecase }}</h1>
 <p>
   <a appButton [routerLink]="[texts().path, 'ny']">{{ texts().newOne }}</a>
 </p>

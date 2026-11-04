@@ -8,9 +8,10 @@ import { Button } from '../../../shared/button/button';
 @Component({
   selector: 'app-success-page',
   imports: [RouterLink, Button],
+  // The page's width and side space (_base.scss), like the product list.
+  host: { class: 'page-width' },
   template: `
-    <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
-    <h2>Tack för din beställning!</h2>
+    <h1>Tack för din beställning!</h1>
     @if (order()) {
       <p>Ditt ordernummer är <strong>{{ order() }}</strong>.</p>
       <!-- No email is sent in this version, so the number is the only confirmation (ambiguity.md). -->

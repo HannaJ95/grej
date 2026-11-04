@@ -1,5 +1,4 @@
-<!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
-<h2>{{ isNew() ? 'Ny kategori' : 'Redigera kategori' }}</h2>
+<h1>{{ isNew() ? 'Ny kategori' : 'Redigera kategori' }}</h1>
 <p><a routerLink="/admin/kategorier">Tillbaka till kategorierna</a></p>
 
 @if (category.isLoading()) {

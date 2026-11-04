@@ -2,20 +2,32 @@ import { Routes } from '@angular/router';
 import { adminGuard } from './core/admin.guard';
 
 export const routes: Routes = [
-  // The start page is the product list. Stripe's cancel URL (/) also ends up here.
-  { path: '', redirectTo: 'produkter', pathMatch: 'full' },
   {
-    path: 'produkter',
-    loadComponent: () => import('./features/shop/product-list/product-list').then((m) => m.ProductList),
-  },
-  {
-    path: 'produkter/:id',
-    // Lazy loading: the page's code is only downloaded when someone visits it.
-    loadComponent: () => import('./features/shop/product-page/product-page').then((m) => m.ProductPage),
-  },
-  {
-    path: 'kassa/tack',
-    loadComponent: () => import('./features/shop/success-page/success-page').then((m) => m.SuccessPage),
+    // Every shop page is a child here, so they are all shown inside the shop's layout.
+    // The router tries the children first; a URL none of them matches, like /admin, goes on
+    // to the routes below.
+    path: '',
+    loadComponent: () => import('./features/shop/shop-layout/shop-layout').then((m) => m.ShopLayout),
+    children: [
+      // The start page is the product list. Stripe's cancel URL (/) also ends up here.
+      { path: '', redirectTo: 'produkter', pathMatch: 'full' },
+      {
+        path: 'produkter',
+        loadComponent: () =>
+          import('./features/shop/product-list/product-list').then((m) => m.ProductList),
+      },
+      {
+        path: 'produkter/:id',
+        // Lazy loading: the page's code is only downloaded when someone visits it.
+        loadComponent: () =>
+          import('./features/shop/product-page/product-page').then((m) => m.ProductPage),
+      },
+      {
+        path: 'kassa/tack',
+        loadComponent: () =>
+          import('./features/shop/success-page/success-page').then((m) => m.SuccessPage),
+      },
+    ],
   },
   {
     path: 'admin/logga-in',

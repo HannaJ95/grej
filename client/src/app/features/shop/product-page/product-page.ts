@@ -10,6 +10,8 @@ import { Button } from '../../../shared/button/button';
   imports: [CurrencyPipe, Button],
   templateUrl: './product-page.html',
   styleUrl: './product-page.scss',
+  // The page's width and side space (_base.scss), like the product list.
+  host: { class: 'page-width' },
 })
 export class ProductPage {
   private readonly products = inject(ProductService);
