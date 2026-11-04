@@ -40,8 +40,12 @@ describe('ProductList', () => {
     // Only the page's links: routeNativeElement is the shop's layout, with its own links.
     const page = harness.routeNativeElement!.querySelector('app-product-list')!;
     const links = [...page.querySelectorAll('a')].map((a) => a.getAttribute('href'));
-    expect(links).toEqual(['/produkter/7', '/produkter?sida=1', '/produkter?sida=3']);
+    // The breadcrumb's "Hem" first.
+    expect(links).toEqual(['/', '/produkter/7', '/produkter?sida=1', '/produkter?sida=3']);
     expect(harness.routeNativeElement!.textContent).toContain('Sida 2 av 3');
+    // Page 2 with 12 per page starts at the 13th product.
+    expect(page.querySelector('.toolbar')!.textContent).toContain('Visar 13–13 av 25 grejer');
+    expect(page.querySelector('.intro')!.textContent).toContain('25 handgjorda grejer');
   });
 
   it('shows the image of each product, with its alt text', async () => {
