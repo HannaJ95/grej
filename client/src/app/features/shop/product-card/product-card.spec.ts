@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { CartService } from '../../../core/cart.service';
 import { Product } from '../../../core/product.service';
 import { ProductCard } from './product-card';
 
@@ -18,6 +19,8 @@ describe('ProductCard', () => {
   };
 
   async function show(product: Product): Promise<HTMLElement> {
+    // The cart is saved in localStorage, so each test starts with an empty one.
+    localStorage.clear();
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
     const fixture = TestBed.createComponent(ProductCard);
     fixture.componentRef.setInput('product', product);
@@ -36,11 +39,22 @@ describe('ProductCard', () => {
     expect(card.querySelector('app-badge')).toBeNull();
   });
 
-  it('marks a sold-out product', async () => {
+  it('marks a sold-out product and cannot add it', async () => {
     const card = await show({ ...vase, stock: 0, isSoldOut: true });
 
     expect(card.classList).toContain('sold-out');
     expect(card.querySelector('app-badge')!.textContent).toBe('Slutsåld');
     expect(card.querySelector('.price')!.textContent).toContain('Slutsåld');
+    expect(card.querySelector<HTMLButtonElement>('.add')!.disabled).toBe(true);
+  });
+
+  it('adds the product to the cart', async () => {
+    const card = await show(vase);
+    const add = card.querySelector<HTMLButtonElement>('.add')!;
+
+    expect(add.getAttribute('aria-label')).toBe('Lägg Vas i varukorgen');
+    add.click();
+
+    expect(TestBed.inject(CartService).items()).toMatchObject([{ productId: 7, quantity: 1 }]);
   });
 });

@@ -22,3 +22,16 @@
     }
   </p>
 </div>
+<!-- After the link in the page, and above its ::after, so it gets its own clicks. The same
+     CartService.add as the product page, which also shows the "Tillagd" popup. Disabled when
+     the product is sold out or all of it is already in the cart. -->
+<button
+  class="add"
+  type="button"
+  [attr.aria-label]="'Lägg ' + p.title + ' i varukorgen'"
+  [disabled]="!cart.canAdd(p)"
+  (click)="cart.add(p)"
+>
+  <span class="add-text">Lägg i varukorg</span>
+  <app-icon name="plus" />
+</button>

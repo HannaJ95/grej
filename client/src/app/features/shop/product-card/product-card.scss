@@ -1,6 +1,8 @@
 // position: relative makes the title link's ::after cover this card and nothing else.
+// container-type lets the add button use the card's width (cqw) to find the image's bottom.
 :host {
   position: relative;
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -27,10 +29,12 @@
   left: 0.875rem;
 }
 
+// Room on the right for the add button on a tablet and a phone.
 .meta {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  padding-right: 2.75rem;
   line-height: 1.4;
 }
 
@@ -75,6 +79,84 @@
 
   @media (width < 48rem) {
     font-size: 0.9375rem;
+  }
+}
+
+// The add button (Figma: Add to cart button). On a tablet and a phone a dark square with a
+// plus at the right of the price, always shown, since there is no hover on a touch screen.
+.add {
+  --icon-size: 0.875rem;
+
+  position: absolute;
+  right: 0;
+  bottom: 5px;
+  // Above the title link's ::after, which covers the card.
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 2.375rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  background: var(--color-primary);
+  color: var(--color-surface);
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  @media (width < 48rem) {
+    --icon-size: 0.75rem;
+
+    width: 2.125rem;
+    height: 1.875rem;
+  }
+}
+
+// The text is only shown on a computer; elsewhere the aria-label names the button.
+.add-text {
+  display: none;
+}
+
+// On a computer with a mouse: a 54 px bar along the image's bottom edge, shown when the
+// pointer is on the card or the button has keyboard focus. The image is 380/318 as tall as
+// the card is wide (100cqw), so that minus the bar is where the bar starts.
+@media (width >= 64rem) and (hover: hover) {
+  .meta {
+    padding-right: 0;
+  }
+
+  .add {
+    left: 0;
+    top: calc(100cqw * 380 / 318 - 3.375rem);
+    bottom: auto;
+    width: auto;
+    height: 3.375rem;
+    font-size: 0.9375rem;
+    opacity: 0;
+
+    // A sold-out product gets no bar at all.
+    &:disabled {
+      display: none;
+    }
+  }
+
+  :host(:hover) .add,
+  .add:focus-visible {
+    opacity: 1;
+  }
+
+  .add-text {
+    display: inline;
   }
 }
 
