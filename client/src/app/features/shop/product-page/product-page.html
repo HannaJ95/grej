@@ -28,7 +28,7 @@
         }
       </dl>
     }
-    <p>{{ p.price | currency: p.currency }}</p>
+    <p>{{ p.price | currency: p.currency : 'symbol' : '1.0-2' }}</p>
     @if (p.isSoldOut) {
       <p>Slutsåld</p>
     } @else {

@@ -14,8 +14,9 @@
   <!-- The link covers the whole card (see .title::after), so the image can be clicked too,
        while screen readers only read the title. -->
   <a class="title" [routerLink]="['/produkter', p.id]">{{ p.title }}</a>
+  <!-- '1.0-2': no öre when the price is whole, e.g. "320 kr" like the design. -->
   <p class="price">
-    {{ p.price | currency: p.currency }}
+    {{ p.price | currency: p.currency : 'symbol' : '1.0-2' }}
     @if (p.isSoldOut) {
       · Slutsåld
     }
