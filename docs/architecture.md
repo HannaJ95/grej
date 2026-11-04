@@ -76,7 +76,7 @@ client/
   src/app/
     core/                API services, auth interceptor, route guards
     shared/              Reusable components (button, pagination) and helpers
-    features/shop/       Product list, product page, cart, checkout, success page
+    features/shop/       Shop layout, start page, product list, product page, cart, checkout, success page
     features/admin/      Login, products, categories, properties, orders
 ```
 
@@ -325,4 +325,10 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
 - `Button` is an attribute on a real `<button>` or `<a>` (`<button appButton variant="danger">`), so the element keeps the browser's keyboard handling, form submit, `disabled` and `routerLink`. It has three variants: primary, secondary and danger.
 - `Pagination` shows the links to the page before and after (`?sida=`) in every paginated list, and nothing when the list fits on one page.
 
-The pages themselves are styled in sprint 3.
+The shop's own design is made in Figma (GREJ – Webshop design), with neutral colors, Anton for headings, Inter for text and Space Mono for small print; the fonts are loaded from Google Fonts in `index.html`. The variables have the design's values, so the CMS gets the same colors and fonts.
+
+- `ShopLayout` (`features/shop/shop-layout/`) has the shop's header (logo, menu, cart) and footer. The shop's routes are its children in `app.routes.ts`, so the admin pages have no shop header. Its bands go from edge to edge, and the content inside them uses `.page-width`: centered, at most `--content-width`, with `--page-gutter` on the sides (16 px on a phone, 48 px on a large screen).
+- The start page (`/`, `LandingPage`) has a big title, a moving band of words, the four newest products (the first four from `GET /api/products`, which sorts the newest first) and links to the categories. The band stands still for people who have turned on "reduce motion". The categories are hard-coded until the category filter is built.
+- Big headings use `clamp()`, so they follow the screen width from a phone to 1440 px without media queries for the sizes.
+
+The product list, the product page and the cart are styled with the design next.
