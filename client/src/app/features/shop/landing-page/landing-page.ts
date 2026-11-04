@@ -1,8 +1,10 @@
-import { CurrencyPipe, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ProductService } from '../../../core/product.service';
 import { Button } from '../../../shared/button/button';
+import { Icon } from '../../../shared/icons/icon';
+import { ProductCard } from '../product-card/product-card';
 
 // The words in the moving band, in the design's order.
 const marqueeWords = ['Handgjort', 'Unikt', 'Från skapare'];
@@ -11,7 +13,7 @@ const marqueeWords = ['Handgjort', 'Unikt', 'Från skapare'];
 // the newest products and links to the categories.
 @Component({
   selector: 'app-landing-page',
-  imports: [CurrencyPipe, NgOptimizedImage, RouterLink, Button],
+  imports: [NgOptimizedImage, RouterLink, Button, Icon, ProductCard],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.scss',
 })

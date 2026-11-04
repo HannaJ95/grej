@@ -52,14 +52,17 @@ describe('LandingPage', () => {
     });
     await fixture.whenStable();
 
-    const cards = [...fixture.nativeElement.querySelectorAll('.product-card')] as HTMLElement[];
-    expect(cards.map((card) => card.getAttribute('href'))).toEqual([
+    // Each card's link is its title.
+    const links = [
+      ...fixture.nativeElement.querySelectorAll('app-product-card a'),
+    ] as HTMLAnchorElement[];
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
       '/produkter/9',
       '/produkter/8',
       '/produkter/7',
       '/produkter/6',
     ]);
-    expect(cards[0].textContent).toContain('Vas');
+    expect(links[0].textContent).toBe('Vas');
   });
 
   it('shows an error when the products cannot be fetched', async () => {

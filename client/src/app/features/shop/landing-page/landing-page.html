@@ -6,7 +6,7 @@
     <p class="hero-intro">
       Handgjorda saker från små skapare. Nya grejer varje vecka, och aldrig två likadana.
     </p>
-    <a appButton size="large" routerLink="/produkter">
+    <a appButton size="large" class="hero-button" routerLink="/produkter">
       Se nyheterna <span aria-hidden="true">→</span>
     </a>
   </div>
@@ -21,7 +21,13 @@
         @for (word of marqueeWords; track $index) {
           <li class="marquee-item">
             {{ word }}
-            <img ngSrc="/images/star.svg" width="26" height="26" alt="" />
+            <img
+              class="marquee-star"
+              ngSrc="/images/star-small.svg"
+              width="16"
+              height="16"
+              alt=""
+            />
           </li>
         }
       </ul>
@@ -44,25 +50,11 @@
     } @else if (newest().length === 0) {
       <p>Det finns inga produkter att visa än.</p>
     } @else {
+      <!-- A grid on a computer and a tablet, a row to swipe through on a phone. -->
       <ul class="product-grid">
         @for (p of newest(); track p.id) {
           <li>
-            <!-- The whole card is one link, so the image can be clicked too. -->
-            <a class="product-card" [routerLink]="['/produkter', p.id]">
-              <!-- A plain img like in the product list: the images' sizes are not stored. -->
-              @if (p.image; as image) {
-                <img class="product-image" [src]="image.url" [alt]="image.altText" loading="lazy" />
-              } @else {
-                <span class="product-image"></span>
-              }
-              <span class="product-title">{{ p.title }}</span>
-              <span class="product-price">
-                {{ p.price | currency: p.currency }}
-                @if (p.isSoldOut) {
-                  <span class="sold-out">Slutsåld</span>
-                }
-              </span>
-            </a>
+            <app-product-card [product]="p" />
           </li>
         }
       </ul>
@@ -76,7 +68,7 @@
       <li>
         <a class="category-link" routerLink="/produkter">
           {{ category }}
-          <span class="category-arrow" aria-hidden="true">→</span>
+          <app-icon class="category-arrow" name="arrow-right" />
         </a>
       </li>
     }

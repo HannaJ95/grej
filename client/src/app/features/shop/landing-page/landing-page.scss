@@ -1,5 +1,7 @@
-// The big titles follow the screen width with clamp(smallest, vw, largest), so the page works
-// from a phone up to the design's 1440 px without media queries for the sizes.
+// The design has three sizes: a phone (390 px), a tablet (768 px) and a computer (1440 px).
+// The big text uses clamp(smallest, a + b vw, largest): a straight line through the phone's
+// and the computer's sizes, so the tablet lands close to its own size too, and nothing jumps
+// between the sizes.
 
 :host {
   display: block;
@@ -7,33 +9,46 @@
 
 // Hero
 
+// 20–24 px above, and 48 px below on a phone up to 150 px on a computer.
 .hero {
-  padding-block: var(--space-5) clamp(var(--space-7), 10.4vw, 9.375rem);
+  padding-block: var(--space-5) clamp(var(--space-7), -1rem + 11.4vw, 9.375rem);
 }
 
-// 200 px in the design.
+// 110 px on a phone, 150 px on a tablet and 200 px on a computer. On a phone it wraps to
+// three rows by itself, like the design.
 .hero-title {
-  margin: 0 0 var(--space-6);
-  font-size: clamp(3.5rem, 13.9vw, 12.5rem);
+  margin: 0 0 clamp(var(--space-5), 1.2rem + 0.8vw, 2.25rem);
+  font-size: clamp(6.875rem, 4.79rem + 8.57vw, 12.5rem);
   line-height: var(--line-height-heading);
   text-transform: uppercase;
 }
 
+// 18 px on a phone, 20 px on a tablet and 22 px on a computer.
 .hero-intro {
   max-width: 34rem;
-  margin: 0 0 var(--space-6);
+  margin: 0 0 clamp(var(--space-5), 1.4rem + 0.4vw, 1.75rem);
   color: var(--color-ink);
-  font-size: clamp(var(--font-size-lg), 1.5vw, 1.375rem);
+  font-size: clamp(1.125rem, 1.03rem + 0.38vw, 1.375rem);
+}
+
+// The whole width on a phone, like the design.
+.hero-button {
+  @media (width < 48rem) {
+    display: flex;
+  }
 }
 
 // Marquee
 
+// The band's sizes follow the text: 14, 16 and 18 px text on a phone, a tablet and a
+// computer, with the star, the space and the height in em, so they grow with it.
 .marquee {
   display: flex;
   align-items: center;
-  min-height: 4.5rem;
+  min-height: 2.8em;
   overflow: hidden;
   background: var(--color-primary);
+  font-size: clamp(0.875rem, 0.78rem + 0.38vw, 1.125rem);
 }
 
 // Both lists in one row. The animation moves the row left by one list's width (-50%), then
@@ -42,6 +57,11 @@
   display: flex;
   width: max-content;
   animation: marquee 40s linear infinite;
+}
+
+// The design: pause when the pointer is over it.
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
 }
 
 // For people who have turned on "reduce motion" in their system's settings (WCAG 2.3.3).
@@ -68,21 +88,25 @@
 .marquee-item {
   display: flex;
   align-items: center;
-  gap: var(--space-6);
-  padding-right: var(--space-6);
+  gap: 1.5em;
+  padding-right: 1.5em;
   color: var(--color-surface);
-  font-size: clamp(1.25rem, 1.8vw, 1.625rem);
   font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
+.marquee-star {
+  width: 0.875em;
+  height: 0.875em;
+}
+
 // Newest products
 
+// 56 / 80 / 117 px above and 64 / 96 / 96 px below.
 .newest {
-  padding-block: clamp(var(--space-7), 8.1vw, 7.3rem) clamp(var(--space-7), 6.7vw, 6rem);
+  padding-block: clamp(3.5rem, 1.5rem + 8.1vw, 7.3rem) clamp(var(--space-8), 3.25rem + 3vw, 6rem);
 }
 
 // The title on the left and "Visa alla" on the right, on the same baseline.
@@ -91,93 +115,67 @@
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
-  gap: var(--space-2) var(--space-5);
-  margin-bottom: var(--space-7);
+  // 16 px between them, so both fit on one row on a 390 px phone, like the design.
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: clamp(var(--space-5), 1.3rem + 1vw, 2.5rem);
 }
 
-// 120 px in the design. Used by every big section title.
+// 50 px on a phone, 80 px on a tablet and 120 px on a computer.
 .section-title {
   margin: 0;
-  font-size: clamp(3rem, 8.33vw, 7.5rem);
+  font-size: clamp(3.125rem, 1.5rem + 6.67vw, 7.5rem);
   line-height: 1;
   text-transform: uppercase;
 }
 
 .show-all {
   color: var(--color-text);
-  font-size: 1.125rem;
+  font-size: clamp(0.9375rem, 0.87rem + 0.29vw, 1.125rem);
   font-weight: 600;
-  text-decoration: none;
+  line-height: 1.4;
 
   &:hover {
     color: var(--color-text);
-    text-decoration: underline;
   }
 }
 
-// Two products per row on a phone, four from 56rem (896 px).
+// Four products per row on a computer, two on a tablet. On a phone it is a row of 260 px cards
+// to swipe through: it reaches the screen's edges (the negative margin), and each swipe
+// stops at a card (scroll-snap).
 .product-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-6) clamp(var(--space-3), 1.7vw, var(--space-5));
+  gap: 2.5rem var(--space-5);
   margin: 0;
   padding: 0;
   list-style: none;
 
-  @media (min-width: 56rem) {
+  @media (width >= 64rem) {
     grid-template-columns: repeat(4, 1fr);
   }
-}
 
-.product-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  color: var(--color-ink);
-  text-decoration: none;
+  @media (width < 48rem) {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 16.25rem;
+    gap: var(--space-4);
+    margin-inline: calc(-1 * var(--page-gutter));
+    padding-inline: var(--page-gutter);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--page-gutter);
 
-  &:hover {
-    color: var(--color-ink);
+    li {
+      scroll-snap-align: start;
+    }
   }
-
-  &:hover .product-title {
-    text-decoration: underline;
-  }
-}
-
-// The design's 318 × 380 px, as a ratio so it shrinks with the card. object-fit crops the
-// image instead of stretching it. The span without an image is a white box of the same size.
-.product-image {
-  display: block;
-  width: 100%;
-  aspect-ratio: 318 / 380;
-  margin-bottom: var(--space-2);
-  object-fit: cover;
-  background: #ffffff;
-}
-
-.product-title {
-  font-size: 1.0625rem;
-  font-weight: 600;
-  line-height: 1.4;
-}
-
-.product-price {
-  font-weight: 500;
-  line-height: 1.4;
-}
-
-.sold-out {
-  margin-left: var(--space-2);
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
-  font-weight: 400;
 }
 
 // Categories
 
+// 20 / 32 / 48 px around the list, like the page's sides.
 .categories {
-  padding-block: var(--space-7);
+  padding-block: var(--page-gutter);
   background: var(--color-sand);
 }
 
@@ -191,6 +189,7 @@
   }
 }
 
+// 52 px on a phone, 80 px on a tablet and 120 px on a computer.
 .category-link {
   display: flex;
   align-items: center;
@@ -200,7 +199,7 @@
   padding-block: var(--space-4) var(--space-2);
   color: var(--color-text);
   font-family: var(--font-heading);
-  font-size: clamp(3rem, 8.33vw, 7.5rem);
+  font-size: clamp(3.25rem, 1.67rem + 6.48vw, 7.5rem);
   line-height: var(--line-height-heading);
   text-decoration: none;
   text-transform: uppercase;
@@ -215,11 +214,10 @@
   }
 }
 
-// 56 px in the design, in the body font.
+// 30 px on a phone, 44 px on a tablet and 56 px on a computer.
 .category-arrow {
-  font-family: var(--font-body);
-  font-size: clamp(2rem, 3.9vw, 3.5rem);
-  font-weight: 700;
+  --icon-size: clamp(1.875rem, 1.27rem + 2.48vw, 3.5rem);
+
   transition: transform 0.2s;
 }
 
