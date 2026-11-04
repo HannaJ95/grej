@@ -141,3 +141,9 @@ A few lines a day about how AI was used: what for, which tool, and what worked o
 - **Design:** The refund event only knows Stripe's PaymentIntent, not the Checkout session, so I chose to store the PaymentIntent id when the order is paid instead of asking Stripe's API. I also decided that an order refunded before it is cancelled can still be cancelled, so its stock comes back, and that "Att göra" shows it as "Behöver avbrytas". Partial refunds are ignored.
 - **Verification:** Every part was built and tested in a copy first. In the local test, Render's old code sometimes handled the payment first and stored no id, and the event ids showed that I had once refunded the wrong payment in Stripe. Both were test problems, not bugs.
 - **Verification:** Finished sprint 3 item 5. In production I bought several products with a test card, saw the paid order in "Att göra", marked it as shipped and checked that the stock had decreased. I also tested both refund flows there. All Must items are done, one day before the checkpoint on Wed 4 Nov.
+
+## 2026-11-04
+
+- **Building:** Chose my own design over plan B. Built the start page from my Figma design: a shop layout with header and footer (the CMS has none), the design's neutral colors and fonts as variables, and the four newest products from the API. Verified locally on desktop and phone width.
+- **Design:** I removed the accent colors so everything is neutral for now, and only kept links that lead somewhere; the categories link to the product list until the filter is built.
+- **Verification:** Claude compared screenshots with the Figma design in Chrome; the dots on "TRÄ" touched the line, which I spotted and we fixed.
