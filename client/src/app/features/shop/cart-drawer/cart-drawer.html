@@ -5,7 +5,10 @@
 <dialog #dialog aria-labelledby="cart-title" (click)="closeOnBackdrop($event)">
   <div class="panel">
     <div class="panel-header">
-      <h2 class="panel-title" id="cart-title">Varukorg</h2>
+      <div class="heading">
+        <h2 class="panel-title" id="cart-title">Varukorg</h2>
+        <span class="count">{{ cart.count() }} {{ cart.count() === 1 ? 'grej' : 'grejer' }}</span>
+      </div>
       <button
         appIconButton
         icon="close"

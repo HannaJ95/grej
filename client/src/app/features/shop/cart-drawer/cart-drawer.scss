@@ -64,6 +64,19 @@ dialog::backdrop {
   border-bottom: 2px solid var(--color-text);
 }
 
+// The title with the number of things next to it, e.g. "VARUKORG 2 grejer".
+.heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.count {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1;
+}
+
 // 36 px, and 30 px on a phone.
 .panel-title {
   margin: 0;

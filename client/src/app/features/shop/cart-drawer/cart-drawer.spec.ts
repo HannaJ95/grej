@@ -52,6 +52,7 @@ describe('CartDrawer', () => {
       'https://storage.test/vas.png',
     );
     expect(element.querySelector('.quantity')!.textContent).toBe('2');
+    expect(element.querySelector('.count')!.textContent).toBe('2 grejer');
     expect(element.querySelector('[aria-label="Minska antal Vas"]')).not.toBeNull();
     expect(element.querySelector('.total')!.textContent).toContain('600');
   });
