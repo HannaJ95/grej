@@ -1,0 +1,24 @@
+@if (images()[selected()]; as image) {
+  <img class="main" [src]="image.url" [alt]="image.altText" />
+} @else {
+  <span class="main"></span>
+}
+
+@if (images().length > 0) {
+  <ul class="thumbnails">
+    @for (image of images(); track $index) {
+      <li>
+        <!-- The button says which image it shows, so the small image has no alt text. -->
+        <button
+          type="button"
+          class="thumbnail"
+          [attr.aria-label]="'Visa bild ' + ($index + 1) + ' av ' + images().length"
+          [attr.aria-pressed]="$index === selected()"
+          (click)="selected.set($index)"
+        >
+          <img [src]="image.url" alt="" />
+        </button>
+      </li>
+    }
+  </ul>
+}

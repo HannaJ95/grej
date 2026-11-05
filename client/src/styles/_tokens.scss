@@ -20,6 +20,7 @@
   --color-white: #ffffff;
   --color-rust: #a33a2a;
   --color-moss: #4e5d3f;
+  --color-ochre: #a57a1f;
   // Charcoal with 20 % and 55 % opacity (the last two hex digits).
   --color-charcoal-a20: #2b2a2733;
   --color-charcoal-a55: #2b2a278c;
@@ -42,6 +43,7 @@
   --color-overlay-scrim: var(--color-charcoal-a55);
   --color-feedback-error: var(--color-rust);
   --color-feedback-success: var(--color-moss);
+  --color-feedback-warning: var(--color-ochre);
   --color-accent-creator: var(--color-charcoal);
 
   // Spacing: the number in the name is the size in px.
