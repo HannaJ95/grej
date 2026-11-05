@@ -1,9 +1,132 @@
-// The product page has no design from Figma in the code yet; it uses the variables and the
-// text styles until it does.
+// Phone first; the values come from Figma's Produktsida frames.
 
-// Never wider than the page or 600 px, and the height follows the image's proportions.
-.product-image {
+:host {
   display: block;
-  max-width: min(100%, 37.5rem);
-  height: auto;
+}
+
+.breadcrumb {
+  padding-top: var(--space-24);
+}
+
+// The gallery and the information under each other on a phone, side by side from a tablet
+// (360 : 320 px in Figma) and on a computer (760 : 520 px).
+.product {
+  display: grid;
+  align-items: start;
+  gap: var(--space-24);
+  padding-block: var(--space-24) var(--space-64);
+
+  @media (width >= 48rem) {
+    grid-template-columns: minmax(0, 9fr) minmax(0, 8fr);
+    padding-bottom: var(--space-96);
+  }
+
+  @media (width >= 64rem) {
+    grid-template-columns: minmax(0, 19fr) minmax(0, 13fr);
+    gap: var(--space-64);
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+
+  p,
+  h1 {
+    margin: 0;
+  }
+}
+
+.title-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+}
+
+// Looks like a link (Link/S) but opens the description on this page.
+.more {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.properties {
+  margin: 0;
+}
+
+.property {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding-block: var(--space-12);
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+
+  dd {
+    margin: 0;
+    color: var(--color-text-secondary);
+    text-align: right;
+  }
+}
+
+.buy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.stepper {
+  height: 3.25rem;
+}
+
+// Gets its own row when it would be narrower than 12rem, e.g. at 320 px.
+.add {
+  flex: 1 1 12rem;
+}
+
+.limit:empty {
+  display: none;
+}
+
+// Figma's Accordion item: a 2 px line above and below, Heading/XS and a plus that becomes a
+// minus when it is open.
+.details {
+  border-block: var(--border-width-default) solid var(--color-border-default);
+}
+
+summary {
+  --icon-size: 1.25rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding-block: var(--space-20);
+  list-style: none;
+  cursor: pointer;
+
+  // Safari's own triangle.
+  &::-webkit-details-marker {
+    display: none;
+  }
+}
+
+.icon-minus,
+.details[open] .icon-plus {
+  display: none;
+}
+
+.details[open] .icon-minus {
+  display: inline-block;
+}
+
+// pre-line keeps the line breaks written in the CMS.
+.description {
+  padding-bottom: var(--space-24);
+  white-space: pre-line;
 }

@@ -5,45 +5,93 @@
   <p role="alert">Produkten kunde inte visas.</p>
 } @else if (product.hasValue()) {
   @let p = product.value();
-  <article>
-    <h1 class="text-display-xs">{{ p.title }}</h1>
-    <!-- A plain img, not NgOptimizedImage: that needs each image's width and height,
-         which are not stored, and its resizing needs an image service Supabase's free
-         tier does not have (constraints.md). -->
-    @if (p.image; as image) {
-      <img class="product-image" [src]="image.url" [alt]="image.altText" />
-    }
-    <p>{{ p.description }}</p>
-    <!-- Only what the product has. A description list, since each row is a heading and
-         its value, e.g. "Färg: Blå, Vit". -->
-    @if (p.materials.length > 0 || p.colors.length > 0) {
-      <dl>
-        @if (p.materials.length > 0) {
-          <dt>Material</dt>
-          <dd>{{ p.materials.join(', ') }}</dd>
-        }
-        @if (p.colors.length > 0) {
-          <dt>Färg</dt>
-          <dd>{{ p.colors.join(', ') }}</dd>
-        }
-      </dl>
-    }
-    <p>{{ p.price | currency: p.currency : 'symbol' : '1.0-2' }}</p>
-    @if (p.isSoldOut) {
-      <p>Slutsåld</p>
-    } @else {
-      <button appButton type="button" [disabled]="!cart.canAdd(p)" (click)="addToCart(p)">
-        Lägg i varukorgen
-      </button>
-      <!-- Always in the page, so screen readers announce the text when it appears. -->
-      <p role="status">
-        @if (added()) {
-          Tillagd i varukorgen.
-        }
-        @if (!cart.canAdd(p)) {
-          Det finns inte fler i lager.
-        }
-      </p>
-    }
+  <app-breadcrumb
+    class="breadcrumb"
+    [links]="[
+      { label: 'Hem', path: '/' },
+      { label: 'Shop', path: '/produkter' },
+    ]"
+    [current]="p.title"
+  />
+
+  <article class="product">
+    <app-product-gallery [images]="images()" />
+
+    <div class="info">
+      <div class="title-price">
+        <h1 class="text-display-s">{{ p.title }}</h1>
+        <p class="text-display-xs">{{ p.price | currency: p.currency : 'symbol' : '1.0-2' }}</p>
+        <app-stock-status [stock]="p.stock" />
+      </div>
+
+      @if (p.description) {
+        <p class="intro text-body-m">
+          {{ shortDescription() ?? p.description }}
+          @if (shortDescription()) {
+            <button type="button" class="more text-link-s" (click)="showDescription()">
+              Mer information
+            </button>
+          }
+        </p>
+      }
+
+      <!-- Only what the product has. A description list, since each row is a heading and
+           its value, e.g. "Färg: Blå, Vit". -->
+      @if (p.materials.length > 0 || p.colors.length > 0) {
+        <dl class="properties">
+          @if (p.materials.length > 0) {
+            <div class="property">
+              <dt class="text-label-xs">Material</dt>
+              <dd class="text-body-s">{{ p.materials.join(', ') }}</dd>
+            </div>
+          }
+          @if (p.colors.length > 0) {
+            <div class="property">
+              <dt class="text-label-xs">Färg</dt>
+              <dd class="text-body-s">{{ p.colors.join(', ') }}</dd>
+            </div>
+          }
+        </dl>
+      }
+
+      @if (!p.isSoldOut) {
+        <div class="buy">
+          <app-quantity-stepper
+            class="stepper"
+            [(quantity)]="quantity"
+            [max]="cart.remaining(p)"
+            [label]="p.title"
+          />
+          <button
+            appButton
+            size="large"
+            class="add"
+            type="button"
+            [disabled]="!cart.canAdd(p)"
+            (click)="addToCart(p)"
+          >
+            Lägg i varukorg
+          </button>
+        </div>
+        <!-- Always in the page, so screen readers announce the text when it appears. -->
+        <p class="limit" role="status">
+          @if (!cart.canAdd(p)) {
+            Det finns inte fler i lager.
+          }
+        </p>
+      }
+
+      <!-- Closed until it is opened, or "Mer information" opens it. Always the whole text. -->
+      @if (p.description) {
+        <details #details class="details">
+          <summary class="text-heading-xs">
+            Beskrivning
+            <app-icon class="icon-plus" name="plus" />
+            <app-icon class="icon-minus" name="minus" />
+          </summary>
+          <p class="description text-body-m">{{ p.description }}</p>
+        </details>
+      }
+    </div>
   </article>
 }
