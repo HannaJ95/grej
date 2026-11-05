@@ -101,6 +101,12 @@ describe('ProductPage', () => {
     expect(page().querySelector('app-product-page .quantity')!.textContent).toBe('1');
   });
 
+  it('shows no buy row when the product is sold out', async () => {
+    await openVase({ stock: 0, isSoldOut: true });
+
+    expect(page().querySelector('.buy')).toBeNull();
+  });
+
   function page(): HTMLElement {
     return harness.routeNativeElement!;
   }

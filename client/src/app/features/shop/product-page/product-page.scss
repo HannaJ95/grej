@@ -27,14 +27,19 @@
   }
 }
 
+// No box on a phone, so the sticky buy row can move along the whole page.
 .info {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-24);
+  display: contents;
 
   p,
   h1 {
     margin: 0;
+  }
+
+  @media (width >= 48rem) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
   }
 }
 
@@ -73,22 +78,37 @@
   }
 }
 
+// Phone: sticky at the bottom until it reaches its place. The margins undo the padding.
 .buy {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-12);
+  margin-block: calc(-1 * var(--space-12)) calc(-1 * var(--space-20));
+  margin-inline: calc(-1 * var(--layout-margin));
+  padding: var(--space-12) var(--layout-margin) var(--space-20);
+  background: var(--color-bg-page);
+
+  // Own row below about 345 px. Nested to beat the button's own padding.
+  .add {
+    flex: 1 1 10rem;
+    padding-inline: var(--space-16);
+  }
+
+  @media (width >= 48rem) {
+    position: static;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 .stepper {
   --stepper-button-size: calc(
     2 * var(--space-16) + var(--font-size-label-l) - 2 * var(--border-width-default)
   );
-}
-
-// Gets its own row when it would be narrower than 12rem, e.g. at 320 px.
-.add {
-  flex: 1 1 12rem;
 }
 
 .limit:empty {

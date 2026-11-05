@@ -39,6 +39,15 @@ html:has(app-shop-layout) {
   }
 }
 
+// Keeps the focus above the product page's sticky buy row on a phone (144 px at 320 px).
+html:has(app-product-page) {
+  scroll-padding-bottom: 9rem;
+
+  @media (width >= 48rem) {
+    scroll-padding-bottom: 0;
+  }
+}
+
 // Keeps the shop's content centered with --layout-margin on each side. On a computer it is at
 // most as wide as Figma's frame, so the content is at most 1440 − 2 × 48 = 1344 px.
 .page-width {
