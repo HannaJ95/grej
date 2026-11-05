@@ -63,6 +63,17 @@ describe('CartService', () => {
     expect(cart.canAdd(plate)).toBe(false);
   });
 
+  it('adds several at once, but never more than the stock', () => {
+    const cart = new CartService();
+
+    cart.add(vase, 2);
+    expect(cart.remaining(vase)).toBe(1);
+
+    cart.add(vase, 5);
+    expect(cart.items()[0].quantity).toBe(3);
+    expect(cart.remaining(vase)).toBe(0);
+  });
+
   it('keeps the quantity between 1 and the stock, and at most 99', () => {
     const cart = new CartService();
     cart.add(vase);

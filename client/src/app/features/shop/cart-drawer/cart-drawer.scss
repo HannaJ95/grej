@@ -1,6 +1,6 @@
 // The styles are written for a phone first; the media queries change them on a tablet
 // (48rem = 768 px) and a computer (64rem = 1024 px). The values come from Figma's Cart
-// drawer, Cart item and Quantity stepper, and the text styles are classes in the template.
+// drawer and Cart item, and the text styles are classes in the template.
 // The free shipping bar and "Frakt räknas ut i kassan" in Figma are not built.
 
 // The cart button in the header (Figma: Cart in the Header): Label/XS with 8 / 14 px inside
@@ -161,43 +161,6 @@ dialog::backdrop {
   justify-content: space-between;
   gap: var(--space-12);
   padding-top: var(--space-8);
-}
-
-// Figma's Quantity stepper: − 1 + in one 2 px frame, with 36 px square buttons and the number
-// in Label/S.
-.stepper {
-  display: inline-flex;
-  align-items: center;
-  border: var(--border-width-default) solid var(--color-border-default);
-
-  button {
-    --icon-size: 0.875rem;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    padding: 0;
-    border: none;
-    background: transparent;
-    color: var(--color-icon-default);
-    cursor: pointer;
-
-    &:hover:not(:disabled) {
-      background: var(--color-oat);
-    }
-
-    &:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-    }
-  }
-}
-
-.quantity {
-  width: 1.75rem;
-  text-align: center;
 }
 
 // Link/S. Looks like a link, but is a button since it changes the cart instead of going

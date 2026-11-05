@@ -1,9 +1,5 @@
 <div class="page-width page-title">
-  <nav class="breadcrumb text-mono-s" aria-label="Brödsmulor">
-    <a routerLink="/">Hem</a>
-    <span aria-hidden="true">/</span>
-    <span aria-current="page">Shop</span>
-  </nav>
+  <app-breadcrumb [links]="[{ label: 'Hem', path: '/' }]" current="Shop" />
   <div class="title-row">
     <!-- Written in normal case and made capital by the text style, like the start page. -->
     <h1 class="title text-display-xl">Alla grejer</h1>

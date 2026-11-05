@@ -21,6 +21,9 @@ export interface Product {
   colors: string[];
 }
 
+// "Få kvar" when this many or fewer are left (0 is "Slutsåld").
+export const FEW_LEFT = 2;
+
 // Fetches products from the API.
 @Service()
 export class ProductService {

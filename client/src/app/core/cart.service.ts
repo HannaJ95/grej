@@ -49,14 +49,20 @@ export class CartService {
 
   // False if the product is sold out, or all that can be bought are already in the cart.
   canAdd(product: Product): boolean {
-    const inCart = this.items().find((item) => item.productId === product.id)?.quantity ?? 0;
-    return inCart < maxQuantityOf(product);
+    return this.remaining(product) > 0;
   }
 
-  add(product: Product): void {
+  // How many more of the product can be added: the stock (at most 99) minus the cart's.
+  remaining(product: Product): number {
+    const inCart = this.items().find((item) => item.productId === product.id)?.quantity ?? 0;
+    return Math.max(maxQuantityOf(product) - inCart, 0);
+  }
+
+  add(product: Product, quantity = 1): void {
     // A sold-out product cannot be added (constraints.md), and the quantity is
     // limited by the stock (ambiguity.md).
-    if (!this.canAdd(product)) {
+    const amount = Math.min(quantity, this.remaining(product));
+    if (amount < 1) {
       return;
     }
 
@@ -67,7 +73,7 @@ export class CartService {
       this.save(
         this.items().map((item) =>
           item.productId === product.id
-            ? { ...item, quantity: item.quantity + 1, maxQuantity }
+            ? { ...item, quantity: item.quantity + amount, maxQuantity }
             : item,
         ),
       );
@@ -78,7 +84,7 @@ export class CartService {
         price: product.price,
         currency: product.currency,
         image: product.image,
-        quantity: 1,
+        quantity: amount,
         maxQuantity,
       };
       this.save([...this.items(), item]);

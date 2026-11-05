@@ -67,26 +67,12 @@
                 }}</span>
               </div>
               <div class="actions">
-                <!-- The design's quantity stepper: − 1 + in one frame. -->
-                <div class="stepper">
-                  <button
-                    type="button"
-                    [attr.aria-label]="'Minska antal ' + item.title"
-                    [disabled]="item.quantity <= 1"
-                    (click)="cart.setQuantity(item.productId, item.quantity - 1)"
-                  >
-                    <app-icon name="minus" />
-                  </button>
-                  <span class="quantity text-label-s">{{ item.quantity }}</span>
-                  <button
-                    type="button"
-                    [attr.aria-label]="'Öka antal ' + item.title"
-                    [disabled]="item.quantity >= item.maxQuantity"
-                    (click)="cart.setQuantity(item.productId, item.quantity + 1)"
-                  >
-                    <app-icon name="plus" />
-                  </button>
-                </div>
+                <app-quantity-stepper
+                  [quantity]="item.quantity"
+                  (quantityChange)="cart.setQuantity(item.productId, $event)"
+                  [max]="item.maxQuantity"
+                  [label]="item.title"
+                />
                 <button
                   class="remove text-link-s"
                   type="button"

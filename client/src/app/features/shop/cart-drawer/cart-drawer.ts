@@ -5,13 +5,13 @@ import { CartService } from '../../../core/cart.service';
 import { CheckoutService } from '../../../core/checkout.service';
 import { Button } from '../../../shared/button/button';
 import { IconButton } from '../../../shared/icon-button/icon-button';
-import { Icon } from '../../../shared/icons/icon';
+import { QuantityStepper } from '../../../shared/quantity-stepper/quantity-stepper';
 
 // The cart button in the navigation and the panel it opens (Figma: Cart drawer). The panel
 // is a native <dialog>: the browser closes it on Escape, keeps the focus inside it while it
 // is open and puts a backdrop behind it.
 @Component({
-  imports: [CurrencyPipe, RouterLink, Button, Icon, IconButton],
+  imports: [CurrencyPipe, RouterLink, Button, IconButton, QuantityStepper],
   selector: 'app-cart-drawer',
   styleUrl: './cart-drawer.scss',
   templateUrl: './cart-drawer.html',

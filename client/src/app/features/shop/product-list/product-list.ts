@@ -1,6 +1,6 @@
 import { Component, computed, inject, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { ProductService } from '../../../core/product.service';
+import { Breadcrumb } from '../../../shared/breadcrumb/breadcrumb';
 import { toPageNumber } from '../../../shared/page-number';
 import { Pagination } from '../../../shared/pagination/pagination';
 import { ProductCard } from '../product-card/product-card';
@@ -8,7 +8,7 @@ import { ProductCard } from '../product-card/product-card';
 // The list of products in the shop, e.g. /produkter or /produkter?sida=2 (Figma: Shop page).
 @Component({
   selector: 'app-product-list',
-  imports: [RouterLink, Pagination, ProductCard],
+  imports: [Breadcrumb, Pagination, ProductCard],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss',
 })

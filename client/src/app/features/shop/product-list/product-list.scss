@@ -28,27 +28,6 @@
   }
 }
 
-.breadcrumb {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  gap: var(--space-8);
-  color: var(--color-text-secondary);
-
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
-  [aria-current] {
-    color: var(--color-text-primary);
-  }
-}
-
 // Under each other on a phone and a tablet; side by side on a computer, with the intro at the
 // bottom right.
 .title-row {
