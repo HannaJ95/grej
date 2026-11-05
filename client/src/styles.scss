@@ -1,3 +1,4 @@
-// Global styles for the whole app. The variables come first, since the base rules use them.
+// Global styles for the whole app. The variables come first, since the other files use them.
 @use 'styles/tokens';
+@use 'styles/typography';
 @use 'styles/base';
