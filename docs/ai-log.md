@@ -147,3 +147,10 @@ A few lines a day about how AI was used: what for, which tool, and what worked o
 - **Building:** Chose my own design over plan B. Built the start page from my Figma design: a shop layout with header and footer (the CMS has none), the design's neutral colors and fonts as variables, and the four newest products from the API. Verified locally on desktop and phone width.
 - **Design:** I removed the accent colors so everything is neutral for now, and only kept links that lead somewhere; the categories link to the product list until the filter is built.
 - **Verification:** Claude compared screenshots with the Figma design in Chrome; the dots on "TRÄ" touched the line, which I spotted and we fixed.
+
+## 2026-11-05
+
+- **Building:** Replaced all old style variables with the variables and text styles from my Figma file, with the same names as Figma's Code syntax and mobile first (768 / 1024 px). Every component, the CMS included, now uses them.
+- **Verification:** Claude read the values from Figma and measured each page in Chrome at 390, 768 and 1440 px against the frames. This found two problems: the footer's big "GREJ." was too wide, and the dots on "TRÄ" reached the line above.
+- **Design:** Figma has no hover or focus states, so I chose to use the design's own colors for them. I kept the sold-out layer at 70 %, since Figma's 100 % hides the picture.
+
