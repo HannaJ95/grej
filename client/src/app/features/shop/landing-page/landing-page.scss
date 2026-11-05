@@ -1,7 +1,6 @@
-// The design has three sizes: a phone (390 px), a tablet (768 px) and a computer (1440 px).
-// The big text uses clamp(smallest, a + b vw, largest): a straight line through the phone's
-// and the computer's sizes, so the tablet lands close to its own size too, and nothing jumps
-// between the sizes.
+// The styles are written for a phone first; the media queries change them on a tablet
+// (48rem = 768 px) and a computer (64rem = 1024 px). The values come from Figma's three
+// Landing Page frames, and the text styles are classes in the template.
 
 :host {
   display: block;
@@ -9,46 +8,73 @@
 
 // Hero
 
-// 20–24 px above, and 48 px below on a phone up to 150 px on a computer.
+// 20 px above and 48 px below on a phone, 24 / 72 px on a tablet and 24 / 64 px on a
+// computer.
 .hero {
-  padding-block: var(--space-5) clamp(var(--space-7), -1rem + 11.4vw, 9.375rem);
+  padding-block: var(--space-20) var(--space-48);
+
+  @media (width >= 48rem) {
+    padding-block: var(--space-24) var(--space-72);
+  }
+
+  @media (width >= 64rem) {
+    padding-bottom: var(--space-64);
+  }
 }
 
-// 110 px on a phone, 150 px on a tablet and 200 px on a computer. On a phone it wraps to
-// three rows by itself, like the design.
+// Display/Hero. On a phone it wraps to three rows by itself, like the design.
 .hero-title {
-  margin: 0 0 clamp(var(--space-5), 1.2rem + 0.8vw, 2.25rem);
-  font-size: clamp(6.875rem, 4.79rem + 8.57vw, 12.5rem);
-  line-height: var(--line-height-heading);
-  text-transform: uppercase;
+  margin: 0 0 var(--space-24);
+
+  @media (width >= 48rem) {
+    margin-bottom: var(--space-32);
+  }
 }
 
-// 18 px on a phone, 20 px on a tablet and 22 px on a computer.
+// Body/L, 520 px wide on a tablet and 540 px on a computer.
 .hero-intro {
-  max-width: 34rem;
-  margin: 0 0 clamp(var(--space-5), 1.4rem + 0.4vw, 1.75rem);
-  color: var(--color-ink);
-  font-size: clamp(1.125rem, 1.03rem + 0.38vw, 1.375rem);
+  margin: 0 0 var(--space-24);
+
+  @media (width >= 48rem) {
+    max-width: 32.5rem;
+    margin-bottom: var(--space-28);
+  }
+
+  @media (width >= 64rem) {
+    max-width: 33.75rem;
+  }
 }
 
 // The whole width on a phone, like the design.
 .hero-button {
-  @media (width < 48rem) {
-    display: flex;
+  display: flex;
+
+  @media (width >= 48rem) {
+    display: inline-flex;
   }
 }
 
 // Marquee
 
-// The band's sizes follow the text: 14, 16 and 18 px text on a phone, a tablet and a
-// computer, with the star, the space and the height in em, so they grow with it.
+// Figma's Marquee: 38 / 44 / 52 px high, Label/XS / M / L and a 12 / 14 / 16 px star with
+// 20 / 24 / 28 px between the words and the stars. The three label styles only differ in
+// size, so the template has text-label-xs and the media queries change the size.
 .marquee {
   display: flex;
   align-items: center;
-  min-height: 2.8em;
+  height: 2.375rem;
   overflow: hidden;
-  background: var(--color-primary);
-  font-size: clamp(0.875rem, 0.78rem + 0.38vw, 1.125rem);
+  background: var(--color-bg-inverse);
+
+  @media (width >= 48rem) {
+    height: 2.75rem;
+    font-size: var(--font-size-label-m);
+  }
+
+  @media (width >= 64rem) {
+    height: 3.25rem;
+    font-size: var(--font-size-label-l);
+  }
 }
 
 // Both lists in one row. The animation moves the row left by one list's width (-50%), then
@@ -88,137 +114,185 @@
 .marquee-item {
   display: flex;
   align-items: center;
-  gap: 1.5em;
-  padding-right: 1.5em;
-  color: var(--color-surface);
-  font-weight: 700;
-  line-height: 1;
+  gap: var(--space-20);
+  padding-right: var(--space-20);
+  color: var(--color-text-on-inverse);
   text-transform: uppercase;
   white-space: nowrap;
+
+  @media (width >= 48rem) {
+    gap: var(--space-24);
+    padding-right: var(--space-24);
+  }
+
+  @media (width >= 64rem) {
+    gap: var(--space-28);
+    padding-right: var(--space-28);
+  }
 }
 
 .marquee-star {
-  width: 0.875em;
-  height: 0.875em;
+  width: 0.75rem;
+  height: 0.75rem;
+
+  @media (width >= 48rem) {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  @media (width >= 64rem) {
+    width: 1rem;
+    height: 1rem;
+  }
 }
 
 // Newest products
 
-// 56 / 80 / 117 px above and 64 / 96 / 96 px below.
+// 56 / 80 / 120 px above and 64 / 96 / 160 px below.
 .newest {
-  padding-block: clamp(3.5rem, 1.5rem + 8.1vw, 7.3rem) clamp(var(--space-8), 3.25rem + 3vw, 6rem);
+  padding-block: var(--space-56) var(--space-64);
+
+  @media (width >= 48rem) {
+    padding-block: var(--space-80) var(--space-96);
+  }
+
+  @media (width >= 64rem) {
+    padding-block: var(--space-120) var(--space-160);
+  }
 }
 
-// The title on the left and "Visa alla" on the right, on the same baseline.
+// The title on the left and "Visa alla" on the right, on the same baseline. 24 / 32 / 40 px
+// down to the products.
 .newest-header {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
   // 16 px between them, so both fit on one row on a 390 px phone, like the design.
-  gap: var(--space-2) var(--space-4);
-  margin-bottom: clamp(var(--space-5), 1.3rem + 1vw, 2.5rem);
-}
+  gap: var(--space-8) var(--space-16);
+  margin-bottom: var(--space-24);
 
-// 50 px on a phone, 80 px on a tablet and 120 px on a computer.
-.section-title {
-  margin: 0;
-  font-size: clamp(3.125rem, 1.5rem + 6.67vw, 7.5rem);
-  line-height: 1;
-  text-transform: uppercase;
-}
+  @media (width >= 48rem) {
+    margin-bottom: var(--space-32);
+  }
 
-.show-all {
-  color: var(--color-text);
-  font-size: clamp(0.9375rem, 0.87rem + 0.29vw, 1.125rem);
-  font-weight: 600;
-  line-height: 1.4;
-
-  &:hover {
-    color: var(--color-text);
+  @media (width >= 64rem) {
+    margin-bottom: var(--space-40);
   }
 }
 
-// Four products per row on a computer, two on a tablet. On a phone it is a row of 260 px cards
-// to swipe through: it reaches the screen's edges (the negative margin), and each swipe
-// stops at a card (scroll-snap).
+.section-title {
+  margin: 0;
+}
+
+// Link/S on a phone and Link/L from a tablet up. They only differ in size and line height,
+// so the template has text-link-s and the media query changes those two.
+.show-all {
+  color: var(--color-text-primary);
+
+  @media (width >= 48rem) {
+    font-size: var(--font-size-label-l);
+    line-height: 1.4;
+  }
+}
+
+// On a phone a row of 260 px cards to swipe through, 16 px apart: it reaches the screen's
+// edges (the negative margin), and each swipe stops at a card (scroll-snap). Two products
+// per row on a tablet (24 px apart, 40 px between the rows) and four on a computer.
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2.5rem var(--space-5);
-  margin: 0;
-  padding: 0;
+  grid-auto-flow: column;
+  grid-auto-columns: 16.25rem;
+  gap: var(--space-16);
+  margin: 0 calc(-1 * var(--layout-margin));
+  padding: 0 var(--layout-margin);
+  overflow-x: auto;
   list-style: none;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--layout-margin);
+
+  li {
+    scroll-snap-align: start;
+  }
+
+  @media (width >= 48rem) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-flow: row;
+    gap: var(--space-40) var(--space-24);
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow-x: visible;
+    scroll-snap-type: none;
+  }
 
   @media (width >= 64rem) {
     grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media (width < 48rem) {
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: 16.25rem;
-    gap: var(--space-4);
-    margin-inline: calc(-1 * var(--page-gutter));
-    padding-inline: var(--page-gutter);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: var(--page-gutter);
-
-    li {
-      scroll-snap-align: start;
-    }
+    column-gap: var(--layout-gutter);
   }
 }
 
 // Categories
 
-// 20 / 32 / 48 px around the list, like the page's sides.
+// 20 / 32 / 48 px around the list.
 .categories {
-  padding-block: var(--page-gutter);
-  background: var(--color-sand);
+  padding-block: var(--space-20);
+  background: var(--color-bg-muted);
+
+  @media (width >= 48rem) {
+    padding-block: var(--space-32);
+  }
+
+  @media (width >= 64rem) {
+    padding-block: var(--space-48);
+  }
 }
 
 .category-list {
   margin-block: 0;
   list-style: none;
-
-  // The 2 px line between the categories.
-  li + li {
-    border-top: 2px solid var(--color-text);
-  }
 }
 
-// 52 px on a phone, 80 px on a tablet and 120 px on a computer.
+// Figma's Category row: Display/L with 8 px above and a 2 px line 8 px below the text (in
+// Figma the line lies over the bottom of 10 px padding, which looks the same). The dots on
+// Å, Ä and Ö reach above the capitals, and in "Trä" they went into the line above on a
+// tablet and a computer, where the text is bigger. Figma's names have no such letters, so
+// the space above grows with the text: 8 / 16 / 24 px.
 .category-link {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  // The dots on Ä and Å reach above the capital letters. With line-height 1 they touched
-  // the line above, so the row gets the headings' 1.16 and more space at the top.
-  padding-block: var(--space-4) var(--space-2);
-  color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: clamp(3.25rem, 1.67rem + 6.48vw, 7.5rem);
-  line-height: var(--line-height-heading);
+  padding-block: var(--space-8);
+  border-bottom: var(--border-width-default) solid var(--color-bg-inverse);
+  color: var(--color-text-primary);
   text-decoration: none;
-  text-transform: uppercase;
 
-  &:hover {
-    color: var(--color-text);
+  @media (width >= 48rem) {
+    padding-top: var(--space-16);
+  }
+
+  @media (width >= 64rem) {
+    padding-top: var(--space-24);
   }
 
   // The arrow moves right a little, to show that the row is a link.
   &:hover .category-arrow {
-    transform: translateX(var(--space-2));
+    transform: translateX(var(--space-8));
   }
 }
 
-// 30 px on a phone, 44 px on a tablet and 56 px on a computer.
+// 30 px on a phone, 44 px on a tablet and 64 px on a computer.
 .category-arrow {
-  --icon-size: clamp(1.875rem, 1.27rem + 2.48vw, 3.5rem);
+  --icon-size: 1.875rem;
 
   transition: transform 0.2s;
+
+  @media (width >= 48rem) {
+    --icon-size: 2.75rem;
+  }
+
+  @media (width >= 64rem) {
+    --icon-size: 4rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

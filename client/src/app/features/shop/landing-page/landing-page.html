@@ -2,8 +2,8 @@
   <div class="page-width">
     <!-- Written in normal case and made capital in the styles, so screen readers read words,
          not letters. -->
-    <h1 class="hero-title">Det här<br />är en grej.</h1>
-    <p class="hero-intro">
+    <h1 class="hero-title text-display-hero">Det här<br />är en grej.</h1>
+    <p class="hero-intro text-body-l">
       Handgjorda saker från små skapare. Nya grejer varje vecka, och aldrig två likadana.
     </p>
     <a appButton size="large" class="hero-button" routerLink="/produkter">
@@ -13,7 +13,7 @@
 </section>
 
 <!-- Decoration only, so screen readers skip it. -->
-<div class="marquee" aria-hidden="true">
+<div class="marquee text-label-xs" aria-hidden="true">
   <div class="marquee-track">
     <!-- The same list twice; see marqueeWords. -->
     @for (copy of [1, 2]; track copy) {
@@ -38,8 +38,8 @@
 <section class="newest" aria-labelledby="newest-title">
   <div class="page-width">
     <div class="newest-header">
-      <h2 class="section-title" id="newest-title">Nytt just nu</h2>
-      <a class="show-all" routerLink="/produkter">Visa alla <span aria-hidden="true">→</span></a>
+      <h2 class="section-title text-display-l" id="newest-title">Nytt just nu</h2>
+      <a class="show-all text-link-s" routerLink="/produkter">Visa alla <span aria-hidden="true">→</span></a>
     </div>
 
     @if (result.isLoading()) {
@@ -66,7 +66,7 @@
   <ul class="page-width category-list">
     @for (category of categories; track category) {
       <li>
-        <a class="category-link" routerLink="/produkter">
+        <a class="category-link text-display-l" routerLink="/produkter">
           {{ category }}
           <app-icon class="category-arrow" name="arrow-right" />
         </a>

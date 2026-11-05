@@ -1,3 +1,6 @@
+// The values come from Figma's Product card and Add to cart button, and the text styles are
+// classes in the template.
+
 // position: relative makes the title link's ::after cover this card and nothing else.
 // container-type lets the add button use the card's width (cqw) to find the image's bottom.
 :host {
@@ -5,8 +8,8 @@
   container-type: inline-size;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  color: var(--color-text);
+  gap: var(--space-12);
+  color: var(--color-text-primary);
 }
 
 .media {
@@ -20,34 +23,27 @@
   width: 100%;
   aspect-ratio: 318 / 380;
   object-fit: cover;
-  background: #ffffff;
+  background: var(--color-bg-image);
 }
 
 .badge {
   position: absolute;
-  top: 0.875rem;
-  left: 0.875rem;
+  top: var(--space-14);
+  left: var(--space-14);
 }
 
 // Room on the right for the add button on a tablet and a phone.
 .meta {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-4);
   padding-right: 2.75rem;
-  line-height: 1.4;
 }
 
-// 17 px on a computer and a tablet, 15 px on a phone, like the design.
+// Heading/S.
 .title {
   color: inherit;
-  font-size: 1.0625rem;
-  font-weight: 600;
   text-decoration: none;
-
-  @media (width < 48rem) {
-    font-size: 0.9375rem;
-  }
 
   // An empty box over the whole card that belongs to the link, so a click anywhere on the
   // card opens the product.
@@ -58,67 +54,65 @@
   }
 
   &:hover {
-    color: inherit;
     text-decoration: underline;
   }
 }
 
 // The focus ring goes around the whole card, which is what the link covers.
 :host:has(.title:focus-visible) {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 4px;
+  outline: var(--border-width-default) solid var(--color-border-default);
+  outline-offset: var(--space-4);
 }
 
 .title:focus-visible {
   outline: none;
 }
 
+// Price.
 .price {
   margin: 0;
-  font-weight: 500;
-
-  @media (width < 48rem) {
-    font-size: 0.9375rem;
-  }
 }
 
-// The add button (Figma: Add to cart button). On a tablet and a phone a dark square with a
-// plus at the right of the price, always shown, since there is no hover on a touch screen.
+// The add button (Figma: Add to cart button). On a phone and a tablet a dark square with a
+// plus at the right of the price, always shown, since there is no hover on a touch screen:
+// 34 × 30 px with a 12 px plus on a phone, 38 × 32 px with a 14 px plus on a tablet. Its
+// bottom is 5 px above the price's bottom, like in Figma.
 .add {
-  --icon-size: 0.875rem;
+  --icon-size: 0.75rem;
 
   position: absolute;
   right: 0;
-  bottom: 5px;
+  bottom: 0.3125rem;
   // Above the title link's ::after, which covers the card.
   z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
-  width: 2.375rem;
-  height: 2rem;
+  gap: var(--space-8);
+  width: 2.125rem;
+  height: 1.875rem;
   padding: 0;
   border: none;
-  background: var(--color-primary);
-  color: var(--color-surface);
-  font-weight: 600;
+  background: var(--color-bg-inverse);
+  // Figma paints the plus in --color-bg-surface.
+  color: var(--color-bg-surface);
   cursor: pointer;
 
   &:hover:not(:disabled) {
-    background: var(--color-primary-hover);
+    background: var(--color-graphite);
   }
 
+  // 30 % like Figma's disabled button.
   &:disabled {
     opacity: 0.3;
     cursor: not-allowed;
   }
 
-  @media (width < 48rem) {
-    --icon-size: 0.75rem;
+  @media (width >= 48rem) {
+    --icon-size: 0.875rem;
 
-    width: 2.125rem;
-    height: 1.875rem;
+    width: 2.375rem;
+    height: 2rem;
   }
 }
 
@@ -127,9 +121,10 @@
   display: none;
 }
 
-// On a computer with a mouse: a 54 px bar along the image's bottom edge, shown when the
-// pointer is on the card or the button has keyboard focus. The image is 380/318 as tall as
-// the card is wide (100cqw), so that minus the bar is where the bar starts.
+// On a computer with a mouse: a 54 px bar along the image's bottom edge with Label/S text,
+// shown when the pointer is on the card or the button has keyboard focus. The image is
+// 380/318 as tall as the card is wide (100cqw), so that minus the bar is where the bar
+// starts.
 @media (width >= 64rem) and (hover: hover) {
   .meta {
     padding-right: 0;
@@ -141,7 +136,7 @@
     bottom: auto;
     width: auto;
     height: 3.375rem;
-    font-size: 0.9375rem;
+    color: var(--color-text-on-inverse);
     opacity: 0;
 
     // A sold-out product gets no bar at all.
@@ -160,16 +155,18 @@
   }
 }
 
-// Sold out: a light layer over the image and greyer text, like the design. The text uses the
-// muted color instead of the design's 60 % opacity, which would only have 4:1 contrast.
+// Sold out: a light layer over the image and the secondary text color, like the design.
+// Figma's layer is --color-bg-surface at 100 %, which would hide the image completely, so
+// here it is the same color at 70 %.
 :host(.sold-out) {
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
 
   .media::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgb(248 243 234 / 70%);
+    background: var(--color-bg-surface);
+    opacity: 0.7;
   }
 
   // Above the light layer.
