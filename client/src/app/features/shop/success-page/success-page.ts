@@ -11,7 +11,7 @@ import { Button } from '../../../shared/button/button';
   // The page's width and side space (_base.scss), like the product list.
   host: { class: 'page-width' },
   template: `
-    <h1>Tack för din beställning!</h1>
+    <h1 class="text-display-xs">Tack för din beställning!</h1>
     @if (order()) {
       <p>Ditt ordernummer är <strong>{{ order() }}</strong>.</p>
       <!-- No email is sent in this version, so the number is the only confirmation (ambiguity.md). -->

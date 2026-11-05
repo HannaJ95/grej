@@ -6,7 +6,7 @@
 } @else if (product.hasValue()) {
   @let p = product.value();
   <article>
-    <h1>{{ p.title }}</h1>
+    <h1 class="text-display-xs">{{ p.title }}</h1>
     <!-- A plain img, not NgOptimizedImage: that needs each image's width and height,
          which are not stored, and its resizing needs an image service Supabase's free
          tier does not have (constraints.md). -->

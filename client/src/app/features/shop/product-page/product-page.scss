@@ -1,6 +1,9 @@
-// Never wider than the page, and the height follows the image's proportions.
+// The product page has no design from Figma in the code yet; it uses the variables and the
+// text styles until it does.
+
+// Never wider than the page or 600 px, and the height follows the image's proportions.
 .product-image {
   display: block;
-  max-width: min(100%, 600px);
+  max-width: min(100%, 37.5rem);
   height: auto;
 }

@@ -1,4 +1,4 @@
-<h1>{{ isNew() ? 'Ny produkt' : 'Redigera produkt' }}</h1>
+<h1 class="text-display-xs">{{ isNew() ? 'Ny produkt' : 'Redigera produkt' }}</h1>
 <p><a routerLink="/admin/produkter">Tillbaka till produkterna</a></p>
 
 @if (product.isLoading()) {

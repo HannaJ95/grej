@@ -1,4 +1,4 @@
-<h1>{{ isNew() ? 'Ny kategori' : 'Redigera kategori' }}</h1>
+<h1 class="text-display-xs">{{ isNew() ? 'Ny kategori' : 'Redigera kategori' }}</h1>
 <p><a routerLink="/admin/kategorier">Tillbaka till kategorierna</a></p>
 
 @if (category.isLoading()) {
