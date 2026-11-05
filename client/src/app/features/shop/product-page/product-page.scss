@@ -81,7 +81,9 @@
 }
 
 .stepper {
-  height: 3.25rem;
+  --stepper-button-size: calc(
+    2 * var(--space-16) + var(--font-size-label-l) - 2 * var(--border-width-default)
+  );
 }
 
 // Gets its own row when it would be narrower than 12rem, e.g. at 320 px.
