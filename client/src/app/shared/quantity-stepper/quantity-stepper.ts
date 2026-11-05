@@ -26,9 +26,10 @@ import { Icon } from '../icons/icon';
     </button>
   `,
   styles: `
+    // The buttons fill the height, so the hover color reaches the frame when the stepper is
+    // made taller, e.g. on the product page.
     :host {
       display: inline-flex;
-      align-items: center;
       border: var(--border-width-default) solid var(--color-border-default);
     }
 
@@ -39,7 +40,7 @@ import { Icon } from '../icons/icon';
       align-items: center;
       justify-content: center;
       width: 2.25rem;
-      height: 2.25rem;
+      min-height: 2.25rem;
       padding: 0;
       border: none;
       background: transparent;
@@ -57,6 +58,7 @@ import { Icon } from '../icons/icon';
     }
 
     .quantity {
+      align-self: center;
       width: 1.75rem;
       text-align: center;
     }
