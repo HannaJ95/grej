@@ -15,6 +15,19 @@ import { Icon } from '../../../shared/icons/icon';
   host: { class: 'page-width' },
 })
 export class SuccessPage {
+  // No email is sent in this version, so no step promises one (ambiguity.md).
+  protected readonly steps = [
+    { title: 'Skaparen packar din grej', text: 'Inom 1–2 arbetsdagar.' },
+    {
+      title: 'Paketet skickas med PostNord',
+      text: 'Spara ordernumret om du vill fråga oss om leveransen.',
+    },
+    {
+      title: 'Hämta ut paketet',
+      text: 'Hos ditt PostNord-ombud, normalt inom 2–4 arbetsdagar.',
+    },
+  ];
+
   // The ?order= in the URL, set by the router (withComponentInputBinding in app.config.ts).
   readonly order = input<string>();
 
@@ -24,4 +37,3 @@ export class SuccessPage {
     inject(CartService).clear();
   }
 }
-
