@@ -1,3 +1,7 @@
+// The styles are written for a phone first; the media queries change them on a tablet
+// (48rem = 768 px) and a computer (64rem = 1024 px). The values come from Figma's Header and
+// Footer components, and the text styles are classes in the template.
+
 // :host is <app-shop-layout> itself. Without display: block a custom element is inline.
 :host {
   display: block;
@@ -6,63 +10,49 @@
 // Header
 
 .header {
-  background: var(--color-surface);
+  background: var(--color-bg-surface);
 }
 
-// The logo, the menu and the cart in a row: 10 px above and below on a computer and a
-// tablet, 12 px on a phone, like the design.
+// The logo, the menu and the cart in a row: 12 px above and below on a phone, 10 px on a
+// tablet and a computer.
 .header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
-  padding-block: 0.625rem;
+  gap: var(--space-16);
+  padding-block: var(--space-12);
 
-  @media (width < 48rem) {
-    padding-block: var(--space-3);
+  @media (width >= 48rem) {
+    padding-block: var(--space-10);
   }
 }
 
-// "GREJ." in the display font: 50 px, and 40 px on a phone.
+// "GREJ." in Display/Logo. In Figma each letter is its own text with 2 px between them,
+// which is the same as 2 px letter spacing.
 .logo {
-  color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: 3.125rem;
-  line-height: var(--line-height-heading);
-  letter-spacing: 2px;
-  text-decoration: none;
-
-  @media (width < 48rem) {
-    font-size: 2.5rem;
-  }
+  color: var(--color-text-primary);
+  letter-spacing: var(--space-2);
 }
 
-// The links on a computer and a tablet. On a phone they are in the menu instead.
+// The links are in the menu on a phone, and in the header from a tablet up.
 .nav {
-  display: flex;
-  gap: clamp(1.75rem, 2.5vw, 2.25rem);
+  display: none;
 
-  @media (width < 48rem) {
-    display: none;
+  @media (width >= 48rem) {
+    display: flex;
+    gap: var(--space-28);
+  }
+
+  @media (width >= 64rem) {
+    gap: var(--space-32);
   }
 }
 
 .nav-link {
-  color: var(--color-text);
-  font-weight: 600;
-  line-height: 1.4;
-  letter-spacing: 0.1em;
-  text-decoration: none;
+  color: var(--color-text-primary);
 }
 
-// The color is set again, since a:hover in _base.scss would change it. The current page is
-// underlined, like "Shop" on the shop's pages in the design.
-.logo:hover,
-.nav-link:hover,
-.nav-link.active {
-  color: var(--color-text);
-}
-
+// The current page is underlined, like "Shop" on the shop's pages in the design.
 .nav-link:hover,
 .nav-link.active {
   text-decoration: underline;
@@ -72,36 +62,49 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: var(--space-10);
 }
 
 // Only on phones.
 .mobile-menu {
-  display: none;
+  display: block;
 
-  @media (width < 48rem) {
-    display: block;
+  @media (width >= 48rem) {
+    display: none;
   }
 }
 
 // Footer
 
-// 88 px above on a computer, 64 px on a tablet and 56 px on a phone, and less below.
+// 56 px above and 28 px below on a phone, 64 / 32 px on a tablet and 80 / 40 px on a
+// computer. The focus ring gets the light border color to be seen on the dark background.
 .footer {
-  // The focus ring needs another color to be seen on the dark background.
-  --color-focus: var(--color-focus-on-dark);
+  padding-block: var(--space-56) var(--space-28);
+  background: var(--color-bg-inverse);
+  color: var(--color-text-on-inverse);
 
-  padding-block: clamp(3.5rem, 6.1vw, 5.5rem) clamp(1.75rem, 2.8vw, 2.5rem);
-  background: var(--color-primary);
-  color: #ffffff;
+  :focus-visible {
+    outline-color: var(--color-border-inverse);
+  }
+
+  @media (width >= 48rem) {
+    padding-block: var(--space-64) var(--space-32);
+  }
+
+  // Figma's footer has 40 px on the sides on a computer, a little less than the header's 48.
+  @media (width >= 64rem) {
+    padding-block: var(--space-80) var(--space-40);
+
+    .page-width {
+      padding-inline: var(--space-40);
+    }
+  }
 }
 
 .footer-links {
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
-  font-size: var(--font-size-sm);
-  line-height: 1.4;
+  gap: var(--space-10);
 
   a {
     color: inherit;
@@ -109,45 +112,50 @@
   }
 
   a:hover {
-    color: inherit;
     text-decoration: underline;
   }
 }
 
-// Looks like the design's column title, but is an h2 so the footer has a heading.
+// Looks like the design's column title (Heading/XS), but is an h2 so the footer has a heading.
 .footer-heading {
   margin: 0;
-  font-family: var(--font-body);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  line-height: 1.4;
 }
 
-// The big "GREJ." across the whole width. Each letter is its own span, and space-between
-// spreads them out like in the design. The design has 150 px on a phone, 300 px on a tablet
-// and 500 px on a computer, which is about 38 % of the screen width up to 500 px.
+// The big "GREJ." across the whole width, in Display/Wordmark. Each letter is its own span,
+// and space-between spreads them out like in the design. 48 / 72 / 112 px above it and
+// 20 / 32 / 32 px below. The letters are about 2.1 times as wide as the font size, so the
+// computer's 500 px would not fit between 1024 and about 1190 px. The size is therefore at
+// most 42 % of the screen width, which only changes it there (and on phones narrower than
+// 360 px); at 390, 768 and 1440 px it is Figma's size. The text style's 15 % letter
+// spacing is turned off: the browser adds it after each letter, also after a lonely letter in
+// a span, which made the row 5 × 75 px too wide. space-between does the spacing instead, like
+// in Figma.
 .footer-logo {
   display: flex;
   justify-content: space-between;
-  margin: clamp(3rem, 7.8vw, 7rem) 0 clamp(1.25rem, 2.2vw, 2rem);
-  font-family: var(--font-heading);
-  font-size: min(38vw, 31.25rem);
-  line-height: 1;
+  margin: var(--space-48) 0 var(--space-20);
+  font-size: min(var(--font-size-display-wordmark), 42vw);
+  letter-spacing: 0;
+
+  @media (width >= 48rem) {
+    margin: var(--space-72) 0 var(--space-32);
+  }
+
+  @media (width >= 64rem) {
+    margin-top: var(--space-112);
+  }
 }
 
-// Side by side on a computer and a tablet, under each other on a phone.
+// Under each other on a phone, side by side from a tablet up. 7:1 against the background.
 .footer-bottom {
   display: flex;
-  justify-content: space-between;
-  gap: var(--space-2) var(--space-6);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  line-height: 1;
-  // 9:1 against the background.
-  color: rgb(255 255 255 / 70%);
+  flex-direction: column;
+  gap: var(--space-8);
+  color: var(--color-text-on-inverse-secondary);
 
-  @media (width < 48rem) {
-    flex-direction: column;
+  @media (width >= 48rem) {
+    flex-direction: row;
+    justify-content: space-between;
   }
 
   p {

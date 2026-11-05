@@ -8,7 +8,7 @@
 <dialog #dialog aria-labelledby="menu-title" (click)="closeOnBackdrop($event)">
   <div class="panel">
     <div class="panel-header">
-      <h2 class="panel-title" id="menu-title">Meny</h2>
+      <h2 class="panel-title text-display-xs" id="menu-title">Meny</h2>
       <button
         appIconButton
         icon="close"
@@ -24,7 +24,7 @@
         <li>
           <!-- Closes the menu, since the new page is shown behind it. -->
           <a
-            class="link"
+            class="link text-display-m"
             routerLink="/produkter"
             routerLinkActive="active"
             ariaCurrentWhenActive="page"
@@ -38,14 +38,14 @@
     </nav>
 
     <div class="panel-footer">
-      <button class="cart-button" type="button" (click)="goToCart()">
+      <button class="cart-button text-label-m" type="button" (click)="goToCart()">
         Varukorg
-        <span class="cart-count">
+        <span class="text-label-s">
           {{ cart.count() }} {{ cart.count() === 1 ? 'grej' : 'grejer' }}
           <span aria-hidden="true">→</span>
         </span>
       </button>
-      <p class="legal">© 2026 GREJ — Handgjort i Sverige</p>
+      <p class="legal text-mono-s">© 2026 GREJ — Handgjort i Sverige</p>
     </div>
   </div>
 </dialog>
