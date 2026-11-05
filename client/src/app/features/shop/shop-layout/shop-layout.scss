@@ -10,6 +10,9 @@
 // Header
 
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   background: var(--color-bg-surface);
 }
 
@@ -79,6 +82,7 @@
 // 56 px above and 28 px below on a phone, 64 / 32 px on a tablet and 80 / 40 px on a
 // computer. The focus ring gets the light border color to be seen on the dark background.
 .footer {
+  overflow: clip;
   padding-block: var(--space-56) var(--space-28);
   background: var(--color-bg-inverse);
   color: var(--color-text-on-inverse);

@@ -31,6 +31,14 @@ body:has(app-shop-layout) {
   padding: 0;
 }
 
+html:has(app-shop-layout) {
+  scroll-padding-top: 4.375rem;
+
+  @media (width >= 48rem) {
+    scroll-padding-top: 4.875rem;
+  }
+}
+
 // Keeps the shop's content centered with --layout-margin on each side. On a computer it is at
 // most as wide as Figma's frame, so the content is at most 1440 − 2 × 48 = 1344 px.
 .page-width {
