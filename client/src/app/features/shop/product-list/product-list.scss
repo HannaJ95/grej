@@ -28,8 +28,9 @@
   }
 }
 
-// Figma's Breadcrumb: "Hem / Shop" in Mono/S, with the current page darker.
 .breadcrumb {
+  position: relative;
+  z-index: 1;
   display: flex;
   gap: var(--space-8);
   color: var(--color-text-secondary);
