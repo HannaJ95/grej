@@ -44,27 +44,27 @@ $font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
 }
 
 .text-display-xl {
-  @include text-style($font-display, 400, display-xl, 1, $case: uppercase);
+  @include text-style($font-display, 400, display-xl, 1.16, $case: uppercase);
 }
 
 .text-display-l {
-  @include text-style($font-display, 400, display-l, 1, $case: uppercase);
+  @include text-style($font-display, 400, display-l, 1.16, $case: uppercase);
 }
 
 .text-display-m {
-  @include text-style($font-display, 400, display-m, 1, $case: uppercase);
+  @include text-style($font-display, 400, display-m, 1.16, $case: uppercase);
 }
 
 .text-display-s {
-  @include text-style($font-display, 400, display-s, 1, $case: uppercase);
+  @include text-style($font-display, 400, display-s, 1.16, $case: uppercase);
 }
 
 .text-display-xs {
-  @include text-style($font-display, 400, display-xs, 1, $case: uppercase);
+  @include text-style($font-display, 400, display-xs, 1.16, $case: uppercase);
 }
 
 .text-display-2xs {
-  @include text-style($font-display, 400, display-2xs, 1, $case: uppercase);
+  @include text-style($font-display, 400, display-2xs, 1.16, $case: uppercase);
 }
 
 .text-display-logo {

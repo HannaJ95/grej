@@ -252,11 +252,7 @@
   list-style: none;
 }
 
-// Figma's Category row: Display/L with 8 px above and a 2 px line 8 px below the text (in
-// Figma the line lies over the bottom of 10 px padding, which looks the same). The dots on
-// Å, Ä and Ö reach above the capitals, and in "Trä" they went into the line above on a
-// tablet and a computer, where the text is bigger. Figma's names have no such letters, so
-// the space above grows with the text: 8 / 16 / 24 px.
+// Figma's Category row. Its line lies over 10 px padding, so 8 px + the line here.
 .category-link {
   display: flex;
   align-items: center;
@@ -265,14 +261,6 @@
   border-bottom: var(--border-width-default) solid var(--color-bg-inverse);
   color: var(--color-text-primary);
   text-decoration: none;
-
-  @media (width >= 48rem) {
-    padding-top: var(--space-16);
-  }
-
-  @media (width >= 64rem) {
-    padding-top: var(--space-24);
-  }
 
   // The arrow moves right a little, to show that the row is a link.
   &:hover .category-arrow {
