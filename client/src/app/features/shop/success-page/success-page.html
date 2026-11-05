@@ -1,0 +1,14 @@
+<div class="confirmation">
+  <div class="heading">
+    <span class="icon-box"><app-icon name="check" /></span>
+    <h1 class="text-display-l">Tack för din beställning!</h1>
+    <p class="text-body-l">
+      @if (order()) {
+        Ordernummer {{ order() }}. Spara numret om du behöver kontakta oss.
+      }
+      Din beställning håller på att bekräftas.
+    </p>
+  </div>
+
+  <a appButton size="large" class="continue" routerLink="/produkter">Fortsätt handla</a>
+</div>
