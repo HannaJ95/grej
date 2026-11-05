@@ -154,3 +154,6 @@ A few lines a day about how AI was used: what for, which tool, and what worked o
 - **Verification:** Claude read the values from Figma and measured each page in Chrome at 390, 768 and 1440 px against the frames. This found two problems: the footer's big "GREJ." was too wide, and the dots on "TRÄ" reached the line above.
 - **Design:** Figma has no hover or focus states, so I chose to use the design's own colors for them. I kept the sold-out layer at 70 %, since Figma's 100 % hides the picture.
 
+- **Building:** Styled the product page after Figma: breadcrumb, gallery, stock status with a new yellow color, quantity stepper, a short description with "Mer information", and a buy row that is sticky on a phone.
+- **Design:** I changed Figma's mobile buy bar: the normal buy row stays at the bottom until it reaches its place, so there are never two buy buttons. I also made the stepper's buttons square.
+- **Verification:** Claude measured the page at 320–1440 px against Figma. This found that long words made the page scroll sideways and that the sticky row covered the screen at a big zoom; both are fixed.
