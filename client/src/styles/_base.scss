@@ -43,7 +43,7 @@ html:has(app-shop-layout) {
 html:has(app-product-page) {
   scroll-padding-bottom: 9rem;
 
-  @media (width >= 48rem) {
+  @media (width >= 48rem), (height < 30rem) {
     scroll-padding-bottom: 0;
   }
 }

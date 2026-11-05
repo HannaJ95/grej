@@ -109,8 +109,9 @@
   --layout-viewport-width: 24.375rem; // 390
 }
 
-// Tablet: 768–1023 px. Media queries cannot read CSS variables, so the widths are written out
-// here and in the components: 48rem = 768 px and 64rem = 1024 px.
+// Tablet: 768–1023 px. The widths are Figma's layout/breakpoint-min, but media queries cannot
+// read CSS variables, so they are written out here and in the components: 48rem = 768 px and
+// 64rem = 1024 px.
 @media (width >= 48rem) {
   :root {
     --font-size-display-hero: 9.375rem; // 150

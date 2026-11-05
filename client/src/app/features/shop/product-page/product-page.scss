@@ -50,6 +50,11 @@
   gap: var(--space-12);
 }
 
+// Long words, e.g. "Manschettknappar", break instead of making the page scroll sideways.
+h1 {
+  overflow-wrap: anywhere;
+}
+
 // Looks like a link (Link/S) but opens the description on this page.
 .more {
   padding: 0;
@@ -98,7 +103,8 @@
     padding-inline: var(--space-16);
   }
 
-  @media (width >= 48rem) {
+  // Not on short screens either, e.g. zoomed in, where it would cover too much.
+  @media (width >= 48rem), (height < 30rem) {
     position: static;
     margin: 0;
     padding: 0;
