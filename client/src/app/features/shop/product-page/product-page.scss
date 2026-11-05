@@ -1,6 +1,160 @@
-// Never wider than the page, and the height follows the image's proportions.
-.product-image {
+// Phone first; the values come from Figma's Produktsida frames.
+
+:host {
   display: block;
-  max-width: min(100%, 600px);
-  height: auto;
+}
+
+.breadcrumb {
+  padding-top: var(--space-24);
+}
+
+// The gallery and the information under each other on a phone, side by side from a tablet
+// (360 : 320 px in Figma) and on a computer (760 : 520 px).
+.product {
+  display: grid;
+  align-items: start;
+  gap: var(--space-24);
+  padding-block: var(--space-24) var(--space-64);
+
+  @media (width >= 48rem) {
+    grid-template-columns: minmax(0, 9fr) minmax(0, 8fr);
+    padding-bottom: var(--space-96);
+  }
+
+  @media (width >= 64rem) {
+    grid-template-columns: minmax(0, 19fr) minmax(0, 13fr);
+    gap: var(--space-64);
+  }
+}
+
+// No box on a phone, so the sticky buy row can move along the whole page.
+.info {
+  display: contents;
+
+  p,
+  h1 {
+    margin: 0;
+  }
+
+  @media (width >= 48rem) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+  }
+}
+
+.title-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+}
+
+// Long words, e.g. "Manschettknappar", break instead of making the page scroll sideways.
+h1 {
+  overflow-wrap: anywhere;
+}
+
+// Looks like a link (Link/S) but opens the description on this page.
+.more {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.properties {
+  margin: 0;
+}
+
+.property {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding-block: var(--space-12);
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+
+  dd {
+    margin: 0;
+    color: var(--color-text-secondary);
+    text-align: right;
+  }
+}
+
+// Phone: sticky at the bottom until it reaches its place. The margins undo the padding.
+.buy {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12);
+  margin-block: calc(-1 * var(--space-12)) calc(-1 * var(--space-20));
+  margin-inline: calc(-1 * var(--layout-margin));
+  padding: var(--space-12) var(--layout-margin) var(--space-20);
+  background: var(--color-bg-page);
+
+  // Own row below about 345 px. Nested to beat the button's own padding.
+  .add {
+    flex: 1 1 10rem;
+    padding-inline: var(--space-16);
+  }
+
+  // Not on short screens either, e.g. zoomed in, where it would cover too much.
+  @media (width >= 48rem), (height < 30rem) {
+    position: static;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.stepper {
+  --stepper-button-size: calc(
+    2 * var(--space-16) + var(--font-size-label-l) - 2 * var(--border-width-default)
+  );
+}
+
+.limit:empty {
+  display: none;
+}
+
+// Figma's Accordion item: a 2 px line above and below, Heading/XS and a plus that becomes a
+// minus when it is open.
+.details {
+  border-block: var(--border-width-default) solid var(--color-border-default);
+}
+
+summary {
+  --icon-size: 1.25rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding-block: var(--space-20);
+  list-style: none;
+  cursor: pointer;
+
+  // Safari's own triangle.
+  &::-webkit-details-marker {
+    display: none;
+  }
+}
+
+.icon-minus,
+.details[open] .icon-plus {
+  display: none;
+}
+
+.details[open] .icon-minus {
+  display: inline-block;
+}
+
+// pre-line keeps the line breaks written in the CMS.
+.description {
+  padding-bottom: var(--space-24);
+  white-space: pre-line;
 }

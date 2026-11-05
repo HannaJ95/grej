@@ -17,7 +17,7 @@ import { ORDER_STATUS_TEXTS, PAYMENT_STATUS_TEXTS } from '../order-texts';
     .filters {
       display: flex;
       flex-wrap: wrap;
-      gap: var(--space-4);
+      gap: var(--space-16);
       padding: 0;
       list-style: none;
     }

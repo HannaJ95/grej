@@ -9,8 +9,7 @@ import { Button } from '../../../shared/button/button';
   selector: 'app-admin-home',
   imports: [RouterLink, Button],
   template: `
-    <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
-    <h2>Admin</h2>
+    <h1 class="text-display-xs">Admin</h1>
     @if (admin.hasValue()) {
       <p>Inloggad som {{ admin.value().email }}.</p>
     }

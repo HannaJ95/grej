@@ -2,25 +2,32 @@ import { Component, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../../core/cart.service';
 import { Button } from '../../../shared/button/button';
+import { Icon } from '../../../shared/icons/icon';
 
 // The page Stripe sends the customer to after paying, e.g. /kassa/tack?order=GREJ-3F9A1C2B.
 // It never says that the order is paid, since only the webhook knows that (constraints.md).
 @Component({
   selector: 'app-success-page',
-  imports: [RouterLink, Button],
-  template: `
-    <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
-    <h2>Tack för din beställning!</h2>
-    @if (order()) {
-      <p>Ditt ordernummer är <strong>{{ order() }}</strong>.</p>
-      <!-- No email is sent in this version, so the number is the only confirmation (ambiguity.md). -->
-      <p>Spara numret. Du behöver det om du kontaktar oss om beställningen.</p>
-    }
-    <p>Din beställning håller på att bekräftas.</p>
-    <p><a appButton routerLink="/produkter">Fortsätt handla</a></p>
-  `,
+  imports: [RouterLink, Button, Icon],
+  templateUrl: './success-page.html',
+  styleUrl: './success-page.scss',
+  // The page's width and side space (_base.scss), like the product list.
+  host: { class: 'page-width' },
 })
 export class SuccessPage {
+  // No email is sent in this version, so no step promises one (ambiguity.md).
+  protected readonly steps = [
+    { title: 'Skaparen packar din grej', text: 'Inom 1–2 arbetsdagar.' },
+    {
+      title: 'Paketet skickas med PostNord',
+      text: 'Spara ordernumret om du vill fråga oss om leveransen.',
+    },
+    {
+      title: 'Hämta ut paketet',
+      text: 'Hos ditt PostNord-ombud, normalt inom 2–4 arbetsdagar.',
+    },
+  ];
+
   // The ?order= in the URL, set by the router (withComponentInputBinding in app.config.ts).
   readonly order = input<string>();
 
@@ -30,4 +37,3 @@ export class SuccessPage {
     inject(CartService).clear();
   }
 }
-

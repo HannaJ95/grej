@@ -1,0 +1,151 @@
+// One class per text style in Figma (page Foundations), e.g. Display/L → .text-display-l.
+// Put the class on the element in the template: <h1 class="text-display-l">. The size is a
+// variable from _tokens.scss, so a text style follows the phone, tablet and computer sizes by
+// itself. Every class sets every property, so a class never keeps e.g. uppercase from its
+// parent.
+
+// The fonts are loaded from Google Fonts in index.html. The ones after them are used until
+// they have loaded, or if they cannot be.
+$font-display: Anton, Impact, 'Arial Narrow', sans-serif;
+$font-text:
+  Inter,
+  system-ui,
+  -apple-system,
+  'Segoe UI',
+  Roboto,
+  Arial,
+  sans-serif;
+$font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
+
+// A Sass mixin works like a function that writes CSS: each class below calls it with the text
+// style's values from Figma. $size is the end of the variable's name: display-l uses
+// --font-size-display-l. Figma's letter spacing in % becomes em (8 % = 0.08em).
+@mixin text-style(
+  $font,
+  $weight,
+  $size,
+  $line-height,
+  $letter-spacing: 0,
+  $case: none,
+  $decoration: none
+) {
+  font-family: $font;
+  font-weight: $weight;
+  font-size: var(--font-size-#{$size});
+  line-height: $line-height;
+  letter-spacing: $letter-spacing;
+  text-transform: $case;
+  text-decoration: $decoration;
+}
+
+// Display: Anton, in capitals.
+.text-display-hero {
+  @include text-style($font-display, 400, display-hero, 1.16, $case: uppercase);
+}
+
+.text-display-xl {
+  @include text-style($font-display, 400, display-xl, 1.16, $case: uppercase);
+}
+
+.text-display-l {
+  @include text-style($font-display, 400, display-l, 1.16, $case: uppercase);
+}
+
+.text-display-m {
+  @include text-style($font-display, 400, display-m, 1.16, $case: uppercase);
+}
+
+.text-display-s {
+  @include text-style($font-display, 400, display-s, 1.16, $case: uppercase);
+}
+
+.text-display-xs {
+  @include text-style($font-display, 400, display-xs, 1.16, $case: uppercase);
+}
+
+.text-display-2xs {
+  @include text-style($font-display, 400, display-2xs, 1.16, $case: uppercase);
+}
+
+.text-display-logo {
+  @include text-style($font-display, 400, display-logo, 1.16, $case: uppercase);
+}
+
+.text-display-wordmark {
+  @include text-style($font-display, 400, display-wordmark, 1, 0.15em, uppercase);
+}
+
+// Body: Inter Regular.
+.text-body-l {
+  @include text-style($font-text, 400, body-l, 1.5);
+}
+
+.text-body-m {
+  @include text-style($font-text, 400, body-m, 1.5);
+}
+
+.text-body-m-compact {
+  @include text-style($font-text, 400, body-m, 1.2);
+}
+
+.text-body-s {
+  @include text-style($font-text, 400, body-s, 1.4);
+}
+
+.text-body-xs {
+  @include text-style($font-text, 400, body-xs, 1.4);
+}
+
+.text-caption {
+  @include text-style($font-text, 400, caption, 1.2);
+}
+
+// Headings, labels and links: Inter Semi Bold.
+.text-heading-s {
+  @include text-style($font-text, 600, heading-s, 1.4);
+}
+
+.text-heading-xs {
+  @include text-style($font-text, 600, heading-xs, 1.4);
+}
+
+.text-label-l {
+  @include text-style($font-text, 600, label-l, 1);
+}
+
+.text-label-m {
+  @include text-style($font-text, 600, label-m, 1);
+}
+
+.text-label-s {
+  @include text-style($font-text, 600, label-s, 1);
+}
+
+.text-label-xs {
+  @include text-style($font-text, 600, label-xs, 1);
+}
+
+.text-label-nav {
+  @include text-style($font-text, 600, label-m, 1.4, 0.1em);
+}
+
+.text-link-l {
+  @include text-style($font-text, 600, label-l, 1.4, $decoration: underline);
+}
+
+.text-link-s {
+  @include text-style($font-text, 600, label-xs, 1.2, $decoration: underline);
+}
+
+// Other.
+.text-price {
+  @include text-style($font-text, 500, price, 1.4);
+}
+
+.text-badge {
+  @include text-style($font-text, 700, badge, 1, 0.08em, uppercase);
+}
+
+.text-mono-s {
+  @include text-style($font-mono, 400, mono-s, 1);
+}

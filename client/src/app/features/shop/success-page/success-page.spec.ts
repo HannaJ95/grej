@@ -39,6 +39,16 @@ describe('SuccessPage', () => {
     expect(text).not.toContain('betald');
   });
 
+  it('lists the next steps without promising an email', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/kassa/tack?order=GREJ-3F9A1C2B');
+
+    const page = harness.routeNativeElement!;
+    expect(page.querySelectorAll('ol li').length).toBe(3);
+    // No email is sent in this version (ambiguity.md).
+    expect(page.textContent!.toLowerCase()).not.toContain('mejl');
+  });
+
   it('empties the cart', async () => {
     const cart = TestBed.inject(CartService);
     cart.add(vase);

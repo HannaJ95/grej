@@ -1,33 +1,51 @@
-<!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
-<h2>Produkter</h2>
-
-@if (result.isLoading()) {
-  <!-- Render's free tier can take up to a minute to wake up. -->
-  <p role="status">Laddar produkterna…</p>
-} @else if (result.error()) {
-  <p role="alert">Produkterna kunde inte visas.</p>
-} @else if (result.hasValue()) {
-  @let r = result.value();
-  @if (r.items.length === 0) {
-    <p>Det finns inga produkter att visa.</p>
-  } @else {
-    <ul>
-      @for (p of r.items; track p.id) {
-        <li>
-          <!-- loading="lazy": images further down are only fetched when the customer scrolls to them. -->
-          @if (p.image; as image) {
-            <img class="product-thumbnail" [src]="image.url" [alt]="image.altText" loading="lazy" />
-          }
-          <a [routerLink]="['/produkter', p.id]">{{ p.title }}</a>
-          {{ p.price | currency: p.currency }}
-          @if (p.isSoldOut) {
-            (slutsåld)
-          }
-        </li>
+<div class="page-width page-title">
+  <app-breadcrumb [links]="[{ label: 'Hem', path: '/' }]" current="Shop" />
+  <div class="title-row">
+    <!-- Written in normal case and made capital by the text style, like the start page. -->
+    <h1 class="title text-display-xl">Alla grejer</h1>
+    <!-- The number comes when the API has answered. -->
+    <p class="intro text-body-m">
+      @if (result.hasValue()) {
+        {{ result.value().totalCount }} handgjorda grejer
+      } @else {
+        Handgjorda grejer
       }
-    </ul>
-  }
+      från små skapare, och aldrig två likadana.
+    </p>
+  </div>
+</div>
 
-  <!-- Only shown when there is more than one page. -->
-  <app-pagination path="/produkter" [page]="r.page" [totalPages]="r.totalPages" />
-}
+<!-- The design's toolbar: lines across the whole screen, the count within the page width.
+     The filters and the sorting will go here too when they are built. -->
+<div class="toolbar">
+  <div class="page-width">
+    @if (shown(); as s) {
+      <p class="text-label-s">Visar {{ s.from }}–{{ s.to }} av {{ s.total }} grejer</p>
+    }
+  </div>
+</div>
+
+<div class="page-width results">
+  @if (result.isLoading()) {
+    <!-- Render's free tier can take up to a minute to wake up. -->
+    <p role="status">Laddar produkterna…</p>
+  } @else if (result.error()) {
+    <p role="alert">Produkterna kunde inte visas.</p>
+  } @else if (result.hasValue()) {
+    @let r = result.value();
+    @if (r.items.length === 0) {
+      <p>Det finns inga produkter att visa.</p>
+    } @else {
+      <ul class="product-grid">
+        @for (p of r.items; track p.id) {
+          <li>
+            <app-product-card [product]="p" />
+          </li>
+        }
+      </ul>
+    }
+
+    <!-- Only shown when there is more than one page. -->
+    <app-pagination path="/produkter" [page]="r.page" [totalPages]="r.totalPages" />
+  }
+</div>

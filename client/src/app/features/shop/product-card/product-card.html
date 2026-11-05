@@ -1,0 +1,39 @@
+@let p = product();
+<div class="media">
+  <!-- A plain img like in the product list: the images' sizes are not stored. -->
+  @if (p.image; as image) {
+    <img class="image" [src]="image.url" [alt]="image.altText" loading="lazy" />
+  } @else {
+    <span class="image"></span>
+  }
+  @if (p.isSoldOut) {
+    <app-badge class="badge" tone="light">Slutsåld</app-badge>
+  } @else if (fewLeft()) {
+    <app-badge class="badge" tone="light">Få kvar</app-badge>
+  }
+</div>
+<div class="meta">
+  <!-- The link covers the whole card (see .title::after), so the image can be clicked too,
+       while screen readers only read the title. -->
+  <a class="title text-heading-s" [routerLink]="['/produkter', p.id]">{{ p.title }}</a>
+  <!-- '1.0-2': no öre when the price is whole, e.g. "320 kr" like the design. -->
+  <p class="price text-price">
+    {{ p.price | currency: p.currency : 'symbol' : '1.0-2' }}
+    @if (p.isSoldOut) {
+      · Slutsåld
+    }
+  </p>
+</div>
+<!-- After the link in the page, and above its ::after, so it gets its own clicks. The same
+     CartService.add as the product page, which also shows the "Tillagd" popup. Disabled when
+     the product is sold out or all of it is already in the cart. -->
+<button
+  class="add text-label-s"
+  type="button"
+  [attr.aria-label]="'Lägg ' + p.title + ' i varukorgen'"
+  [disabled]="!cart.canAdd(p)"
+  (click)="cart.add(p)"
+>
+  <span class="add-text">Lägg i varukorg</span>
+  <app-icon name="plus" />
+</button>

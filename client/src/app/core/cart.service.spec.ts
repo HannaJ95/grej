@@ -63,6 +63,17 @@ describe('CartService', () => {
     expect(cart.canAdd(plate)).toBe(false);
   });
 
+  it('adds several at once, but never more than the stock', () => {
+    const cart = new CartService();
+
+    cart.add(vase, 2);
+    expect(cart.remaining(vase)).toBe(1);
+
+    cart.add(vase, 5);
+    expect(cart.items()[0].quantity).toBe(3);
+    expect(cart.remaining(vase)).toBe(0);
+  });
+
   it('keeps the quantity between 1 and the stock, and at most 99', () => {
     const cart = new CartService();
     cart.add(vase);
@@ -114,17 +125,48 @@ describe('CartService', () => {
     const reloaded = new CartService();
 
     expect(reloaded.items()).toEqual([
-      { productId: 1, title: 'Vas', price: 300, currency: 'SEK', quantity: 1, maxQuantity: 3 },
+      {
+        productId: 1,
+        title: 'Vas',
+        price: 300,
+        currency: 'SEK',
+        image: null,
+        quantity: 1,
+        maxQuantity: 3,
+      },
     ]);
   });
 
-  it('gives a cart saved without maxQuantity the largest one', () => {
+  it('remembers the row that was added last, until it is forgotten', () => {
+    const cart = new CartService();
+    expect(cart.lastAdded()).toBeNull();
+
+    cart.add(vase);
+    cart.add(vase);
+    expect(cart.lastAdded()).toMatchObject({ productId: 1, quantity: 2 });
+
+    cart.forgetLastAdded();
+    expect(cart.lastAdded()).toBeNull();
+  });
+
+  it("keeps the product's image for the cart's picture", () => {
+    const image = { url: 'https://storage.test/vas.png', altText: 'En blå vas' };
+    const cart = new CartService();
+
+    cart.add({ ...vase, image });
+
+    expect(cart.items()[0].image).toEqual(image);
+  });
+
+  it('gives a cart saved without maxQuantity the largest one, and no image', () => {
     localStorage.setItem(
       'grej.cart',
       JSON.stringify([{ productId: 1, title: 'Vas', price: 300, currency: 'SEK', quantity: 2 }]),
     );
 
-    expect(new CartService().items()[0].maxQuantity).toBe(99);
+    const item = new CartService().items()[0];
+    expect(item.maxQuantity).toBe(99);
+    expect(item.image).toBeNull();
   });
 
   it('starts empty when the saved cart is broken', () => {

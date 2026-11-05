@@ -1,5 +1,4 @@
-<!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
-<h2>{{ isNew() ? 'Ny produkt' : 'Redigera produkt' }}</h2>
+<h1 class="text-display-xs">{{ isNew() ? 'Ny produkt' : 'Redigera produkt' }}</h1>
 <p><a routerLink="/admin/produkter">Tillbaka till produkterna</a></p>
 
 @if (product.isLoading()) {

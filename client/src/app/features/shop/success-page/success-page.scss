@@ -1,0 +1,115 @@
+// Phone first; the values come from Figma's "Tack för din beställning" frames.
+
+.confirmation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+  max-width: 50rem;
+  padding-block: var(--space-40) var(--space-80);
+
+  @media (width >= 48rem) {
+    padding-block: var(--space-64) var(--space-120);
+  }
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-20);
+
+  h1 {
+    // Long words break instead of making the page scroll sideways on a narrow phone.
+    overflow-wrap: anywhere;
+  }
+}
+
+// gap sets the space between everything on the page.
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+.icon-box {
+  --icon-size: 2rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  background: var(--color-feedback-success);
+  color: var(--color-text-on-inverse);
+}
+
+.next,
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// The number is in the middle of the text's height, which Figma has at the top.
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+}
+
+.number {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--color-bg-inverse);
+  color: var(--color-text-on-inverse);
+}
+
+.step-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.step .text-body-s {
+  color: var(--color-text-secondary);
+}
+
+// The whole width on a phone, as wide as its text from a tablet.
+.continue {
+  @media (width >= 48rem) {
+    align-self: flex-start;
+  }
+}
+
+// Figma's Alert (Info).
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-14);
+  padding: var(--space-16) var(--space-20) var(--space-16) var(--space-16);
+  border: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-bg-surface);
+}
+
+.notice-icon {
+  --icon-size: 1rem;
+
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  background: var(--color-bg-inverse);
+  color: var(--color-text-on-inverse);
+}

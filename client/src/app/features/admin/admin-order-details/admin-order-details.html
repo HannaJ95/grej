@@ -3,8 +3,7 @@
 <!-- hasValue first, so the order stays on the page while it is fetched again after a change. -->
 @if (order.hasValue()) {
   @let o = order.value();
-  <!-- h2 for now, since app.html has the page's h1 until the layout is built. -->
-  <h2>Order {{ o.orderNumber }}</h2>
+  <h1 class="text-display-xs">Order {{ o.orderNumber }}</h1>
 
   <!-- Description lists, as on the product page: each row is a heading and its value. -->
   <dl>
@@ -48,7 +47,7 @@
        change() move the focus here without adding it to the Tab order. -->
   <p #feedback role="status" tabindex="-1">{{ message() }}</p>
 
-  <h3>Kund</h3>
+  <h2 class="text-display-2xs">Kund</h2>
   <!-- Stripe Checkout collects the name and address, and the webhook stores them on the
        order when it is paid. -->
   @if (o.customerName) {
@@ -71,7 +70,7 @@
     <p>Inga kunduppgifter. Stripe skickar dem när ordern betalas.</p>
   }
 
-  <h3>Produkter</h3>
+  <h2 class="text-display-2xs">Produkter</h2>
   <table>
     <thead>
       <tr>

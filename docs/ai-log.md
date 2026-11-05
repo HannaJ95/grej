@@ -134,3 +134,26 @@ A few lines a day about how AI was used: what for, which tool, and what worked o
 - **Building:** Finished sprint 3 item 3. The admin marks paid orders as shipped or cancels them in the CMS, and cancelling puts the products back in stock. A cancelled paid order is shown as "Behöver återbetalas". `reset-demo` now also adds six demo orders. Verified locally.
 - **Design:** I decided that the admin can only cancel paid orders, since an unpaid order can still be paid in Stripe, and that the default list "Att göra" also shows orders to refund. The rules are in `Order`, and the CMS only shows the buttons the API allows.
 - **Verification:** Every part was built and tested in a copy first. Removing the stock increase made two tests fail.
+
+## 2026-11-03
+
+- **Building:** Finished sprint 3 item 4. When the admin refunds a payment in Stripe, the webhook `charge.refunded` marks it as `Refunded`, and the order leaves "Att göra". Verified locally and in production.
+- **Design:** The refund event only knows Stripe's PaymentIntent, not the Checkout session, so I chose to store the PaymentIntent id when the order is paid instead of asking Stripe's API. I also decided that an order refunded before it is cancelled can still be cancelled, so its stock comes back, and that "Att göra" shows it as "Behöver avbrytas". Partial refunds are ignored.
+- **Verification:** Every part was built and tested in a copy first. In the local test, Render's old code sometimes handled the payment first and stored no id, and the event ids showed that I had once refunded the wrong payment in Stripe. Both were test problems, not bugs.
+- **Verification:** Finished sprint 3 item 5. In production I bought several products with a test card, saw the paid order in "Att göra", marked it as shipped and checked that the stock had decreased. I also tested both refund flows there. All Must items are done, one day before the checkpoint on Wed 4 Nov.
+
+## 2026-11-04
+
+- **Building:** Chose my own design over plan B. Built the start page from my Figma design: a shop layout with header and footer (the CMS has none), the design's neutral colors and fonts as variables, and the four newest products from the API. Verified locally on desktop and phone width.
+- **Design:** I removed the accent colors so everything is neutral for now, and only kept links that lead somewhere; the categories link to the product list until the filter is built.
+- **Verification:** Claude compared screenshots with the Figma design in Chrome; the dots on "TRÄ" touched the line, which I spotted and we fixed.
+
+## 2026-11-05
+
+- **Building:** Replaced all old style variables with the variables and text styles from my Figma file, with the same names as Figma's Code syntax and mobile first (768 / 1024 px). Every component, the CMS included, now uses them.
+- **Verification:** Claude read the values from Figma and measured each page in Chrome at 390, 768 and 1440 px against the frames. This found two problems: the footer's big "GREJ." was too wide, and the dots on "TRÄ" reached the line above.
+- **Design:** Figma has no hover or focus states, so I chose to use the design's own colors for them. I kept the sold-out layer at 70 %, since Figma's 100 % hides the picture.
+
+- **Building:** Styled the product page after Figma: breadcrumb, gallery, stock status with a new yellow color, quantity stepper, a short description with "Mer information", and a buy row that is sticky on a phone.
+- **Design:** I changed Figma's mobile buy bar: the normal buy row stays at the bottom until it reaches its place, so there are never two buy buttons. I also made the stepper's buttons square.
+- **Verification:** Claude measured the page at 320–1440 px against Figma. This found that long words made the page scroll sideways and that the sticky row covered the screen at a big zoom; both are fixed.

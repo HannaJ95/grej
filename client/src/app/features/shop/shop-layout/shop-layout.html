@@ -1,0 +1,46 @@
+<header class="header">
+  <div class="page-width header-content">
+    <a class="logo text-display-logo" routerLink="/" aria-label="GREJ, till startsidan">GREJ.</a>
+    <!-- Hidden on phones, where the same link is in the menu. -->
+    <nav class="nav" aria-label="Huvudmeny">
+      <a
+        class="nav-link text-label-nav"
+        routerLink="/produkter"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
+        Shop
+      </a>
+    </nav>
+    <div class="actions">
+      <!-- #cart is the CartDrawer itself, so the menu's cart button can open it. -->
+      <app-cart-drawer #cart />
+      <app-mobile-menu class="mobile-menu" (openCart)="cart.open()" />
+    </div>
+  </div>
+  <!-- "Till kassan" opens the cart first, so the customer sees what happens and any error. -->
+  <app-added-to-cart (viewCart)="cart.open()" (checkout)="cart.open(); cart.goToCheckout()" />
+</header>
+
+<main>
+  <router-outlet />
+</main>
+
+<footer class="footer">
+  <div class="page-width">
+    <nav class="footer-links text-body-s" aria-label="Sidfot">
+      <h2 class="footer-heading text-heading-xs">Shop</h2>
+      <a routerLink="/produkter">Alla produkter</a>
+    </nav>
+
+    <!-- The big logo is decoration; the header's logo already has the name. -->
+    <p class="footer-logo text-display-wordmark" aria-hidden="true">
+      <span>G</span><span>R</span><span>E</span><span>J</span><span>.</span>
+    </p>
+
+    <div class="footer-bottom text-mono-s">
+      <p>© 2026 GREJ</p>
+      <p>Betalning via Stripe — Handgjort i Sverige</p>
+    </div>
+  </div>
+</footer>

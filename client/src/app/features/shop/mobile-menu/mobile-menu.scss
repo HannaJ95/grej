@@ -1,0 +1,124 @@
+// The menu is only shown on a phone (see shop-layout.scss). The values come from Figma's frame
+// "Landing Page – Mobile – meny öppen", and the text styles are classes in the template.
+
+// The 40 px square with three bars (Figma: Menu button in the Header).
+.menu-button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: var(--border-width-default) solid var(--color-border-default);
+  background: transparent;
+  cursor: pointer;
+
+  span {
+    width: 1.125rem;
+    height: var(--border-width-default);
+    background: var(--color-bg-inverse);
+  }
+
+  &:hover {
+    background: var(--color-oat);
+  }
+}
+
+// The panel lies along the right edge in full height, and leaves 56 px of the page visible
+// on the left, like the design.
+dialog {
+  margin: 0 0 0 auto;
+  width: calc(100% - var(--space-56));
+  max-width: 24rem;
+  height: 100dvh;
+  max-height: 100dvh;
+  padding: 0;
+  border: none;
+  background: var(--color-bg-inverse);
+  color: var(--color-text-on-inverse);
+}
+
+dialog::backdrop {
+  background: var(--color-overlay-scrim);
+}
+
+// Fills the dialog, so a click on the dialog element itself can only be on the backdrop.
+// The focus ring gets the light border color to be seen on the dark background.
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--space-12) var(--space-20) var(--space-28);
+
+  :focus-visible {
+    outline-color: var(--color-border-inverse);
+  }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: var(--space-12);
+}
+
+.panel-title {
+  margin: 0;
+}
+
+.links {
+  margin: 0;
+  padding: var(--space-24) 0 0;
+  list-style: none;
+}
+
+// Display/M, with a 2 px line under each link.
+.link {
+  --icon-size: 1.75rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--space-14);
+  border-bottom: var(--border-width-default) solid var(--color-border-inverse);
+  color: var(--color-text-on-inverse);
+
+  // The current page is underlined, like in the header.
+  &:hover,
+  &.active {
+    text-decoration: underline;
+    text-decoration-thickness: var(--border-width-strong);
+    text-underline-offset: 0.12em;
+  }
+}
+
+// margin-top: auto pushes the footer to the bottom of the panel.
+.panel-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  margin-top: auto;
+}
+
+// "Varukorg" in Label/M and the count in Label/S, on the page's light color.
+.cart-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-16) var(--space-20);
+  border: none;
+  background: var(--color-bg-page);
+  color: var(--color-text-primary);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-oat);
+  }
+}
+
+.legal {
+  margin: 0;
+  color: var(--color-text-on-inverse-secondary);
+}

@@ -1,6 +1,119 @@
-// The same square for every product. object-fit crops the image instead of stretching it.
-.product-thumbnail {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
+// The styles are written for a phone first; the media queries change them on a tablet
+// (48rem = 768 px) and a computer (64rem = 1024 px). The values come from Figma's three Shop
+// Page frames, and the text styles are classes in the template. The category tabs, filters
+// and sorting in Figma are not built yet.
+
+:host {
+  display: block;
+}
+
+// The breadcrumb, the title and the intro under each other, 12 / 16 / 20 px apart. On a
+// computer the intro is next to the title. display: flex wins over .page-width's
+// display: block, since Angular adds an attribute to this file's selectors, which makes them
+// more specific than the global class.
+.page-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding-block: var(--space-20) var(--space-24);
+
+  @media (width >= 48rem) {
+    gap: var(--space-16);
+    padding-block: var(--space-28);
+  }
+
+  @media (width >= 64rem) {
+    gap: var(--space-20);
+    padding-block: var(--space-32) var(--space-40);
+  }
+}
+
+// Under each other on a phone and a tablet; side by side on a computer, with the intro at the
+// bottom right.
+.title-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+
+  @media (width >= 48rem) {
+    gap: var(--space-16);
+  }
+
+  @media (width >= 64rem) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-24);
+  }
+}
+
+// Display/XL.
+.title {
+  margin: 0;
+}
+
+// Body/M on a phone and Body/L from a tablet up, 520 px wide on a tablet and 420 px on a
+// computer. The two styles only differ in size, so the template has text-body-m and the media
+// query changes the size.
+.intro {
+  margin: 0;
+
+  @media (width >= 48rem) {
+    max-width: 32.5rem;
+    font-size: var(--font-size-body-l);
+  }
+
+  @media (width >= 64rem) {
+    max-width: 26.25rem;
+  }
+}
+
+// Lines across the whole screen, the count (Label/S) within the page width.
+.toolbar {
+  padding-block: var(--space-14);
+  border-block: var(--border-width-default) solid var(--color-border-default);
+
+  @media (width >= 64rem) {
+    padding-block: var(--space-16);
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+// 28 / 32 / 48 px above the products and 64 / 80 / 120 px below the pagination.
+.results {
+  padding-block: var(--space-28) var(--space-64);
+
+  @media (width >= 48rem) {
+    padding-block: var(--space-32) var(--space-80);
+  }
+
+  @media (width >= 64rem) {
+    padding-block: var(--space-48) var(--space-120);
+  }
+}
+
+// Two products per row on a phone, three on a tablet and four on a computer, with the grid's
+// gutter between the columns and 28 / 40 / 48 px between the rows. Figma's computer has the
+// filters in a left column and three products per row; until the filters are built the
+// products use the whole width.
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-28) var(--layout-gutter);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (width >= 48rem) {
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: var(--space-40);
+  }
+
+  @media (width >= 64rem) {
+    grid-template-columns: repeat(4, 1fr);
+    row-gap: var(--space-48);
+  }
 }

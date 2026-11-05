@@ -1,14 +1,17 @@
 import { computed, Service, signal } from '@angular/core';
 import { UnavailableItem } from './checkout.service';
 import { Product } from './product.service';
+import { ProductImage } from './product-image';
 
-// One row in the cart. Title and price are copied when the product is added,
+// One row in the cart. Title, price and image are copied when the product is added,
 // only to show them; the API always takes the price from the database.
 export interface CartItem {
   productId: number;
   title: string;
   price: number;
   currency: string;
+  // For the small picture in the cart. Null if the product has no image.
+  image: ProductImage | null;
   quantity: number;
   // The stock when the product was added, at most MAX_QUANTITY. The API checks
   // the stock again in the checkout, since it may have changed since then.
@@ -38,16 +41,28 @@ export class CartService {
     this.items().reduce((sum, item) => sum + item.price * item.quantity, 0),
   );
 
+  // The row that was added last, for the "Tillagd i varukorgen" popup. A new object every
+  // time, so the popup shows again even when the same product is added twice. Null when
+  // the popup is closed. Not saved, since it is only for the moment.
+  private readonly added = signal<CartItem | null>(null);
+  readonly lastAdded = this.added.asReadonly();
+
   // False if the product is sold out, or all that can be bought are already in the cart.
   canAdd(product: Product): boolean {
-    const inCart = this.items().find((item) => item.productId === product.id)?.quantity ?? 0;
-    return inCart < maxQuantityOf(product);
+    return this.remaining(product) > 0;
   }
 
-  add(product: Product): void {
+  // How many more of the product can be added: the stock (at most 99) minus the cart's.
+  remaining(product: Product): number {
+    const inCart = this.items().find((item) => item.productId === product.id)?.quantity ?? 0;
+    return Math.max(maxQuantityOf(product) - inCart, 0);
+  }
+
+  add(product: Product, quantity = 1): void {
     // A sold-out product cannot be added (constraints.md), and the quantity is
     // limited by the stock (ambiguity.md).
-    if (!this.canAdd(product)) {
+    const amount = Math.min(quantity, this.remaining(product));
+    if (amount < 1) {
       return;
     }
 
@@ -58,7 +73,7 @@ export class CartService {
       this.save(
         this.items().map((item) =>
           item.productId === product.id
-            ? { ...item, quantity: item.quantity + 1, maxQuantity }
+            ? { ...item, quantity: item.quantity + amount, maxQuantity }
             : item,
         ),
       );
@@ -68,11 +83,19 @@ export class CartService {
         title: product.title,
         price: product.price,
         currency: product.currency,
-        quantity: 1,
+        image: product.image,
+        quantity: amount,
         maxQuantity,
       };
       this.save([...this.items(), item]);
     }
+    const row = this.items().find((item) => item.productId === product.id)!;
+    this.added.set({ ...row });
+  }
+
+  // Called when the popup closes.
+  forgetLastAdded(): void {
+    this.added.set(null);
   }
 
   // Keeps the quantity between 1 and the row's maxQuantity. Use remove() to take a product out.
@@ -136,9 +159,10 @@ function load(): CartItem[] {
   try {
     const saved: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]');
     // Carts saved before the stock limit have no maxQuantity. They get the
-    // largest one, and the API's stock check fixes them in the checkout.
+    // largest one, and the API's stock check fixes them in the checkout. Carts saved
+    // before the design have no image, and are shown without one.
     return Array.isArray(saved)
-      ? saved.map((item) => ({ maxQuantity: MAX_QUANTITY, ...item }))
+      ? saved.map((item) => ({ maxQuantity: MAX_QUANTITY, image: null, ...item }))
       : [];
   } catch {
     return [];

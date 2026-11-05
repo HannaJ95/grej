@@ -1,51 +1,148 @@
-// The shop's shared style variables (design tokens). Every color, font and spacing in the
-// app comes from here, so the look is changed in one place. CSS custom properties instead of
-// Sass variables: they work in every component's styles while the app runs, and dark mode
-// (Could) only has to give them new values in a media query.
-// Text colors have at least 4.5:1 contrast against the background, and field borders and
-// the focus ring at least 3:1 (WCAG AA).
+// The shop's design tokens: every variable in the Figma file (GREJ – Webshop design, page
+// Foundations), with the same names as Figma's "Code syntax". Change a value in Figma, then
+// change it here; the components only use var(--…), so this is the only place with values.
+// CSS custom properties instead of Sass variables: they work in every component's styles while
+// the app runs, and the responsive ones can get new values in a media query.
+// Sizes are in rem (1rem = 16 px, Figma's px in the comments), so the text follows the size
+// the visitor has chosen in the browser. Border widths are in px, so they stay sharp.
 :root {
   // Tells the browser to draw its own parts, e.g. scrollbars, in light colors.
   color-scheme: light;
 
-  // Colors
-  --color-bg: #faf7f2;
-  --color-surface: #ffffff;
-  --color-text: #2b2620;
-  --color-text-muted: #5f574d;
-  --color-border: #8c8377;
-  --color-border-subtle: #e4ddd2;
-  --color-primary: #9c3d26;
-  --color-primary-hover: #7d2f1c;
-  --color-primary-subtle: #f6e8e3;
-  --color-on-primary: #ffffff;
-  --color-danger: #b42318;
-  --color-danger-hover: #912018;
-  --color-on-danger: #ffffff;
-  --color-focus: #2457c5;
+  // Primitives: the palette. Only the tokens below use these directly.
+  --color-sand: #efe7da;
+  --color-linen: #f8f3ea;
+  --color-stone: #cfc4b2;
+  --color-oat: #e3d6c0;
+  --color-charcoal: #2b2a27;
+  --color-graphite: #66635d;
+  --color-mist: #bbb7b0;
+  --color-white: #ffffff;
+  --color-rust: #a33a2a;
+  --color-moss: #4e5d3f;
+  --color-ochre: #a57a1f;
+  // Charcoal with 20 % and 55 % opacity (the last two hex digits).
+  --color-charcoal-a20: #2b2a2733;
+  --color-charcoal-a55: #2b2a278c;
 
-  // Typography. The computer's own fonts, so nothing has to be downloaded.
-  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-heading: Georgia, 'Times New Roman', serif;
-  --font-size-sm: 0.875rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 1.25rem;
-  --font-size-xl: 1.5rem;
-  --font-size-2xl: 2rem;
-  --line-height-body: 1.5;
-  --line-height-heading: 1.2;
+  // Tokens: what each color is for. They point at a primitive, like the aliases in Figma.
+  --color-bg-page: var(--color-sand);
+  --color-bg-surface: var(--color-linen);
+  --color-bg-muted: var(--color-stone);
+  --color-bg-inverse: var(--color-charcoal);
+  --color-bg-image: var(--color-white);
+  --color-text-primary: var(--color-charcoal);
+  --color-text-secondary: var(--color-graphite);
+  --color-text-on-inverse: var(--color-linen);
+  --color-text-on-inverse-secondary: var(--color-mist);
+  --color-border-default: var(--color-charcoal);
+  --color-border-subtle: var(--color-charcoal-a20);
+  --color-border-inverse: var(--color-linen);
+  --color-icon-default: var(--color-charcoal);
+  --color-icon-inverse: var(--color-linen);
+  --color-overlay-scrim: var(--color-charcoal-a55);
+  --color-feedback-error: var(--color-rust);
+  --color-feedback-success: var(--color-moss);
+  --color-feedback-warning: var(--color-ochre);
+  --color-accent-creator: var(--color-charcoal);
 
-  // Spacing, in steps from 4 px to 64 px (1rem = 16 px).
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
+  // Spacing: the number in the name is the size in px.
+  --space-2: 0.125rem;
+  --space-4: 0.25rem;
+  --space-6: 0.375rem;
+  --space-8: 0.5rem;
+  --space-10: 0.625rem;
+  --space-12: 0.75rem;
+  --space-14: 0.875rem;
+  --space-16: 1rem;
+  --space-20: 1.25rem;
+  --space-24: 1.5rem;
+  --space-28: 1.75rem;
+  --space-32: 2rem;
+  --space-40: 2.5rem;
+  --space-48: 3rem;
+  --space-56: 3.5rem;
+  --space-64: 4rem;
+  --space-72: 4.5rem;
+  --space-80: 5rem;
+  --space-96: 6rem;
+  --space-112: 7rem;
+  --space-120: 7.5rem;
+  --space-160: 10rem;
+  --border-width-default: 2px;
+  --border-width-strong: 3px;
 
-  // Other
-  --radius: 0.375rem;
-  --content-width: 72rem;
+  // Figma's effect style Shadow/Popover: 8 px down, 24 px blur, charcoal with 18 % opacity.
+  --shadow-popover: 0 0.5rem 1.5rem rgb(43 42 39 / 18%);
+
+  // Responsive: Figma's three modes, mobile first. These are the phone's values (0–767 px);
+  // the media queries below change the ones that are different on a tablet and a computer.
+  --font-size-display-hero: 6.875rem; // 110
+  --font-size-display-xl: 4.5rem; // 72
+  --font-size-display-l: 3rem; // 48
+  --font-size-display-m: 3.5rem; // 56
+  --font-size-display-s: 2.5rem; // 40
+  --font-size-display-xs: 1.875rem; // 30
+  --font-size-display-2xs: 1.75rem; // 28
+  --font-size-display-logo: 2.5rem; // 40
+  --font-size-display-wordmark: 9.375rem; // 150
+  --font-size-body-l: 1.125rem; // 18
+  --font-size-body-m: 1rem; // 16
+  --font-size-body-s: 0.875rem; // 14
+  --font-size-body-xs: 0.8125rem; // 13
+  --font-size-caption: 0.75rem; // 12
+  --font-size-heading-s: 0.9375rem; // 15
+  --font-size-heading-xs: 1rem; // 16
+  --font-size-label-l: 1.125rem; // 18
+  --font-size-label-m: 1rem; // 16
+  --font-size-label-s: 0.9375rem; // 15
+  --font-size-label-xs: 0.875rem; // 14
+  --font-size-price: 0.9375rem; // 15
+  --font-size-badge: 0.75rem; // 12
+  --font-size-mono-s: 0.75rem; // 12
+  // The space at the screen's edges, the space between the grid's columns, and how many
+  // columns the grid has.
+  --layout-margin: 1.25rem; // 20
+  --layout-gutter: 0.75rem; // 12
+  --layout-columns: 4;
+  // The width of Figma's frame in this mode.
+  --layout-viewport-width: 24.375rem; // 390
+}
+
+// Tablet: 768–1023 px. The widths are Figma's layout/breakpoint-min, but media queries cannot
+// read CSS variables, so they are written out here and in the components: 48rem = 768 px and
+// 64rem = 1024 px.
+@media (width >= 48rem) {
+  :root {
+    --font-size-display-hero: 9.375rem; // 150
+    --font-size-display-xl: 7.5rem; // 120
+    --font-size-display-l: 5rem; // 80
+    --font-size-display-m: 4.5rem; // 72
+    --font-size-display-s: 3.5rem; // 56
+    --font-size-display-xs: 2.25rem; // 36
+    --font-size-display-logo: 3.125rem; // 50
+    --font-size-display-wordmark: 18.75rem; // 300
+    --font-size-body-l: 1.25rem; // 20
+    --font-size-heading-s: 1.0625rem; // 17
+    --font-size-price: 1rem; // 16
+    --layout-margin: 2rem; // 32
+    --layout-gutter: 1.25rem; // 20
+    --layout-columns: 8;
+    --layout-viewport-width: 48rem; // 768
+  }
+}
+
+// Desktop: from 1024 px.
+@media (width >= 64rem) {
+  :root {
+    --font-size-display-hero: 12.5rem; // 200
+    --font-size-display-xl: 11.25rem; // 180
+    --font-size-display-l: 7.5rem; // 120
+    --font-size-display-m: 5.5rem; // 88
+    --font-size-display-wordmark: 31.25rem; // 500
+    --layout-margin: 3rem; // 48
+    --layout-gutter: 1.5rem; // 24
+    --layout-columns: 12;
+    --layout-viewport-width: 90rem; // 1440
+  }
 }

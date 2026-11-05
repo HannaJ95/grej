@@ -1,0 +1,78 @@
+<section class="hero">
+  <div class="page-width">
+    <!-- Written in normal case and made capital by the text style, so screen readers read words,
+         not letters. -->
+    <h1 class="hero-title text-display-hero">Det här<br />är en grej.</h1>
+    <p class="hero-intro text-body-l">
+      Handgjorda saker från små skapare. Nya grejer varje vecka, och aldrig två likadana.
+    </p>
+    <a appButton size="large" class="hero-button" routerLink="/produkter">
+      Se nyheterna <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- Decoration only, so screen readers skip it. -->
+<div class="marquee text-label-xs" aria-hidden="true">
+  <div class="marquee-track">
+    <!-- The same list twice; see marqueeWords. -->
+    @for (copy of [1, 2]; track copy) {
+      <ul class="marquee-list">
+        @for (word of marqueeWords; track $index) {
+          <li class="marquee-item">
+            {{ word }}
+            <img
+              class="marquee-star"
+              ngSrc="/images/star-small.svg"
+              width="16"
+              height="16"
+              alt=""
+            />
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</div>
+
+<section class="newest" aria-labelledby="newest-title">
+  <div class="page-width">
+    <div class="newest-header">
+      <h2 class="section-title text-display-l" id="newest-title">Nytt just nu</h2>
+      <a class="show-all text-link-s" routerLink="/produkter"
+        >Visa alla <span aria-hidden="true">→</span></a
+      >
+    </div>
+
+    @if (result.isLoading()) {
+      <!-- Render's free tier can take up to a minute to wake up. -->
+      <p role="status">Laddar nyheterna…</p>
+    } @else if (result.error()) {
+      <p role="alert">Nyheterna kunde inte visas.</p>
+    } @else if (newest().length === 0) {
+      <p>Det finns inga produkter att visa än.</p>
+    } @else {
+      <!-- A grid on a computer and a tablet, a row to swipe through on a phone. -->
+      <ul class="product-grid">
+        @for (p of newest(); track p.id) {
+          <li>
+            <app-product-card [product]="p" />
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</section>
+
+<nav class="categories" aria-label="Kategorier">
+  <ul class="page-width category-list">
+    @for (category of categories; track category) {
+      <li>
+        <a class="category-link text-display-l" routerLink="/produkter">
+          {{ category }}
+          <app-icon class="category-arrow" name="arrow-right" />
+        </a>
+      </li>
+    }
+  </ul>
+</nav>

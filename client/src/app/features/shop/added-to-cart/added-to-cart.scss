@@ -1,0 +1,100 @@
+// The values come from Figma's Added to cart popup and the frames "Tillagd i varukorgen", and
+// the text styles are classes in the template.
+
+// fixed: stays under the header's cart button even when the page is scrolled, 8 px under the
+// header (70 px high on a phone, 78 px from a tablet up) and the page's margin from the right
+// edge. 360 px wide, and the whole width except the margins on a phone.
+.popup {
+  position: fixed;
+  top: 4.875rem;
+  right: var(--layout-margin);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-14);
+  width: min(22.5rem, calc(100% - 2 * var(--layout-margin)));
+  padding: var(--space-14) var(--space-16) var(--space-16);
+  border: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-bg-surface);
+  box-shadow: var(--shadow-popover);
+
+  @media (width >= 48rem) {
+    top: 5.375rem;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  // The design's close button here is 32 px instead of 40 px.
+  button {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+// Label/S with a check mark in front.
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+}
+
+// A 24 px dark square with a light 16 px check mark.
+.check {
+  --icon-size: 1rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--color-bg-inverse);
+  color: var(--color-icon-inverse);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-14);
+}
+
+.thumbnail {
+  flex-shrink: 0;
+  width: 4rem;
+  height: 4.75rem;
+  object-fit: cover;
+  background: var(--color-bg-image);
+}
+
+// The name (Heading/XS) and the price (Price), 2 px apart.
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+// Two equally wide buttons with Label/S, so "Visa varukorg (1)" stays on one row. They are
+// appButtons with Label/M; the two styles only differ in size. The primary button has 2 px
+// more padding than the secondary one's frame, so both are 43 px high, like in Figma.
+.actions {
+  display: flex;
+  gap: var(--space-10);
+
+  button {
+    flex: 1;
+    padding: var(--space-14) var(--space-12);
+    font-size: var(--font-size-label-s);
+    white-space: nowrap;
+  }
+
+  .secondary {
+    padding: var(--space-12);
+  }
+}

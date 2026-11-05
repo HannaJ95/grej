@@ -1,5 +1,7 @@
 // Global rules for plain HTML elements, built on the variables in _tokens.scss. This is only
-// the common ground; each page gets its own look in its component's styles.
+// the common ground; each page gets its own look in its component's styles. The text styles
+// are classes in _typography.scss, and <body class="text-body-m"> in index.html gives the
+// body text.
 
 // Width and height include padding and border, which makes sizes easier to predict.
 *,
@@ -8,51 +10,72 @@
   box-sizing: border-box;
 }
 
-// The page is centered and never wider than --content-width. The padding keeps the text off
-// the screen's edges on a phone.
+// The admin pages: the space at the screen's edges, and at most as wide as Figma's computer
+// frame (1440 px) on a big screen.
 body {
-  max-width: var(--content-width);
   margin: 0 auto;
-  padding: var(--space-4);
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-body);
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-body);
+  padding: var(--space-16) var(--layout-margin);
+  background: var(--color-bg-page);
+  color: var(--color-text-primary);
+
+  @media (width >= 64rem) {
+    max-width: var(--layout-viewport-width);
+  }
+}
+
+// The shop's layout has bands of color from edge to edge, so the body does not limit it.
+// :has() matches the body when the shop's layout is somewhere inside it; the admin pages
+// keep the rule above.
+body:has(app-shop-layout) {
+  max-width: none;
+  padding: 0;
+}
+
+html:has(app-shop-layout) {
+  scroll-padding-top: 4.375rem;
+
+  @media (width >= 48rem) {
+    scroll-padding-top: 4.875rem;
+  }
+}
+
+// Keeps the focus above the product page's sticky buy row on a phone (144 px at 320 px).
+html:has(app-product-page) {
+  scroll-padding-bottom: 9rem;
+
+  @media (width >= 48rem), (height < 30rem) {
+    scroll-padding-bottom: 0;
+  }
+}
+
+// Keeps the shop's content centered with --layout-margin on each side. On a computer it is at
+// most as wide as Figma's frame, so the content is at most 1440 − 2 × 48 = 1344 px.
+.page-width {
+  display: block;
+  margin-inline: auto;
+  padding-inline: var(--layout-margin);
+
+  @media (width >= 64rem) {
+    max-width: var(--layout-viewport-width);
+  }
 }
 
 h1,
 h2,
 h3 {
-  margin: var(--space-6) 0 var(--space-4);
-  font-family: var(--font-heading);
-  line-height: var(--line-height-heading);
-}
-
-h1 {
-  font-size: var(--font-size-2xl);
-}
-
-h2 {
-  font-size: var(--font-size-xl);
-}
-
-h3 {
-  font-size: var(--font-size-lg);
+  margin: var(--space-32) 0 var(--space-16);
 }
 
 a {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
-a:hover {
-  color: var(--color-primary-hover);
-}
-
-// A clear ring around whatever has keyboard focus. :focus-visible skips it for mouse clicks.
+// A clear ring around whatever has keyboard focus, in the border color like the focused field
+// in Figma. :focus-visible skips it for mouse clicks. On the dark bands the components change
+// outline-color to --color-border-inverse.
 :focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
+  outline: var(--border-width-default) solid var(--color-border-default);
+  outline-offset: var(--space-2);
 }
 
 // Form controls do not use the page's font unless they are told to.
@@ -63,6 +86,8 @@ textarea {
   font: inherit;
 }
 
+// Like Figma's Text field: a 2 px frame on the light surface, with square corners (some
+// browsers round the corners of fields by themselves).
 input[type='text'],
 input[type='email'],
 input[type='password'],
@@ -70,11 +95,11 @@ input[type='number'],
 select,
 textarea {
   max-width: 100%;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  background: var(--color-surface);
-  color: var(--color-text);
+  padding: var(--space-8) var(--space-12);
+  border: var(--border-width-default) solid var(--color-border-default);
+  border-radius: 0;
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
 }
 
 // The forms set aria-invalid on a field with an error. Written with the element names, so it
@@ -82,12 +107,12 @@ textarea {
 input[aria-invalid='true'],
 select[aria-invalid='true'],
 textarea[aria-invalid='true'] {
-  border-color: var(--color-danger);
+  border-color: var(--color-feedback-error);
 }
 
 // Error messages, which screen readers read at once (role="alert" in the templates).
 [role='alert'] {
-  color: var(--color-danger);
+  color: var(--color-feedback-error);
 }
 
 table {
@@ -96,7 +121,7 @@ table {
 
 th,
 td {
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-8) var(--space-12);
   border-bottom: 1px solid var(--color-border-subtle);
   text-align: left;
 }

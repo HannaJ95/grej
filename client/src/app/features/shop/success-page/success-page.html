@@ -1,0 +1,41 @@
+<div class="confirmation">
+  <div class="heading">
+    <span class="icon-box"><app-icon name="check" /></span>
+    <h1 class="text-display-l">Tack för din beställning!</h1>
+    <p class="text-body-l">
+      @if (order()) {
+        Ordernummer {{ order() }}. Spara numret om du behöver kontakta oss.
+      }
+      Din beställning håller på att bekräftas.
+    </p>
+  </div>
+
+  <div class="next">
+    <h2 class="text-display-xs">Vad händer nu?</h2>
+    <ol class="steps">
+      @for (step of steps; track step.title; let number = $index) {
+        <li class="step">
+          <!-- The list already tells screen readers the number. -->
+          <span class="number text-label-m" aria-hidden="true">{{ number + 1 }}</span>
+          <div class="step-text">
+            <p class="text-heading-xs">{{ step.title }}</p>
+            <p class="text-body-s">{{ step.text }}</p>
+          </div>
+        </li>
+      }
+    </ol>
+  </div>
+
+  <a appButton size="large" class="continue" routerLink="/produkter">Fortsätt handla</a>
+
+  <div class="notice">
+    <span class="notice-icon"><app-icon name="arrow-right" /></span>
+    <div class="step-text">
+      <p class="text-heading-xs">Det här är en demobutik</p>
+      <p class="text-body-s">
+        Betalningen gjordes i Stripes testläge. Inga riktiga pengar har dragits och inget paket
+        skickas.
+      </p>
+    </div>
+  </div>
+</div>

@@ -4,12 +4,14 @@ import { RouterLink } from '@angular/router';
 import { CartService } from '../../../core/cart.service';
 import { CheckoutService } from '../../../core/checkout.service';
 import { Button } from '../../../shared/button/button';
+import { IconButton } from '../../../shared/icon-button/icon-button';
+import { QuantityStepper } from '../../../shared/quantity-stepper/quantity-stepper';
 
-// The cart button in the navigation and the panel it opens. The panel is a
-// native <dialog>: the browser closes it on Escape, keeps the focus inside it
-// while it is open and puts a backdrop behind it.
+// The cart button in the navigation and the panel it opens (Figma: Cart drawer). The panel
+// is a native <dialog>: the browser closes it on Escape, keeps the focus inside it while it
+// is open and puts a backdrop behind it.
 @Component({
-  imports: [CurrencyPipe, RouterLink, Button],
+  imports: [CurrencyPipe, RouterLink, Button, IconButton, QuantityStepper],
   selector: 'app-cart-drawer',
   styleUrl: './cart-drawer.scss',
   templateUrl: './cart-drawer.html',
@@ -33,15 +35,25 @@ export class CartDrawer {
   // True when the API has changed the cart because some products ran out.
   protected readonly cartChanged = signal(false);
 
-  protected open(): void {
+  // Public, so the layout can open the cart from the phone menu too.
+  open(): void {
     this.dialog().nativeElement.showModal();
+  }
+
+  // A click on the dialog element itself is a click on the dark backdrop, since the panel
+  // inside it covers the rest. The design closes the cart then, like the menu.
+  protected closeOnBackdrop(event: MouseEvent): void {
+    if (event.target === event.currentTarget) {
+      this.close();
+    }
   }
 
   protected close(): void {
     this.dialog().nativeElement.close();
   }
 
-  protected async goToCheckout(): Promise<void> {
+  // Public, so the "Tillagd i varukorgen" popup's "Till kassan" can start it too.
+  async goToCheckout(): Promise<void> {
     this.isBuying.set(true);
     this.buyFailed.set(false);
     this.cartChanged.set(false);

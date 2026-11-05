@@ -1,0 +1,168 @@
+// The styles are written for a phone first; the media queries change them on a tablet
+// (48rem = 768 px) and a computer (64rem = 1024 px). The values come from Figma's Header and
+// Footer components, and the text styles are classes in the template.
+
+// :host is <app-shop-layout> itself. Without display: block a custom element is inline.
+:host {
+  display: block;
+}
+
+// Header
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--color-bg-surface);
+}
+
+// The logo, the menu and the cart in a row: 12 px above and below on a phone, 10 px on a
+// tablet and a computer.
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding-block: var(--space-12);
+
+  @media (width >= 48rem) {
+    padding-block: var(--space-10);
+  }
+}
+
+// "GREJ." in Display/Logo. In Figma each letter is its own text with 2 px between them,
+// which is the same as 2 px letter spacing.
+.logo {
+  color: var(--color-text-primary);
+  letter-spacing: var(--space-2);
+}
+
+// The links are in the menu on a phone, and in the header from a tablet up.
+.nav {
+  display: none;
+
+  @media (width >= 48rem) {
+    display: flex;
+    gap: var(--space-28);
+  }
+
+  @media (width >= 64rem) {
+    gap: var(--space-32);
+  }
+}
+
+.nav-link {
+  color: var(--color-text-primary);
+}
+
+// The current page is underlined, like "Shop" on the shop's pages in the design.
+.nav-link:hover,
+.nav-link.active {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+}
+
+// Only on phones.
+.mobile-menu {
+  display: block;
+
+  @media (width >= 48rem) {
+    display: none;
+  }
+}
+
+// Footer
+
+// 56 px above and 28 px below on a phone, 64 / 32 px on a tablet and 80 / 40 px on a
+// computer. The focus ring gets the light border color to be seen on the dark background.
+.footer {
+  overflow: clip;
+  padding-block: var(--space-56) var(--space-28);
+  background: var(--color-bg-inverse);
+  color: var(--color-text-on-inverse);
+
+  :focus-visible {
+    outline-color: var(--color-border-inverse);
+  }
+
+  @media (width >= 48rem) {
+    padding-block: var(--space-64) var(--space-32);
+  }
+
+  // Figma's footer has 40 px on the sides on a computer, a little less than the header's 48.
+  @media (width >= 64rem) {
+    padding-block: var(--space-80) var(--space-40);
+
+    .page-width {
+      padding-inline: var(--space-40);
+    }
+  }
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
+// Looks like the design's column title (Heading/XS), but is an h2 so the footer has a heading.
+.footer-heading {
+  margin: 0;
+}
+
+// The big "GREJ." across the whole width, in Display/Wordmark. Each letter is its own span,
+// and space-between spreads them out like in the design. 48 / 72 / 112 px above it and
+// 20 / 32 / 32 px below. The letters are about 2.1 times as wide as the font size, so the
+// computer's 500 px would not fit between 1024 and about 1190 px. The size is therefore at
+// most 42 % of the screen width, which only changes it there (and on phones narrower than
+// 360 px); at 390, 768 and 1440 px it is Figma's size. The text style's 15 % letter
+// spacing is turned off: the browser adds it after each letter, also after a lonely letter in
+// a span, which made the row 5 × 75 px too wide. space-between does the spacing instead, like
+// in Figma.
+.footer-logo {
+  display: flex;
+  justify-content: space-between;
+  margin: var(--space-48) 0 var(--space-20);
+  font-size: min(var(--font-size-display-wordmark), 42vw);
+  letter-spacing: 0;
+
+  @media (width >= 48rem) {
+    margin: var(--space-72) 0 var(--space-32);
+  }
+
+  @media (width >= 64rem) {
+    margin-top: var(--space-112);
+  }
+}
+
+// Under each other on a phone, side by side from a tablet up. 7:1 against the background.
+.footer-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  color: var(--color-text-on-inverse-secondary);
+
+  @media (width >= 48rem) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  p {
+    margin: 0;
+  }
+}
