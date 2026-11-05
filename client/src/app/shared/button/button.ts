@@ -26,13 +26,16 @@ import { Component, input } from '@angular/core';
       --button-bg: var(--color-bg-inverse);
       --button-bg-hover: var(--color-graphite);
       --button-text: var(--color-text-on-inverse);
+      // The frame is taken from the padding, so every variant is equally tall.
+      --button-border: 0px;
 
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: var(--space-8);
-      padding: var(--space-8) var(--space-16);
-      border: none;
+      padding: calc(var(--space-8) - var(--button-border))
+        calc(var(--space-16) - var(--button-border));
+      border: var(--button-border) solid var(--color-border-default);
       background: var(--button-bg);
       color: var(--button-text);
       text-align: center;
@@ -44,13 +47,12 @@ import { Component, input } from '@angular/core';
     }
 
     // The design's secondary button: only a 2 px frame, on whatever background it is on.
-    // The frame makes it 4 px taller than the primary button, like in Figma.
+    // In Figma the frame makes it 4 px taller than the primary button; here it is not.
     :host(.secondary) {
       --button-bg: transparent;
       --button-bg-hover: var(--color-oat);
       --button-text: var(--color-text-primary);
-
-      border: var(--border-width-default) solid var(--color-border-default);
+      --button-border: var(--border-width-default);
     }
 
     :host(.danger) {
@@ -61,7 +63,8 @@ import { Component, input } from '@angular/core';
 
     // 16 px above and below and 32 px on the sides, like Figma's Button.
     :host(.large) {
-      padding: var(--space-16) var(--space-32);
+      padding: calc(var(--space-16) - var(--button-border))
+        calc(var(--space-32) - var(--button-border));
     }
 
     :host(:disabled) {
