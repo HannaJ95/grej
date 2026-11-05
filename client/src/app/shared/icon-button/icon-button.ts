@@ -5,7 +5,8 @@ import { Icon, IconName } from '../icons/icon';
 // Like appButton it is an attribute on a real <button>, so the keyboard and disabled work.
 // The button has no text, so it always needs an aria-label, e.g.
 // <button appIconButton icon="close" aria-label="Stäng">. tone="light" is for dark
-// backgrounds, like the menu.
+// backgrounds, like the menu. Figma has no hover, so the hover colors are other colors from
+// Figma's palette.
 @Component({
   selector: 'button[appIconButton]',
   imports: [Icon],
@@ -24,23 +25,24 @@ import { Icon, IconName } from '../icons/icon';
       width: 2.5rem;
       height: 2.5rem;
       padding: 0;
-      border: 2px solid var(--color-text);
+      border: var(--border-width-default) solid var(--color-border-default);
       background: transparent;
-      color: var(--color-text);
+      // The icon is painted in the text color (see Icon).
+      color: var(--color-icon-default);
       cursor: pointer;
     }
 
     :host(:hover:not(:disabled)) {
-      background: var(--color-primary-subtle);
+      background: var(--color-oat);
     }
 
     :host(.light) {
-      border-color: var(--color-surface);
-      color: var(--color-surface);
+      border-color: var(--color-border-inverse);
+      color: var(--color-icon-inverse);
     }
 
     :host(.light:hover:not(:disabled)) {
-      background: rgb(248 243 234 / 15%);
+      background: var(--color-graphite);
     }
 
     :host(:disabled) {

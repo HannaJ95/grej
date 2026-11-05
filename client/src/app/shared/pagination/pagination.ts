@@ -17,7 +17,7 @@ import { Icon } from '../icons/icon';
       <nav aria-label="Sidor">
         @if (page() > 1) {
           <a
-            class="step"
+            class="step text-label-m"
             [routerLink]="path()"
             [queryParams]="{ sida: page() - 1 }"
             queryParamsHandling="merge"
@@ -26,13 +26,18 @@ import { Icon } from '../icons/icon';
             <span class="step-text">Föregående</span>
           </a>
         } @else {
-          <span class="step disabled" aria-hidden="true">
+          <span class="step disabled text-label-m" aria-hidden="true">
             <app-icon name="arrow-left" />
             <span class="step-text">Föregående</span>
           </span>
         }
         @for (list of lists(); track list.compact) {
-          <ol class="pages" [class.compact]="list.compact">
+          <ol
+            class="pages"
+            [class.compact]="list.compact"
+            [class.text-label-m]="!list.compact"
+            [class.text-label-s]="list.compact"
+          >
             @for (item of list.pages; track $index) {
               <li>
                 @if (item === 'gap') {
@@ -57,7 +62,7 @@ import { Icon } from '../icons/icon';
         }
         @if (page() < totalPages()) {
           <a
-            class="step"
+            class="step text-label-m"
             [routerLink]="path()"
             [queryParams]="{ sida: page() + 1 }"
             queryParamsHandling="merge"
@@ -66,7 +71,7 @@ import { Icon } from '../icons/icon';
             <app-icon name="arrow-right" />
           </a>
         } @else {
-          <span class="step disabled" aria-hidden="true">
+          <span class="step disabled text-label-m" aria-hidden="true">
             <span class="step-text">Nästa</span>
             <app-icon name="arrow-right" />
           </span>
@@ -75,83 +80,49 @@ import { Icon } from '../icons/icon';
     }
   `,
   styles: `
-    // A 2 px line above, and the three parts spread out over the row.
+    // A 2 px line above, and the three parts spread out over the row. The space above is the
+    // space above the pagination on Figma's shop page: 40 px on a phone, 56 px on a tablet and
+    // 64 px on a computer. The styles are written for a phone first, and the media queries at
+    // the bottom change them on bigger screens.
     nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--space-4);
-      margin-top: clamp(2.5rem, 2.1rem + 1.5vw, 4rem);
-      padding-top: clamp(var(--space-5), 1.3rem + 0.75vw, var(--space-6));
-      border-top: 2px solid var(--color-text);
+      gap: var(--space-12);
+      margin-top: var(--space-40);
+      padding-top: var(--space-24);
+      border-top: var(--border-width-default) solid var(--color-border-default);
     }
 
-    // "← Föregående" and "Nästa →" as text on a computer and a tablet.
+    // On a phone "Föregående" and "Nästa" are 44 px squares with only the arrow, like
+    // Figma's compact Pagination.
     .step {
-      --icon-size: 1rem;
+      --icon-size: 1.125rem;
 
       display: inline-flex;
       align-items: center;
-      gap: var(--space-2);
-      color: var(--color-text);
-      font-weight: 600;
-      line-height: 1;
+      justify-content: center;
+      gap: var(--space-8);
+      width: 2.75rem;
+      height: 2.75rem;
+      border: var(--border-width-default) solid var(--color-border-default);
+      color: var(--color-text-primary);
       text-decoration: none;
     }
 
     a.step:hover {
-      color: var(--color-text);
-      text-decoration: underline;
+      background: var(--color-oat);
     }
 
+    // Figma shows the missing link with 35 % opacity.
     .disabled {
       opacity: 0.35;
     }
 
-    .pages {
-      display: flex;
-      gap: var(--space-2);
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    // The phone's shorter list is hidden on bigger screens, and the other way round below.
-    .pages.compact {
-      display: none;
-    }
-
-    // 48 px squares with a 2 px frame; the current page is filled (Figma: Page button).
-    .page-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 3rem;
-      height: 3rem;
-      border: 2px solid var(--color-text);
-      color: var(--color-text);
-      font-weight: 600;
-      line-height: 1;
-      text-decoration: none;
-    }
-
-    a.page-button:hover {
-      background: var(--color-primary-subtle);
-      color: var(--color-text);
-    }
-
-    .current {
-      background: var(--color-primary);
-      color: var(--color-on-primary);
-    }
-
-    .gap {
-      border-color: transparent;
-    }
-
-    // "Sida" before the number is only for screen readers, which would otherwise read a
-    // lonely number. Hidden on the screen, but still read.
-    .page-button .step-text {
+    // The words are hidden on the screen on a phone, but still read by screen readers, so
+    // the link has a name. "Sida" before a number is always hidden the same way, since a
+    // screen reader would otherwise read a lonely number.
+    .step-text {
       position: absolute;
       width: 1px;
       height: 1px;
@@ -160,45 +131,92 @@ import { Icon } from '../icons/icon';
       white-space: nowrap;
     }
 
-    // On a phone only the arrows, in 44 px squares, and 40 px page squares, like the design's
-    // compact version.
-    @media (width < 48rem) {
-      .pages {
-        display: none;
-        gap: 0.375rem;
-      }
+    // The phone shows the shorter list (compact) and hides the other one.
+    .pages {
+      display: none;
+      gap: var(--space-6);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
 
-      .pages.compact {
-        display: flex;
-      }
+    .pages.compact {
+      display: flex;
+    }
 
-      .page-button {
-        width: 2.5rem;
-        height: 2.5rem;
-        font-size: 0.9375rem;
+    // 40 px squares with a 2 px frame on a phone; the current page is filled (Figma: Page
+    // button).
+    .page-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border: var(--border-width-default) solid var(--color-border-default);
+      color: var(--color-text-primary);
+      text-decoration: none;
+    }
+
+    a.page-button:hover {
+      background: var(--color-oat);
+    }
+
+    .current {
+      background: var(--color-bg-inverse);
+      color: var(--color-text-on-inverse);
+    }
+
+    .gap {
+      border-color: transparent;
+    }
+
+    // Tablet and computer: Figma's wide Pagination. "← Föregående" and "Nästa →" as text, the
+    // longer list of pages, and 48 px squares.
+    @media (width >= 48rem) {
+      nav {
+        margin-top: var(--space-56);
+        padding-top: var(--space-32);
       }
 
       .step {
-        --icon-size: 1.125rem;
+        --icon-size: 1rem;
 
-        justify-content: center;
-        width: 2.75rem;
-        height: 2.75rem;
-        border: 2px solid var(--color-text);
+        width: auto;
+        height: auto;
+        border: none;
       }
 
       a.step:hover {
-        background: var(--color-primary-subtle);
+        background: none;
+        text-decoration: underline;
       }
 
-      // Hidden on the screen, but still read by screen readers, so the link has a name.
-      .step-text {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        clip-path: inset(50%);
-        white-space: nowrap;
+      .step > .step-text {
+        position: static;
+        width: auto;
+        height: auto;
+        overflow: visible;
+        clip-path: none;
+      }
+
+      .pages {
+        display: flex;
+        gap: var(--space-8);
+      }
+
+      .pages.compact {
+        display: none;
+      }
+
+      .page-button {
+        width: 3rem;
+        height: 3rem;
+      }
+    }
+
+    @media (width >= 64rem) {
+      nav {
+        margin-top: var(--space-64);
       }
     }
   `,
