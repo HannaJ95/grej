@@ -7,13 +7,28 @@
 // The fonts are loaded from Google Fonts in index.html. The ones after them are used until
 // they have loaded, or if they cannot be.
 $font-display: Anton, Impact, 'Arial Narrow', sans-serif;
-$font-text: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+$font-text:
+  Inter,
+  system-ui,
+  -apple-system,
+  'Segoe UI',
+  Roboto,
+  Arial,
+  sans-serif;
 $font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
 
 // A Sass mixin works like a function that writes CSS: each class below calls it with the text
 // style's values from Figma. $size is the end of the variable's name: display-l uses
 // --font-size-display-l. Figma's letter spacing in % becomes em (8 % = 0.08em).
-@mixin text-style($font, $weight, $size, $line-height, $letter-spacing: 0, $case: none, $decoration: none) {
+@mixin text-style(
+  $font,
+  $weight,
+  $size,
+  $line-height,
+  $letter-spacing: 0,
+  $case: none,
+  $decoration: none
+) {
   font-family: $font;
   font-weight: $weight;
   font-size: var(--font-size-#{$size});

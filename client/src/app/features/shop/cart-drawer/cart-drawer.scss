@@ -1,38 +1,47 @@
-// The cart button in the header: 14 px text, and 13 px with less padding on a phone.
-.cart-button {
-  padding: 0.625rem 1.125rem;
-  color: var(--color-primary-subtle);
-  font-size: var(--font-size-sm);
-  line-height: 1.4;
+// The styles are written for a phone first; the media queries change them on a tablet
+// (48rem = 768 px) and a computer (64rem = 1024 px). The values come from Figma's Cart
+// drawer, Cart item and Quantity stepper, and the text styles are classes in the template.
+// The free shipping bar and "Frakt räknas ut i kassan" in Figma are not built.
 
-  @media (width < 48rem) {
-    padding: 0.5625rem 0.875rem;
-    font-size: 0.8125rem;
+// The cart button in the header (Figma: Cart in the Header): Label/XS with 8 / 14 px inside
+// on a phone and 10 / 16 px from a tablet up. It is an appButton, which has Label/M; the two
+// styles only differ in size, so only the size is changed here.
+.cart-button {
+  padding: var(--space-8) var(--space-14);
+  font-size: var(--font-size-label-xs);
+
+  @media (width >= 48rem) {
+    padding: var(--space-10) var(--space-16);
   }
 }
 
-// The panel along the right edge in full height (Figma: Cart drawer): 480 px on a computer,
-// 440 px on a tablet, and the whole width except 56 px on a phone.
+// The panel along the right edge in full height, with a 2 px line on its left: the whole
+// width except 56 px on a phone (at most 480 px), 440 px on a tablet and 480 px on a
+// computer.
 dialog {
   margin: 0 0 0 auto;
-  width: min(30rem, calc(100% - 3.5rem));
+  width: min(30rem, calc(100% - var(--space-56)));
   max-width: none;
   height: 100dvh;
   max-height: 100dvh;
   padding: 0;
   border: none;
-  border-left: 2px solid var(--color-text);
-  background: var(--color-surface);
-  color: var(--color-text);
+  border-left: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
 
-  @media (48rem <= width < 64rem) {
+  @media (width >= 48rem) {
     width: 27.5rem;
+  }
+
+  @media (width >= 64rem) {
+    width: 30rem;
   }
 }
 
 // The dark layer behind the open panel.
 dialog::backdrop {
-  background: rgb(43 42 39 / 55%);
+  background: var(--color-overlay-scrim);
 }
 
 // Fills the dialog, so a click on the dialog element itself can only be on the backdrop.
@@ -43,16 +52,16 @@ dialog::backdrop {
   height: 100%;
 }
 
-// 28 px on the sides, 20 px on a phone.
+// 20 px on the sides on a phone, 28 px from a tablet up.
 .panel-header,
 .items,
 .summary,
 .empty,
 .notice {
-  padding-inline: 1.75rem;
+  padding-inline: var(--space-20);
 
-  @media (width < 48rem) {
-    padding-inline: 1.25rem;
+  @media (width >= 48rem) {
+    padding-inline: var(--space-28);
   }
 }
 
@@ -60,37 +69,28 @@ dialog::backdrop {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-block: 1.125rem;
-  border-bottom: 2px solid var(--color-text);
+  padding-block: var(--space-16);
+  border-bottom: var(--border-width-default) solid var(--color-border-default);
 }
 
-// The title with the number of things next to it, e.g. "VARUKORG 2 grejer".
+// The title (Display/XS) with the number of things (Body/S) next to it, e.g. "VARUKORG
+// 2 grejer".
 .heading {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-12);
 }
 
 .count {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
-  line-height: 1;
+  color: var(--color-text-secondary);
 }
 
-// 36 px, and 30 px on a phone.
 .panel-title {
   margin: 0;
-  font-size: 2.25rem;
-  line-height: 1;
-  text-transform: uppercase;
-
-  @media (width < 48rem) {
-    font-size: 1.875rem;
-  }
 }
 
 .notice {
-  margin: var(--space-4) 0 0;
+  margin: var(--space-16) 0 0;
 }
 
 // The list
@@ -98,20 +98,19 @@ dialog::backdrop {
 .items {
   flex: 1;
   margin: 0;
-  padding-block: var(--space-2);
+  padding-block: var(--space-16) var(--space-8);
   overflow-y: auto;
   list-style: none;
 }
 
-// A product row: an 80 × 96 px picture and the information next to it.
+// Figma's Cart item: an 80 × 96 px picture and the information next to it, with a 2 px light
+// line under each row. In Figma the line lies over the bottom of 16 px padding, so the padding
+// below is 14 px here.
 .item {
   display: flex;
-  gap: var(--space-4);
-  padding-block: 1.125rem;
-
-  & + & {
-    border-top: 2px solid rgb(43 42 39 / 20%);
-  }
+  gap: var(--space-16);
+  padding-block: var(--space-16) var(--space-14);
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
 }
 
 .thumbnail {
@@ -119,22 +118,22 @@ dialog::backdrop {
   width: 5rem;
   height: 6rem;
   object-fit: cover;
-  background: #ffffff;
+  background: var(--color-bg-image);
 }
 
 .info {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-4);
   min-width: 0;
 }
 
+// The name (Heading/XS) and the price (Price).
 .name-price {
   display: flex;
   justify-content: space-between;
-  gap: var(--space-3);
-  line-height: 1.4;
+  gap: var(--space-12);
 }
 
 // min-width: 0 and anywhere let a long word like "Manschettknappar" break, instead of
@@ -143,19 +142,16 @@ dialog::backdrop {
 .name {
   min-width: 0;
   color: inherit;
-  font-weight: 600;
   overflow-wrap: anywhere;
   hyphens: auto;
   text-decoration: none;
 
   &:hover {
-    color: inherit;
     text-decoration: underline;
   }
 }
 
 .price {
-  font-weight: 500;
   white-space: nowrap;
 }
 
@@ -163,13 +159,16 @@ dialog::backdrop {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-12);
+  padding-top: var(--space-8);
 }
 
-// − 1 + in one 2 px frame, with 36 px square buttons.
+// Figma's Quantity stepper: − 1 + in one 2 px frame, with 36 px square buttons and the number
+// in Label/S.
 .stepper {
   display: inline-flex;
   align-items: center;
-  border: 2px solid var(--color-text);
+  border: var(--border-width-default) solid var(--color-border-default);
 
   button {
     --icon-size: 0.875rem;
@@ -182,11 +181,11 @@ dialog::backdrop {
     padding: 0;
     border: none;
     background: transparent;
-    color: var(--color-text);
+    color: var(--color-icon-default);
     cursor: pointer;
 
     &:hover:not(:disabled) {
-      background: var(--color-primary-subtle);
+      background: var(--color-oat);
     }
 
     &:disabled {
@@ -198,20 +197,16 @@ dialog::backdrop {
 
 .quantity {
   width: 1.75rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
   text-align: center;
 }
 
-// Looks like a link, but is a button since it changes the cart instead of going somewhere.
+// Link/S. Looks like a link, but is a button since it changes the cart instead of going
+// somewhere.
 .remove {
   padding: 0;
   border: none;
   background: none;
-  color: var(--color-text);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  text-decoration: underline;
+  color: var(--color-text-primary);
   cursor: pointer;
 }
 
@@ -220,35 +215,32 @@ dialog::backdrop {
 .summary {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding-block: 1.25rem var(--space-5);
-  border-top: 2px solid var(--color-text);
+  gap: var(--space-12);
+  padding-block: var(--space-20) var(--space-24);
+  border-top: var(--border-width-default) solid var(--color-border-default);
 
   p {
     margin: 0;
   }
 }
 
+// "Summa" in Label/M and the amount in Label/L.
 .total {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  font-weight: 600;
-  line-height: 1;
-
-  span:last-child {
-    font-size: 1.125rem;
-  }
 }
 
+// The buttons fill the width, with Label/M instead of the big button's Label/L, like in
+// Figma's Cart drawer.
 .full-width {
   width: 100%;
-  font-size: 1.0625rem;
+  font-size: var(--font-size-label-m);
 }
 
+// Mono/S.
 .secure {
-  color: var(--color-text-muted);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
+  color: var(--color-text-secondary);
   text-align: center;
 }
 
@@ -260,7 +252,7 @@ dialog::backdrop {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.125rem;
+  gap: var(--space-16);
   text-align: center;
 
   p {
@@ -268,7 +260,8 @@ dialog::backdrop {
   }
 }
 
-// A 96 px square with a handle (rounded at the top) behind a bag, both with 4 px lines.
+// A 96 px square with a handle (rounded at the top) behind a bag, both with Figma's 4 px
+// lines.
 .bag {
   position: relative;
   width: 6rem;
@@ -281,7 +274,7 @@ dialog::backdrop {
   left: 1.875rem;
   width: 2.25rem;
   height: 2.5rem;
-  border: 4px solid var(--color-text);
+  border: 4px solid var(--color-border-default);
   border-radius: 1.125rem 1.125rem 0 0;
 }
 
@@ -291,22 +284,6 @@ dialog::backdrop {
   left: 0.625rem;
   width: 4.75rem;
   height: 3.75rem;
-  border: 4px solid var(--color-text);
-  background: var(--color-surface);
-}
-
-// 40 px, and 32 px on a phone.
-.empty-title {
-  font-family: var(--font-heading);
-  font-size: 2.5rem;
-  line-height: 1.05;
-  text-transform: uppercase;
-
-  @media (width < 48rem) {
-    font-size: 2rem;
-  }
-}
-
-.empty-text {
-  line-height: 1.5;
+  border: 4px solid var(--color-border-default);
+  background: var(--color-bg-surface);
 }

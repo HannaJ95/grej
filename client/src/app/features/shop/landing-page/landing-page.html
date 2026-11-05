@@ -1,6 +1,6 @@
 <section class="hero">
   <div class="page-width">
-    <!-- Written in normal case and made capital in the styles, so screen readers read words,
+    <!-- Written in normal case and made capital by the text style, so screen readers read words,
          not letters. -->
     <h1 class="hero-title text-display-hero">Det här<br />är en grej.</h1>
     <p class="hero-intro text-body-l">
@@ -39,7 +39,9 @@
   <div class="page-width">
     <div class="newest-header">
       <h2 class="section-title text-display-l" id="newest-title">Nytt just nu</h2>
-      <a class="show-all text-link-s" routerLink="/produkter">Visa alla <span aria-hidden="true">→</span></a>
+      <a class="show-all text-link-s" routerLink="/produkter"
+        >Visa alla <span aria-hidden="true">→</span></a
+      >
     </div>
 
     @if (result.isLoading()) {

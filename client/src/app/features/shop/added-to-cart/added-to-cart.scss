@@ -1,18 +1,26 @@
-// fixed: stays under the header's cart button even when the page is scrolled. 360 px wide,
-// and the whole width except the page's sides on a phone.
+// The values come from Figma's Added to cart popup and the frames "Tillagd i varukorgen", and
+// the text styles are classes in the template.
+
+// fixed: stays under the header's cart button even when the page is scrolled, 8 px under the
+// header (70 px high on a phone, 78 px from a tablet up) and the page's margin from the right
+// edge. 360 px wide, and the whole width except the margins on a phone.
 .popup {
   position: fixed;
-  top: 4.5rem;
-  right: var(--page-gutter);
+  top: 4.875rem;
+  right: var(--layout-margin);
   z-index: 10;
   display: flex;
   flex-direction: column;
-  gap: 0.875rem;
-  width: min(22.5rem, calc(100% - 2 * var(--page-gutter)));
-  padding: 0.875rem var(--space-4) var(--space-4);
-  border: 2px solid var(--color-text);
-  background: var(--color-surface);
-  box-shadow: 0 8px 12px rgb(43 42 39 / 18%);
+  gap: var(--space-14);
+  width: min(22.5rem, calc(100% - 2 * var(--layout-margin)));
+  padding: var(--space-14) var(--space-16) var(--space-16);
+  border: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-bg-surface);
+  box-shadow: var(--shadow-popover);
+
+  @media (width >= 48rem) {
+    top: 5.375rem;
+  }
 
   p {
     margin: 0;
@@ -31,15 +39,14 @@
   }
 }
 
+// Label/S with a check mark in front.
 .title {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
+  gap: var(--space-10);
 }
 
-// A 24 px dark square with a light check mark.
+// A 24 px dark square with a light 16 px check mark.
 .check {
   --icon-size: 1rem;
 
@@ -48,14 +55,14 @@
   justify-content: center;
   width: 1.5rem;
   height: 1.5rem;
-  background: var(--color-primary);
-  color: var(--color-surface);
+  background: var(--color-bg-inverse);
+  color: var(--color-icon-inverse);
 }
 
 .item {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
+  gap: var(--space-14);
 }
 
 .thumbnail {
@@ -63,32 +70,31 @@
   width: 4rem;
   height: 4.75rem;
   object-fit: cover;
-  background: #ffffff;
+  background: var(--color-bg-image);
 }
 
+// The name (Heading/XS) and the price (Price), 2 px apart.
 .info {
-  font-size: 0.9375rem;
-  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
-.name {
-  font-weight: 600;
-}
-
-.price {
-  font-weight: 500;
-}
-
-// Two equally wide buttons.
+// Two equally wide buttons with Label/S, so "Visa varukorg (1)" stays on one row. They are
+// appButtons with Label/M; the two styles only differ in size. The primary button has 2 px
+// more padding than the secondary one's frame, so both are 43 px high, like in Figma.
 .actions {
   display: flex;
-  gap: 0.625rem;
+  gap: var(--space-10);
 
-  // 12 px on the sides like the design, so "Visa varukorg (1)" stays on one row.
   button {
     flex: 1;
-    padding: 0.8125rem var(--space-3);
-    font-size: 0.9375rem;
+    padding: var(--space-14) var(--space-12);
+    font-size: var(--font-size-label-s);
     white-space: nowrap;
+  }
+
+  .secondary {
+    padding: var(--space-12);
   }
 }

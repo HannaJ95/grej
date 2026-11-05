@@ -1,31 +1,38 @@
-// The design has three sizes: a phone (390 px), a tablet (768 px) and a computer (1440 px).
-// Sizes with clamp() go in a straight line from the phone's to the computer's, like on the
-// start page.
+// The styles are written for a phone first; the media queries change them on a tablet
+// (48rem = 768 px) and a computer (64rem = 1024 px). The values come from Figma's three Shop
+// Page frames, and the text styles are classes in the template. The category tabs, filters
+// and sorting in Figma are not built yet.
 
 :host {
   display: block;
 }
 
-// The breadcrumb above, then the title, with the intro next to it on a computer and under it
-// on smaller screens. display: flex wins over .page-width's display: block, since Angular
-// adds an attribute to this file's selectors, which makes them more specific than the
-// global class.
+// The breadcrumb, the title and the intro under each other, 12 / 16 / 20 px apart. On a
+// computer the intro is next to the title. display: flex wins over .page-width's
+// display: block, since Angular adds an attribute to this file's selectors, which makes them
+// more specific than the global class.
 .page-title {
   display: flex;
   flex-direction: column;
-  gap: clamp(var(--space-3), 0.6rem + 0.75vw, 1.25rem);
-  padding-block: clamp(var(--space-5), 1rem + 1.5vw, 2.25rem)
-    clamp(var(--space-5), 1.2rem + 1.5vw, 2.5rem);
+  gap: var(--space-12);
+  padding-block: var(--space-20) var(--space-24);
+
+  @media (width >= 48rem) {
+    gap: var(--space-16);
+    padding-block: var(--space-28);
+  }
+
+  @media (width >= 64rem) {
+    gap: var(--space-20);
+    padding-block: var(--space-32) var(--space-40);
+  }
 }
 
-// "Hem / Shop" in the small mono font.
+// Figma's Breadcrumb: "Hem / Shop" in Mono/S, with the current page darker.
 .breadcrumb {
   display: flex;
-  gap: var(--space-3);
-  color: var(--color-text-muted);
-  font-family: var(--font-mono);
-  font-size: clamp(0.75rem, 0.73rem + 0.1vw, 0.8125rem);
-  line-height: 1;
+  gap: var(--space-8);
+  color: var(--color-text-secondary);
 
   a {
     color: inherit;
@@ -33,69 +40,100 @@
   }
 
   a:hover {
-    color: var(--color-text);
     text-decoration: underline;
+  }
+
+  [aria-current] {
+    color: var(--color-text-primary);
   }
 }
 
-// flex-wrap moves the intro down when the row is too narrow for both.
+// Under each other on a phone and a tablet; side by side on a computer, with the intro at the
+// bottom right.
 .title-row {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--space-3) var(--space-6);
+  flex-direction: column;
+  gap: var(--space-12);
+
+  @media (width >= 48rem) {
+    gap: var(--space-16);
+  }
+
+  @media (width >= 64rem) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-24);
+  }
 }
 
-// 74 px on a phone, about 120 px on a tablet and 180 px on a computer.
+// Display/XL.
 .title {
   margin: 0;
-  font-size: clamp(4.625rem, 2.16rem + 10.1vw, 11.25rem);
-  line-height: 1;
-  text-transform: uppercase;
 }
 
-// 16 px on a phone, 20 px on a computer.
+// Body/M on a phone and Body/L from a tablet up, 520 px wide on a tablet and 420 px on a
+// computer. The two styles only differ in size, so the template has text-body-m and the media
+// query changes the size.
 .intro {
-  max-width: 26.25rem;
   margin: 0;
-  font-size: clamp(1rem, 0.9rem + 0.38vw, 1.25rem);
+
+  @media (width >= 48rem) {
+    max-width: 32.5rem;
+    font-size: var(--font-size-body-l);
+  }
+
+  @media (width >= 64rem) {
+    max-width: 26.25rem;
+  }
 }
 
+// Lines across the whole screen, the count (Label/S) within the page width.
 .toolbar {
-  padding-block: var(--space-4);
-  border-block: 2px solid var(--color-text);
+  padding-block: var(--space-14);
+  border-block: var(--border-width-default) solid var(--color-border-default);
+
+  @media (width >= 64rem) {
+    padding-block: var(--space-16);
+  }
 
   p {
     margin: 0;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    line-height: 1;
   }
 }
 
+// 28 / 32 / 48 px above the products and 64 / 80 / 120 px below the pagination.
 .results {
-  padding-block: clamp(1.75rem, 1.3rem + 1.9vw, 3rem) clamp(var(--space-8), 2rem + 5.7vw, 7.5rem);
+  padding-block: var(--space-28) var(--space-64);
+
+  @media (width >= 48rem) {
+    padding-block: var(--space-32) var(--space-80);
+  }
+
+  @media (width >= 64rem) {
+    padding-block: var(--space-48) var(--space-120);
+  }
 }
 
-// Two products per row on a phone, three on a tablet and four on a computer. The filters
-// will take the left column on a computer when they are built; until then the products use
-// the whole width.
+// Two products per row on a phone, three on a tablet and four on a computer, with the grid's
+// gutter between the columns and 28 / 40 / 48 px between the rows. Figma's computer has the
+// filters in a left column and three products per row; until the filters are built the
+// products use the whole width.
 .product-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.75rem var(--space-3);
+  gap: var(--space-28) var(--layout-gutter);
   margin: 0;
   padding: 0;
   list-style: none;
 
   @media (width >= 48rem) {
     grid-template-columns: repeat(3, 1fr);
-    gap: 2.5rem 1.25rem;
+    row-gap: var(--space-40);
   }
 
   @media (width >= 64rem) {
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-7) var(--space-5);
+    row-gap: var(--space-48);
   }
 }

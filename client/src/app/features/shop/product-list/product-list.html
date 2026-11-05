@@ -1,14 +1,14 @@
 <div class="page-width page-title">
-  <nav class="breadcrumb" aria-label="Brödsmulor">
+  <nav class="breadcrumb text-mono-s" aria-label="Brödsmulor">
     <a routerLink="/">Hem</a>
     <span aria-hidden="true">/</span>
     <span aria-current="page">Shop</span>
   </nav>
   <div class="title-row">
-    <!-- Written in normal case and made capital in the styles, like the start page. -->
-    <h1 class="title">Alla grejer</h1>
+    <!-- Written in normal case and made capital by the text style, like the start page. -->
+    <h1 class="title text-display-xl">Alla grejer</h1>
     <!-- The number comes when the API has answered. -->
-    <p class="intro">
+    <p class="intro text-body-m">
       @if (result.hasValue()) {
         {{ result.value().totalCount }} handgjorda grejer
       } @else {
@@ -24,7 +24,7 @@
 <div class="toolbar">
   <div class="page-width">
     @if (shown(); as s) {
-      <p>Visar {{ s.from }}–{{ s.to }} av {{ s.total }} grejer</p>
+      <p class="text-label-s">Visar {{ s.from }}–{{ s.to }} av {{ s.total }} grejer</p>
     }
   </div>
 </div>

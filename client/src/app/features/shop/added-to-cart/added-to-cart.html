@@ -9,7 +9,7 @@
       (focusout)="startTimer()"
     >
       <div class="title-row">
-        <p class="title">
+        <p class="title text-label-s">
           <span class="check"><app-icon name="check" /></span>
           Tillagd i varukorgen
         </p>
@@ -29,8 +29,10 @@
           <span class="thumbnail"></span>
         }
         <div class="info">
-          <p class="name">{{ item.title }}</p>
-          <p class="price">{{ item.price | currency: item.currency : 'symbol' : '1.0-2' }}</p>
+          <p class="name text-heading-xs">{{ item.title }}</p>
+          <p class="price text-price">
+            {{ item.price | currency: item.currency : 'symbol' : '1.0-2' }}
+          </p>
         </div>
       </div>
 
