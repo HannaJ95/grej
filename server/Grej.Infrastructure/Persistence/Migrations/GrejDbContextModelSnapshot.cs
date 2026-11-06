@@ -35,7 +35,12 @@ namespace Grej.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
 
                     b.ToTable("Categories");
                 });
@@ -560,6 +565,16 @@ namespace Grej.Infrastructure.Persistence.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductMaterials");
+                });
+
+            modelBuilder.Entity("Grej.Domain.Catalog.Category", b =>
+                {
+                    b.HasOne("Grej.Domain.Catalog.Category", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Grej.Domain.Catalog.Product", b =>

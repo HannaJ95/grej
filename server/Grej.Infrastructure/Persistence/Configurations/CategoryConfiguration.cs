@@ -11,5 +11,13 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         // Short enough for a menu in the shop. The API checks the same limit.
         builder.Property(c => c.Name).HasMaxLength(100);
+
+        // A subcategory points to its main category in the same table. Restrict: the database
+        // refuses to delete a category that has subcategories (constraints.md), the same way as
+        // for products in ProductConfiguration.
+        builder.HasOne(c => c.Parent)
+            .WithMany()
+            .HasForeignKey(c => c.ParentId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
