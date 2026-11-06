@@ -30,9 +30,12 @@
             <li class="row">
               <span class="name text-label-s">{{ c.name }}</span>
               <span class="meta text-body-s">
-                {{ c.subcategoryCount }}
-                {{ c.subcategoryCount === 1 ? 'underkategori' : 'underkategorier' }} ·
-                {{ c.productCount }} {{ c.productCount === 1 ? 'produkt' : 'produkter' }}
+                <!-- Opens the main category's own page, where its subcategories are added. -->
+                <a [routerLink]="['/admin/underkategorier', c.id]"
+                  >{{ c.subcategoryCount }}
+                  {{ c.subcategoryCount === 1 ? 'underkategori' : 'underkategorier' }}</a
+                >
+                · {{ c.productCount }} {{ c.productCount === 1 ? 'produkt' : 'produkter' }}
               </span>
               <span class="actions">
                 <!-- The name in aria-label tells the many "Redigera" buttons apart. -->

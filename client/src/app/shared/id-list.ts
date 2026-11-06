@@ -7,3 +7,10 @@ export function toIdList(value: string | string[] | undefined): number[] {
   // A Set keeps each id once.
   return [...new Set(ids)];
 }
+
+// Turns one id in the URL into a number: "3" becomes 3. A missing or invalid id becomes
+// undefined. Used for :id and ?redigera= on the category pages.
+export function toId(value: string | undefined): number | undefined {
+  const id = Number(value);
+  return Number.isInteger(id) && id >= 1 ? id : undefined;
+}

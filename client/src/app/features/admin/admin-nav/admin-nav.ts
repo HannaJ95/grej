@@ -27,10 +27,15 @@ export class AdminNav {
   // The categories the category pages have fetched. The menu never fetches them itself, so the
   // other admin pages send no extra request; until a category page is opened, no numbers show.
   private readonly categories = inject(AdminCategoryService).all;
-  protected readonly mainCategoryCount = computed(() =>
-    this.categories.hasValue()
-      ? this.categories.value().items.filter((c) => c.parentId === null).length
-      : undefined,
+  private readonly categoryItems = computed(() =>
+    this.categories.hasValue() ? this.categories.value().items : undefined,
+  );
+  // The main categories, each with its number of subcategories, for the third level.
+  protected readonly mainCategories = computed(() =>
+    this.categoryItems()?.filter((c) => c.parentId === null),
+  );
+  protected readonly subcategoryCount = computed(
+    () => this.categoryItems()?.filter((c) => c.parentId !== null).length,
   );
 
   protected readonly initial = computed(() => this.email()?.charAt(0).toUpperCase() ?? '');
@@ -43,13 +48,17 @@ export class AdminNav {
 
   // isActive gives a signal that is true while the URL starts with the path, e.g. also on
   // /admin/kategorier/3.
-  private readonly onCategoryPage = isActive('/admin/kategorier', this.router);
+  private readonly onMainCategoryPage = isActive('/admin/kategorier', this.router);
+  // Also /admin/underkategorier/3, which then shows the main categories under Underkategorier.
+  protected readonly onSubcategoryPage = isActive('/admin/underkategorier', this.router);
   private readonly onMaterialPage = isActive('/admin/material', this.router);
   private readonly onColorPage = isActive('/admin/farger', this.router);
 
   // A group is open while one of its pages is shown. The admin can fold it, until the next page
   // sets it again: linkedSignal follows its source but can also be set.
-  protected readonly categoriesOpen = linkedSignal(() => this.onCategoryPage());
+  protected readonly categoriesOpen = linkedSignal(
+    () => this.onMainCategoryPage() || this.onSubcategoryPage(),
+  );
   protected readonly propertiesOpen = linkedSignal(
     () => this.onMaterialPage() || this.onColorPage(),
   );

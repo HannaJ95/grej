@@ -97,6 +97,22 @@ export const routes: Routes = [
           ),
       },
       {
+        // All subcategories, under their main categories.
+        path: 'underkategorier',
+        loadComponent: () =>
+          import('./features/admin/admin-subcategories/admin-subcategories').then(
+            (m) => m.AdminSubcategories,
+          ),
+      },
+      {
+        // Only the subcategories of main category :id. The same page, which reads :id.
+        path: 'underkategorier/:id',
+        loadComponent: () =>
+          import('./features/admin/admin-subcategories/admin-subcategories').then(
+            (m) => m.AdminSubcategories,
+          ),
+      },
+      {
         path: 'material',
         loadComponent: () =>
           import('./features/admin/admin-property-list/admin-property-list').then(

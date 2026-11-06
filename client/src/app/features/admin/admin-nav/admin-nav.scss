@@ -123,6 +123,11 @@ nav {
   }
 }
 
+// The third level is quieter: normal weight and grey (Figma: Admin sub nav item, Level=3).
+.level-3:not(.active) {
+  color: var(--color-text-secondary);
+}
+
 // A quiet number to the right (Figma: Count on Admin sub nav item).
 .count {
   margin-left: auto;

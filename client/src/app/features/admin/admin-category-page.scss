@@ -1,4 +1,5 @@
-// The values come from Figma's frame Admin – Kategorier – Huvudkategorier (1440).
+// The layout of the category pages, AdminMainCategories and AdminSubcategories. The values come
+// from Figma's frames Admin – Kategorier – Huvudkategorier and Underkategorier (1440).
 
 // The page is a container, so the columns follow the room the page has (beside the menu or
 // not), not the width of the screen. @container below asks about this box.
@@ -69,6 +70,27 @@ h2 {
   position: absolute;
 }
 
+// A main category's name above its subcategories (Figma: Group Keramik). Its link opens the
+// page with only that main category.
+.group-title {
+  margin: 0;
+  padding: var(--space-24) 0 var(--space-8);
+  color: var(--color-text-secondary);
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.empty {
+  padding-top: var(--space-14);
+}
+
 .rows {
   margin: 0;
   padding: 0;
@@ -107,6 +129,10 @@ h2 {
 .meta {
   grid-area: meta;
   color: var(--color-text-secondary);
+
+  a {
+    color: inherit;
+  }
 }
 
 .actions {

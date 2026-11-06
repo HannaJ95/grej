@@ -1,8 +1,9 @@
 import { Component, computed, inject, input, signal, viewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AdminCategoryService } from '../../../core/admin-category.service';
 import { Category } from '../../../core/category';
 import { Button } from '../../../shared/button/button';
+import { toId } from '../../../shared/id-list';
 import { AdminCategoryCard } from '../admin-category-card/admin-category-card';
 import { AdminPageHeader } from '../admin-page-header/admin-page-header';
 
@@ -10,19 +11,17 @@ import { AdminPageHeader } from '../admin-page-header/admin-page-header';
 // the list to the left and the card that creates or changes one to the right.
 @Component({
   selector: 'app-admin-main-categories',
-  imports: [Button, AdminCategoryCard, AdminPageHeader],
+  imports: [RouterLink, Button, AdminCategoryCard, AdminPageHeader],
   templateUrl: './admin-main-categories.html',
-  styleUrl: './admin-main-categories.scss',
+  // The same layout as AdminSubcategories.
+  styleUrl: '../admin-category-page.scss',
 })
 export class AdminMainCategories {
   private readonly categories = inject(AdminCategoryService);
   private readonly router = inject(Router);
 
   // ?redigera=3 in the URL: the category shown in the card. Undefined shows an empty card.
-  readonly editId = input(undefined, {
-    alias: 'redigera',
-    transform: (value: string | undefined) => (value === undefined ? undefined : Number(value)),
-  });
+  readonly editId = input(undefined, { alias: 'redigera', transform: toId });
 
   // The same list as the numbers in the menu (AdminCategoryService.all).
   protected readonly result = this.categories.loadAll();

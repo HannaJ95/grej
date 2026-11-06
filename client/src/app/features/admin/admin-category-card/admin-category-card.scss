@@ -1,4 +1,5 @@
-// The values come from Figma's card NY HUVUDKATEGORI and its Text field.
+// The values come from Figma's cards NY HUVUDKATEGORI and NY UNDERKATEGORI, with their Text
+// field and Select.
 
 :host {
   display: flex;
@@ -23,11 +24,35 @@ p {
   gap: var(--space-8);
 }
 
-// 50 px high like Figma's Text field. min-height, so zoomed text can make it taller.
-input {
+// 50 px high like Figma's Text field and Select. min-height, so zoomed text can make it taller.
+input,
+select {
   width: 100%;
   min-height: 3.125rem;
   padding: var(--space-8) var(--space-16);
+}
+
+// Room on the right for the chevron, which lies on top of the select.
+.select {
+  position: relative;
+  display: block;
+
+  select {
+    padding-right: var(--space-48);
+    appearance: none;
+    cursor: pointer;
+  }
+
+  // pointer-events: none lets a click on the chevron reach the select under it.
+  app-icon {
+    --icon-size: 1rem;
+
+    position: absolute;
+    top: 50%;
+    right: var(--space-16);
+    translate: 0 -50%;
+    pointer-events: none;
+  }
 }
 
 input::placeholder {
