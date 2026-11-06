@@ -1,7 +1,8 @@
 // The styles are written for a phone first; the media queries change them on a tablet
 // (48rem = 768 px) and a computer (64rem = 1024 px). The values come from Figma's three Shop
 // Page frames, and the text styles are classes in the template. The category tabs are their own
-// component (category-tabs). Figma's filters and sorting are not built yet.
+// component (category-tabs), and so is the filter column (product-filters). Figma's sorting and
+// its filter button for phones and tablets are not built yet.
 
 :host {
   display: block;
@@ -82,8 +83,10 @@
   }
 }
 
-// 28 / 32 / 48 px above the products and 64 / 80 / 120 px below the pagination.
-.results {
+// 28 / 32 / 48 px above the products and 64 / 80 / 120 px below the pagination. On a computer
+// the 288 px filter column and the products side by side, 56 px apart. minmax(0, 1fr) lets the
+// products' column shrink below the width of its content, so a long word cannot widen it.
+.shop-body {
   padding-block: var(--space-28) var(--space-64);
 
   @media (width >= 48rem) {
@@ -91,14 +94,33 @@
   }
 
   @media (width >= 64rem) {
+    display: grid;
+    grid-template-columns: 18rem minmax(0, 1fr);
+    align-items: start;
+    column-gap: var(--space-56);
     padding-block: var(--space-48) var(--space-120);
   }
 }
 
-// Two products per row on a phone, three on a tablet and four on a computer, with the grid's
-// gutter between the columns and 28 / 40 / 48 px between the rows. Figma's computer has the
-// filters in a left column and three products per row; until the filters are built the
-// products use the whole width.
+// Only on a computer for now; phones and tablets choose with the category tabs.
+.filters {
+  display: none;
+
+  @media (width >= 64rem) {
+    display: block;
+  }
+}
+
+// Always the second column, also when the filter column is missing because the categories
+// could not be fetched.
+.results {
+  @media (width >= 64rem) {
+    grid-column: 2;
+  }
+}
+
+// Two products per row on a phone and three on a tablet and a computer (next to the filters),
+// with the grid's gutter between the columns and 28 / 40 / 48 px between the rows.
 .product-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -113,7 +135,6 @@
   }
 
   @media (width >= 64rem) {
-    grid-template-columns: repeat(4, 1fr);
     row-gap: var(--space-48);
   }
 }

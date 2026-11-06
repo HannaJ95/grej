@@ -7,12 +7,13 @@ import { toPageNumber } from '../../../shared/page-number';
 import { Pagination } from '../../../shared/pagination/pagination';
 import { CategoryTabs } from '../category-tabs/category-tabs';
 import { ProductCard } from '../product-card/product-card';
+import { ProductFilters } from '../product-filters/product-filters';
 
 // The list of products in the shop, e.g. /produkter, /produkter?sida=2 or
 // /produkter?kategori=1&kategori=3 (Figma: Shop page).
 @Component({
   selector: 'app-product-list',
-  imports: [Breadcrumb, CategoryTabs, Pagination, ProductCard],
+  imports: [Breadcrumb, CategoryTabs, Pagination, ProductCard, ProductFilters],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss',
 })
@@ -26,7 +27,7 @@ export class ProductList {
   // The chosen categories, ?kategori=1&kategori=3 in the URL. Empty = all categories.
   readonly categoryIds = input([], { alias: 'kategori', transform: toIdList });
 
-  // Fetched here once and given to the tabs.
+  // Fetched here once and given to both the tabs and the filter column.
   protected readonly categories = inject(CategoryService).getCategories();
 
   protected readonly result = this.products.getProducts(this.page, this.categoryIds);
