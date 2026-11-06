@@ -15,6 +15,11 @@
   </div>
 </div>
 
+<!-- Only when the API has answered with categories; with none there is nothing to choose. -->
+@if (categories.hasValue() && categories.value().length > 0) {
+  <app-category-tabs [categories]="categories.value()" [selected]="categoryIds()" />
+}
+
 <!-- The design's toolbar: lines across the whole screen, the count within the page width.
      The filters and the sorting will go here too when they are built. -->
 <div class="toolbar">

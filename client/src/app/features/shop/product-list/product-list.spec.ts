@@ -22,9 +22,16 @@ describe('ProductList', () => {
 
   afterEach(() => httpTesting.verify());
 
+  // Answers the page's request for the categories.
+  function flushCategories(categories: object[] = []): void {
+    httpTesting.expectOne((req) => req.url.endsWith('/api/categories')).flush(categories);
+  }
+
   it('fetches the page in ?sida= and links to the pages before and after', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/produkter?sida=2');
+    // No categories, so no tabs: the links below are only the page's own.
+    flushCategories();
 
     const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
     expect(request.request.params.get('page')).toBe('2');
@@ -60,6 +67,7 @@ describe('ProductList', () => {
   it('shows the image of each product, with its alt text', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/produkter');
+    flushCategories();
 
     httpTesting.expectOne((req) => req.url.endsWith('/api/products')).flush({
       items: [
@@ -84,5 +92,25 @@ describe('ProductList', () => {
     const image = harness.routeNativeElement!.querySelector('img')!;
     expect(image.getAttribute('src')).toBe('https://storage.test/vas.png');
     expect(image.getAttribute('alt')).toBe('En blå vas');
+  });
+
+  it('fetches the categories in ?kategori= and shows them as tabs', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/produkter?kategori=3&kategori=1&sida=2');
+    flushCategories([
+      { id: 1, name: 'Keramik', productCount: 4 },
+      { id: 3, name: 'Textil', productCount: 2 },
+    ]);
+
+    const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
+    expect(request.request.params.getAll('categoryId')).toEqual(['3', '1']);
+    expect(request.request.params.get('page')).toBe('2');
+    request.flush({ items: [], page: 2, pageSize: 12, totalCount: 0, totalPages: 0 });
+    await harness.fixture.whenStable();
+
+    const tabs = harness.routeNativeElement!.querySelector('app-category-tabs')!;
+    expect(tabs.textContent).toContain('Keramik');
+    // Two categories are chosen, so no single tab is.
+    expect(tabs.querySelector('[aria-current]')).toBeNull();
   });
 });

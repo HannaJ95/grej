@@ -1,7 +1,7 @@
 // The styles are written for a phone first; the media queries change them on a tablet
 // (48rem = 768 px) and a computer (64rem = 1024 px). The values come from Figma's three Shop
-// Page frames, and the text styles are classes in the template. The category tabs, filters
-// and sorting in Figma are not built yet.
+// Page frames, and the text styles are classes in the template. The category tabs are their own
+// component (category-tabs). Figma's filters and sorting are not built yet.
 
 :host {
   display: block;

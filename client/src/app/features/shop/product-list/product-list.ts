@@ -1,14 +1,18 @@
 import { Component, computed, inject, input } from '@angular/core';
+import { CategoryService } from '../../../core/category.service';
 import { ProductService } from '../../../core/product.service';
 import { Breadcrumb } from '../../../shared/breadcrumb/breadcrumb';
+import { toIdList } from '../../../shared/id-list';
 import { toPageNumber } from '../../../shared/page-number';
 import { Pagination } from '../../../shared/pagination/pagination';
+import { CategoryTabs } from '../category-tabs/category-tabs';
 import { ProductCard } from '../product-card/product-card';
 
-// The list of products in the shop, e.g. /produkter or /produkter?sida=2 (Figma: Shop page).
+// The list of products in the shop, e.g. /produkter, /produkter?sida=2 or
+// /produkter?kategori=1&kategori=3 (Figma: Shop page).
 @Component({
   selector: 'app-product-list',
-  imports: [Breadcrumb, Pagination, ProductCard],
+  imports: [Breadcrumb, CategoryTabs, Pagination, ProductCard],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss',
 })
@@ -19,7 +23,13 @@ export class ProductList {
   // alias: the URL uses the Swedish word, the code the English one.
   readonly page = input(1, { alias: 'sida', transform: toPageNumber });
 
-  protected readonly result = this.products.getProducts(this.page);
+  // The chosen categories, ?kategori=1&kategori=3 in the URL. Empty = all categories.
+  readonly categoryIds = input([], { alias: 'kategori', transform: toIdList });
+
+  // Fetched here once and given to the tabs.
+  protected readonly categories = inject(CategoryService).getCategories();
+
+  protected readonly result = this.products.getProducts(this.page, this.categoryIds);
 
   // Which products this page shows, for "Visar 13–24 av 40 grejer". Null until the API has
   // answered, and when there are no products.
