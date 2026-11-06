@@ -1,0 +1,39 @@
+<h2 class="text-display-2xs" id="category-card-title">
+  {{ editing() ? 'Redigera huvudkategori' : 'Ny huvudkategori' }}
+</h2>
+
+<!-- formRoot turns off the browser's own validation and runs save() in admin-category-card.ts. -->
+<form class="fields" aria-labelledby="category-card-title" [formRoot]="categoryForm">
+  <p class="field">
+    <label class="text-label-xs" for="category-name">Namn</label>
+    <!-- #nameInput lets focusName() find the field. -->
+    <input
+      #nameInput
+      id="category-name"
+      class="text-body-m-compact"
+      type="text"
+      placeholder="T.ex. Belysning"
+      [formField]="categoryForm.name"
+      [attr.aria-invalid]="nameError() ? true : null"
+      [attr.aria-describedby]="nameError() ? 'category-name-error' : null"
+    />
+    @if (nameError(); as message) {
+      <span class="error text-body-xs" id="category-name-error">{{ message }}</span>
+    }
+  </p>
+
+  <button appButton size="large" type="submit" [disabled]="categoryForm().submitting()">
+    {{ editing() ? 'Spara ändringar' : 'Lägg till huvudkategori' }}
+  </button>
+  @if (editing()) {
+    <button appButton variant="secondary" size="large" type="button" (click)="cancelled.emit()">
+      Avbryt
+    </button>
+  }
+
+  @if (saveError(); as message) {
+    <p role="alert">{{ message }}</p>
+  }
+  <!-- Always in the page, so screen readers notice when the text changes. -->
+  <p class="saved text-body-s" role="status">{{ savedMessage() }}</p>
+</form>

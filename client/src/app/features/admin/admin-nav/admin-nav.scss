@@ -123,6 +123,16 @@ nav {
   }
 }
 
+// A quiet number to the right (Figma: Count on Admin sub nav item).
+.count {
+  margin-left: auto;
+  color: var(--color-text-secondary);
+
+  .active & {
+    color: var(--color-text-on-inverse-secondary);
+  }
+}
+
 .account {
   display: flex;
   flex-direction: column;

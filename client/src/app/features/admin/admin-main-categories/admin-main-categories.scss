@@ -1,0 +1,118 @@
+// The values come from Figma's frame Admin – Kategorier – Huvudkategorier (1440).
+
+p,
+h2 {
+  margin: 0;
+}
+
+.intro {
+  margin-bottom: var(--space-24);
+  color: var(--color-text-secondary);
+}
+
+// The list and the card side by side from 1024 px, the card 400 px wide. Below that the card
+// comes after the list.
+.columns {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+
+  @media (width >= 64rem) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  min-width: 0;
+  padding: var(--space-24);
+  border: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-bg-surface);
+
+  @media (width >= 64rem) {
+    flex: 1;
+  }
+}
+
+.form-card {
+  @media (width >= 64rem) {
+    flex: 0 0 25rem;
+  }
+}
+
+// In Figma the rows come right under the heading; the first row's padding is the space.
+.list {
+  gap: 0;
+}
+
+.list [role='alert'],
+.removed {
+  padding-top: var(--space-8);
+}
+
+// The empty status paragraph takes no room, like the card's. Screen readers still notice it.
+.removed:empty {
+  position: absolute;
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// One row (Figma: Row Keramik), with a thin line under every row but the last. On a phone the
+// name and the buttons share the first line and the numbers get the whole second line; from
+// 768 px everything is on one line, like Figma.
+.row {
+  display: grid;
+  grid-template-areas:
+    'name actions'
+    'meta meta';
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2) var(--space-16);
+  padding: var(--space-14) 0;
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @media (width >= 48rem) {
+    grid-template-areas: 'name meta actions';
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+}
+
+.name {
+  grid-area: name;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  grid-area: meta;
+  color: var(--color-text-secondary);
+}
+
+.actions {
+  grid-area: actions;
+  display: flex;
+  gap: var(--space-16);
+}
+
+// Buttons that look like links (Link/S), since they act on this page.
+.link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.danger {
+  color: var(--color-feedback-error);
+}

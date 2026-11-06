@@ -89,25 +89,11 @@ export const routes: Routes = [
           ),
       },
       {
+        // ?redigera=3 shows category 3 in the card next to the list.
         path: 'kategorier',
         loadComponent: () =>
-          import('./features/admin/admin-category-list/admin-category-list').then(
-            (m) => m.AdminCategoryList,
-          ),
-      },
-      {
-        // Before 'kategorier/:id', like 'produkter/ny'.
-        path: 'kategorier/ny',
-        loadComponent: () =>
-          import('./features/admin/admin-category-form/admin-category-form').then(
-            (m) => m.AdminCategoryForm,
-          ),
-      },
-      {
-        path: 'kategorier/:id',
-        loadComponent: () =>
-          import('./features/admin/admin-category-form/admin-category-form').then(
-            (m) => m.AdminCategoryForm,
+          import('./features/admin/admin-main-categories/admin-main-categories').then(
+            (m) => m.AdminMainCategories,
           ),
       },
       {

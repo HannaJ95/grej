@@ -1,5 +1,6 @@
 import { Component, computed, inject, input, linkedSignal, output } from '@angular/core';
 import { isActive, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AdminCategoryService } from '../../../core/admin-category.service';
 import { AuthService } from '../../../core/auth.service';
 import { Badge } from '../../../shared/badge/badge';
 import { Icon } from '../../../shared/icons/icon';
@@ -22,6 +23,15 @@ export class AdminNav {
   // True in the drawer, which has a close button.
   readonly inDrawer = input(false);
   readonly closeDrawer = output();
+
+  // The categories the category pages have fetched. The menu never fetches them itself, so the
+  // other admin pages send no extra request; until a category page is opened, no numbers show.
+  private readonly categories = inject(AdminCategoryService).all;
+  protected readonly mainCategoryCount = computed(() =>
+    this.categories.hasValue()
+      ? this.categories.value().items.filter((c) => c.parentId === null).length
+      : undefined,
+  );
 
   protected readonly initial = computed(() => this.email()?.charAt(0).toUpperCase() ?? '');
   // The email in two parts, so the template can let it break after the @.

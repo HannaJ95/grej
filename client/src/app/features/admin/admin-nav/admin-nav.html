@@ -63,12 +63,18 @@
           <ul class="tree">
             <li>
               <a
-                class="sub-item text-label-s"
+                class="sub-item"
                 routerLink="/admin/kategorier"
                 routerLinkActive="active"
                 ariaCurrentWhenActive="page"
-                >Huvudkategorier</a
               >
+                <!-- The space keeps the name and the number apart for screen readers, like in
+                     the shop's category tabs. -->
+                <span class="text-label-s">Huvudkategorier </span>
+                @if (mainCategoryCount() !== undefined) {
+                  <span class="count text-mono-s">{{ mainCategoryCount() }}</span>
+                }
+              </a>
             </li>
           </ul>
         }

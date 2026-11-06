@@ -1,0 +1,45 @@
+// The values come from Figma's card NY HUVUDKATEGORI and its Text field.
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+h2,
+p {
+  margin: 0;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+// 50 px high like Figma's Text field. min-height, so zoomed text can make it taller.
+input {
+  width: 100%;
+  min-height: 3.125rem;
+  padding: var(--space-8) var(--space-16);
+}
+
+input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.error {
+  color: var(--color-feedback-error);
+}
+
+// The empty status paragraph takes no room, not even the gap, until there is a message. It is
+// not hidden with display: none, since screen readers only notice changes in what they can see.
+.saved:empty {
+  position: absolute;
+}

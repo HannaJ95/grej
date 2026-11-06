@@ -56,12 +56,14 @@ describe('AdminLayout', () => {
     TestBed.inject(HttpTestingController)
       .expectOne((req) => req.url.endsWith('/api/admin/categories'))
       .flush({ items: [], page: 1, pageSize: 100, totalCount: 0, totalPages: 0 });
+    await harness.fixture.whenStable();
     const kategorier = groupButton('Kategorier');
 
     expect(kategorier.getAttribute('aria-expanded')).toBe('true');
     expect(groupButton('Egenskaper').getAttribute('aria-expanded')).toBe('false');
+    // The name and the number of main categories, from the page's answer (none here).
     expect(sidebar().querySelector('[aria-current="page"]')?.textContent?.trim()).toBe(
-      'Huvudkategorier',
+      'Huvudkategorier 0',
     );
 
     kategorier.click();
