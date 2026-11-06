@@ -322,7 +322,8 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
             throw new NotImplementedException();
 
         // The webhook never lists products.
-        public Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
+        public Task<PagedResult<Product>> GetActivePageAsync(
+            int page, int pageSize, IReadOnlyCollection<int> categoryIds, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
         // Only GET /api/categories uses this.

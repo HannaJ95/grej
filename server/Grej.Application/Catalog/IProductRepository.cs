@@ -12,8 +12,9 @@ public interface IProductRepository
     // Hidden products are included. Ids that do not exist are skipped, and the order is not fixed.
     Task<IReadOnlyList<Product>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken);
 
-    // Only active products, newest first.
-    Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken);
+    // Only active products, newest first. Only the given categories, or all if the list is empty.
+    Task<PagedResult<Product>> GetActivePageAsync(
+        int page, int pageSize, IReadOnlyCollection<int> categoryIds, CancellationToken cancellationToken);
 
     // All products, hidden ones too, newest first. For the CMS.
     Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken);

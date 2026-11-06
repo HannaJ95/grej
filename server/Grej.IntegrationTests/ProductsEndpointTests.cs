@@ -31,9 +31,23 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
         Assert.True(page.Items[1].IsSoldOut);
     }
 
+    [Fact]
+    public async Task GetPage_SeveralCategoryIds_SendsThemAllToTheRepository()
+    {
+        var client = CreateClient(
+            new Product { Id = 3, Title = "Halsband", Price = 300m, Stock = 1, IsActive = true, CategoryId = 3 },
+            new Product { Id = 2, Title = "Kudde", Price = 300m, Stock = 1, IsActive = true, CategoryId = 2 },
+            new Product { Id = 1, Title = "Skål", Price = 300m, Stock = 1, IsActive = true, CategoryId = 1 });
+
+        var page = await client.GetFromJsonAsync<PagedResult<ProductDto>>("/api/products?categoryId=1&categoryId=3");
+
+        Assert.Equal(["Halsband", "Skål"], page!.Items.Select(p => p.Title));
+    }
+
     [Theory]
     [InlineData("?page=0")]
     [InlineData("?pageSize=49")]
+    [InlineData("?categoryId=abc")]
     public async Task GetPage_InvalidPaging_ReturnsBadRequest(string queryString)
     {
         var client = CreateClient();
@@ -96,10 +110,14 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
         public Task<IReadOnlyList<Product>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
-        // Returns the products as they are. Filtering and paging are tested
-        // against EF Core in ProductRepositoryTests.
-        public Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
-            Task.FromResult(new PagedResult<Product>(products, page, pageSize, products.Length));
+        // Only filters on category, so the tests can see which ids reached the repository.
+        // The rest of the filtering and the paging are tested against EF Core in ProductRepositoryTests.
+        public Task<PagedResult<Product>> GetActivePageAsync(
+            int page, int pageSize, IReadOnlyCollection<int> categoryIds, CancellationToken cancellationToken)
+        {
+            var items = products.Where(p => categoryIds.Count == 0 || categoryIds.Contains(p.CategoryId)).ToList();
+            return Task.FromResult(new PagedResult<Product>(items, page, pageSize, items.Count));
+        }
 
         // Only GET /api/categories uses this.
         public Task<IReadOnlyDictionary<int, int>> CountActiveByCategoryAsync(CancellationToken cancellationToken) =>
