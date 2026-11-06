@@ -85,6 +85,25 @@ public class AdminCategoriesEndpointTests : IClassFixture<WebApplicationFactory<
     }
 
     [Fact]
+    public async Task GetPage_CountsSubcategoriesAndProducts()
+    {
+        // A main category counts its own products and its subcategories' products, hidden too.
+        var keramik = await AddCategoryAsync("Keramik");
+        var skalar = await AddCategoryAsync("Skålar", keramik);
+        await AddCategoryAsync("Vaser", keramik);
+        await AddProductAsync(new Product { Title = "Kanna", Price = 450m, CategoryId = keramik, IsActive = false });
+        await AddProductAsync(new Product { Title = "Skål", Price = 250m, CategoryId = skalar });
+        await AddProductAsync(new Product { Title = "Fat", Price = 350m, CategoryId = skalar });
+        var client = await CreateAdminClientAsync();
+
+        var page = await client.GetFromJsonAsync<PagedResult<CategoryDto>>("/api/admin/categories");
+
+        Assert.Equal(
+            [("Keramik", 3, 2), ("Skålar", 2, 0), ("Vaser", 0, 0)],
+            page!.Items.Select(c => (c.Name, c.ProductCount, c.SubcategoryCount)));
+    }
+
+    [Fact]
     public async Task Create_ValidName_SavesItAndReturnsCreated()
     {
         var client = await CreateAdminClientAsync();

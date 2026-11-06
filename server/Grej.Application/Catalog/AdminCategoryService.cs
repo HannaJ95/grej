@@ -10,9 +10,10 @@ public class AdminCategoryService(ICategoryRepository categories, IProductReposi
     public async Task<PagedResult<CategoryDto>> GetCategoriesAsync(CategoryListQuery query, CancellationToken cancellationToken)
     {
         var page = await categories.GetPageAsync(query.Page, query.PageSize, cancellationToken);
+        var counts = await CountAsync(cancellationToken);
 
         return new PagedResult<CategoryDto>(
-            page.Items.Select(ToDto).ToList(),
+            page.Items.Select(category => ToDto(category, counts)).ToList(),
             page.Page,
             page.PageSize,
             page.TotalCount);
@@ -22,7 +23,7 @@ public class AdminCategoryService(ICategoryRepository categories, IProductReposi
     public async Task<CategoryDto?> GetCategoryAsync(int id, CancellationToken cancellationToken)
     {
         var category = await categories.GetByIdAsync(id, cancellationToken);
-        return category is null ? null : ToDto(category);
+        return category is null ? null : ToDto(category, await CountAsync(cancellationToken));
     }
 
     // Null if the request's ParentId is not a main category; nothing is saved then.
@@ -40,7 +41,7 @@ public class AdminCategoryService(ICategoryRepository categories, IProductReposi
         await categories.SaveChangesAsync(cancellationToken);
 
         // The database has given the category its id now.
-        return ToDto(category);
+        return ToDto(category, await CountAsync(cancellationToken));
     }
 
     public async Task<UpdateCategoryResult> UpdateAsync(int id, CategoryRequest request, CancellationToken cancellationToken)
@@ -114,6 +115,38 @@ public class AdminCategoryService(ICategoryRepository categories, IProductReposi
         return category is not null && !category.IsSubcategory ? category : null;
     }
 
-    private static CategoryDto ToDto(Category category) =>
-        new(category.Id, category.Name, category.ParentId, category.Parent?.Name);
+    // The numbers the CMS shows next to each category: which subcategories each main category
+    // has, and how many products each category has, hidden ones too. Two SQL queries, whatever
+    // the number of categories.
+    private async Task<CategoryCounts> CountAsync(CancellationToken cancellationToken)
+    {
+        var all = await categories.GetAllAsync(cancellationToken);
+        var productCounts = await products.CountByCategoryAsync(cancellationToken);
+
+        // A lookup is a dictionary with a list per key, like groupBy in JavaScript:
+        // main category id → its subcategories' ids. A missing key gives an empty list.
+        var subcategoryIds = all
+            .Where(c => c.ParentId is not null)
+            .ToLookup(c => c.ParentId!.Value, c => c.Id);
+
+        return new CategoryCounts(subcategoryIds, productCounts);
+    }
+
+    private static CategoryDto ToDto(Category category, CategoryCounts counts)
+    {
+        var subcategoryIds = counts.SubcategoryIds[category.Id].ToList();
+        // A category without products is missing from the dictionary, so it counts as 0.
+        var productCount = counts.Products.GetValueOrDefault(category.Id)
+            + subcategoryIds.Sum(id => counts.Products.GetValueOrDefault(id));
+
+        return new CategoryDto(
+            category.Id,
+            category.Name,
+            category.ParentId,
+            category.Parent?.Name,
+            productCount,
+            subcategoryIds.Count);
+    }
+
+    private sealed record CategoryCounts(ILookup<int, int> SubcategoryIds, IReadOnlyDictionary<int, int> Products);
 }
