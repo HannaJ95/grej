@@ -15,8 +15,13 @@
   </div>
 </div>
 
+<!-- Only when the API has answered with categories; with none there is nothing to choose. -->
+@if (categories.hasValue() && categories.value().length > 0) {
+  <app-category-tabs [categories]="categories.value()" [selected]="categoryIds()" />
+}
+
 <!-- The design's toolbar: lines across the whole screen, the count within the page width.
-     The filters and the sorting will go here too when they are built. -->
+     The sorting and the filter button for phones and tablets will go here too. -->
 <div class="toolbar">
   <div class="page-width">
     @if (shown(); as s) {
@@ -25,27 +30,44 @@
   </div>
 </div>
 
-<div class="page-width results">
-  @if (result.isLoading()) {
-    <!-- Render's free tier can take up to a minute to wake up. -->
-    <p role="status">Laddar produkterna…</p>
-  } @else if (result.error()) {
-    <p role="alert">Produkterna kunde inte visas.</p>
-  } @else if (result.hasValue()) {
-    @let r = result.value();
-    @if (r.items.length === 0) {
-      <p>Det finns inga produkter att visa.</p>
-    } @else {
-      <ul class="product-grid">
-        @for (p of r.items; track p.id) {
-          <li>
-            <app-product-card [product]="p" />
-          </li>
-        }
-      </ul>
-    }
-
-    <!-- Only shown when there is more than one page. -->
-    <app-pagination path="/produkter" [page]="r.page" [totalPages]="r.totalPages" />
+<!-- The filter column and the products side by side on a computer (Figma: Shop body). -->
+<div class="page-width shop-body">
+  @if (categories.hasValue() && categories.value().length > 0) {
+    <app-product-filters
+      class="filters"
+      [categories]="categories.value()"
+      [selected]="categoryIds()"
+    />
   }
+
+  <div class="results">
+    @if (result.isLoading()) {
+      <!-- Render's free tier can take up to a minute to wake up. -->
+      <p role="status">Laddar produkterna…</p>
+    } @else if (result.error()) {
+      <p role="alert">Produkterna kunde inte visas.</p>
+    } @else if (result.hasValue()) {
+      @let r = result.value();
+      @if (r.items.length === 0 && categoryIds().length > 0) {
+        <!-- E.g. an old link to a category whose products are now hidden. -->
+        <p>
+          Inga grejer matchar filtret.
+          <a class="text-link-s" routerLink="/produkter">Visa alla grejer</a>
+        </p>
+      } @else if (r.items.length === 0) {
+        <p>Det finns inga produkter att visa.</p>
+      } @else {
+        <ul class="product-grid">
+          @for (p of r.items; track p.id) {
+            <li>
+              <app-product-card [product]="p" />
+            </li>
+          }
+        </ul>
+      }
+
+      <!-- Only shown when there is more than one page. -->
+      <app-pagination path="/produkter" [page]="r.page" [totalPages]="r.totalPages" />
+    }
+  </div>
 </div>

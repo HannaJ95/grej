@@ -30,7 +30,7 @@ public class ProductService(IProductRepository products)
     // One page of the products in the shop. Hidden products are never included.
     public async Task<PagedResult<ProductDto>> GetProductsAsync(ProductListQuery query, CancellationToken cancellationToken)
     {
-        var page = await products.GetActivePageAsync(query.Page, query.PageSize, cancellationToken);
+        var page = await products.GetActivePageAsync(query.Page, query.PageSize, query.CategoryId, cancellationToken);
 
         return new PagedResult<ProductDto>(
             page.Items.Select(ToDto).ToList(),

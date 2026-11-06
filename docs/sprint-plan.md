@@ -83,7 +83,7 @@ Should (Wed–Fri):
 
 - [x] Own visual design of the main customer pages, or plan B (about one day; moved from sprint 2, decided by Wed 4 Nov)
 - [x] Style the customer pages with the shared variables (own design or plan B)
-- [ ] Filter products by category
+- [x] Filter products by category
 - [ ] Subcategories (one level) in the CMS and as filters
 
 ## Sprint 4 – Should (Mon 9 – Fri 13 Nov)

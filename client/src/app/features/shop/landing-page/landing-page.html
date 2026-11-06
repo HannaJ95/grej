@@ -64,15 +64,22 @@
   </div>
 </section>
 
-<nav class="categories" aria-label="Kategorier">
-  <ul class="page-width category-list">
-    @for (category of categories; track category) {
-      <li>
-        <a class="category-link text-display-l" routerLink="/produkter">
-          {{ category }}
-          <app-icon class="category-arrow" name="arrow-right" />
-        </a>
-      </li>
-    }
-  </ul>
-</nav>
+<!-- Only when the API has answered with categories; the band is left out until then. -->
+@if (categories.hasValue() && categories.value().length > 0) {
+  <nav class="categories" aria-label="Kategorier">
+    <ul class="page-width category-list">
+      @for (category of categories.value(); track category.id) {
+        <li>
+          <a
+            class="category-link text-display-l"
+            routerLink="/produkter"
+            [queryParams]="{ kategori: category.id }"
+          >
+            {{ category.name }}
+            <app-icon class="category-arrow" name="arrow-right" />
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+}

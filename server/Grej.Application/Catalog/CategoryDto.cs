@@ -1,4 +1,4 @@
 namespace Grej.Application.Catalog;
 
-// A category as the API shows it. The shop's category filter (sprint 3) can use it too.
+// A category as the CMS's API shows it. The shop's filter uses ShopCategoryDto, with the count.
 public record CategoryDto(int Id, string Name);

@@ -1,5 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import { Service, Signal } from '@angular/core';
+import { Service, Signal, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { PagedResult } from './paged-result';
 import { ProductImage } from './product-image';
@@ -33,12 +33,14 @@ export class ProductService {
     return httpResource<Product>(() => `${environment.apiUrl}/api/products/${id()}`);
   }
 
-  // One page of products, e.g. GET /api/products?page=2. The API decides the
-  // page size. Fetched again whenever the page signal changes.
-  getProducts(page: Signal<number>) {
+  // One page of products, e.g. GET /api/products?page=2&categoryId=1&categoryId=3. The API
+  // decides the page size. No category ids = all categories, so the start page can leave them
+  // out. Fetched again whenever one of the signals changes.
+  getProducts(page: Signal<number>, categoryIds: Signal<number[]> = signal([])) {
     return httpResource<PagedResult<Product>>(() => ({
       url: `${environment.apiUrl}/api/products`,
-      params: { page: page() },
+      // An array becomes the same key once per id; an empty one adds nothing.
+      params: { page: page(), categoryId: categoryIds() },
     }));
   }
 }

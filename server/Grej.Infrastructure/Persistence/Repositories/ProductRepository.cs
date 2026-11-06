@@ -16,8 +16,20 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
         await db.Products.Where(p => ids.Contains(p.Id)).ToListAsync(cancellationToken);
 
     // Nothing is sent to the database yet; the query is only described here.
-    public Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
-        ToPageAsync(db.Products.Where(p => p.IsActive), page, pageSize, cancellationToken);
+    public Task<PagedResult<Product>> GetActivePageAsync(
+        int page, int pageSize, IReadOnlyCollection<int> categoryIds, CancellationToken cancellationToken)
+    {
+        var query = db.Products.Where(p => p.IsActive);
+
+        // A second Where adds AND to the SQL. Contains becomes "CategoryId" = ANY (@ids) in
+        // PostgreSQL, like GetByIdsAsync.
+        if (categoryIds.Count > 0)
+        {
+            query = query.Where(p => categoryIds.Contains(p.CategoryId));
+        }
+
+        return ToPageAsync(query, page, pageSize, cancellationToken);
+    }
 
     public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
         ToPageAsync(db.Products, page, pageSize, cancellationToken);
@@ -25,6 +37,14 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
     // EXISTS in SQL: PostgreSQL stops at the first product it finds.
     public Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken cancellationToken) =>
         db.Products.AnyAsync(p => p.CategoryId == categoryId, cancellationToken);
+
+    // One SQL query with GROUP BY: one row per category that has active products.
+    public async Task<IReadOnlyDictionary<int, int>> CountActiveByCategoryAsync(CancellationToken cancellationToken) =>
+        await db.Products
+            .Where(p => p.IsActive)
+            .GroupBy(p => p.CategoryId)
+            .Select(group => new { CategoryId = group.Key, Count = group.Count() })
+            .ToDictionaryAsync(row => row.CategoryId, row => row.Count, cancellationToken);
 
     public void Add(Product product) => db.Products.Add(product);
 

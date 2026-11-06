@@ -183,7 +183,12 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
             Task.FromResult<IReadOnlyList<Product>>(products.Where(p => ids.Contains(p.Id)).ToList());
 
         // Checkout never lists products.
-        public Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
+        public Task<PagedResult<Product>> GetActivePageAsync(
+            int page, int pageSize, IReadOnlyCollection<int> categoryIds, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        // Only GET /api/categories uses this.
+        public Task<IReadOnlyDictionary<int, int>> CountActiveByCategoryAsync(CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
         // Only the CMS uses these.

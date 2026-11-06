@@ -1,6 +1,7 @@
 import { NgOptimizedImage } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { CategoryService } from '../../../core/category.service';
 import { ProductService } from '../../../core/product.service';
 import { Button } from '../../../shared/button/button';
 import { Icon } from '../../../shared/icons/icon';
@@ -34,7 +35,7 @@ export class LandingPage {
   // start over without a visible jump.
   protected readonly marqueeWords = Array(4).fill(marqueeWords).flat();
 
-  // The demo data's categories. Hard-coded until the shop's category filter is built; then
-  // they come from the API and each link filters the product list.
-  protected readonly categories = ['Keramik', 'Textil', 'Konst', 'Smycken', 'Trä'];
+  // The categories with products, sorted by name. Each link shows the product list filtered on
+  // that category, like a category tab.
+  protected readonly categories = inject(CategoryService).getCategories();
 }

@@ -1,0 +1,67 @@
+// Figma's Category tabs: a row of tabs 10 px apart on a phone and a tablet and 12 px on a
+// computer, with 20 / 28 / 40 px below. Below 1024 px the row scrolls sideways, from edge to
+// edge of the screen (Figma: "Category tabs (scroll)"); on a computer it wraps instead, so no
+// tab is hidden when there are many categories. .page-width gives the space on the sides.
+
+:host {
+  display: block;
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-10);
+  // A scrolling box cuts off what sticks out, e.g. the focus ring, so the tabs get 4 px of
+  // room above, and the negative margin keeps them where Figma has them.
+  margin-block: calc(-1 * var(--space-4)) 0;
+  padding-block: var(--space-4) var(--space-20);
+  list-style: none;
+  overflow-x: auto;
+
+  @media (width >= 48rem) {
+    padding-bottom: var(--space-28);
+  }
+
+  @media (width >= 64rem) {
+    flex-wrap: wrap;
+    gap: var(--space-12);
+    padding-bottom: var(--space-40);
+    overflow-x: visible;
+  }
+
+  // The tabs keep their width instead of shrinking to fit the row.
+  > li {
+    flex-shrink: 0;
+  }
+}
+
+// Label/M and the number in Body/S, in a 2 px frame. 52 px high like Figma: 14 px padding, the
+// number's line and the frame.
+.tab {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-14) var(--space-24);
+  border: var(--border-width-default) solid var(--color-border-default);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--color-oat);
+  }
+
+  // The chosen tab is filled (Figma: Category tab, State=Active). After :hover, so it stays
+  // dark under the mouse.
+  &[aria-current='page'] {
+    background: var(--color-bg-inverse);
+    color: var(--color-text-on-inverse);
+
+    .count {
+      color: var(--color-text-on-inverse-secondary);
+    }
+  }
+}
+
+.count {
+  color: var(--color-text-secondary);
+}

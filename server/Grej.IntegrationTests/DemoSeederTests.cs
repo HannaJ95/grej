@@ -67,7 +67,7 @@ public class DemoSeederTests
 
         await using var db = new GrejDbContext(options);
         // The same query and page size as the shop's product list.
-        var firstPage = await new ProductRepository(db).GetActivePageAsync(1, 12, CancellationToken.None);
+        var firstPage = await new ProductRepository(db).GetActivePageAsync(1, 12, [], CancellationToken.None);
 
         Assert.Equal(catalog.Categories.Count, firstPage.Items.Select(p => p.CategoryId).Distinct().Count());
     }

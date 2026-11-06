@@ -12,14 +12,19 @@ public interface IProductRepository
     // Hidden products are included. Ids that do not exist are skipped, and the order is not fixed.
     Task<IReadOnlyList<Product>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken);
 
-    // Only active products, newest first.
-    Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken);
+    // Only active products, newest first. Only the given categories, or all if the list is empty.
+    Task<PagedResult<Product>> GetActivePageAsync(
+        int page, int pageSize, IReadOnlyCollection<int> categoryIds, CancellationToken cancellationToken);
 
     // All products, hidden ones too, newest first. For the CMS.
     Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken);
 
     // True if any product, hidden or not, is in the category.
     Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken cancellationToken);
+
+    // How many active products each category has, as category id → count. A category without
+    // active products is missing from the dictionary.
+    Task<IReadOnlyDictionary<int, int>> CountActiveByCategoryAsync(CancellationToken cancellationToken);
 
     // Only remembered here. The INSERT or DELETE happens in SaveChangesAsync.
     void Add(Product product);
