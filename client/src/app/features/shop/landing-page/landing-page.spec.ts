@@ -88,8 +88,8 @@ describe('LandingPage', () => {
     const fixture = TestBed.createComponent(LandingPage);
     TestBed.tick();
     flushCategories([
-      { id: 1, name: 'Keramik', productCount: 4 },
-      { id: 3, name: 'Textil', productCount: 2 },
+      { id: 1, name: 'Keramik', productCount: 4, subcategories: [] },
+      { id: 3, name: 'Textil', productCount: 2, subcategories: [] },
     ]);
     httpTesting
       .expectOne((req) => req.url.endsWith('/api/products'))

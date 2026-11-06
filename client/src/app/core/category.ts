@@ -11,11 +11,13 @@ export interface Category {
 }
 
 // A category in the shop's filter (ShopCategoryDto in the API). productCount is the number of
-// active products in it; the API leaves out categories without any.
+// active products in it; the API leaves out categories without any. A main category counts its
+// subcategories' products too, and subcategories is empty for a subcategory.
 export interface ShopCategory {
   id: number;
   name: string;
   productCount: number;
+  subcategories: ShopCategory[];
 }
 
 // The name the CMS shows in menus, e.g. "Keramik › Skålar" for a subcategory.

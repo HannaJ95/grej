@@ -7,8 +7,8 @@ describe('CategoryTabs', () => {
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
     const fixture = TestBed.createComponent(CategoryTabs);
     fixture.componentRef.setInput('categories', [
-      { id: 1, name: 'Keramik', productCount: 3 },
-      { id: 2, name: 'Textil', productCount: 2 },
+      { id: 1, name: 'Keramik', productCount: 3, subcategories: [] },
+      { id: 2, name: 'Textil', productCount: 2, subcategories: [] },
     ]);
     fixture.componentRef.setInput('selected', selected);
     await fixture.whenStable();

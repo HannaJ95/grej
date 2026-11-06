@@ -24,25 +24,49 @@
     <ul class="options" id="category-options">
       @for (category of categories(); track category.id) {
         <li>
-          <!-- A real checkbox inside the label, so a click on the name ticks it too. -->
-          <label class="option">
-            <span class="box">
-              <!-- #box names the input, so the click handler can read box.checked. -->
-              <input
-                #box
-                type="checkbox"
-                [checked]="selected().includes(category.id)"
-                (change)="toggleCategory(category.id, box.checked)"
-              />
-              <app-icon class="check" name="check" />
-            </span>
-            <!-- The space keeps the name and the number apart for screen readers, like in the
-                 category tabs. -->
-            <span class="name text-body-m-compact">{{ category.name }} </span>
-            <span class="count text-body-s">{{ category.productCount }}</span>
-          </label>
+          <ng-container
+            [ngTemplateOutlet]="option"
+            [ngTemplateOutletContext]="{ $implicit: category }"
+          />
+          <!-- The subcategories in a list of their own inside their main category's row, so
+               screen readers tell the levels apart too. -->
+          @if (category.subcategories.length > 0) {
+            <ul class="options subcategories">
+              @for (subcategory of category.subcategories; track subcategory.id) {
+                <li>
+                  <ng-container
+                    [ngTemplateOutlet]="option"
+                    [ngTemplateOutletContext]="{ $implicit: subcategory }"
+                  />
+                </li>
+              }
+            </ul>
+          }
         </li>
       }
     </ul>
   }
 </section>
+
+<!-- One row with a checkbox, written once and used for both main categories and subcategories,
+     like a small function that returns HTML. let-category names what ngTemplateOutletContext
+     sends as $implicit. -->
+<ng-template #option let-category>
+  <!-- A real checkbox inside the label, so a click on the name ticks it too. -->
+  <label class="option">
+    <span class="box">
+      <!-- #box names the input, so the click handler can read box.checked. -->
+      <input
+        #box
+        type="checkbox"
+        [checked]="selected().includes(category.id)"
+        (change)="toggleCategory(category.id, box.checked)"
+      />
+      <app-icon class="check" name="check" />
+    </span>
+    <!-- The space keeps the name and the number apart for screen readers, like in the category
+         tabs. -->
+    <span class="name text-body-m-compact">{{ category.name }} </span>
+    <span class="count text-body-s">{{ category.productCount }}</span>
+  </label>
+</ng-template>
