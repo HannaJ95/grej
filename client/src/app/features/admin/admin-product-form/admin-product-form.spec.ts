@@ -101,6 +101,10 @@ describe('AdminProductForm', () => {
     await answerChoices();
 
     expect(page().querySelector<HTMLSelectElement>('#category')?.value).toBe('1');
+    // A subcategory is shown with its main category.
+    expect(page().querySelector('#category option[value="3"]')?.textContent).toBe(
+      'Keramik › Skålar',
+    );
   });
 
   it("ticks the product's materials and colors, and sends the changes", async () => {
@@ -172,8 +176,9 @@ describe('AdminProductForm', () => {
   // materials and colors in the checkboxes.
   async function answerChoices(): Promise<void> {
     await answerList('/api/admin/categories', [
-      { id: 1, name: 'Keramik' },
-      { id: 2, name: 'Glas' },
+      { id: 1, name: 'Keramik', parentId: null, parentName: null },
+      { id: 3, name: 'Skålar', parentId: 1, parentName: 'Keramik' },
+      { id: 2, name: 'Glas', parentId: null, parentName: null },
     ]);
     await answerList('/api/admin/materials', [
       { id: 4, name: 'Glasyr' },
@@ -186,7 +191,7 @@ describe('AdminProductForm', () => {
   // Answers a request for a list with one page that holds all the items. The checkboxes
   // only ask once the form is shown, after the product has arrived, so waitFor tries
   // again until the request has been sent.
-  async function answerList(url: string, items: { id: number; name: string }[]): Promise<void> {
+  async function answerList(url: string, items: object[]): Promise<void> {
     const request = await vi.waitFor(() => httpTesting.expectOne((req) => req.url.endsWith(url)));
     request.flush({ items, page: 1, pageSize: 100, totalCount: items.length, totalPages: 1 });
   }

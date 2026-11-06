@@ -12,8 +12,8 @@ export class AdminCategoryService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiUrl}/api/admin/categories`;
 
-  // One page of categories, sorted by name. The API sends up to 100 per page,
-  // so the first page usually holds them all.
+  // One page of categories: each main category followed by its subcategories. The API sends
+  // up to 100 per page, so the first page usually holds them all.
   getCategories(page: Signal<number>) {
     return httpResource<PagedResult<Category>>(() => ({
       url: this.url,
@@ -30,25 +30,26 @@ export class AdminCategoryService {
     });
   }
 
-  // Resolves with the saved category. Throws on errors, e.g. when the API is down.
-  create(name: string): Promise<Category> {
-    return firstValueFrom(this.http.post<Category>(this.url, { name }));
+  // Resolves with the saved category. parentId is the main category, or null for a main
+  // category. Throws on errors, e.g. when the API is down.
+  create(name: string, parentId: number | null): Promise<Category> {
+    return firstValueFrom(this.http.post<Category>(this.url, { name, parentId }));
   }
 
-  async update(id: number, name: string): Promise<void> {
-    await firstValueFrom(this.http.put(`${this.url}/${id}`, { name }));
+  async update(id: number, name: string, parentId: number | null): Promise<void> {
+    await firstValueFrom(this.http.put(`${this.url}/${id}`, { name, parentId }));
   }
 
-  // Resolves with 'hasProducts' if products are in the category. Then it is not
-  // deleted, and the admin moves the products first (ambiguity.md).
-  async remove(id: number): Promise<'deleted' | 'hasProducts'> {
+  // Resolves with 'hasProducts' or 'hasSubcategories' if the category has any. Then it is not
+  // deleted, and the admin moves the products or deletes the subcategories first (ambiguity.md).
+  async remove(id: number): Promise<'deleted' | 'hasProducts' | 'hasSubcategories'> {
     try {
       await firstValueFrom(this.http.delete(`${this.url}/${id}`));
       return 'deleted';
     } catch (error) {
-      // 409: the category has products (AdminCategoriesController).
+      // 409: the body says why, e.g. { reason: 'hasSubcategories' } (AdminCategoriesController).
       if (error instanceof HttpErrorResponse && error.status === 409) {
-        return 'hasProducts';
+        return error.error?.reason === 'hasSubcategories' ? 'hasSubcategories' : 'hasProducts';
       }
       throw error;
     }

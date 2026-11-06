@@ -5,12 +5,14 @@ import { AdminCategoryService } from '../../../core/admin-category.service';
 import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
 
-// What the form's field holds.
+// What the form's fields hold.
 interface CategoryFormModel {
   name: string;
+  // The main category's id as text, like categoryId in the product form. '' = a main category.
+  parentId: string;
 }
 
-// Creates a category (/admin/kategorier/ny), or renames and deletes one (/admin/kategorier/3).
+// Creates a category (/admin/kategorier/ny), or changes and deletes one (/admin/kategorier/3).
 // Built the same way as AdminProductForm.
 @Component({
   selector: 'app-admin-category-form',
@@ -28,10 +30,29 @@ export class AdminCategoryForm {
   // The category as the API had it when the page was opened. Nothing is fetched for a new one.
   protected readonly category = this.categories.getCategory(this.id);
 
+  // All categories (up to 100, like the product form's menu), for the main category menu.
+  protected readonly categoryList = this.categories.getCategories(signal(1));
+
+  // The choices in the menu: every main category except this one (only one level, ambiguity.md).
+  protected readonly mainCategories = computed(() => {
+    const items = this.categoryList.hasValue() ? this.categoryList.value().items : [];
+    return items.filter((c) => c.parentId === null && String(c.id) !== this.id());
+  });
+
+  // A category with subcategories must stay a main category, so the menu is not shown.
+  protected readonly hasSubcategories = computed(() => {
+    const items = this.categoryList.hasValue() ? this.categoryList.value().items : [];
+    return items.some((c) => c.parentId !== null && String(c.parentId) === this.id());
+  });
+
   // Empty for a new category. Filled in again whenever the category has been fetched.
-  private readonly model = linkedSignal<CategoryFormModel>(() => ({
-    name: this.category.hasValue() ? this.category.value().name : '',
-  }));
+  private readonly model = linkedSignal<CategoryFormModel>(() => {
+    const category = this.category.hasValue() ? this.category.value() : undefined;
+    return {
+      name: category?.name ?? '',
+      parentId: category?.parentId == null ? '' : String(category.parentId),
+    };
+  });
 
   protected readonly categoryForm = form(
     this.model,
@@ -52,12 +73,13 @@ export class AdminCategoryForm {
   // Runs when the form is sent and the name is valid. What it returns becomes an error
   // on the whole form, shown under the button.
   private async save() {
-    const name = this.model().name;
+    const { name, parentId: chosen } = this.model();
+    const parentId = chosen === '' ? null : Number(chosen);
     try {
       if (this.category.hasValue()) {
-        await this.categories.update(this.category.value().id, name);
+        await this.categories.update(this.category.value().id, name, parentId);
       } else {
-        await this.categories.create(name);
+        await this.categories.create(name, parentId);
       }
       await this.router.navigateByUrl('/admin/kategorier');
       return undefined;
@@ -80,9 +102,16 @@ export class AdminCategoryForm {
 
     this.removeError.set(undefined);
     try {
-      if ((await this.categories.remove(category.id)) === 'hasProducts') {
+      const result = await this.categories.remove(category.id);
+      if (result === 'hasProducts') {
         this.removeError.set(
           'Kategorin har produkter och kan inte tas bort. Flytta produkterna till en annan kategori först.',
+        );
+        return;
+      }
+      if (result === 'hasSubcategories') {
+        this.removeError.set(
+          'Kategorin har underkategorier och kan inte tas bort. Ta bort underkategorierna först.',
         );
         return;
       }

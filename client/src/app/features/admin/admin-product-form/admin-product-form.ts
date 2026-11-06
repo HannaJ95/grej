@@ -12,6 +12,7 @@ import {
 } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import { AdminCategoryService } from '../../../core/admin-category.service';
+import { categoryLabel } from '../../../core/category';
 import {
   AdminProduct,
   AdminProductService,
@@ -68,6 +69,7 @@ export class AdminProductForm {
 
   // The choices in the category menu. The first page holds up to 100 categories (CategoryListQuery).
   protected readonly categoryList = this.categories.getCategories(signal(1));
+  protected readonly categoryLabel = categoryLabel;
 
   // Empty for a new product. Filled in again whenever the product has been fetched.
   private readonly model = linkedSignal<ProductFormModel>(() =>

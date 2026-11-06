@@ -10,11 +10,23 @@
   @if (r.items.length === 0) {
     <p>Det finns inga kategorier än.</p>
   } @else {
-    <!-- A list instead of a table, since a category only has a name. -->
+    <!-- A list instead of a table, since a category only has a name. The subcategories are a
+         list inside their main category's item, so screen readers tell the levels apart too. -->
     <ul>
-      @for (c of r.items; track c.id) {
+      @for (group of groups(); track group.category.id) {
         <li>
-          <a [routerLink]="['/admin/kategorier', c.id]">{{ c.name }}</a>
+          <a [routerLink]="['/admin/kategorier', group.category.id]">{{
+            categoryLabel(group.category)
+          }}</a>
+          @if (group.subcategories.length > 0) {
+            <ul>
+              @for (s of group.subcategories; track s.id) {
+                <li>
+                  <a [routerLink]="['/admin/kategorier', s.id]">{{ s.name }}</a>
+                </li>
+              }
+            </ul>
+          }
         </li>
       }
     </ul>

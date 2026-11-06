@@ -17,16 +17,17 @@ describe('AdminCategoryService', () => {
 
   afterEach(() => httpTesting.verify());
 
-  it('sends the name and resolves with the saved category', async () => {
-    const result = categories.create('Keramik');
+  it('sends the name and the main category, and resolves with the saved category', async () => {
+    const result = categories.create('Skålar', 3);
 
     const request = httpTesting.expectOne((req) => req.url.endsWith('/api/admin/categories'));
     expect(request.request.method).toBe('POST');
-    // The same name as in CategoryRequest in the API.
-    expect(request.request.body).toEqual({ name: 'Keramik' });
-    request.flush({ id: 3, name: 'Keramik' });
+    // The same names as in CategoryRequest in the API.
+    expect(request.request.body).toEqual({ name: 'Skålar', parentId: 3 });
+    const saved = { id: 4, name: 'Skålar', parentId: 3, parentName: 'Keramik' };
+    request.flush(saved);
 
-    expect(await result).toEqual({ id: 3, name: 'Keramik' });
+    expect(await result).toEqual(saved);
   });
 
   it('tells when a category cannot be deleted since it has products (409)', async () => {
@@ -34,8 +35,18 @@ describe('AdminCategoryService', () => {
 
     httpTesting
       .expectOne((req) => req.method === 'DELETE' && req.url.endsWith('/api/admin/categories/3'))
-      .flush(null, { status: 409, statusText: 'Conflict' });
+      .flush({ reason: 'hasProducts' }, { status: 409, statusText: 'Conflict' });
 
     expect(await result).toBe('hasProducts');
+  });
+
+  it('tells when a category cannot be deleted since it has subcategories (409)', async () => {
+    const result = categories.remove(3);
+
+    httpTesting
+      .expectOne((req) => req.method === 'DELETE' && req.url.endsWith('/api/admin/categories/3'))
+      .flush({ reason: 'hasSubcategories' }, { status: 409, statusText: 'Conflict' });
+
+    expect(await result).toBe('hasSubcategories');
   });
 });

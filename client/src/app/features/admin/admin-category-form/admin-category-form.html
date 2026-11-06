@@ -23,6 +23,21 @@
       <p id="name-error">{{ message }}</p>
     }
 
+    @if (hasSubcategories()) {
+      <p>Kategorin har underkategorier, så den är en huvudkategori.</p>
+    } @else {
+      <p>
+        <label for="parent">Huvudkategori</label>
+        <select id="parent" [formField]="categoryForm.parentId">
+          <option value="">Ingen – detta är en huvudkategori</option>
+          <!-- The options arrive after the form. Signal Forms then selects the saved one. -->
+          @for (c of mainCategories(); track c.id) {
+            <option [value]="c.id">{{ c.name }}</option>
+          }
+        </select>
+      </p>
+    }
+
     <button appButton type="submit" [disabled]="categoryForm().submitting()">Spara</button>
 
     @if (saveError(); as message) {
