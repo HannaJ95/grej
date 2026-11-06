@@ -5,6 +5,13 @@
 <p class="intro text-body-m">Huvudkategorierna visas som flikar i shoppen, sorterade efter namn.</p>
 
 <div class="columns">
+  <app-admin-category-card
+    class="card form-card"
+    [editing]="editing()"
+    (saved)="edit(null)"
+    (cancelled)="edit(null)"
+  />
+
   <section class="card list" aria-labelledby="main-categories-title">
     <h2 class="text-display-2xs" id="main-categories-title">Alla huvudkategorier</h2>
 
@@ -56,11 +63,4 @@
       <p role="status">Laddar kategorierna…</p>
     }
   </section>
-
-  <app-admin-category-card
-    class="card form-card"
-    [editing]="editing()"
-    (saved)="edit(null)"
-    (cancelled)="edit(null)"
-  />
 </div>
