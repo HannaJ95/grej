@@ -1,0 +1,155 @@
+// The layout of the category pages, AdminMainCategories and AdminSubcategories. The values come
+// from Figma's frames Admin – Kategorier – Huvudkategorier and Underkategorier (1440).
+
+// The page is a container, so the columns follow the room the page has (beside the menu or
+// not), not the width of the screen. @container below asks about this box.
+:host {
+  display: block;
+  container-type: inline-size;
+}
+
+p,
+h2 {
+  margin: 0;
+}
+
+.intro {
+  margin-bottom: var(--space-24);
+  color: var(--color-text-secondary);
+}
+
+// One column with the card on top, or the list and the 400 px card side by side when the page
+// is at least 56rem (896 px) wide, e.g. from a 1240 px screen with the menu (1096 px at 1440,
+// like Figma).
+.columns {
+  display: grid;
+  align-items: start;
+  gap: var(--space-24);
+
+  @container (width >= 56rem) {
+    grid-template-areas: 'list form';
+    grid-template-columns: minmax(0, 1fr) 25rem;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  min-width: 0;
+  padding: var(--space-24);
+  border: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-bg-surface);
+}
+
+// The areas only exist in the wide layout, so they are only given there.
+.form-card {
+  @container (width >= 56rem) {
+    grid-area: form;
+  }
+}
+
+// The list is a container too, so its rows follow the list's own width (see .row). In Figma
+// the rows come right under the heading; the first row's padding is the space.
+.list {
+  container-type: inline-size;
+  gap: 0;
+
+  @container (width >= 56rem) {
+    grid-area: list;
+  }
+}
+
+.list [role='alert'],
+.removed {
+  padding-top: var(--space-8);
+}
+
+// The empty status paragraph takes no room, like the card's. Screen readers still notice it.
+.removed:empty {
+  position: absolute;
+}
+
+// A main category's name above its subcategories (Figma: Group Keramik). Its link opens the
+// page with only that main category.
+.group-title {
+  margin: 0;
+  padding: var(--space-24) 0 var(--space-8);
+  color: var(--color-text-secondary);
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.empty {
+  padding-top: var(--space-14);
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// One row (Figma: Row Keramik), with a thin line under every row but the last. In a narrow list
+// the name and the buttons share the first line and the numbers get the whole second line; when
+// the list is at least 36rem (576 px) wide everything is on one line, like Figma.
+.row {
+  display: grid;
+  grid-template-areas:
+    'name actions'
+    'meta meta';
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2) var(--space-16);
+  padding: var(--space-14) 0;
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @container (width >= 36rem) {
+    grid-template-areas: 'name meta actions';
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+}
+
+.name {
+  grid-area: name;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  grid-area: meta;
+  color: var(--color-text-secondary);
+
+  a {
+    color: inherit;
+  }
+}
+
+.actions {
+  grid-area: actions;
+  display: flex;
+  gap: var(--space-16);
+}
+
+// Buttons that look like links (Link/S), since they act on this page.
+.link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.danger {
+  color: var(--color-feedback-error);
+}

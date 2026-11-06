@@ -191,6 +191,9 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         public Task<IReadOnlyDictionary<int, int>> CountActiveByCategoryAsync(CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
+        public Task<IReadOnlyDictionary<int, int>> CountByCategoryAsync(CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
         // Only the CMS uses these.
         public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
             throw new NotImplementedException();

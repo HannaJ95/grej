@@ -46,9 +46,30 @@ public class CategoriesEndpointTests : IClassFixture<WebApplicationFactory<Progr
 
         var categories = await app.CreateClient().GetFromJsonAsync<List<ShopCategoryDto>>("/api/categories");
 
-        Assert.Equal(
-            [new ShopCategoryDto(keramik, "Keramik", 2), new ShopCategoryDto(textil, "Textil", 1)],
-            categories);
+        Assert.Equal([keramik, textil], categories!.Select(c => c.Id));
+        Assert.Equal(["Keramik 2", "Textil 1"], categories.Select(Describe));
+    }
+
+    [Fact]
+    public async Task GetAll_PutsSubcategoriesUnderTheirMainCategory_AndCountsTheirProducts()
+    {
+        var keramik = await AddCategoryAsync("Keramik");
+        var skalar = await AddCategoryAsync("Skålar", keramik);
+        var vaser = await AddCategoryAsync("Vaser", keramik);
+        var textil = await AddCategoryAsync("Textil");
+        var dukar = await AddCategoryAsync("Dukar", textil);
+        await AddProductsAsync(
+            NewProduct(keramik),
+            NewProduct(skalar),
+            NewProduct(skalar),
+            // Vaser only has a hidden product, so it is left out.
+            NewProduct(vaser, isActive: false),
+            // Textil has no products of its own, but is shown since Dukar has one.
+            NewProduct(dukar));
+
+        var categories = await app.CreateClient().GetFromJsonAsync<List<ShopCategoryDto>>("/api/categories");
+
+        Assert.Equal(["Keramik 3 (Skålar 2)", "Textil 1 (Dukar 1)"], categories!.Select(Describe));
     }
 
     [Fact]
@@ -60,11 +81,11 @@ public class CategoriesEndpointTests : IClassFixture<WebApplicationFactory<Progr
     }
 
     // Each helper uses its own scope = its own DbContext, like a separate request.
-    private async Task<int> AddCategoryAsync(string name)
+    private async Task<int> AddCategoryAsync(string name, int? parentId = null)
     {
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<GrejDbContext>();
-        var category = new Category { Name = name };
+        var category = new Category { Name = name, ParentId = parentId };
         db.Categories.Add(category);
         await db.SaveChangesAsync();
         return category.Id;
@@ -77,6 +98,12 @@ public class CategoriesEndpointTests : IClassFixture<WebApplicationFactory<Progr
         db.Products.AddRange(products);
         await db.SaveChangesAsync();
     }
+
+    // A category as text, e.g. "Keramik 3 (Skålar 2)", so the whole tree is easy to compare.
+    private static string Describe(ShopCategoryDto category) =>
+        category.Subcategories.Count == 0
+            ? $"{category.Name} {category.ProductCount}"
+            : $"{category.Name} {category.ProductCount} ({string.Join(", ", category.Subcategories.Select(Describe))})";
 
     private static Product NewProduct(int categoryId, bool isActive = true) =>
         new() { Title = "Grej", Price = 100m, Stock = 1, IsActive = isActive, CategoryId = categoryId };

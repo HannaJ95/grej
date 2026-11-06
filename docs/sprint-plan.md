@@ -84,7 +84,8 @@ Should (Wed–Fri):
 - [x] Own visual design of the main customer pages, or plan B (about one day; moved from sprint 2, decided by Wed 4 Nov)
 - [x] Style the customer pages with the shared variables (own design or plan B)
 - [x] Filter products by category
-- [ ] Subcategories (one level) in the CMS and as filters
+- [x] Subcategories (one level) in the CMS and as filters
+- [x] Admin layout (menu) and the category pages after the new admin design in Figma (added 6 Nov, so subcategories could follow the design's flow; the other admin pages are styled later)
 
 ## Sprint 4 – Should (Mon 9 – Fri 13 Nov)
 

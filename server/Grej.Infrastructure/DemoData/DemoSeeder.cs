@@ -67,9 +67,16 @@ public static class DemoSeeder
         var materials = catalog.Materials.ToDictionary(name => name, name => new Material { Name = name });
         var colors = catalog.Colors.ToDictionary(name => name, name => new Color { Name = name });
         var categories = catalog.Categories.ToDictionary(c => c.Name, c => new Category { Name = c.Name });
+        // Found by main category and name, since two main categories may have a subcategory with
+        // the same name. Parent is the main category object: EF Core saves it first and then
+        // fills in ParentId with its new id, like it does for the products' categories below.
+        var subcategories = catalog.Categories
+            .SelectMany(c => (c.Subcategories ?? []).Select(name => (Main: c.Name, Name: name)))
+            .ToDictionary(sub => sub, sub => new Category { Name = sub.Name, Parent = categories[sub.Main] });
         db.Materials.AddRange(materials.Values);
         db.Colors.AddRange(colors.Values);
         db.Categories.AddRange(categories.Values);
+        db.Categories.AddRange(subcategories.Values);
         await db.SaveChangesAsync();
 
         // The first product of every category, then the second of every category, and so on.
@@ -88,7 +95,9 @@ public static class DemoSeeder
                 Price = demoProduct.Price,
                 Stock = demoProduct.Stock,
                 IsActive = demoProduct.IsActive,
-                CategoryId = categories[demoCategory.Name].Id,
+                CategoryId = demoProduct.Subcategory is null
+                    ? categories[demoCategory.Name].Id
+                    : subcategories[(demoCategory.Name, demoProduct.Subcategory)].Id,
                 SellerId = sellerId,
             };
             product.SetMaterials(demoProduct.Materials.Select(name => materials[name]));

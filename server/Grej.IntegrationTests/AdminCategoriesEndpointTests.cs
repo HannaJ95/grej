@@ -69,6 +69,41 @@ public class AdminCategoriesEndpointTests : IClassFixture<WebApplicationFactory<
     }
 
     [Fact]
+    public async Task GetPage_PutsEachSubcategoryAfterItsMainCategory()
+    {
+        var textil = await AddCategoryAsync("Textil");
+        var keramik = await AddCategoryAsync("Keramik");
+        await AddCategoryAsync("Vaser", keramik);
+        await AddCategoryAsync("Dukar", textil);
+        await AddCategoryAsync("Muggar", keramik);
+        var client = await CreateAdminClientAsync();
+
+        var page = await client.GetFromJsonAsync<PagedResult<CategoryDto>>("/api/admin/categories");
+
+        Assert.Equal(["Keramik", "Muggar", "Vaser", "Textil", "Dukar"], page!.Items.Select(c => c.Name));
+        Assert.Equal([null, "Keramik", "Keramik", null, "Textil"], page.Items.Select(c => c.ParentName));
+    }
+
+    [Fact]
+    public async Task GetPage_CountsSubcategoriesAndProducts()
+    {
+        // A main category counts its own products and its subcategories' products, hidden too.
+        var keramik = await AddCategoryAsync("Keramik");
+        var skalar = await AddCategoryAsync("Skålar", keramik);
+        await AddCategoryAsync("Vaser", keramik);
+        await AddProductAsync(new Product { Title = "Kanna", Price = 450m, CategoryId = keramik, IsActive = false });
+        await AddProductAsync(new Product { Title = "Skål", Price = 250m, CategoryId = skalar });
+        await AddProductAsync(new Product { Title = "Fat", Price = 350m, CategoryId = skalar });
+        var client = await CreateAdminClientAsync();
+
+        var page = await client.GetFromJsonAsync<PagedResult<CategoryDto>>("/api/admin/categories");
+
+        Assert.Equal(
+            [("Keramik", 3, 2), ("Skålar", 2, 0), ("Vaser", 0, 0)],
+            page!.Items.Select(c => (c.Name, c.ProductCount, c.SubcategoryCount)));
+    }
+
+    [Fact]
     public async Task Create_ValidName_SavesItAndReturnsCreated()
     {
         var client = await CreateAdminClientAsync();
@@ -95,6 +130,46 @@ public class AdminCategoriesEndpointTests : IClassFixture<WebApplicationFactory<
     }
 
     [Fact]
+    public async Task Create_WithMainCategory_SavesASubcategory()
+    {
+        var keramik = await AddCategoryAsync("Keramik");
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsJsonAsync("/api/admin/categories", new { name = "Skålar", parentId = keramik });
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        var created = await response.Content.ReadFromJsonAsync<CategoryDto>();
+        Assert.Equal(keramik, created!.ParentId);
+        Assert.Equal("Keramik", created.ParentName);
+        Assert.Equal(keramik, (await FindCategoryAsync(created.Id))?.ParentId);
+    }
+
+    [Fact]
+    public async Task Create_UnknownMainCategory_ReturnsBadRequestAndSavesNothing()
+    {
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsJsonAsync("/api/admin/categories", new { name = "Skålar", parentId = 99 });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(0, await CountCategoriesAsync());
+    }
+
+    [Fact]
+    public async Task Create_UnderASubcategory_ReturnsBadRequest()
+    {
+        // Only one level (ambiguity.md).
+        var keramik = await AddCategoryAsync("Keramik");
+        var skalar = await AddCategoryAsync("Skålar", keramik);
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsJsonAsync("/api/admin/categories", new { name = "Små skålar", parentId = skalar });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(2, await CountCategoriesAsync());
+    }
+
+    [Fact]
     public async Task Update_RenamesTheCategory()
     {
         var id = await AddCategoryAsync("Keramik");
@@ -104,6 +179,46 @@ public class AdminCategoriesEndpointTests : IClassFixture<WebApplicationFactory<
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         Assert.Equal("Glas", (await FindCategoryAsync(id))?.Name);
+    }
+
+    [Fact]
+    public async Task Update_SubcategoryWithoutParent_BecomesAMainCategory()
+    {
+        var keramik = await AddCategoryAsync("Keramik");
+        var skalar = await AddCategoryAsync("Skålar", keramik);
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PutAsJsonAsync($"/api/admin/categories/{skalar}", new { name = "Skålar" });
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.Null((await FindCategoryAsync(skalar))?.ParentId);
+    }
+
+    [Fact]
+    public async Task Update_ItselfAsMainCategory_ReturnsBadRequest()
+    {
+        var keramik = await AddCategoryAsync("Keramik");
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PutAsJsonAsync($"/api/admin/categories/{keramik}", new { name = "Keramik", parentId = keramik });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Null((await FindCategoryAsync(keramik))?.ParentId);
+    }
+
+    [Fact]
+    public async Task Update_CategoryWithSubcategories_CannotBecomeASubcategory()
+    {
+        // It would give two levels: Textil → Keramik → Skålar.
+        var textil = await AddCategoryAsync("Textil");
+        var keramik = await AddCategoryAsync("Keramik");
+        await AddCategoryAsync("Skålar", keramik);
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PutAsJsonAsync($"/api/admin/categories/{keramik}", new { name = "Keramik", parentId = textil });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Null((await FindCategoryAsync(keramik))?.ParentId);
     }
 
     [Fact]
@@ -140,7 +255,29 @@ public class AdminCategoriesEndpointTests : IClassFixture<WebApplicationFactory<
 
         // The in-memory database has no foreign keys, so this proves AdminCategoryService's check.
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Equal("hasProducts", await ReadReasonAsync(response));
         Assert.NotNull(await FindCategoryAsync(id));
+    }
+
+    [Fact]
+    public async Task Delete_CategoryWithSubcategories_ReturnsConflictAndKeepsIt()
+    {
+        var keramik = await AddCategoryAsync("Keramik");
+        await AddCategoryAsync("Skålar", keramik);
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.DeleteAsync($"/api/admin/categories/{keramik}");
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Equal("hasSubcategories", await ReadReasonAsync(response));
+        Assert.NotNull(await FindCategoryAsync(keramik));
+    }
+
+    // The "reason" in a 409 answer's body, e.g. { "reason": "hasProducts" }.
+    private static async Task<string?> ReadReasonAsync(HttpResponseMessage response)
+    {
+        var body = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+        return body?["reason"];
     }
 
     // Logs in the way the frontend does, and sends the token with every request.
@@ -155,11 +292,11 @@ public class AdminCategoriesEndpointTests : IClassFixture<WebApplicationFactory<
     }
 
     // Each helper uses its own scope = its own DbContext, like a separate request.
-    private async Task<int> AddCategoryAsync(string name)
+    private async Task<int> AddCategoryAsync(string name, int? parentId = null)
     {
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<GrejDbContext>();
-        var category = new Category { Name = name };
+        var category = new Category { Name = name, ParentId = parentId };
         db.Categories.Add(category);
         await db.SaveChangesAsync();
         return category.Id;

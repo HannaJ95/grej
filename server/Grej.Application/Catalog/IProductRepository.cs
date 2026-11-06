@@ -26,6 +26,9 @@ public interface IProductRepository
     // active products is missing from the dictionary.
     Task<IReadOnlyDictionary<int, int>> CountActiveByCategoryAsync(CancellationToken cancellationToken);
 
+    // The same, but for all products, hidden ones too. For the CMS.
+    Task<IReadOnlyDictionary<int, int>> CountByCategoryAsync(CancellationToken cancellationToken);
+
     // Only remembered here. The INSERT or DELETE happens in SaveChangesAsync.
     void Add(Product product);
     void Remove(Product product);

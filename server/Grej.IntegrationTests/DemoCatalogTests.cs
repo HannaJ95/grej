@@ -49,6 +49,17 @@ public class DemoCatalogTests
     }
 
     [Fact]
+    public void ProductSubcategories_AreInTheirCategory()
+    {
+        var unknown = catalog.Categories
+            .SelectMany(c => c.Products
+                .Where(p => p.Subcategory is not null && !(c.Subcategories ?? []).Contains(p.Subcategory))
+                .Select(p => $"{p.Title}: {p.Subcategory}"));
+
+        Assert.Empty(unknown);
+    }
+
+    [Fact]
     public void Orders_HaveProductsFromTheCatalog()
     {
         var titles = catalog.Categories.SelectMany(c => c.Products).Select(p => p.Title).ToList();
@@ -75,6 +86,8 @@ public class DemoCatalogTests
         AssertNames(catalog.Materials);
         AssertNames(catalog.Colors);
         AssertNames(catalog.Categories.Select(c => c.Name).ToList());
+        // The seed finds a subcategory by its main category and its name.
+        Assert.All(catalog.Categories, c => AssertNames(c.Subcategories ?? []));
     }
 
     [Fact]
@@ -89,7 +102,7 @@ public class DemoCatalogTests
         });
     }
 
-    // The seed finds materials and colors by name, so a name may only be used once.
+    // The seed finds materials, colors and categories by name, so a name may only be used once.
     // 100 is the limit in the database and the CMS (CategoryRequest, PropertyRequest).
     private static void AssertNames(IReadOnlyList<string> names)
     {

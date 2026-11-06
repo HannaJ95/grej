@@ -4,7 +4,7 @@ using Grej.Domain.Catalog;
 namespace Grej.Application.Catalog;
 
 // Use cases for products in the shop.
-public class ProductService(IProductRepository products)
+public class ProductService(IProductRepository products, ICategoryRepository categories)
 {
     // Returns null if the product does not exist or is hidden (IsActive = false),
     // so a customer cannot tell a draft from a product that does not exist.
@@ -30,7 +30,17 @@ public class ProductService(IProductRepository products)
     // One page of the products in the shop. Hidden products are never included.
     public async Task<PagedResult<ProductDto>> GetProductsAsync(ProductListQuery query, CancellationToken cancellationToken)
     {
-        var page = await products.GetActivePageAsync(query.Page, query.PageSize, query.CategoryId, cancellationToken);
+        // A main category also shows its subcategories' products (ambiguity.md), so their ids are
+        // added to the chosen ones. [.. a, .. b] puts both lists in one, like [...a, ...b] in
+        // JavaScript.
+        IReadOnlyCollection<int> categoryIds = query.CategoryId;
+        if (categoryIds.Count > 0)
+        {
+            var subcategoryIds = await categories.GetSubcategoryIdsAsync(categoryIds, cancellationToken);
+            categoryIds = [.. categoryIds, .. subcategoryIds];
+        }
+
+        var page = await products.GetActivePageAsync(query.Page, query.PageSize, categoryIds, cancellationToken);
 
         return new PagedResult<ProductDto>(
             page.Items.Select(ToDto).ToList(),

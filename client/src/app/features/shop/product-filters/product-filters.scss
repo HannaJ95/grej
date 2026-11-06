@@ -68,6 +68,13 @@
   list-style: none;
 }
 
+// A main category's subcategories, 12 px under it like the other rows, and moved in 32 px (the
+// 20 px box and the 12 px gap), so their boxes line up with the main category's name.
+.subcategories {
+  margin-top: var(--space-12);
+  padding-left: var(--space-32);
+}
+
 // Figma's Checkbox: the box, the name (Body/M Compact) and the number (Body/S) 12 px apart.
 .option {
   display: flex;

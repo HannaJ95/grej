@@ -1,4 +1,5 @@
 using Grej.Application.Catalog;
+using Grej.Domain.Catalog;
 using Grej.Domain.Orders;
 using Grej.Infrastructure.DemoData;
 using Grej.Infrastructure.Persistence;
@@ -27,14 +28,17 @@ public class DemoSeederTests
         await SeedAsync();
 
         await using var db = new GrejDbContext(options);
-        var categoryNames = await db.Categories.ToDictionaryAsync(c => c.Id, c => c.Name);
+        var categories = await db.Categories.ToDictionaryAsync(c => c.Id);
         var products = await db.Products.ToListAsync();
 
-        // The file and the database written as the same kind of lines, which must match.
-        var expected = catalog.Categories.SelectMany(c => c.Products.Select(p =>
-            Describe(c.Name, p.Title, p.Price, p.Stock, p.IsActive, p.Materials, p.Colors)));
+        // The file and the database written as the same kind of lines, which must match. A
+        // product in a subcategory is written "Keramik › Skålar och fat", so the test also checks
+        // that the subcategory is under the right main category.
+        var expected = catalog.Categories.SelectMany(c => c.Products.Select(p => Describe(
+            p.Subcategory is null ? c.Name : $"{c.Name} › {p.Subcategory}",
+            p.Title, p.Price, p.Stock, p.IsActive, p.Materials, p.Colors)));
         var saved = products.Select(p => Describe(
-            categoryNames[p.CategoryId], p.Title, p.Price, p.Stock, p.IsActive,
+            CategoryLabel(categories, p.CategoryId), p.Title, p.Price, p.Stock, p.IsActive,
             p.Materials.Select(m => m.Name), p.Colors.Select(c => c.Name)));
         Assert.Equal(expected.Order(), saved.Order());
 
@@ -69,7 +73,10 @@ public class DemoSeederTests
         // The same query and page size as the shop's product list.
         var firstPage = await new ProductRepository(db).GetActivePageAsync(1, 12, [], CancellationToken.None);
 
-        Assert.Equal(catalog.Categories.Count, firstPage.Items.Select(p => p.CategoryId).Distinct().Count());
+        // A product in a subcategory counts for its main category, like in the shop's filter.
+        var categories = await db.Categories.ToDictionaryAsync(c => c.Id);
+        var mainCategoryIds = firstPage.Items.Select(p => categories[p.CategoryId].ParentId ?? p.CategoryId);
+        Assert.Equal(catalog.Categories.Count, mainCategoryIds.Distinct().Count());
     }
 
     [Fact]
@@ -102,6 +109,15 @@ public class DemoSeederTests
     }
 
     // One line per product, e.g. "Keramik: Skål i blå glasyr, 349, 6, True, Stengods, Blå".
+    // E.g. "Keramik" for a main category and "Keramik › Skålar och fat" for a subcategory.
+    private static string CategoryLabel(Dictionary<int, Category> categories, int id)
+    {
+        var category = categories[id];
+        return category.ParentId is int parentId
+            ? $"{categories[parentId].Name} › {category.Name}"
+            : category.Name;
+    }
+
     private static string Describe(string category, string title, decimal price, int stock, bool isActive,
         IEnumerable<string> materials, IEnumerable<string> colors) =>
         $"{category}: {title}, {price}, {stock}, {isActive}, {string.Join("/", materials.Order())}, {string.Join("/", colors.Order())}";

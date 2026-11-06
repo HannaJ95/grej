@@ -71,6 +71,23 @@ describe('AuthService', () => {
     expect(auth.isLoggedIn()).toBe(false);
   });
 
+  it("reads the admin's email from the token", () => {
+    // A JWT's middle part is JSON in base64url. btoa makes base64, which is the same here.
+    const payload = btoa(JSON.stringify({ sub: '1', email: 'admin@example.com' }));
+    localStorage.setItem(
+      'grej.auth',
+      JSON.stringify({ token: `header.${payload}.signature`, expiresAt: '2999-01-01T00:00:00Z' }),
+    );
+
+    expect(auth.email()).toBe('admin@example.com');
+  });
+
+  it('gives no email when the token cannot be read', () => {
+    localStorage.setItem('grej.auth', '{"token":"t","expiresAt":"2999-01-01T00:00:00Z"}');
+
+    expect(auth.email()).toBeNull();
+  });
+
   it('gives no token when nothing or something unreadable is saved', () => {
     expect(auth.token()).toBeNull();
 

@@ -37,9 +37,11 @@
       "name": "Keramik",
       "image": "keramik.jpg",
       "imageAltText": "Platshållarbild med texten Keramik",
+      "subcategories": ["Skålar och fat", "Muggar och koppar", "Vaser och krukor"],
       "products": [
         {
           "title": "Skål i blå glasyr",
+          "subcategory": "Skålar och fat",
           "description": "Handdrejad skål i stengods med en djupblå glasyr som blir ljusare mot kanten. Rymmer ungefär 4 dl och passar till frukost, soppa eller som serveringsskål. Tål diskmaskin.",
           "price": 349,
           "stock": 6,
@@ -49,6 +51,7 @@
         },
         {
           "title": "Mugg med stort öra",
+          "subcategory": "Muggar och koppar",
           "description": "Rejäl mugg i vitt stengods med ett öra som rymmer flera fingrar. Rymmer 3 dl. Varje mugg drejas för hand, så formen skiljer sig lite mellan dem.",
           "price": 245,
           "stock": 12,
@@ -58,6 +61,7 @@
         },
         {
           "title": "Hög vas i grönt",
+          "subcategory": "Vaser och krukor",
           "description": "Smal vas, 30 cm hög, med en matt grön glasyr. Vattentät på insidan, så den fungerar både till färska blommor och torkade kvistar.",
           "price": 695,
           "stock": 3,
@@ -76,6 +80,7 @@
         },
         {
           "title": "Stort serveringsfat",
+          "subcategory": "Skålar och fat",
           "description": "Runt fat, 34 cm i diameter, med en glasyr som går från grått till beige. Ett unikt exemplar som räcker till en hel middag.",
           "price": 895,
           "stock": 1,
@@ -94,6 +99,7 @@
         },
         {
           "title": "Espressokoppar, två stycken",
+          "subcategory": "Muggar och koppar",
           "description": "Två små koppar i vitt porslin med en tunn svart kant. Rymmer 1 dl var och säljs i par.",
           "price": 380,
           "stock": 4,
@@ -103,6 +109,7 @@
         },
         {
           "title": "Blomkruka med fat",
+          "subcategory": "Vaser och krukor",
           "description": "Kruka i terrakotta med hål i botten och ett fat som fångar vattnet. 14 cm i diameter, passar en mellanstor krukväxt.",
           "price": 420,
           "stock": 5,
@@ -204,9 +211,11 @@
       "name": "Konst",
       "image": "konst.jpg",
       "imageAltText": "Platshållarbild med texten Konst",
+      "subcategories": ["Original", "Tryck"],
       "products": [
         {
           "title": "Morgon vid sjön, akvarell",
+          "subcategory": "Original",
           "description": "Originalakvarell av en stilla sjö i gryningsljus. 30 × 40 cm på tjockt akvarellpapper. Levereras utan ram.",
           "price": 1800,
           "stock": 1,
@@ -216,6 +225,7 @@
         },
         {
           "title": "Röda hus, akrylmålning",
+          "subcategory": "Original",
           "description": "Målning i akryl på duk av en rad röda hus längs en grusväg. 50 × 70 cm. Kanterna är målade, så den kan hängas utan ram.",
           "price": 3200,
           "stock": 1,
@@ -225,6 +235,7 @@
         },
         {
           "title": "Fåglar, linoleumtryck",
+          "subcategory": "Tryck",
           "description": "Handtryckt linoleumtryck i en upplaga om 20 exemplar, signerat och numrerat. 21 × 30 cm.",
           "price": 650,
           "stock": 5,
@@ -234,6 +245,7 @@
         },
         {
           "title": "Blommor, konsttryck",
+          "subcategory": "Tryck",
           "description": "Tryck av en akvarell med vilda blommor, på matt papper. 30 × 40 cm, passar i en standardram.",
           "price": 395,
           "stock": 10,
@@ -243,6 +255,7 @@
         },
         {
           "title": "Höstlöv, akvarell",
+          "subcategory": "Original",
           "description": "Originalakvarell med löv i rött och gult. 24 × 32 cm.",
           "price": 1400,
           "stock": 0,
@@ -252,6 +265,7 @@
         },
         {
           "title": "Abstrakt i blått",
+          "subcategory": "Original",
           "description": "Stor abstrakt målning i akryl med lager av blått och grått. 80 × 100 cm på duk.",
           "price": 4500,
           "stock": 1,
@@ -261,6 +275,7 @@
         },
         {
           "title": "Katten, blyertsteckning",
+          "subcategory": "Original",
           "description": "Detaljerad blyertsteckning av en sovande katt. 21 × 30 cm, levereras med en vit passepartout.",
           "price": 850,
           "stock": 1,
@@ -270,6 +285,7 @@
         },
         {
           "title": "Små akvareller, serie",
+          "subcategory": "Original",
           "description": "En serie om sex små akvareller, 10 × 15 cm var. Bilderna är inte klara än.",
           "price": 600,
           "stock": 3,

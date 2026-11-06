@@ -1,0 +1,96 @@
+<app-admin-page-header
+  [eyebrow]="main() ? 'Underkategorier' : 'Kategorier'"
+  [title]="main()?.name ?? 'Underkategorier'"
+>
+  <button appButton size="large" type="button" (click)="edit(null)">Ny underkategori</button>
+</app-admin-page-header>
+
+<p class="intro text-body-m">
+  @if (main(); as m) {
+    Underkategorierna i {{ m.name }} visas som filter när kunden väljer {{ m.name }} i shoppen.
+  } @else {
+    En underkategori hör alltid till en huvudkategori och visas som filter inne i den, till exempel
+    Keramik → Vaser.
+  }
+</p>
+
+<!-- The card first, like on the main category page. -->
+<div class="columns">
+  <app-admin-category-card
+    class="card form-card"
+    kind="sub"
+    [editing]="editing()"
+    [mainCategories]="mainCategories()"
+    [defaultParentId]="main()?.id"
+    (saved)="edit(null)"
+    (cancelled)="edit(null)"
+  />
+
+  <section class="card list" aria-labelledby="subcategories-title">
+    <h2 class="text-display-2xs" id="subcategories-title">
+      {{ main() ? 'Underkategorier i ' + main()!.name : 'Alla underkategorier' }}
+    </h2>
+
+    @if (removeError(); as message) {
+      <p role="alert">{{ message }}</p>
+    }
+    <p class="removed text-body-s" role="status">{{ removedMessage() }}</p>
+
+    <!-- hasValue first: while the list is fetched again after a change, the old one is shown. -->
+    @if (result.hasValue()) {
+      @if (mainId() !== undefined && !main()) {
+        <p role="alert">Huvudkategorin finns inte.</p>
+      } @else if (groups().length === 0) {
+        <p class="empty text-body-m">Det finns inga underkategorier än.</p>
+      }
+      @for (group of groups(); track group.main.id) {
+        <!-- The page with all shows which main category each group belongs to. -->
+        @if (!main()) {
+          <h3 class="group-title text-badge">
+            <a [routerLink]="['/admin/underkategorier', group.main.id]"
+              >{{ group.main.name }} · {{ group.subcategories.length }}</a
+            >
+          </h3>
+        }
+        @if (group.subcategories.length === 0) {
+          <p class="empty text-body-m">{{ group.main.name }} har inga underkategorier än.</p>
+        } @else {
+          <ul class="rows">
+            @for (s of group.subcategories; track s.id) {
+              <li class="row">
+                <span class="name text-label-s">{{ s.name }}</span>
+                <span class="meta text-body-s">
+                  {{ s.productCount }} {{ s.productCount === 1 ? 'produkt' : 'produkter' }}
+                </span>
+                <span class="actions">
+                  <!-- The name in aria-label tells the many buttons apart, as on the main
+                       category page. -->
+                  <button
+                    type="button"
+                    class="link text-link-s"
+                    [attr.aria-label]="'Redigera ' + s.name"
+                    (click)="edit(s.id)"
+                  >
+                    Redigera
+                  </button>
+                  <button
+                    type="button"
+                    class="link danger text-link-s"
+                    [attr.aria-label]="'Ta bort ' + s.name"
+                    (click)="remove(s)"
+                  >
+                    Ta bort
+                  </button>
+                </span>
+              </li>
+            }
+          </ul>
+        }
+      }
+    } @else if (result.error()) {
+      <p role="alert">Kategorierna kunde inte visas.</p>
+    } @else {
+      <p role="status">Laddar kategorierna…</p>
+    }
+  </section>
+</div>

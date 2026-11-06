@@ -47,10 +47,11 @@
       >
         <!-- value "" is what required() sees as empty. -->
         <option value="">Välj en kategori</option>
-        <!-- The options arrive after the form. Signal Forms then selects the product's category. -->
+        <!-- The options arrive after the form. Signal Forms then selects the product's category.
+             A product can be in a main category or a subcategory, e.g. "Keramik › Skålar". -->
         @if (categoryList.hasValue()) {
           @for (c of categoryList.value().items; track c.id) {
-            <option [value]="c.id">{{ c.name }}</option>
+            <option [value]="c.id">{{ categoryLabel(c) }}</option>
           }
         }
       </select>
@@ -63,7 +64,7 @@
     } @else if (categoryList.hasValue() && categoryList.value().items.length === 0) {
       <p>
         Det finns inga kategorier än.
-        <a routerLink="/admin/kategorier/ny">Skapa en kategori</a> först.
+        <a routerLink="/admin/kategorier">Skapa en kategori</a> först.
       </p>
     }
 

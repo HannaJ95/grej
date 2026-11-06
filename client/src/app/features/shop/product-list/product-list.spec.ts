@@ -36,7 +36,9 @@ describe('ProductList', () => {
     const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
     expect(request.request.params.get('page')).toBe('2');
     request.flush({
-      items: [{ id: 7, title: 'Vas', description: '', price: 300, currency: 'SEK', isSoldOut: false }],
+      items: [
+        { id: 7, title: 'Vas', description: '', price: 300, currency: 'SEK', isSoldOut: false },
+      ],
       page: 2,
       pageSize: 12,
       totalCount: 25,
@@ -69,24 +71,26 @@ describe('ProductList', () => {
     await harness.navigateByUrl('/produkter');
     flushCategories();
 
-    httpTesting.expectOne((req) => req.url.endsWith('/api/products')).flush({
-      items: [
-        {
-          id: 7,
-          title: 'Vas',
-          description: '',
-          price: 300,
-          currency: 'SEK',
-          stock: 1,
-          isSoldOut: false,
-          image: { url: 'https://storage.test/vas.png', altText: 'En blå vas' },
-        },
-      ],
-      page: 1,
-      pageSize: 12,
-      totalCount: 1,
-      totalPages: 1,
-    });
+    httpTesting
+      .expectOne((req) => req.url.endsWith('/api/products'))
+      .flush({
+        items: [
+          {
+            id: 7,
+            title: 'Vas',
+            description: '',
+            price: 300,
+            currency: 'SEK',
+            stock: 1,
+            isSoldOut: false,
+            image: { url: 'https://storage.test/vas.png', altText: 'En blå vas' },
+          },
+        ],
+        page: 1,
+        pageSize: 12,
+        totalCount: 1,
+        totalPages: 1,
+      });
     await harness.fixture.whenStable();
 
     const image = harness.routeNativeElement!.querySelector('img')!;
@@ -98,8 +102,8 @@ describe('ProductList', () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/produkter?kategori=3&kategori=1&sida=2');
     flushCategories([
-      { id: 1, name: 'Keramik', productCount: 4 },
-      { id: 3, name: 'Textil', productCount: 2 },
+      { id: 1, name: 'Keramik', productCount: 4, subcategories: [] },
+      { id: 3, name: 'Textil', productCount: 2, subcategories: [] },
     ]);
 
     const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));

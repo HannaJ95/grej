@@ -66,7 +66,8 @@ describe('AdminOrderDetails', () => {
     await harness.navigateByUrl('/admin/ordrar/7');
     answer(httpTesting.expectOne((req) => req.url.endsWith('/api/admin/orders/7')));
     await harness.fixture.whenStable();
-    return harness.routeNativeElement!;
+    // Only the page, without the admin's menu around it, so the menu's buttons are not counted.
+    return harness.routeNativeElement!.querySelector('main')!;
   }
 
   function texts(page: HTMLElement, selector: string): string[] {

@@ -68,6 +68,10 @@ Why: Simpler data model and filtering. Subcategories cover the need for grouping
 Decision (Should): Yes, one level. A category can have any number of subcategories (e.g. Ceramics → Plates, Cups, Bowls, Candle holders, Other), but a subcategory cannot have its own subcategories. The admin creates both in the CMS.
 Why: One level covers the need. Deeper trees make the CMS, the menu and the filtering much more complex.
 
+**Can a product be placed in a main category that has subcategories?**
+Decision (Should): Yes. A product can be in any category, a main category or a subcategory, e.g. a jug directly in Ceramics next to Plates and Cups.
+Why: Simpler rules, and nothing breaks when the admin adds a subcategory later.
+
 **What is shown when the customer selects a category?**
 Decision (Should): All products in the category and its subcategories. The subcategories are shown as filters.
 

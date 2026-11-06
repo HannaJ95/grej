@@ -1,0 +1,209 @@
+// The values come from Figma's Admin sidebar, Admin nav item and Admin sub nav item. The text
+// styles are classes in the template.
+
+// The menu fills its box and pushes the account part to the bottom.
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-32);
+  min-height: 100%;
+  padding: var(--space-28) var(--space-16) var(--space-24);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  padding-left: var(--space-14);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+// The group's label and its items with 4 px between them (Figma: Group BUTIK).
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.group-label {
+  margin: 0;
+  padding: 0 var(--space-14) var(--space-8);
+  color: var(--color-text-secondary);
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+// A link or a button that look the same (Admin nav item). min-height instead of height, so a
+// zoomed or long text can make the row taller.
+.item {
+  --icon-size: 1rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--space-12) var(--space-14);
+  border: none;
+  background: transparent;
+  color: inherit;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+
+  // Figma has no hover, so it is the same color as on other light buttons.
+  &:hover {
+    background: var(--color-oat);
+  }
+
+  // After :hover, so the chosen page stays dark under the mouse.
+  &.active {
+    background: var(--color-bg-inverse);
+    color: var(--color-text-on-inverse);
+  }
+}
+
+// Points up while the group is open.
+.chevron.open {
+  rotate: 180deg;
+}
+
+// The second level hangs from a thin line, 14 px in (Figma: Tree).
+.tree {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  // The same 4 px as between the items, since the list is inside its group's item.
+  margin: var(--space-4) 0 0 var(--space-14);
+  border-left: var(--border-width-default) solid var(--color-border-subtle);
+}
+
+.sub-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: 2rem;
+  padding: var(--space-6) var(--space-14);
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    background: var(--color-oat);
+  }
+
+  &.active {
+    background: var(--color-bg-inverse);
+    color: var(--color-text-on-inverse);
+  }
+}
+
+// The third level is quieter: normal weight and grey (Figma: Admin sub nav item, Level=3).
+.level-3:not(.active) {
+  color: var(--color-text-secondary);
+}
+
+// A quiet number to the right (Figma: Count on Admin sub nav item).
+.count {
+  margin-left: auto;
+  color: var(--color-text-secondary);
+
+  .active & {
+    color: var(--color-text-on-inverse-secondary);
+  }
+}
+
+.account {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding-top: var(--space-32);
+}
+
+.view-shop {
+  --icon-size: 1rem;
+
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: var(--space-8);
+  padding: 0 var(--space-14);
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-16) var(--space-14) 0;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.avatar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: var(--color-bg-inverse);
+  color: var(--color-text-on-inverse);
+}
+
+// min-width: 0 lets a long email wrap instead of making the menu wider.
+.who {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+// The email may break after the @ (<wbr> in the template), or anywhere if a part is too long.
+.name {
+  overflow-wrap: anywhere;
+}
+
+.role {
+  color: var(--color-text-secondary);
+}
+
+// A button that looks like a link (Link/S), since it does something instead of opening a page.
+.logout {
+  align-self: flex-start;
+  margin: 0 var(--space-14);
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}

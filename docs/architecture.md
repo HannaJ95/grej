@@ -77,7 +77,7 @@ client/
     core/                API services, auth interceptor, route guards
     shared/              Reusable components (button, icon, badge, pagination) and helpers
     features/shop/       Shop layout, start page, product list, product page, cart, checkout, success page
-    features/admin/      Login, products, categories, properties, orders
+    features/admin/      Admin layout and menu, login, products, categories, properties, orders
 ```
 
 ## Key decisions
@@ -180,7 +180,7 @@ erDiagram
 |---|---|---|
 | Id | int | |
 | Name | string | At most 100 characters |
-| ParentId | → Category, nullable | Only one level: a subcategory cannot have subcategories. Not built yet (Should, sprint 3) |
+| ParentId | → Category, nullable | The main category, or null for a main category. Only one level: a subcategory cannot have subcategories. `Restrict`: a category with subcategories cannot be deleted |
 
 **Material**, **Color**: `Id`, `Name` (at most 100 characters). In the code both inherit from the abstract `ProductProperty`, which has no table of its own.
 
@@ -243,7 +243,7 @@ Users and roles use the standard ASP.NET Core Identity tables. The only role in 
 
 The admin account is created with `dotnet run --project Grej.Api -- seed-admin` from `Admin:Email` and `Admin:Password` in User Secrets. `POST /api/auth/login` returns a JWT with the `Admin` role, valid for 8 hours, signed with `Jwt:SigningKey`. Five wrong passwords in a row lock the account for 5 minutes.
 
-Every admin endpoint has `[Authorize(Roles = Roles.Admin)]`. The API checks the token's signature, issuer, audience and expiry with JwtBearer in `Program.cs`, using the same `Jwt` settings as the login. No valid token gives 401, and a token without the `Admin` role gives 403. `GET /api/auth/me` returns the logged-in admin's email.
+Every admin endpoint has `[Authorize(Roles = Roles.Admin)]`. The API checks the token's signature, issuer, audience and expiry with JwtBearer in `Program.cs`, using the same `Jwt` settings as the login. No valid token gives 401, and a token without the `Admin` role gives 403. `GET /api/auth/me` returns the logged-in admin's email. The CMS's menu shows the email without asking the API: `AuthService.email()` reads it from the token's middle part (the API puts it there), which is signed but not secret.
 
 In Angular, `authInterceptor` adds `Authorization: Bearer <token>` to requests to the API only, and logs the admin out if the API answers 401. `adminGuard` (`canActivateChild` on `/admin`) sends anyone without an unexpired token to `/admin/logga-in`. The guard only hides pages; the API is the real protection.
 
@@ -254,6 +254,7 @@ In Angular, `authInterceptor` adds `Authorization: Bearer <token>` to requests t
 - The shop's tables are emptied with `TRUNCATE … RESTART IDENTITY` in the same transaction as the seed, so the ids start at 1 and a failure leaves the old content. Identity's tables are not in the list, so the admin account is kept, and it owns every product.
 - Every product gets its own copy of its category's image under `products/{id}/`, like an upload in the CMS. The old files are deleted after the commit.
 - The products are saved in turns across the categories, so the shop's first page (newest first) shows every category.
+- A category can list `subcategories` (Keramik and Konst do), and a product can name one of them in `subcategory`; without it the product is in the main category. The seed saves the subcategories with `Parent` set to their main category, so EF Core fills in `ParentId`.
 - The demo orders are built with the same `Order` methods as real ones: paid, and then shipped or cancelled as the file says. Their `CreatedAt` is set to a number of days ago, so the list shows different dates. The stock in the file is what is left after the orders, so the seed does not change it.
 - `DemoCatalogTests` checks the file against the CMS's rules, so a typo is found by `dotnet test`. The files are copied to the build output but not to the published API.
 
@@ -283,23 +284,29 @@ Known limitation: the alt text can only be changed by uploading the image again.
 
 ### Categories
 
-The admin creates, renames and deletes categories with `/api/admin/categories`. The list is sorted by name and, like every list, paginated, with up to 100 categories per page, so the menu in the product form gets them all from the first page. A product must have a category that exists: a missing or unknown `categoryId` gives 400.
+The admin works with categories on two pages, after the admin design in Figma: `/admin/kategorier` (main categories) and `/admin/underkategorier` (all subcategories, under their main categories), with `/admin/underkategorier/3` for one main category's subcategories. Both use `/api/admin/categories`, where `CategoryRequest` has an optional `parentId`. The list is sorted with each main category followed by its subcategories and, like every list, paginated, with up to 100 categories per page. A product must have a category that exists, a main category or a subcategory (ambiguity.md): a missing or unknown `categoryId` gives 400.
 
-- A category that has products cannot be deleted. `AdminCategoryService` asks the product repository directly, since both are in the Catalog module, and the API answers 409; the admin moves the products first. The foreign key from products to categories (`Restrict`) also stops the delete.
-- A new product gets the logged-in admin as its owner (`SellerId`, from the token's `sub` claim). Editing a product never changes its owner.
+- Only one level (ambiguity.md). `AdminCategoryService` checks that the chosen main category exists and is not a subcategory or the category itself, and that a category with subcategories does not become a subcategory; otherwise the API answers 400 on `parentId`. A subcategory can be made a main category again by choosing "Ingen" when it is edited.
+- A category that has products or subcategories cannot be deleted. `AdminCategoryService` asks the product repository directly, since both are in the Catalog module, and the API answers 409 with `{ "reason": "hasProducts" }` or `{ "reason": "hasSubcategories" }`, so the CMS can say what to do first. The foreign keys from products and from subcategories (`Restrict`) also stop the delete.
+- `CategoryDto` includes `productCount` (hidden products too, and for a main category also its subcategories' products) and `subcategoryCount`, counted with two queries whatever the number of categories (`IProductRepository.CountByCategoryAsync` and `ICategoryRepository.GetAllAsync`).
+- Each page has the list and a card that creates a category or, with `?redigera=3` in the URL, changes one (`AdminCategoryCard`, `kind` main or sub). On a main category's own page the card has that main category chosen, which is the way the design adds a subcategory. "N underkategorier" on the main category page links there too.
+- The pages, the card and the menu's numbers share one list, `AdminCategoryService.all`, which is fetched again after every change. Nothing is fetched until a category page asks for it, so the other admin pages send no extra request.
+- A new product gets the logged-in admin as its owner (`SellerId`, from the token's `sub` claim). Editing a product never changes its owner. The product form's menu shows a subcategory as "Keramik › Skålar".
 - The migration `AddCategories` gave every existing product a new category "Övrigt", the admin as owner and the time of the migration as `CreatedAt`/`UpdatedAt`, since the new columns cannot be empty. The old demo product seed was later replaced by `reset-demo` (see Demo data).
 
-Known limitations: two categories can have the same name, and the product form's menu shows at most 100 categories.
+Known limitations: two categories can have the same name, the CMS shows at most 100 categories, and deleting asks with the browser's `confirm()` instead of the design's dialog. The design's address (slug), "Visa i menyn" and dragging to change the order are not built.
 
 ### Category filter (shop)
 
-The shop filters the product list on one or several categories (Should). `GET /api/categories` is open and returns every category that has active products, sorted by name, with `productCount` (the number of active products). A category without any is left out, so the customer never picks one that shows nothing. `CategoryService` combines `ICategoryRepository.GetAllAsync` with `IProductRepository.CountActiveByCategoryAsync` (one `GROUP BY` query), so the repositories still return domain objects. The list is not paged, since the filter shows every category at once.
+The shop filters the product list on one or several categories (Should). `GET /api/categories` is open and returns the main categories, sorted by name, each with `productCount` (the number of active products) and its `subcategories` in the same form. A main category's number includes its subcategories' products, since choosing it shows them all. A category without active products is left out, so the customer never picks one that shows nothing; a main category with no products of its own is still shown if a subcategory has some. `CategoryService` combines `ICategoryRepository.GetAllAsync` with `IProductRepository.CountActiveByCategoryAsync` (one `GROUP BY` query), so the repositories still return domain objects. The list is not paged, since the filter shows every category at once.
 
-- `GET /api/products?categoryId=1&categoryId=3` returns products in category 1 or 3 ("or", ambiguity.md). Without `categoryId` it returns all. `ProductListQuery.CategoryId` is an `int[]` with at most 100 ids, and `ProductRepository` adds `Where(... Contains ...)` (`= ANY` in PostgreSQL) only when the list is not empty.
+- `GET /api/products?categoryId=1&categoryId=3` returns products in category 1 or 3 ("or", ambiguity.md), and in their subcategories: `ProductService` adds the subcategories' ids (`ICategoryRepository.GetSubcategoryIdsAsync`) before it asks the product repository. Without `categoryId` it returns all. `ProductListQuery.CategoryId` is an `int[]` with at most 100 ids, and `ProductRepository` adds `Where(... Contains ...)` (`= ANY` in PostgreSQL) only when the list is not empty.
 - In Angular the choice lives only in the URL: `/produkter?kategori=1&kategori=3`. `ProductList` reads it as an input with `toIdList` (`shared/id-list.ts`, like `toPageNumber`), and the tabs, the filter column, the list and the browser's back button all follow it. A tab shows only its category and is marked only when exactly that one is chosen; a checkbox adds or removes one category. Every change starts the list on page 1, and the pagination keeps `kategori`.
 - The start page's category links go to `/produkter?kategori=<id>`.
 
-Known limitations: on phones and tablets only one category at a time can be chosen (with the tabs), until the filter drawer is built with the material, color and price filters (sprint 4). A tab click and "Alla" remove any other query parameters.
+- The tabs and the start page show the main categories. The filter column shows each main category's subcategories indented under it, in a list of their own, with the same checkboxes.
+
+Known limitations: on phones and tablets only one category at a time can be chosen (with the tabs), and the subcategories cannot be chosen at all, until the filter drawer is built with the material, color and price filters (sprint 4). No tab is marked when only a subcategory is chosen. A tab click and "Alla" remove any other query parameters.
 
 ### Materials and colors
 
@@ -352,4 +359,8 @@ The shop's own design is made in Figma (GREJ – Webshop design) in three sizes:
 - Each size has Figma's values for its frame: a phone up to 767 px, a tablet from 768 px and a computer from 1024 px. The font sizes change through the variables; spacing and layout changes (columns, the menu, the add button) use media queries at 48rem (768 px) and 64rem (1024 px) in the components, written phone first. The footer's big "GREJ." is at most 42 % of the screen width, so the computer's 500 px letters fit between 1024 and 1190 px.
 - The Display text styles have line height 116 % (except Wordmark), so the dots on Å, Ä and Ö do not reach the row or line above. The sold-out layer over a product image differs from Figma on purpose: 70 % instead of 100 %, so the image can still be seen.
 
-The CMS has no Figma design; it uses the variables, the text styles (its headings are Display/XS and Display/2XS) and the shared components.
+The CMS has its own pages in the Figma file (page Admin). They use the same variables, text styles and shared components as the shop. So far the layout and the category pages are built after it; the other admin pages keep their simple look inside the layout until they are styled.
+
+- `AdminLayout` (`features/admin/admin-layout/`) is the parent route of every admin page except the login page, like `ShopLayout`. From 1024 px `AdminNav` (Figma: Admin sidebar) is a 264 px menu to the left, sticky with its own scroll. Below 1024 px there is an app bar (Figma: Admin app bar) whose menu button opens the same menu as a drawer from the left, a `<dialog>` like `MobileMenu`. Kategorier and Egenskaper fold with a button (`aria-expanded`) and are open on their own pages (`isActive` and `linkedSignal`). The menu shows only pages that exist; the design's Användare och roller, Inställningar, the number of new orders and the name with initials are not built, so it shows the email and its first letter.
+- `AdminPageHeader` is a page's top (Figma: Top bar): a small label, the h1 and room for the page's button. Its line reaches the edges of the main area.
+- The category pages share `admin-category-page.scss`. The page and the list are CSS containers (`container-type: inline-size`), so `@container` places the card to the right of the list when the page is at least 56rem wide, and puts each row on one line when the list is at least 36rem wide. The layout therefore follows the room the page has beside the menu, not the screen's width. The card comes first in the HTML, so it is on top on a narrow screen and the keyboard order matches what is seen.

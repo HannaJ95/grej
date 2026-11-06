@@ -44,6 +44,21 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal(["Halsband", "Skål"], page!.Items.Select(p => p.Title));
     }
 
+    [Fact]
+    public async Task GetPage_MainCategory_AlsoReturnsItsSubcategoriesProducts()
+    {
+        // Category 1 has the subcategory 4 (ambiguity.md).
+        subcategories[1] = [4];
+        var client = CreateClient(
+            new Product { Id = 3, Title = "Vas", Price = 300m, Stock = 1, IsActive = true, CategoryId = 4 },
+            new Product { Id = 2, Title = "Kudde", Price = 300m, Stock = 1, IsActive = true, CategoryId = 2 },
+            new Product { Id = 1, Title = "Skål", Price = 300m, Stock = 1, IsActive = true, CategoryId = 1 });
+
+        var page = await client.GetFromJsonAsync<PagedResult<ProductDto>>("/api/products?categoryId=1");
+
+        Assert.Equal(["Vas", "Skål"], page!.Items.Select(p => p.Title));
+    }
+
     [Theory]
     [InlineData("?page=0")]
     [InlineData("?pageSize=49")]
@@ -95,11 +110,50 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    // Starts the API with the given products instead of the database.
+    // Main category id → its subcategories' ids, for FakeCategoryRepository. Empty unless a test
+    // fills it. xUnit creates a new instance of the class for each test, so no test sees another's.
+    private readonly Dictionary<int, int[]> subcategories = [];
+
+    // Starts the API with the given products, and the subcategories above, instead of the database.
     private HttpClient CreateClient(params Product[] products) =>
         factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
-                services.AddScoped<IProductRepository>(_ => new FakeProductRepository(products))))
+            {
+                services.AddScoped<IProductRepository>(_ => new FakeProductRepository(products));
+                services.AddScoped<ICategoryRepository>(_ => new FakeCategoryRepository(subcategories));
+            }))
             .CreateClient();
+
+    // Only knows which subcategories each main category has, which is all ProductService asks.
+    private class FakeCategoryRepository(Dictionary<int, int[]> subcategories) : ICategoryRepository
+    {
+        public Task<IReadOnlyList<int>> GetSubcategoryIdsAsync(
+            IReadOnlyCollection<int> parentIds, CancellationToken cancellationToken) =>
+            Task.FromResult<IReadOnlyList<int>>(
+                parentIds.SelectMany(id => subcategories.GetValueOrDefault(id, [])).ToList());
+
+        // The product endpoints use nothing else.
+        public Task<Category?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        public Task<bool> ExistsAsync(int id, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        public Task<PagedResult<Category>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        public Task<bool> HasSubcategoriesAsync(int id, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        public Task<IReadOnlyList<Category>> GetAllAsync(CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        public void Add(Category category) => throw new NotImplementedException();
+
+        public void Remove(Category category) => throw new NotImplementedException();
+
+        public Task SaveChangesAsync(CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+    }
 
     private class FakeProductRepository(Product[] products) : IProductRepository
     {
@@ -121,6 +175,9 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
 
         // Only GET /api/categories uses this.
         public Task<IReadOnlyDictionary<int, int>> CountActiveByCategoryAsync(CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        public Task<IReadOnlyDictionary<int, int>> CountByCategoryAsync(CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
         // Only the CMS uses these.
