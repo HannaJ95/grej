@@ -42,15 +42,17 @@ public record DemoCatalog(
     }
 }
 
-// A category and its products. For now, every product in it gets a copy of the same image.
+// A main category and its products. For now, every product in it gets a copy of the same image.
+// Subcategories is optional: the names of its subcategories, which the products can choose.
 public record DemoCategory(
     string Name,
     string Image,
     string ImageAltText,
-    IReadOnlyList<DemoProduct> Products);
+    IReadOnlyList<DemoProduct> Products,
+    IReadOnlyList<string>? Subcategories = null);
 
-// The same fields as the CMS form (ProductRequest), but materials and colors are given by
-// name, since their ids are not known until the seed has saved them.
+// The same fields as the CMS form (ProductRequest), but the subcategory, the materials and the
+// colors are given by name, since their ids are not known until the seed has saved them.
 public record DemoProduct(
     string Title,
     string Description,
@@ -58,7 +60,9 @@ public record DemoProduct(
     int Stock,
     bool IsActive,
     IReadOnlyList<string> Materials,
-    IReadOnlyList<string> Colors);
+    IReadOnlyList<string> Colors,
+    // One of its category's Subcategories, or null when the product is in the main category.
+    string? Subcategory = null);
 
 // An order in the demo shop, paid DaysAgo days ago and then handled as Status says. The stock
 // in the file is what is left after these orders, so the seed does not change it. The customer
