@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, httpResource } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -8,11 +8,6 @@ import { environment } from '../../environments/environment';
 export interface AuthSession {
   token: string;
   expiresAt: string;
-}
-
-// What GET /api/auth/me returns: who is logged in.
-export interface Admin {
-  email: string;
 }
 
 // Where the login is saved in the browser.
@@ -60,10 +55,24 @@ export class AuthService {
     return this.token() !== null;
   }
 
-  // The logged-in admin, from GET /api/auth/me. Must be called when a component
-  // is created (in a field), like getProduct in ProductService.
-  getAdmin() {
-    return httpResource<Admin>(() => `${environment.apiUrl}/api/auth/me`);
+  // The logged-in admin's email, read from the token, or null. A JWT is three parts with dots
+  // between them, and the middle one is JSON in base64url: signed, so it cannot be changed, but
+  // not secret. The API puts the email there (IdentityLoginService), so the menu can show it
+  // without asking the API.
+  email(): string | null {
+    const token = this.token();
+    if (token === null) {
+      return null;
+    }
+    try {
+      // base64url has - and _ where atob expects + and /.
+      const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      const email: unknown = JSON.parse(atob(payload)).email;
+      return typeof email === 'string' ? email : null;
+    } catch {
+      // Not a JWT, e.g. "t" in the tests.
+      return null;
+    }
   }
 }
 

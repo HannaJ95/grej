@@ -10,8 +10,8 @@
   box-sizing: border-box;
 }
 
-// The admin pages: the space at the screen's edges, and at most as wide as Figma's computer
-// frame (1440 px) on a big screen.
+// The admin's login page: the space at the screen's edges, and at most as wide as Figma's
+// computer frame (1440 px) on a big screen.
 body {
   margin: 0 auto;
   padding: var(--space-16) var(--layout-margin);
@@ -23,10 +23,11 @@ body {
   }
 }
 
-// The shop's layout has bands of color from edge to edge, so the body does not limit it.
-// :has() matches the body when the shop's layout is somewhere inside it; the admin pages
-// keep the rule above.
-body:has(app-shop-layout) {
+// The shop's and the admin's layouts reach the screen's edges, so the body does not limit them.
+// :has() matches the body when one of the layouts is somewhere inside it; the login page keeps
+// the rule above.
+body:has(app-shop-layout),
+body:has(app-admin-layout) {
   max-width: none;
   padding: 0;
 }
@@ -36,6 +37,15 @@ html:has(app-shop-layout) {
 
   @media (width >= 48rem) {
     scroll-padding-top: 4.875rem;
+  }
+}
+
+// Keeps the focus below the admin's sticky app bar (64 px) on tablets and phones.
+html:has(app-admin-layout) {
+  scroll-padding-top: 4rem;
+
+  @media (width >= 64rem) {
+    scroll-padding-top: 0;
   }
 }
 

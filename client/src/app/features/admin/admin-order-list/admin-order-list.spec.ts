@@ -57,7 +57,7 @@ describe('AdminOrderList', () => {
 
     expect(all).toBe('false');
     expect(page.querySelector('a[href="/admin/ordrar/7"]')?.textContent).toBe('GREJ-AB12CD34');
-    expect(page.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('Att göra');
+    expect(page.querySelector('main a[aria-current="page"]')?.textContent?.trim()).toBe('Att göra');
     // The date and the sum are left out: the tests run without the app's Swedish locale
     // (app.config.ts), so the pipes format them in English here.
     const cells = [...page.querySelectorAll('tbody td')].map((td) => td.textContent?.trim());
@@ -73,7 +73,9 @@ describe('AdminOrderList', () => {
     const { page, all } = await show('/admin/ordrar?visa=alla', [unpaidOrder]);
 
     expect(all).toBe('true');
-    expect(page.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('Alla ordrar');
+    expect(page.querySelector('main a[aria-current="page"]')?.textContent?.trim()).toBe(
+      'Alla ordrar',
+    );
     // Stripe has not sent the customer's name yet.
     expect(page.textContent).toContain('Okänd');
     expect(page.textContent).toContain('Väntar på betalning');

@@ -1,0 +1,33 @@
+<!-- Tablets and phones (Figma: Admin app bar). The menu button opens the menu as a drawer. -->
+<header class="app-bar">
+  <div class="app-bar-start">
+    <!-- Three bars drawn with CSS, like the shop's menu button. -->
+    <button
+      class="menu-button"
+      type="button"
+      aria-label="Meny"
+      aria-haspopup="dialog"
+      (click)="open()"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <span class="text-display-xs">GREJ.</span>
+    <app-badge>Admin</app-badge>
+  </div>
+  <!-- The initial is only a picture; the email is in the menu. -->
+  <span class="avatar text-label-xs" aria-hidden="true">{{ initial }}</span>
+</header>
+
+<!-- Computers: the menu is always shown to the left. -->
+<app-admin-nav class="sidebar" [email]="email" />
+
+<!-- A native <dialog>, like MobileMenu: Escape closes it and the focus stays inside it. -->
+<dialog #drawer class="drawer" aria-label="Meny" (click)="closeOnBackdropOrLink($event)">
+  <app-admin-nav [email]="email" [inDrawer]="true" (closeDrawer)="close()" />
+</dialog>
+
+<main>
+  <router-outlet />
+</main>

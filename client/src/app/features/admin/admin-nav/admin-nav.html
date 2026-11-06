@@ -1,0 +1,130 @@
+<div class="top">
+  <div class="brand">
+    <span class="logo">
+      <span class="text-display-xs">GREJ.</span>
+      <app-badge>Admin</app-badge>
+    </span>
+    @if (inDrawer()) {
+      <button
+        appIconButton
+        icon="close"
+        type="button"
+        aria-label="Stäng menyn"
+        (click)="closeDrawer.emit()"
+      ></button>
+    }
+  </div>
+
+  <nav aria-label="Admin">
+    <p class="group-label text-badge">Butik</p>
+    <ul class="items">
+      <li>
+        <!-- exact: otherwise /admin would be marked on every admin page. -->
+        <a
+          class="item text-label-m"
+          routerLink="/admin"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ariaCurrentWhenActive="page"
+          >Översikt</a
+        >
+      </li>
+      <li>
+        <a
+          class="item text-label-m"
+          routerLink="/admin/ordrar"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          >Beställningar</a
+        >
+      </li>
+      <li>
+        <a
+          class="item text-label-m"
+          routerLink="/admin/produkter"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          >Produkter</a
+        >
+      </li>
+      <li>
+        <!-- A button, not a link: it only folds the group. aria-expanded tells screen readers
+             whether the list under it is shown. -->
+        <button
+          type="button"
+          class="item text-label-m"
+          [attr.aria-expanded]="categoriesOpen()"
+          (click)="categoriesOpen.set(!categoriesOpen())"
+        >
+          Kategorier
+          <app-icon class="chevron" [class.open]="categoriesOpen()" name="chevron-down" />
+        </button>
+        @if (categoriesOpen()) {
+          <ul class="tree">
+            <li>
+              <a
+                class="sub-item text-label-s"
+                routerLink="/admin/kategorier"
+                routerLinkActive="active"
+                ariaCurrentWhenActive="page"
+                >Huvudkategorier</a
+              >
+            </li>
+          </ul>
+        }
+      </li>
+      <li>
+        <button
+          type="button"
+          class="item text-label-m"
+          [attr.aria-expanded]="propertiesOpen()"
+          (click)="propertiesOpen.set(!propertiesOpen())"
+        >
+          Egenskaper
+          <app-icon class="chevron" [class.open]="propertiesOpen()" name="chevron-down" />
+        </button>
+        @if (propertiesOpen()) {
+          <ul class="tree">
+            <li>
+              <a
+                class="sub-item text-label-s"
+                routerLink="/admin/material"
+                routerLinkActive="active"
+                ariaCurrentWhenActive="page"
+                >Material</a
+              >
+            </li>
+            <li>
+              <a
+                class="sub-item text-label-s"
+                routerLink="/admin/farger"
+                routerLinkActive="active"
+                ariaCurrentWhenActive="page"
+                >Färger</a
+              >
+            </li>
+          </ul>
+        }
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<div class="account">
+  <a class="view-shop text-label-s" routerLink="/">
+    Visa butiken
+    <app-icon name="arrow-right" />
+  </a>
+  <div class="user">
+    <!-- The initial is only a picture; the email next to it says who it is. -->
+    <span class="avatar text-label-xs" aria-hidden="true">{{ initial() }}</span>
+    <span class="who">
+      @if (emailParts(); as parts) {
+        <!-- <wbr> lets a long email break after the @ instead of in the middle of a word. -->
+        <span class="name text-label-s">{{ parts.local }}&#64;<wbr />{{ parts.domain }}</span>
+      }
+      <span class="role text-body-xs">Admin</span>
+    </span>
+  </div>
+  <button type="button" class="logout text-link-s" (click)="logout()">Logga ut</button>
+</div>

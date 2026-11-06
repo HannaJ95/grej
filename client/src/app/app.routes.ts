@@ -7,7 +7,8 @@ export const routes: Routes = [
     // The router tries the children first; a URL none of them matches, like /admin, goes on
     // to the routes below.
     path: '',
-    loadComponent: () => import('./features/shop/shop-layout/shop-layout').then((m) => m.ShopLayout),
+    loadComponent: () =>
+      import('./features/shop/shop-layout/shop-layout').then((m) => m.ShopLayout),
     children: [
       {
         // The start page. Stripe's cancel URL (/) also ends up here.
@@ -40,12 +41,16 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    // Every admin page is a child here, so the guard protects them all.
+    // Every admin page is a child here, so the guard protects them all, and they are all shown
+    // inside the admin's layout with the menu. The login page above is not.
+    loadComponent: () =>
+      import('./features/admin/admin-layout/admin-layout').then((m) => m.AdminLayout),
     canActivateChild: [adminGuard],
     children: [
       {
         path: '',
-        loadComponent: () => import('./features/admin/admin-home/admin-home').then((m) => m.AdminHome),
+        loadComponent: () =>
+          import('./features/admin/admin-home/admin-home').then((m) => m.AdminHome),
       },
       {
         path: 'ordrar',

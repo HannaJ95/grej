@@ -1,0 +1,51 @@
+import { Component, computed, inject, input, linkedSignal, output } from '@angular/core';
+import { isActive, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../../core/auth.service';
+import { Badge } from '../../../shared/badge/badge';
+import { Icon } from '../../../shared/icons/icon';
+import { IconButton } from '../../../shared/icon-button/icon-button';
+
+// The CMS's menu (Figma: Admin sidebar). AdminLayout shows it to the left on a computer and in a
+// drawer on tablets and phones. Only the pages that exist are in it.
+@Component({
+  selector: 'app-admin-nav',
+  imports: [RouterLink, RouterLinkActive, Badge, Icon, IconButton],
+  templateUrl: './admin-nav.html',
+  styleUrl: './admin-nav.scss',
+})
+export class AdminNav {
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+
+  // The logged-in admin's email, from AdminLayout. Undefined if the token cannot be read.
+  readonly email = input<string>();
+  // True in the drawer, which has a close button.
+  readonly inDrawer = input(false);
+  readonly closeDrawer = output();
+
+  protected readonly initial = computed(() => this.email()?.charAt(0).toUpperCase() ?? '');
+  // The email in two parts, so the template can let it break after the @.
+  protected readonly emailParts = computed(() => {
+    const email = this.email() ?? '';
+    const at = email.lastIndexOf('@');
+    return at < 0 ? undefined : { local: email.slice(0, at), domain: email.slice(at + 1) };
+  });
+
+  // isActive gives a signal that is true while the URL starts with the path, e.g. also on
+  // /admin/kategorier/3.
+  private readonly onCategoryPage = isActive('/admin/kategorier', this.router);
+  private readonly onMaterialPage = isActive('/admin/material', this.router);
+  private readonly onColorPage = isActive('/admin/farger', this.router);
+
+  // A group is open while one of its pages is shown. The admin can fold it, until the next page
+  // sets it again: linkedSignal follows its source but can also be set.
+  protected readonly categoriesOpen = linkedSignal(() => this.onCategoryPage());
+  protected readonly propertiesOpen = linkedSignal(
+    () => this.onMaterialPage() || this.onColorPage(),
+  );
+
+  protected async logout(): Promise<void> {
+    this.auth.logout();
+    await this.router.navigateByUrl('/admin/logga-in');
+  }
+}
