@@ -20,6 +20,10 @@ public interface ICategoryRepository
     // True if any category has this one as its main category.
     Task<bool> HasSubcategoriesAsync(int id, CancellationToken cancellationToken);
 
+    // The ids of the subcategories of these main categories. For the shop's product list, where
+    // a main category also shows its subcategories' products.
+    Task<IReadOnlyList<int>> GetSubcategoryIdsAsync(IReadOnlyCollection<int> parentIds, CancellationToken cancellationToken);
+
     // All categories at once, sorted by name. For the shop's category filter.
     Task<IReadOnlyList<Category>> GetAllAsync(CancellationToken cancellationToken);
 

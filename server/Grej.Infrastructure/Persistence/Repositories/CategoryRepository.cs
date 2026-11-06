@@ -41,6 +41,14 @@ public class CategoryRepository(GrejDbContext db) : ICategoryRepository
     public Task<bool> HasSubcategoriesAsync(int id, CancellationToken cancellationToken) =>
         db.Categories.AnyAsync(c => c.ParentId == id, cancellationToken);
 
+    // Contains becomes "ParentId" = ANY (@ids) in PostgreSQL, like in ProductRepository.
+    public async Task<IReadOnlyList<int>> GetSubcategoryIdsAsync(
+        IReadOnlyCollection<int> parentIds, CancellationToken cancellationToken) =>
+        await db.Categories
+            .Where(c => c.ParentId != null && parentIds.Contains(c.ParentId.Value))
+            .Select(c => c.Id)
+            .ToListAsync(cancellationToken);
+
     // Sorted by name.
     public async Task<IReadOnlyList<Category>> GetAllAsync(CancellationToken cancellationToken) =>
         await db.Categories.OrderBy(c => c.Name).ThenBy(c => c.Id).ToListAsync(cancellationToken);
