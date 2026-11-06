@@ -26,6 +26,14 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
     public Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken cancellationToken) =>
         db.Products.AnyAsync(p => p.CategoryId == categoryId, cancellationToken);
 
+    // One SQL query with GROUP BY: one row per category that has active products.
+    public async Task<IReadOnlyDictionary<int, int>> CountActiveByCategoryAsync(CancellationToken cancellationToken) =>
+        await db.Products
+            .Where(p => p.IsActive)
+            .GroupBy(p => p.CategoryId)
+            .Select(group => new { CategoryId = group.Key, Count = group.Count() })
+            .ToDictionaryAsync(row => row.CategoryId, row => row.Count, cancellationToken);
+
     public void Add(Product product) => db.Products.Add(product);
 
     public void Remove(Product product) => db.Products.Remove(product);

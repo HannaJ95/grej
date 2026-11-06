@@ -29,6 +29,10 @@ public class CategoryRepository(GrejDbContext db) : ICategoryRepository
         return new PagedResult<Category>(items, page, pageSize, totalCount);
     }
 
+    // Sorted like GetPageAsync.
+    public async Task<IReadOnlyList<Category>> GetAllAsync(CancellationToken cancellationToken) =>
+        await db.Categories.OrderBy(c => c.Name).ThenBy(c => c.Id).ToListAsync(cancellationToken);
+
     public void Add(Category category) => db.Categories.Add(category);
 
     public void Remove(Category category) => db.Categories.Remove(category);

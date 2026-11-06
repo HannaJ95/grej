@@ -15,6 +15,9 @@ public interface ICategoryRepository
     // All categories, sorted by name.
     Task<PagedResult<Category>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken);
 
+    // All categories at once, sorted by name. For the shop's category filter.
+    Task<IReadOnlyList<Category>> GetAllAsync(CancellationToken cancellationToken);
+
     // Only remembered here. The INSERT or DELETE happens in SaveChangesAsync.
     void Add(Category category);
     void Remove(Category category);

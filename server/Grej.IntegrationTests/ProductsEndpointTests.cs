@@ -101,6 +101,10 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
         public Task<PagedResult<Product>> GetActivePageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
             Task.FromResult(new PagedResult<Product>(products, page, pageSize, products.Length));
 
+        // Only GET /api/categories uses this.
+        public Task<IReadOnlyDictionary<int, int>> CountActiveByCategoryAsync(CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
         // Only the CMS uses these.
         public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
             throw new NotImplementedException();

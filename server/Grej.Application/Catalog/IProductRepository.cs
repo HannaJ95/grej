@@ -21,6 +21,10 @@ public interface IProductRepository
     // True if any product, hidden or not, is in the category.
     Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken cancellationToken);
 
+    // How many active products each category has, as category id → count. A category without
+    // active products is missing from the dictionary.
+    Task<IReadOnlyDictionary<int, int>> CountActiveByCategoryAsync(CancellationToken cancellationToken);
+
     // Only remembered here. The INSERT or DELETE happens in SaveChangesAsync.
     void Add(Product product);
     void Remove(Product product);
