@@ -157,3 +157,9 @@ A few lines a day about how AI was used: what for, which tool, and what worked o
 - **Building:** Styled the product page after Figma: breadcrumb, gallery, stock status with a new yellow color, quantity stepper, a short description with "Mer information", and a buy row that is sticky on a phone.
 - **Design:** I changed Figma's mobile buy bar: the normal buy row stays at the bottom until it reaches its place, so there are never two buy buttons. I also made the stepper's buttons square.
 - **Verification:** Claude measured the page at 320–1440 px against Figma. This found that long words made the page scroll sideways and that the sticky row covered the screen at a big zoom; both are fixed.
+
+## 2026-11-06
+
+- **Building:** Finished the Should item "Filter products by category". The shop has category tabs and, on a computer, a filter column with checkboxes, both from my Figma design; the start page's categories now come from the API and link to the filter. Verified locally.
+- **Design:** I chose to let the customer pick several categories ("or"), with the choice only in the URL, so the back button works. The filter drawer for phones waits until there are more filters to show in it.
+- **Verification:** Every part was built and tested in a copy first, and Claude measured the tabs and the column against Figma at 320–1440 px. A test found that screen readers would have read "Keramik8" without a space.
