@@ -113,4 +113,18 @@ describe('ProductList', () => {
     // Two categories are chosen, so no single tab is.
     expect(tabs.querySelector('[aria-current]')).toBeNull();
   });
+
+  it('offers all products when no product matches the filter', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/produkter?kategori=99');
+    flushCategories();
+    httpTesting
+      .expectOne((req) => req.url.endsWith('/api/products'))
+      .flush({ items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 });
+    await harness.fixture.whenStable();
+
+    const results = harness.routeNativeElement!.querySelector('.results')!;
+    expect(results.textContent).toContain('Inga grejer matchar filtret.');
+    expect(results.querySelector('a')!.getAttribute('href')).toBe('/produkter');
+  });
 });

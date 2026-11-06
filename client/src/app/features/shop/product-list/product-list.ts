@@ -1,4 +1,5 @@
 import { Component, computed, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../../core/category.service';
 import { ProductService } from '../../../core/product.service';
 import { Breadcrumb } from '../../../shared/breadcrumb/breadcrumb';
@@ -13,7 +14,7 @@ import { ProductFilters } from '../product-filters/product-filters';
 // /produkter?kategori=1&kategori=3 (Figma: Shop page).
 @Component({
   selector: 'app-product-list',
-  imports: [Breadcrumb, CategoryTabs, Pagination, ProductCard, ProductFilters],
+  imports: [RouterLink, Breadcrumb, CategoryTabs, Pagination, ProductCard, ProductFilters],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss',
 })

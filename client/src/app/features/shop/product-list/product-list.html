@@ -48,7 +48,13 @@
       <p role="alert">Produkterna kunde inte visas.</p>
     } @else if (result.hasValue()) {
       @let r = result.value();
-      @if (r.items.length === 0) {
+      @if (r.items.length === 0 && categoryIds().length > 0) {
+        <!-- E.g. an old link to a category whose products are now hidden. -->
+        <p>
+          Inga grejer matchar filtret.
+          <a class="text-link-s" routerLink="/produkter">Visa alla grejer</a>
+        </p>
+      } @else if (r.items.length === 0) {
         <p>Det finns inga produkter att visa.</p>
       } @else {
         <ul class="product-grid">

@@ -16,6 +16,11 @@ describe('LandingPage', () => {
 
   afterEach(() => httpTesting.verify());
 
+  // Answers the page's request for the categories.
+  function flushCategories(categories: object[] = []): void {
+    httpTesting.expectOne((req) => req.url.endsWith('/api/categories')).flush(categories);
+  }
+
   // A product as the API returns it, with only what the cards show.
   function product(id: number, title: string) {
     return {
@@ -34,6 +39,7 @@ describe('LandingPage', () => {
     // Runs the page's first update, which sends the request. whenStable() would wait for
     // the answer, which the test has not sent yet.
     TestBed.tick();
+    flushCategories();
 
     const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
     expect(request.request.params.get('page')).toBe('1');
@@ -68,6 +74,7 @@ describe('LandingPage', () => {
   it('shows an error when the products cannot be fetched', async () => {
     const fixture = TestBed.createComponent(LandingPage);
     TestBed.tick();
+    flushCategories();
 
     httpTesting
       .expectOne((req) => req.url.endsWith('/api/products'))
@@ -75,5 +82,26 @@ describe('LandingPage', () => {
     await fixture.whenStable();
 
     expect(fixture.nativeElement.textContent).toContain('Nyheterna kunde inte visas.');
+  });
+
+  it('links each category to the product list filtered on it', async () => {
+    const fixture = TestBed.createComponent(LandingPage);
+    TestBed.tick();
+    flushCategories([
+      { id: 1, name: 'Keramik', productCount: 4 },
+      { id: 3, name: 'Textil', productCount: 2 },
+    ]);
+    httpTesting
+      .expectOne((req) => req.url.endsWith('/api/products'))
+      .flush({ items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 });
+    await fixture.whenStable();
+
+    const links = [
+      ...fixture.nativeElement.querySelectorAll('.category-link'),
+    ] as HTMLAnchorElement[];
+    expect(links.map((link) => [link.textContent!.trim(), link.getAttribute('href')])).toEqual([
+      ['Keramik', '/produkter?kategori=1'],
+      ['Textil', '/produkter?kategori=3'],
+    ]);
   });
 });
