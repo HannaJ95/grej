@@ -8,8 +8,9 @@ namespace Grej.Infrastructure.Persistence.Repositories;
 // Reads and saves categories in PostgreSQL with EF Core.
 public class CategoryRepository(GrejDbContext db) : ICategoryRepository
 {
+    // Include adds a JOIN, so the main category comes in the same SQL query.
     public Task<Category?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
-        db.Categories.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+        db.Categories.Include(c => c.Parent).FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 
     public Task<bool> ExistsAsync(int id, CancellationToken cancellationToken) =>
         db.Categories.AnyAsync(c => c.Id == id, cancellationToken);
@@ -19,8 +20,15 @@ public class CategoryRepository(GrejDbContext db) : ICategoryRepository
     {
         var totalCount = await db.Categories.CountAsync(cancellationToken);
         var items = await db.Categories
-            // By name, and then by id, so two categories with the same name keep a fixed order.
-            .OrderBy(c => c.Name)
+            .Include(c => c.Parent)
+            // Each category is sorted by its main category's name and id (its own for a main
+            // category), so a subcategory lands right after its main category. The id keeps two
+            // main categories with the same name apart.
+            .OrderBy(c => c.Parent == null ? c.Name : c.Parent.Name)
+            .ThenBy(c => c.ParentId ?? c.Id)
+            // The main category first (false sorts before true), then its subcategories by name.
+            .ThenBy(c => c.ParentId != null)
+            .ThenBy(c => c.Name)
             .ThenBy(c => c.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
@@ -29,7 +37,11 @@ public class CategoryRepository(GrejDbContext db) : ICategoryRepository
         return new PagedResult<Category>(items, page, pageSize, totalCount);
     }
 
-    // Sorted like GetPageAsync.
+    // EXISTS in SQL, like ProductRepository.AnyInCategoryAsync.
+    public Task<bool> HasSubcategoriesAsync(int id, CancellationToken cancellationToken) =>
+        db.Categories.AnyAsync(c => c.ParentId == id, cancellationToken);
+
+    // Sorted by name.
     public async Task<IReadOnlyList<Category>> GetAllAsync(CancellationToken cancellationToken) =>
         await db.Categories.OrderBy(c => c.Name).ThenBy(c => c.Id).ToListAsync(cancellationToken);
 
