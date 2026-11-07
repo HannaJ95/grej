@@ -38,9 +38,15 @@ h2 {
   background: var(--color-bg-surface);
 }
 
+// Beside the list it sticks below the top bar, so "Redigera" on the last row still shows it.
 .form-card {
   @container (width >= 56rem) {
     grid-area: form;
+
+    @media (height >= 30rem) {
+      position: sticky;
+      top: calc(var(--admin-sticky-top) + var(--space-24));
+    }
   }
 }
 
