@@ -11,6 +11,7 @@ A webshop for art and handmade items with an admin CMS. Built as my examensarbet
 - [constraints.md](docs/constraints.md) – rules the code must follow
 - [ambiguity.md](docs/ambiguity.md) – decisions on unclear requirements
 - [architecture.md](docs/architecture.md) – modules, layers and data model
+- [design.md](docs/design.md) – the Figma file, its components and each page's status
 - [sprint-plan.md](docs/sprint-plan.md) – sprints, checkpoints and cut order
 - [definition-of-done.md](docs/definition-of-done.md)
 
@@ -35,6 +36,10 @@ I build, Claude teaches. Claude does not edit project files or run commands that
 - Wait for me to say "klar" (or paste an error) after each part, then read my files before giving the next part.
 - Explanations in Swedish, compared with JavaScript, React, Next.js and Laravel where it helps.
 
+## Design and Figma
+
+- For all Figma and design work, use the skill `grej-figma`. The Figma pages and each page's status are in [design.md](docs/design.md).
+- Comments explain why, not what. No Figma sizes or "like in Figma" in comments, and no explanations of how Angular or CSS works in general. Explain those things to me in the chat instead.
 
 ## Commands
 
