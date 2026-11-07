@@ -1,27 +1,66 @@
-<h1 class="text-display-xs">{{ texts().plural | titlecase }}</h1>
-<p>
-  <a appButton [routerLink]="[texts().path, 'ny']">{{ texts().newOne }}</a>
+<app-admin-page-header eyebrow="Egenskaper" [title]="texts().plural | titlecase">
+  <button appButton size="large" type="button" (click)="edit(null)">{{ texts().newOne }}</button>
+</app-admin-page-header>
+
+<p class="intro text-body-m">
+  {{ texts().plural | titlecase }} väljs när du skapar en produkt och visas på produktsidan.
 </p>
 
-@if (result.isLoading()) {
-  <p role="status">Laddar {{ texts().theAll }}…</p>
-} @else if (result.error()) {
-  <p role="alert">{{ texts().theAll | titlecase }} kunde inte visas.</p>
-} @else if (result.hasValue()) {
-  @let r = result.value();
-  @if (r.items.length === 0) {
-    <p>Det finns inga {{ texts().plural }} än.</p>
-  } @else {
-    <!-- A list, as for categories, since a material or a color only has a name. -->
-    <ul>
-      @for (p of r.items; track p.id) {
-        <li>
-          <a [routerLink]="[texts().path, p.id]">{{ p.name }}</a>
-        </li>
-      }
-    </ul>
-  }
+<div class="columns">
+  <app-admin-property-card
+    class="card form-card"
+    [kind]="kind()"
+    [editing]="editing()"
+    (saved)="saved()"
+    (cancelled)="edit(null)"
+  />
 
-  <!-- Only shown when there are more than 100. -->
-  <app-pagination [path]="texts().path" [page]="r.page" [totalPages]="r.totalPages" />
-}
+  <section class="card list" aria-labelledby="property-list-title">
+    <h2 class="text-display-2xs" id="property-list-title">Alla {{ texts().plural }}</h2>
+
+    @if (removeError(); as message) {
+      <p role="alert">{{ message }}</p>
+    }
+    <p class="removed text-body-s" role="status">{{ removedMessage() }}</p>
+
+    <!-- hasValue first, so the old list stays while it is fetched again. -->
+    @if (result.hasValue()) {
+      @let r = result.value();
+      @if (r.items.length === 0) {
+        <p class="state">Det finns inga {{ texts().plural }} än.</p>
+      } @else {
+        <ul class="rows">
+          @for (p of r.items; track p.id) {
+            <li class="row">
+              <span class="name text-label-s">{{ p.name }}</span>
+              <span class="actions">
+                <button
+                  appLinkButton
+                  type="button"
+                  [attr.aria-label]="'Redigera ' + p.name"
+                  (click)="edit(p.id)"
+                >
+                  Redigera
+                </button>
+                <button
+                  appLinkButton
+                  tone="danger"
+                  type="button"
+                  [attr.aria-label]="'Ta bort ' + p.name"
+                  (click)="remove(p)"
+                >
+                  Ta bort
+                </button>
+              </span>
+            </li>
+          }
+        </ul>
+      }
+      <app-pagination [path]="texts().path" [page]="r.page" [totalPages]="r.totalPages" />
+    } @else if (result.error()) {
+      <p class="state" role="alert">{{ texts().theAll | titlecase }} kunde inte visas.</p>
+    } @else {
+      <p class="state" role="status">Laddar {{ texts().theAll }}…</p>
+    }
+  </section>
+</div>
