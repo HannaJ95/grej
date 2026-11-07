@@ -1,5 +1,4 @@
-// The values come from Figma's cards NY HUVUDKATEGORI and NY UNDERKATEGORI, with their Text
-// field and Select.
+// Shared by AdminCategoryCard and AdminPropertyCard.
 
 :host {
   display: flex;
@@ -24,15 +23,15 @@ p {
   gap: var(--space-8);
 }
 
-// 50 px high like Figma's Text field and Select. min-height, so zoomed text can make it taller.
+// min-height, so zoomed text can make the field taller.
 input,
 select {
   width: 100%;
-  min-height: 3.125rem;
+  min-height: var(--size-control-height);
   padding: var(--space-8) var(--space-16);
 }
 
-// Room on the right for the chevron, which lies on top of the select.
+// Room for the chevron that lies on top of the select.
 .select {
   position: relative;
   display: block;
@@ -43,7 +42,7 @@ select {
     cursor: pointer;
   }
 
-  // pointer-events: none lets a click on the chevron reach the select under it.
+  // Lets a click on the chevron reach the select under it.
   app-icon {
     --icon-size: 1rem;
 
@@ -63,8 +62,8 @@ input::placeholder {
   color: var(--color-feedback-error);
 }
 
-// The empty status paragraph takes no room, not even the gap, until there is a message. It is
-// not hidden with display: none, since screen readers only notice changes in what they can see.
+// Takes no room while empty. Not display: none, since screen readers only announce changes to
+// rendered content.
 .saved:empty {
   position: absolute;
 }
