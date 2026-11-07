@@ -1,15 +1,9 @@
-// The shop's design tokens: every variable in the Figma file (GREJ – Webshop design, page
-// Foundations), with the same names as Figma's "Code syntax". Change a value in Figma, then
-// change it here; the components only use var(--…), so this is the only place with values.
-// CSS custom properties instead of Sass variables: they work in every component's styles while
-// the app runs, and the responsive ones can get new values in a media query.
-// Sizes are in rem (1rem = 16 px, Figma's px in the comments), so the text follows the size
-// the visitor has chosen in the browser. Border widths are in px, so they stay sharp.
+// Design tokens from the Figma file (page Foundations), named after each variable's code
+// syntax. Sizes are in rem with Figma's px in the comments.
 :root {
-  // Tells the browser to draw its own parts, e.g. scrollbars, in light colors.
   color-scheme: light;
 
-  // Primitives: the palette. Only the tokens below use these directly.
+  // Primitives: only the color tokens below may use these.
   --color-sand: #efe7da;
   --color-linen: #f8f3ea;
   --color-stone: #cfc4b2;
@@ -21,15 +15,15 @@
   --color-rust: #a33a2a;
   --color-moss: #4e5d3f;
   --color-ochre: #a57a1f;
-  // Charcoal with 20 % and 55 % opacity (the last two hex digits).
   --color-charcoal-a20: #2b2a2733;
   --color-charcoal-a55: #2b2a278c;
 
-  // Tokens: what each color is for. They point at a primitive, like the aliases in Figma.
   --color-bg-page: var(--color-sand);
   --color-bg-surface: var(--color-linen);
   --color-bg-muted: var(--color-stone);
   --color-bg-inverse: var(--color-charcoal);
+  --color-bg-inverse-hover: var(--color-graphite);
+  --color-bg-hover: var(--color-oat);
   --color-bg-image: var(--color-white);
   --color-text-primary: var(--color-charcoal);
   --color-text-secondary: var(--color-graphite);
@@ -46,7 +40,6 @@
   --color-feedback-warning: var(--color-ochre);
   --color-accent-creator: var(--color-charcoal);
 
-  // Spacing: the number in the name is the size in px.
   --space-2: 0.125rem;
   --space-4: 0.25rem;
   --space-6: 0.375rem;
@@ -71,12 +64,11 @@
   --space-160: 10rem;
   --border-width-default: 2px;
   --border-width-strong: 3px;
+  --size-control-height: 3.125rem; // 50
 
-  // Figma's effect style Shadow/Popover: 8 px down, 24 px blur, charcoal with 18 % opacity.
   --shadow-popover: 0 0.5rem 1.5rem rgb(43 42 39 / 18%);
 
-  // Responsive: Figma's three modes, mobile first. These are the phone's values (0–767 px);
-  // the media queries below change the ones that are different on a tablet and a computer.
+  // Responsive values, mobile first. The media queries below override them.
   --font-size-display-hero: 6.875rem; // 110
   --font-size-display-xl: 4.5rem; // 72
   --font-size-display-l: 3rem; // 48
@@ -100,18 +92,15 @@
   --font-size-price: 0.9375rem; // 15
   --font-size-badge: 0.75rem; // 12
   --font-size-mono-s: 0.75rem; // 12
-  // The space at the screen's edges, the space between the grid's columns, and how many
-  // columns the grid has.
   --layout-margin: 1.25rem; // 20
   --layout-gutter: 0.75rem; // 12
   --layout-columns: 4;
-  // The width of Figma's frame in this mode.
+  --layout-admin-gutter: 1.25rem; // 20
   --layout-viewport-width: 24.375rem; // 390
 }
 
-// Tablet: 768–1023 px. The widths are Figma's layout/breakpoint-min, but media queries cannot
-// read CSS variables, so they are written out here and in the components: 48rem = 768 px and
-// 64rem = 1024 px.
+// Media queries cannot read custom properties, so the breakpoints are written out:
+// 48rem = 768 px and 64rem = 1024 px.
 @media (width >= 48rem) {
   :root {
     --font-size-display-hero: 9.375rem; // 150
@@ -128,11 +117,11 @@
     --layout-margin: 2rem; // 32
     --layout-gutter: 1.25rem; // 20
     --layout-columns: 8;
+    --layout-admin-gutter: 2rem; // 32
     --layout-viewport-width: 48rem; // 768
   }
 }
 
-// Desktop: from 1024 px.
 @media (width >= 64rem) {
   :root {
     --font-size-display-hero: 12.5rem; // 200
@@ -143,6 +132,7 @@
     --layout-margin: 3rem; // 48
     --layout-gutter: 1.5rem; // 24
     --layout-columns: 12;
+    --layout-admin-gutter: 2.5rem; // 40
     --layout-viewport-width: 90rem; // 1440
   }
 }

@@ -1,11 +1,7 @@
-// One class per text style in Figma (page Foundations), e.g. Display/L → .text-display-l.
-// Put the class on the element in the template: <h1 class="text-display-l">. The size is a
-// variable from _tokens.scss, so a text style follows the phone, tablet and computer sizes by
-// itself. Every class sets every property, so a class never keeps e.g. uppercase from its
-// parent.
+// One class per Figma text style, e.g. Display/L → .text-display-l. The font sizes come from
+// _tokens.scss, so they follow the breakpoints.
 
-// The fonts are loaded from Google Fonts in index.html. The ones after them are used until
-// they have loaded, or if they cannot be.
+// Fallbacks until the Google Fonts in index.html have loaded.
 $font-display: Anton, Impact, 'Arial Narrow', sans-serif;
 $font-text:
   Inter,
@@ -17,9 +13,8 @@ $font-text:
   sans-serif;
 $font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
 
-// A Sass mixin works like a function that writes CSS: each class below calls it with the text
-// style's values from Figma. $size is the end of the variable's name: display-l uses
-// --font-size-display-l. Figma's letter spacing in % becomes em (8 % = 0.08em).
+// Sets every property, so a class never inherits e.g. uppercase from its parent. Figma's
+// letter spacing in % becomes em (8 % = 0.08em).
 @mixin text-style(
   $font,
   $weight,
@@ -38,7 +33,6 @@ $font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
   text-decoration: $decoration;
 }
 
-// Display: Anton, in capitals.
 .text-display-hero {
   @include text-style($font-display, 400, display-hero, 1.16, $case: uppercase);
 }
@@ -75,7 +69,6 @@ $font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
   @include text-style($font-display, 400, display-wordmark, 1, 0.15em, uppercase);
 }
 
-// Body: Inter Regular.
 .text-body-l {
   @include text-style($font-text, 400, body-l, 1.5);
 }
@@ -100,7 +93,6 @@ $font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
   @include text-style($font-text, 400, caption, 1.2);
 }
 
-// Headings, labels and links: Inter Semi Bold.
 .text-heading-s {
   @include text-style($font-text, 600, heading-s, 1.4);
 }
@@ -137,7 +129,6 @@ $font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
   @include text-style($font-text, 600, label-xs, 1.2, $decoration: underline);
 }
 
-// Other.
 .text-price {
   @include text-style($font-text, 500, price, 1.4);
 }
@@ -148,4 +139,8 @@ $font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
 
 .text-mono-s {
   @include text-style($font-mono, 400, mono-s, 1);
+}
+
+.text-mono-s-caps {
+  @include text-style($font-mono, 400, mono-s, 1, $case: uppercase);
 }
