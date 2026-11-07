@@ -178,6 +178,14 @@ Developers guess most where the design lacks states and edge cases. Deliver them
 | Images | missing, loading, unexpected aspect ratios |
 | Products | in stock, few left (1–2), sold out |
 
+**Content and data:**
+
+- **Swedish UI text**, realistic and in the shop's tone. Test with long Swedish compounds such as "Presentförpackning" – they break layouts.
+- **Real formats:** prices like "450 kr" and "1 299 kr", dates and times like "2026-11-06 14:30" (the CMS's order list), order numbers like "Ordernummer 1042".
+- **Only data the API has.** A product has a title, description, price (SEK), stock, a category (main category or subcategory), materials, colors and one image with alt text (up to 10 when several images are built). Makers, sizes, care advice, ratings and customer accounts don't exist. Don't show them on Shop or Admin; they belong on Arkiv – idéer.
+- **Annotate what changes** between breakpoints, for example "the menu becomes a drawer below 1024 px".
+- **Motion:** only transitions that will be built, and say what happens with reduced motion. Moving content (like the start page's band of words) stands still when reduced motion is on.
+
 ## Behaviour and motion
 
 Figma shows exactly how a page behaves, so the code needs no guessing.
@@ -188,14 +196,7 @@ Figma shows exactly how a page behaves, so the code needs no guessing.
 - **Transitions are Instant** until a motion variable exists in both Figma and `_tokens.scss`. Real motion (a drawer that slides in) gets its duration, easing and what happens with reduced motion in an Interaction annotation.
 - **Annotate what a prototype cannot show:** where the focus goes, confirm dialogs, URL parameters, container breakpoints, aria-labels and status messages.
 - **States that only change part of a page** (loading, errors, messages) go in a `<Flow> / <Screen> / Tillstånd` frame at desktop width.
-
-**Content and data:**
-
-- **Swedish UI text**, realistic and in the shop's tone. Test with long Swedish compounds such as "Presentförpackning" – they break layouts.
-- **Real formats:** prices like "450 kr" and "1 299 kr", dates and times like "2026-11-06 14:30" (the CMS's order list), order numbers like "Ordernummer 1042".
-- **Only data the API has.** A product has a title, description, price (SEK), stock, a category (main category or subcategory), materials, colors and one image with alt text (up to 10 when several images are built). Makers, sizes, care advice, ratings and customer accounts don't exist. Don't show them on Shop or Admin; they belong on Arkiv – idéer.
-- **Annotate what changes** between breakpoints, for example "the menu becomes a drawer below 1024 px".
-- **Motion:** only transitions that will be built, and say what happens with reduced motion. Moving content (like the start page's band of words) stands still when reduced motion is on.
+- **Sticky and fixed:** Figma can only keep layers outside a scrolling frame in place. Show a sticky header by making the content under it the scrolling frame (the only exception to Clip content), and annotate the real CSS. A layer inside a grid (e.g. a sticky card) cannot stick in Figma; annotate it.
 
 ## Accessibility
 
