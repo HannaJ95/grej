@@ -96,7 +96,7 @@
                   <span class="count text-mono-s">{{ subcategoryCount() }}</span>
                 }
               </a>
-              <!-- The third level: each main category's own page (Figma: Sub Underkategorier). -->
+              <!-- The third level: each main category's own page. -->
               @if (onSubcategoryPage() && mainCategories(); as mains) {
                 <ul class="tree">
                   @for (main of mains; track main.id) {

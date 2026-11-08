@@ -3,15 +3,12 @@ import { adminGuard } from './core/admin.guard';
 
 export const routes: Routes = [
   {
-    // Every shop page is a child here, so they are all shown inside the shop's layout.
-    // The router tries the children first; a URL none of them matches, like /admin, goes on
-    // to the routes below.
     path: '',
     loadComponent: () =>
       import('./features/shop/shop-layout/shop-layout').then((m) => m.ShopLayout),
     children: [
       {
-        // The start page. Stripe's cancel URL (/) also ends up here.
+        // Also Stripe's cancel URL.
         path: '',
         pathMatch: 'full',
         loadComponent: () =>
@@ -24,7 +21,6 @@ export const routes: Routes = [
       },
       {
         path: 'produkter/:id',
-        // Lazy loading: the page's code is only downloaded when someone visits it.
         loadComponent: () =>
           import('./features/shop/product-page/product-page').then((m) => m.ProductPage),
       },
@@ -40,9 +36,8 @@ export const routes: Routes = [
     loadComponent: () => import('./features/admin/login-page/login-page').then((m) => m.LoginPage),
   },
   {
+    // The guard protects every child. The login page above stays outside.
     path: 'admin',
-    // Every admin page is a child here, so the guard protects them all, and they are all shown
-    // inside the admin's layout with the menu. The login page above is not.
     loadComponent: () =>
       import('./features/admin/admin-layout/admin-layout').then((m) => m.AdminLayout),
     canActivateChild: [adminGuard],
@@ -74,7 +69,7 @@ export const routes: Routes = [
           ),
       },
       {
-        // Before 'produkter/:id', otherwise "ny" would be read as an id.
+        // Before 'produkter/:id', so "ny" is not read as an id.
         path: 'produkter/ny',
         loadComponent: () =>
           import('./features/admin/admin-product-form/admin-product-form').then(
@@ -89,7 +84,7 @@ export const routes: Routes = [
           ),
       },
       {
-        // ?redigera=3 shows category 3 in the card next to the list.
+        // ?redigera=3 opens category 3 in the card.
         path: 'kategorier',
         loadComponent: () =>
           import('./features/admin/admin-main-categories/admin-main-categories').then(
@@ -97,7 +92,6 @@ export const routes: Routes = [
           ),
       },
       {
-        // All subcategories, under their main categories.
         path: 'underkategorier',
         loadComponent: () =>
           import('./features/admin/admin-subcategories/admin-subcategories').then(
@@ -105,7 +99,7 @@ export const routes: Routes = [
           ),
       },
       {
-        // Only the subcategories of main category :id. The same page, which reads :id.
+        // Only the subcategories of main category :id.
         path: 'underkategorier/:id',
         loadComponent: () =>
           import('./features/admin/admin-subcategories/admin-subcategories').then(
@@ -113,29 +107,11 @@ export const routes: Routes = [
           ),
       },
       {
+        // data.kind is bound to the page's kind input. ?redigera=3 opens material 3 in the card.
         path: 'material',
         loadComponent: () =>
           import('./features/admin/admin-property-list/admin-property-list').then(
             (m) => m.AdminPropertyList,
-          ),
-        // The same page as 'farger'. withComponentInputBinding passes data to the page's
-        // kind input, which picks the API's URL and the words.
-        data: { kind: 'materials' },
-      },
-      {
-        // Before 'material/:id', like 'produkter/ny'.
-        path: 'material/ny',
-        loadComponent: () =>
-          import('./features/admin/admin-property-form/admin-property-form').then(
-            (m) => m.AdminPropertyForm,
-          ),
-        data: { kind: 'materials' },
-      },
-      {
-        path: 'material/:id',
-        loadComponent: () =>
-          import('./features/admin/admin-property-form/admin-property-form').then(
-            (m) => m.AdminPropertyForm,
           ),
         data: { kind: 'materials' },
       },
@@ -144,22 +120,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/admin/admin-property-list/admin-property-list').then(
             (m) => m.AdminPropertyList,
-          ),
-        data: { kind: 'colors' },
-      },
-      {
-        path: 'farger/ny',
-        loadComponent: () =>
-          import('./features/admin/admin-property-form/admin-property-form').then(
-            (m) => m.AdminPropertyForm,
-          ),
-        data: { kind: 'colors' },
-      },
-      {
-        path: 'farger/:id',
-        loadComponent: () =>
-          import('./features/admin/admin-property-form/admin-property-form').then(
-            (m) => m.AdminPropertyForm,
           ),
         data: { kind: 'colors' },
       },

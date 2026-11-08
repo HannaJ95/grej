@@ -52,7 +52,6 @@
     } @else if (newest().length === 0) {
       <p>Det finns inga produkter att visa än.</p>
     } @else {
-      <!-- A grid on a computer and a tablet, a row to swipe through on a phone. -->
       <ul class="product-grid">
         @for (p of newest(); track p.id) {
           <li>

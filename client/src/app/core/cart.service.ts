@@ -158,9 +158,8 @@ function maxQuantityOf(product: Product): number {
 function load(): CartItem[] {
   try {
     const saved: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]');
-    // Carts saved before the stock limit have no maxQuantity. They get the
-    // largest one, and the API's stock check fixes them in the checkout. Carts saved
-    // before the design have no image, and are shown without one.
+    // Older saved carts can lack maxQuantity and image. They get the largest quantity, which
+    // the API's stock check fixes in the checkout, and no image.
     return Array.isArray(saved)
       ? saved.map((item) => ({ maxQuantity: MAX_QUANTITY, image: null, ...item }))
       : [];

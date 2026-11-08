@@ -16,7 +16,6 @@ import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
 import { Icon } from '../../../shared/icons/icon';
 
-// What the form's fields hold.
 interface CategoryFormModel {
   name: string;
   // The main category's id as text, since a <select>'s value is always text (like categoryId in
@@ -24,9 +23,8 @@ interface CategoryFormModel {
   parentId: string;
 }
 
-// The card next to the category list (Figma: NY HUVUDKATEGORI and NY UNDERKATEGORI). It creates
-// a category, or changes the one in editing. The page decides which one, from ?redigera= in the
-// URL, and with kind whether it is a main category or a subcategory.
+// Creates a category, or changes the one in editing. The page decides which one from ?redigera=
+// in the URL, and with kind whether it is a main category or a subcategory.
 @Component({
   selector: 'app-admin-category-card',
   imports: [FormRoot, FormField, Button, Icon],

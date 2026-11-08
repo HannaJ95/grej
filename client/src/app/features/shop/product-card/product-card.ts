@@ -6,8 +6,7 @@ import { FEW_LEFT, Product } from '../../../core/product.service';
 import { Badge } from '../../../shared/badge/badge';
 import { Icon } from '../../../shared/icons/icon';
 
-// One product in a list: image, title, price and an add button (Figma: Product card). Used
-// by the start page and the product list, so both change when the card changes.
+// Used by both the start page and the product list.
 @Component({
   selector: 'app-product-card',
   imports: [CurrencyPipe, RouterLink, Badge, Icon],

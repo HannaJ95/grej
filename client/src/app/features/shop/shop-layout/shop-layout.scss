@@ -1,13 +1,6 @@
-// The styles are written for a phone first; the media queries change them on a tablet
-// (48rem = 768 px) and a computer (64rem = 1024 px). The values come from Figma's Header and
-// Footer components, and the text styles are classes in the template.
-
-// :host is <app-shop-layout> itself. Without display: block a custom element is inline.
 :host {
   display: block;
 }
-
-// Header
 
 .header {
   position: sticky;
@@ -16,8 +9,6 @@
   background: var(--color-bg-surface);
 }
 
-// The logo, the menu and the cart in a row: 12 px above and below on a phone, 10 px on a
-// tablet and a computer.
 .header-content {
   display: flex;
   align-items: center;
@@ -30,8 +21,6 @@
   }
 }
 
-// "GREJ." in Display/Logo. In Figma each letter is its own text with 2 px between them,
-// which is the same as 2 px letter spacing.
 .logo {
   color: var(--color-text-primary);
   letter-spacing: var(--space-2);
@@ -55,7 +44,6 @@
   color: var(--color-text-primary);
 }
 
-// The current page is underlined, like "Shop" on the shop's pages in the design.
 .nav-link:hover,
 .nav-link.active {
   text-decoration: underline;
@@ -68,7 +56,6 @@
   gap: var(--space-10);
 }
 
-// Only on phones.
 .mobile-menu {
   display: block;
 
@@ -77,10 +64,6 @@
   }
 }
 
-// Footer
-
-// 56 px above and 28 px below on a phone, 64 / 32 px on a tablet and 80 / 40 px on a
-// computer. The focus ring gets the light border color to be seen on the dark background.
 .footer {
   overflow: clip;
   padding-block: var(--space-56) var(--space-28);
@@ -95,7 +78,6 @@
     padding-block: var(--space-64) var(--space-32);
   }
 
-  // Figma's footer has 40 px on the sides on a computer, a little less than the header's 48.
   @media (width >= 64rem) {
     padding-block: var(--space-80) var(--space-40);
 
@@ -120,20 +102,15 @@
   }
 }
 
-// Looks like the design's column title (Heading/XS), but is an h2 so the footer has a heading.
+// An h2, so the footer has a heading for screen readers.
 .footer-heading {
   margin: 0;
 }
 
-// The big "GREJ." across the whole width, in Display/Wordmark. Each letter is its own span,
-// and space-between spreads them out like in the design. 48 / 72 / 112 px above it and
-// 20 / 32 / 32 px below. The letters are about 2.1 times as wide as the font size, so the
-// computer's 500 px would not fit between 1024 and about 1190 px. The size is therefore at
-// most 42 % of the screen width, which only changes it there (and on phones narrower than
-// 360 px); at 390, 768 and 1440 px it is Figma's size. The text style's 15 % letter
-// spacing is turned off: the browser adds it after each letter, also after a lonely letter in
-// a span, which made the row 5 × 75 px too wide. space-between does the spacing instead, like
-// in Figma.
+// Each letter is a span, spread out by space-between. 42vw keeps the computer size from
+// overflowing between 1024 and about 1190 px. The text style's letter spacing is turned off,
+// since the browser adds it after every letter, also a lone one in a span, and the row got too
+// wide.
 .footer-logo {
   display: flex;
   justify-content: space-between;
@@ -150,7 +127,6 @@
   }
 }
 
-// Under each other on a phone, side by side from a tablet up. 7:1 against the background.
 .footer-bottom {
   display: flex;
   flex-direction: column;

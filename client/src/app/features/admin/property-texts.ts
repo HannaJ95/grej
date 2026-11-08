@@ -1,20 +1,20 @@
 import { PropertyKind } from '../../core/product-property';
 
-// The Swedish words for one kind of list. The material and color pages share their code,
-// but not their words: "materialet" but "färgen". Templates use the titlecase pipe when a
-// word starts a sentence, e.g. "Färgerna kunde inte visas."
+// The material and color pages share their code but not their words ("materialet", "färgen").
+// Templates use the titlecase pipe when a word starts a sentence.
 export interface PropertyTexts {
   // "Redigera färg"
   singular: string;
-  // "Det finns inga färger än."
+  // "Alla färger"
   plural: string;
   // "Ta bort färgen"
   theOne: string;
   // "Laddar färgerna…"
   theAll: string;
-  // The link to the form for a new one, and its heading.
+  // "Ny färg"
   newOne: string;
-  // The list page's URL in the CMS (app.routes.ts).
+  // The name field's placeholder.
+  example: string;
   path: string;
 }
 
@@ -25,6 +25,7 @@ export const PROPERTY_TEXTS: Record<PropertyKind, PropertyTexts> = {
     theOne: 'materialet',
     theAll: 'materialen',
     newOne: 'Nytt material',
+    example: 'T.ex. Trä',
     path: '/admin/material',
   },
   colors: {
@@ -33,6 +34,7 @@ export const PROPERTY_TEXTS: Record<PropertyKind, PropertyTexts> = {
     theOne: 'färgen',
     theAll: 'färgerna',
     newOne: 'Ny färg',
+    example: 'T.ex. Grön',
     path: '/admin/farger',
   },
 };

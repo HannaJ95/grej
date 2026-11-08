@@ -1,9 +1,4 @@
-// The values come from Figma's Added to cart popup and the frames "Tillagd i varukorgen", and
-// the text styles are classes in the template.
-
-// fixed: stays under the header's cart button even when the page is scrolled, 8 px under the
-// header (70 px high on a phone, 78 px from a tablet up) and the page's margin from the right
-// edge. 360 px wide, and the whole width except the margins on a phone.
+// Fixed, so it stays under the header's cart button when the page is scrolled.
 .popup {
   position: fixed;
   top: 4.875rem;
@@ -32,21 +27,18 @@
   align-items: center;
   justify-content: space-between;
 
-  // The design's close button here is 32 px instead of 40 px.
   button {
     width: 2rem;
     height: 2rem;
   }
 }
 
-// Label/S with a check mark in front.
 .title {
   display: flex;
   align-items: center;
   gap: var(--space-10);
 }
 
-// A 24 px dark square with a light 16 px check mark.
 .check {
   --icon-size: 1rem;
 
@@ -73,16 +65,14 @@
   background: var(--color-bg-image);
 }
 
-// The name (Heading/XS) and the price (Price), 2 px apart.
 .info {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
 }
 
-// Two equally wide buttons with Label/S, so "Visa varukorg (1)" stays on one row. They are
-// appButtons with Label/M; the two styles only differ in size. The primary button has 2 px
-// more padding than the secondary one's frame, so both are 43 px high, like in Figma.
+// A smaller text than appButton's, so "Visa varukorg (1)" stays on one row. The secondary
+// button's frame replaces part of its padding, so both buttons are equally tall.
 .actions {
   display: flex;
   gap: var(--space-10);

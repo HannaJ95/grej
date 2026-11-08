@@ -2,7 +2,9 @@
 
 **Project period:** Mon 12 October – Fri 20 November 2026 (presentations on 19–20 November).
 
-Sprints run Monday–Friday. Weekends are slack for anything that did not fit, not planned work. All Must items are planned to be done by **Wed 4 November**, no new features are started after **Fri 13 November**, the repo and deploy links and the Result section are submitted in examensarbete.md before **Mon 16 November**, and the last days are buffer for bugs, illness and the presentation.
+Sprints run Monday–Friday. Weekends are slack for anything that did not fit, not planned work. All Must items are planned to be done by **Wed 4 November**, and no new features are started after **Thu 12 November**. Everything (the code, the documents, the repo and deploy links and the Result section in examensarbete.md) is submitted by **Sun 15 November**, and the code is not changed after that.
+
+Changed on 8 Nov: the deadline for the code moved from after the buffer week to Sun 15 Nov, so the buffer week was removed, sprint 4 was shortened by one day and its items were put in priority order.
 
 A few lines about how AI was used are written in [ai-log.md](ai-log.md) every day. They become the AI documentation in the Result section.
 
@@ -16,9 +18,9 @@ What each item means is described in [scope.md](scope.md). When something is don
 | 1 – Buying | Mon 19 – Fri 23 Oct | A customer can buy several products | Must |
 | 2 – Admin and catalog | Mon 26 – Fri 30 Oct | The admin can manage products and the catalog | Must |
 | 3 – Orders, MVP | Mon 2 – Fri 6 Nov | The admin can handle orders; MVP complete Wed 4 Nov | Must + Should |
-| 4 – Should | Mon 9 – Fri 13 Nov | Customers can find products; shipping cost; Result submitted | Should |
-| Buffer | Mon 16 – Wed 18 Nov | Stable, documented project and presentation ready | – |
-| Presentation | Thu 19 – Fri 20 Nov | | |
+| 4 – Should | Mon 9 – Thu 12 Nov | Customers can filter and search; every admin page is styled | Should |
+| Wrap-up | Fri 13 – Sun 15 Nov | Stable, documented project; everything submitted | – |
+| Presentation | Mon 16 – Fri 20 Nov | Presentation ready and held on 19–20 Nov; no code changes | – |
 
 ## Sprint 0 – Setup (Mon 12 – Fri 16 Oct)
 
@@ -87,27 +89,36 @@ Should (Wed–Fri):
 - [x] Subcategories (one level) in the CMS and as filters
 - [x] Admin layout (menu) and the category pages after the new admin design in Figma (added 6 Nov, so subcategories could follow the design's flow; the other admin pages are styled later)
 
-## Sprint 4 – Should (Mon 9 – Fri 13 Nov)
+## Sprint 4 – Should (Mon 9 – Thu 12 Nov)
 
-**Goal:** customers can find products easily, the shop has a shipping cost, and the Result section is submitted. **No new features after Fri 13 Nov.**
+**Goal:** customers can filter and search the products, and every admin page has the shop's look. **No new features after Thu 12 Nov.**
 
-- [ ] Write the Result section in examensarbete.md (AI documentation and personal evaluation) and submit the repo and deploy links, before Mon 16 Nov
-- [ ] Responsive design and accessibility review of all pages
-- [ ] Fixed shipping cost in Stripe Checkout, stored on the order
+In priority order. Responsive design and accessibility are checked on every page that changes.
+
+- [ ] Filter by price, material and color, including the filter panel on phones and tablets
+- [ ] Style the remaining admin pages: products, orders, the start page and the login page
 - [ ] Search products by name
+- [ ] Fixed shipping cost in Stripe Checkout, stored on the order
 - [ ] Several images per product
-- [ ] Filter by price, material and color
-- [ ] Flag double sale of the last item
-- [ ] Could, only if everything above is done: order confirmation email, dark and light mode
 
-## Buffer (Mon 16 – Wed 18 Nov)
+Dropped on 8 Nov, when the deadline moved:
 
-**Goal:** a stable, documented project and a presentation that is ready.
+- Flag double sale of the last item, since a negative stock already shows it
+- The Could items: order confirmation email, dark and light mode
+
+## Wrap-up (Fri 13 – Sun 15 Nov)
+
+**Goal:** a stable, documented project, submitted by Sun 15 Nov. The code is not changed after that.
 
 - [ ] Fix bugs, no new features
+- [ ] Responsive design and accessibility review of all pages
 - [ ] README: how to run the project locally
 - [ ] Update the planning documents to match what was built, including known limitations
 - [ ] Demo content: final texts and images in the demo data, reset once in the deployed shop
+- [ ] Write the Result section in examensarbete.md (AI documentation and personal evaluation) and submit it with the repo and deploy links
+
+## Presentation (Mon 16 – Fri 20 Nov)
+
 - [ ] Prepare and rehearse the presentation (15–20 minutes), including a demo in the deployed environment (with a backup recording)
 
 ## Checkpoints
@@ -119,21 +130,20 @@ Should (Wed–Fri):
 | Fri 23 Oct | Several products can be bought in production; decide on own visual design | Cart polish moves to sprint 2; Stripe and webhook have priority; plan B is used instead of an own design |
 | Fri 30 Oct | The admin can log in and manage products, categories and properties | Remaining CMS parts move to the start of sprint 3; the Should items in sprint 3 are dropped |
 | Wed 4 Nov | Supervision 2: all Must items done | Sprint 3 and 4 finish the Must items; Should is limited to styling the customer pages and the category filter |
-| Fri 13 Nov | Feature freeze; Result section and links submitted | Unfinished features are removed or hidden, not finished during the buffer. The Result is submitted before Mon 16 Nov regardless |
+| Thu 12 Nov | Feature freeze | Unfinished features are removed or hidden, not finished during the wrap-up |
+| Sun 15 Nov | Everything submitted: code, documents, links and the Result section | Submitted regardless; what is not done is written down as a known limitation |
 
 ## Cut order for Should
 
-If time runs short, Should items are dropped from the bottom of this list first:
+If time runs short, Should items are dropped from the bottom of this list first. Styling the customer pages, filter by category and subcategories are done.
 
-1. Styling the customer pages
-2. Filter by category
-3. Subcategories
-4. Responsive design
-5. Accessibility
-6. Fixed shipping cost
-7. Search by name
-8. Several images per product
-9. Filter by price, material and color
-10. Flag double sale – a negative stock already shows it
+1. Responsive design and accessibility
+2. Filter by price, material and color
+3. Styling the remaining admin pages
+4. Search by name
+5. Fixed shipping cost
+6. Several images per product
+
+Flag double sale was dropped on 8 Nov (see sprint 4).
 
 The own visual design is not in this list. It was not decided at the checkpoint Fri 23 Oct, so it is decided by Wed 4 Nov, with the component library and own colors from sprint 2 as plan B.

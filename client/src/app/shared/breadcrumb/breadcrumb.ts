@@ -7,8 +7,7 @@ export interface BreadcrumbLink {
   path: string;
 }
 
-// "Hem / Shop / Vas" above a page's title (Figma: Breadcrumb). The current page comes last
-// and is not a link.
+// "Hem / Shop / Vas". The current page comes last and is not a link.
 @Component({
   selector: 'app-breadcrumb',
   imports: [RouterLink],

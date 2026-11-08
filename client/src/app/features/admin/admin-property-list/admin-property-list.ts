@@ -1,29 +1,101 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, computed, inject, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, computed, inject, input, signal, viewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { AdminPropertyService } from '../../../core/admin-property.service';
-import { PropertyKind } from '../../../core/product-property';
+import {
+  ProductProperty,
+  ProductPropertyDetails,
+  PropertyKind,
+} from '../../../core/product-property';
 import { Button } from '../../../shared/button/button';
+import { toId } from '../../../shared/id-list';
+import { LinkButton } from '../../../shared/link-button/link-button';
 import { toPageNumber } from '../../../shared/page-number';
 import { Pagination } from '../../../shared/pagination/pagination';
+import { AdminPageHeader } from '../admin-page-header/admin-page-header';
+import { AdminPropertyCard } from '../admin-property-card/admin-property-card';
 import { PROPERTY_TEXTS } from '../property-texts';
 
-// The CMS's list of materials (/admin/material) or colors (/admin/farger), sorted by name.
-// Built the same way as AdminCategoryList, but one component serves both lists.
+// /admin/material and /admin/farger: the list, and the card that creates or renames one.
 @Component({
   selector: 'app-admin-property-list',
-  imports: [RouterLink, TitleCasePipe, Button, Pagination],
+  imports: [TitleCasePipe, Button, LinkButton, Pagination, AdminPageHeader, AdminPropertyCard],
   templateUrl: './admin-property-list.html',
+  styleUrl: '../admin-category-page.scss',
 })
 export class AdminPropertyList {
   private readonly properties = inject(AdminPropertyService);
+  private readonly router = inject(Router);
 
-  // Which list, from the route's data in app.routes.ts. withComponentInputBinding sets it,
-  // the same way as :id and ?sida=.
   readonly kind = input.required<PropertyKind>();
-  // The ?sida= in the URL, the same way as in AdminCategoryList.
   readonly page = input(1, { alias: 'sida', transform: toPageNumber });
+  readonly editId = input(undefined, { alias: 'redigera', transform: toId });
 
   protected readonly texts = computed(() => PROPERTY_TEXTS[this.kind()]);
   protected readonly result = this.properties.getProperties(this.kind, this.page);
+  protected readonly editing = computed(() =>
+    this.result.hasValue()
+      ? this.result.value().items.find((p) => p.id === this.editId())
+      : undefined,
+  );
+
+  protected readonly removeError = signal<string | undefined>(undefined);
+  protected readonly removedMessage = signal('');
+
+  private readonly card = viewChild.required(AdminPropertyCard);
+
+  protected edit(id: number | null): void {
+    this.showInCard(id);
+    this.card().focusName();
+  }
+
+  protected saved(): void {
+    this.result.reload();
+    this.edit(null);
+  }
+
+  protected async remove(property: ProductProperty): Promise<void> {
+    this.removeError.set(undefined);
+    this.removedMessage.set('');
+    try {
+      // The list has no product count, and the question needs one.
+      const details = await this.properties.get(this.kind(), property.id);
+      if (!confirm(this.removeQuestion(details))) {
+        return;
+      }
+      await this.properties.remove(this.kind(), property.id);
+      this.removedMessage.set(`${property.name} har tagits bort.`);
+      if (this.editId() === property.id) {
+        this.showInCard(null);
+      }
+      this.result.reload();
+    } catch {
+      this.removeError.set(
+        `Det gick inte att ta bort ${this.texts().theOne} just nu. Försök igen om en stund.`,
+      );
+    }
+  }
+
+  // 'merge' keeps ?sida=, and scroll: 'manual' keeps the scroll position.
+  private showInCard(id: number | null): void {
+    this.router.navigate([this.texts().path], {
+      queryParams: { redigera: id },
+      queryParamsHandling: 'merge',
+      scroll: 'manual',
+    });
+  }
+
+  // Products lose it too, so the question says how many have it (ambiguity.md).
+  private removeQuestion({ name, productCount }: ProductPropertyDetails): string {
+    if (productCount === 0) {
+      return `Vill du ta bort "${name}"? Det går inte att ångra.`;
+    }
+    const { theOne } = this.texts();
+    const products = productCount === 1 ? '1 produkt' : `${productCount} produkter`;
+    const them = productCount === 1 ? 'den' : 'dem';
+    return (
+      `${products} har "${name}", och ${theOne} tas bort från ${them} också. ` +
+      `Vill du ändå ta bort ${theOne}? Det går inte att ångra.`
+    );
+  }
 }

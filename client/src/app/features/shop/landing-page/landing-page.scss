@@ -1,15 +1,7 @@
-// The styles are written for a phone first; the media queries change them on a tablet
-// (48rem = 768 px) and a computer (64rem = 1024 px). The values come from Figma's three
-// Landing Page frames, and the text styles are classes in the template.
-
 :host {
   display: block;
 }
 
-// Hero
-
-// 20 px above and 48 px below on a phone, 24 / 72 px on a tablet and 24 / 64 px on a
-// computer.
 .hero {
   padding-block: var(--space-20) var(--space-48);
 
@@ -22,7 +14,6 @@
   }
 }
 
-// Display/Hero. On a phone it wraps to three rows by itself, like the design.
 .hero-title {
   margin: 0 0 var(--space-24);
 
@@ -31,7 +22,6 @@
   }
 }
 
-// Body/L, 520 px wide on a tablet and 540 px on a computer.
 .hero-intro {
   margin: 0 0 var(--space-24);
 
@@ -45,7 +35,6 @@
   }
 }
 
-// The whole width on a phone, like the design.
 .hero-button {
   display: flex;
 
@@ -54,11 +43,8 @@
   }
 }
 
-// Marquee
-
-// Figma's Marquee: 38 / 44 / 52 px high, Label/XS / M / L and a 12 / 14 / 16 px star with
-// 20 / 24 / 28 px between the words and the stars. The three label styles only differ in
-// size, so the template has text-label-xs and the media queries change the size.
+// The label styles only differ in size, so the template has text-label-xs and the media
+// queries change the font size.
 .marquee {
   display: flex;
   align-items: center;
@@ -85,12 +71,10 @@
   animation: marquee 40s linear infinite;
 }
 
-// The design: pause when the pointer is over it.
 .marquee:hover .marquee-track {
   animation-play-state: paused;
 }
 
-// For people who have turned on "reduce motion" in their system's settings (WCAG 2.3.3).
 @media (prefers-reduced-motion: reduce) {
   .marquee-track {
     animation: none;
@@ -146,9 +130,6 @@
   }
 }
 
-// Newest products
-
-// 56 / 80 / 120 px above and 64 / 96 / 160 px below.
 .newest {
   padding-block: var(--space-56) var(--space-64);
 
@@ -161,14 +142,11 @@
   }
 }
 
-// The title on the left and "Visa alla" on the right, on the same baseline. 24 / 32 / 40 px
-// down to the products.
 .newest-header {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
-  // 16 px between them, so both fit on one row on a 390 px phone, like the design.
   gap: var(--space-8) var(--space-16);
   margin-bottom: var(--space-24);
 
@@ -185,8 +163,7 @@
   margin: 0;
 }
 
-// Link/S on a phone and Link/L from a tablet up. They only differ in size and line height,
-// so the template has text-link-s and the media query changes those two.
+// The template has text-link-s; from a tablet up it gets text-link-l's size and line height.
 .show-all {
   color: var(--color-text-primary);
 
@@ -196,9 +173,8 @@
   }
 }
 
-// On a phone a row of 260 px cards to swipe through, 16 px apart: it reaches the screen's
-// edges (the negative margin), and each swipe stops at a card (scroll-snap). Two products
-// per row on a tablet (24 px apart, 40 px between the rows) and four on a computer.
+// On a phone a row to swipe through that reaches the screen's edges, and each swipe stops at
+// a card.
 .product-grid {
   display: grid;
   grid-auto-flow: column;
@@ -231,9 +207,6 @@
   }
 }
 
-// Categories
-
-// 20 / 32 / 48 px around the list.
 .categories {
   padding-block: var(--space-20);
   background: var(--color-bg-muted);
@@ -252,7 +225,6 @@
   list-style: none;
 }
 
-// Figma's Category row. Its line lies over 10 px padding, so 8 px + the line here.
 .category-link {
   display: flex;
   align-items: center;
@@ -268,7 +240,6 @@
   }
 }
 
-// 30 px on a phone, 44 px on a tablet and 64 px on a computer.
 .category-arrow {
   --icon-size: 1.875rem;
 

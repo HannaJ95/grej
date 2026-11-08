@@ -1,5 +1,3 @@
-// Phone first; the values come from Figma's Produktsida frames.
-
 :host {
   display: block;
 }
@@ -8,8 +6,6 @@
   padding-top: var(--space-24);
 }
 
-// The gallery and the information under each other on a phone, side by side from a tablet
-// (360 : 320 px in Figma) and on a computer (760 : 520 px).
 .product {
   display: grid;
   align-items: start;
@@ -55,7 +51,7 @@ h1 {
   overflow-wrap: anywhere;
 }
 
-// Looks like a link (Link/S) but opens the description on this page.
+// Looks like a link but opens the description on this page.
 .more {
   padding: 0;
   border: none;
@@ -97,7 +93,7 @@ h1 {
   padding: var(--space-12) var(--layout-margin) var(--space-20);
   background: var(--color-bg-page);
 
-  // Own row below about 345 px. Nested to beat the button's own padding.
+  // Wraps to its own row on the narrowest phones. Nested to beat the button's own padding.
   .add {
     flex: 1 1 10rem;
     padding-inline: var(--space-16);
@@ -121,8 +117,6 @@ h1 {
   display: none;
 }
 
-// Figma's Accordion item: a 2 px line above and below, Heading/XS and a plus that becomes a
-// minus when it is open.
 .details {
   border-block: var(--border-width-default) solid var(--color-border-default);
 }

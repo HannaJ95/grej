@@ -7,8 +7,7 @@ import { toId } from '../../../shared/id-list';
 import { AdminCategoryCard } from '../admin-category-card/admin-category-card';
 import { AdminPageHeader } from '../admin-page-header/admin-page-header';
 
-// The CMS's main categories, /admin/kategorier (Figma: Admin – Kategorier – Huvudkategorier):
-// the list to the left and the card that creates or changes one to the right.
+// /admin/kategorier: the list and the card that creates or changes a main category.
 @Component({
   selector: 'app-admin-main-categories',
   imports: [RouterLink, Button, AdminCategoryCard, AdminPageHeader],

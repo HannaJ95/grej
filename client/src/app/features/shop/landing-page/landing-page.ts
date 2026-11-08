@@ -7,11 +7,8 @@ import { Button } from '../../../shared/button/button';
 import { Icon } from '../../../shared/icons/icon';
 import { ProductCard } from '../product-card/product-card';
 
-// The words in the moving band, in the design's order.
 const marqueeWords = ['Handgjort', 'Unikt', 'Från skapare'];
 
-// The start page (/), built from the design in Figma: a big title, a moving band of words,
-// the newest products and links to the categories.
 @Component({
   selector: 'app-landing-page',
   imports: [NgOptimizedImage, RouterLink, Button, Icon, ProductCard],
@@ -25,7 +22,7 @@ export class LandingPage {
   // newest. signal(1): getProducts expects a signal, and this page never changes it.
   protected readonly result = this.products.getProducts(signal(1));
 
-  // computed: recalculated only when result changes. Empty until the API has answered.
+  // Empty until the API has answered.
   protected readonly newest = computed(() =>
     this.result.hasValue() ? this.result.value().items.slice(0, 4) : [],
   );
@@ -35,7 +32,6 @@ export class LandingPage {
   // start over without a visible jump.
   protected readonly marqueeWords = Array(4).fill(marqueeWords).flat();
 
-  // The categories with products, sorted by name. Each link shows the product list filtered on
-  // that category, like a category tab.
+  // Only the categories that have products, sorted by name.
   protected readonly categories = inject(CategoryService).getCategories();
 }

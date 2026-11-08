@@ -7,9 +7,8 @@ import { Button } from '../../../shared/button/button';
 import { IconButton } from '../../../shared/icon-button/icon-button';
 import { QuantityStepper } from '../../../shared/quantity-stepper/quantity-stepper';
 
-// The cart button in the navigation and the panel it opens (Figma: Cart drawer). The panel
-// is a native <dialog>: the browser closes it on Escape, keeps the focus inside it while it
-// is open and puts a backdrop behind it.
+// The cart button and its panel, a native <dialog>, so the browser handles Escape, the focus
+// and the backdrop.
 @Component({
   imports: [CurrencyPipe, RouterLink, Button, IconButton, QuantityStepper],
   selector: 'app-cart-drawer',
@@ -26,7 +25,6 @@ export class CartDrawer {
   private readonly checkout = inject(CheckoutService);
   private readonly document = inject(DOCUMENT);
 
-  // The <dialog #dialog> element in the template.
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
 
   // True while the API creates the order, so the button cannot be clicked twice.
@@ -40,8 +38,7 @@ export class CartDrawer {
     this.dialog().nativeElement.showModal();
   }
 
-  // A click on the dialog element itself is a click on the dark backdrop, since the panel
-  // inside it covers the rest. The design closes the cart then, like the menu.
+  // The panel covers the whole dialog, so a click on the dialog itself is on the backdrop.
   protected closeOnBackdrop(event: MouseEvent): void {
     if (event.target === event.currentTarget) {
       this.close();

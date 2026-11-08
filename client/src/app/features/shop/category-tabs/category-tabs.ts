@@ -2,9 +2,8 @@ import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ShopCategory } from '../../../core/category';
 
-// The row of categories above the product list (Figma: Category tabs). Each tab is a link that
-// shows only its category, and "Alla" shows them all. A tab is marked as chosen only when
-// exactly its category is chosen, since the filter column can choose several.
+// A tab is marked as chosen only when exactly its category is chosen, since the filter column
+// can choose several.
 @Component({
   selector: 'app-category-tabs',
   imports: [RouterLink],

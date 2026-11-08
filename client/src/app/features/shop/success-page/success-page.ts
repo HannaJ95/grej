@@ -11,7 +11,6 @@ import { Icon } from '../../../shared/icons/icon';
   imports: [RouterLink, Button, Icon],
   templateUrl: './success-page.html',
   styleUrl: './success-page.scss',
-  // The page's width and side space (_base.scss), like the product list.
   host: { class: 'page-width' },
 })
 export class SuccessPage {

@@ -4,9 +4,8 @@ import { AuthService } from '../../../core/auth.service';
 import { Badge } from '../../../shared/badge/badge';
 import { AdminNav } from '../admin-nav/admin-nav';
 
-// The frame around every admin page except the login page: the menu, and on tablets and phones
-// the app bar with a button that opens the menu as a drawer. The admin pages are its children in
-// app.routes.ts and are shown in <router-outlet />, like ShopLayout for the shop.
+// The menu around every admin page except the login page. On tablets and phones an app bar
+// opens it as a drawer.
 @Component({
   selector: 'app-admin-layout',
   imports: [RouterOutlet, AdminNav, Badge],
@@ -29,9 +28,8 @@ export class AdminLayout {
     this.drawer().nativeElement.close();
   }
 
-  // A click on the dialog element itself is a click on the backdrop, since the menu covers the
-  // rest of it (like MobileMenu). A click on a link closes the drawer too, since the new page is
-  // shown behind it.
+  // The menu covers the whole dialog, so a click on the dialog itself is on the backdrop. A click
+  // on a link closes the drawer too, since the new page is shown behind it.
   protected closeOnBackdropOrLink(event: MouseEvent): void {
     const target = event.target as Element;
     if (target === event.currentTarget || target.closest('a')) {

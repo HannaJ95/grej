@@ -4,8 +4,8 @@ import { FEW_LEFT } from '../../core/product.service';
 // Up to this many (above FEW_LEFT) gives the yellow dot.
 const SOME_LEFT = 5;
 
-// A colored dot and how many are left, e.g. "Få kvar – 2 st" (Figma: Stock status).
-// The text says it all, so the dot is only decoration.
+// A colored dot and the stock as text, e.g. "Få kvar – 2 st". The text says it all, so the dot
+// is decoration.
 @Component({
   selector: 'app-stock-status',
   host: { class: 'text-label-xs' },
