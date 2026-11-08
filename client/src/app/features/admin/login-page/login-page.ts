@@ -1,34 +1,34 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { email, form, FormField, FormRoot, required } from '@angular/forms/signals';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
+import { Badge } from '../../../shared/badge/badge';
 import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
+import { Icon } from '../../../shared/icons/icon';
 
-// The admin's login page, /admin/logga-in. Customers never log in, since they buy as guests.
+// /admin/logga-in. Customers never log in, since they buy as guests.
 @Component({
   selector: 'app-login-page',
-  imports: [FormRoot, FormField, Button],
+  imports: [FormRoot, FormField, RouterLink, Badge, Button, Icon],
   templateUrl: './login-page.html',
+  styleUrls: ['../admin-page.scss', '../admin-form.scss', './login-page.scss'],
 })
 export class LoginPage {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
-  // The form's data. The inputs read and write it through [formField].
   private readonly model = signal({ email: '', password: '' });
 
   protected readonly loginForm = form(
     this.model,
-    // The rules each field must follow before the form can be sent.
     (field) => {
       required(field.email, { message: 'Fyll i din e-postadress.' });
       email(field.email, { message: 'Fyll i en giltig e-postadress.' });
       required(field.password, { message: 'Fyll i ditt lösenord.' });
     },
     {
-      // Runs when the form is sent and every field is valid. What it returns
-      // becomes an error on the whole form, shown under the button.
+      // A returned error becomes the form's error (loginError).
       submission: {
         action: async () => {
           const credentials = this.model();

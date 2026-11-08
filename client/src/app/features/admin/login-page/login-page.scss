@@ -1,0 +1,28 @@
+// In the middle of the window. The body's padding (_base.scss) is taken from the height.
+:host {
+  display: grid;
+  place-items: center;
+  min-height: calc(100dvh - 2 * var(--space-16));
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  width: 100%;
+  max-width: 26rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+h1 {
+  margin: 0;
+}
+
+.back {
+  margin-bottom: 0;
+}

@@ -1,0 +1,28 @@
+<app-admin-page-header eyebrow="Butik" title="Översikt" />
+
+<ul class="cards">
+  @for (card of cards(); track card.id) {
+    <li class="card">
+      <h2 class="text-display-2xs">{{ card.title }}</h2>
+      @switch (card.count) {
+        @case ('loading') {
+          <p class="state text-body-s" role="status">Laddar…</p>
+        }
+        @case ('error') {
+          <p class="state text-body-s" role="alert">Siffran kunde inte visas.</p>
+        }
+        @default {
+          <!-- One paragraph, so a screen reader says "3 beställningar väntar på dig". -->
+          <p class="count">
+            <span class="number text-display-l">{{ card.count }} </span>
+            <span class="unit text-body-s">{{ card.count === 1 ? card.one : card.many }}</span>
+          </p>
+        }
+      }
+      <a class="link text-link-s" [routerLink]="card.link">
+        {{ card.linkText }}
+        <app-icon name="arrow-right" />
+      </a>
+    </li>
+  }
+</ul>
