@@ -1,5 +1,6 @@
-// Shared by the shop's side panels, CartDrawer and FilterDrawer, which are <dialog>s. Each sets
-// --drawer-from on its dialog: -100% slides in from the left, 100% from the right.
+// Shared by the side panels, which are <dialog>s: CartDrawer, FilterDrawer, MobileMenu and the
+// admin menu in AdminLayout. Each sets --drawer-from on its dialog: -100% slides in from the left,
+// 100% from the right.
 
 // The panel slides in while the backdrop fades in, and back out when it closes. display and
 // overlay keep the dialog on screen while it slides out; browsers without them just close it.

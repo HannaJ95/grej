@@ -7,7 +7,7 @@ import { Button } from '../../../shared/button/button';
   selector: 'app-filter-drawer',
   imports: [Button],
   templateUrl: './filter-drawer.html',
-  styleUrls: ['./filter-drawer.scss', '../drawer.scss'],
+  styleUrls: ['./filter-drawer.scss', '../../../shared/drawer.scss'],
 })
 export class FilterDrawer {
   readonly choices = input.required<number>();

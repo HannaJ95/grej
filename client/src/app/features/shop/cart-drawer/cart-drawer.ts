@@ -12,7 +12,7 @@ import { QuantityStepper } from '../../../shared/quantity-stepper/quantity-stepp
 @Component({
   imports: [CurrencyPipe, RouterLink, Button, IconButton, QuantityStepper],
   selector: 'app-cart-drawer',
-  styleUrls: ['./cart-drawer.scss', '../drawer.scss'],
+  styleUrls: ['./cart-drawer.scss', '../../../shared/drawer.scss'],
   templateUrl: './cart-drawer.html',
   host: {
     // When the customer goes back from Stripe, the browser can show this page

@@ -10,7 +10,7 @@ import { IconButton } from '../../../shared/icon-button/icon-button';
   selector: 'app-mobile-menu',
   imports: [RouterLink, RouterLinkActive, Icon, IconButton],
   templateUrl: './mobile-menu.html',
-  styleUrl: './mobile-menu.scss',
+  styleUrls: ['./mobile-menu.scss', '../../../shared/drawer.scss'],
 })
 export class MobileMenu {
   protected readonly cart = inject(CartService);
