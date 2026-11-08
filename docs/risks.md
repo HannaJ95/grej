@@ -14,13 +14,13 @@
 
 ## 1. Not enough time / scope creep
 
-**Mitigation:** Must items first, planned to be done Wed 4 Nov. Checkpoints every week (see [sprint-plan.md](sprint-plan.md)). Feature freeze Fri 13 Nov. New ideas go to "future ideas" in [scope.md](scope.md), not into the current sprint.  
+**Mitigation:** Must items first, planned to be done Wed 4 Nov. Checkpoints every week (see [sprint-plan.md](sprint-plan.md)). Feature freeze Thu 12 Nov, and everything is submitted Sun 15 Nov. New ideas go to "future ideas" in [scope.md](scope.md), not into the current sprint.  
 **Plan B:** drop Should items in the cut order. The MVP is always delivered.
 
 ## 2. Illness or other unexpected time loss
 
-**Mitigation:** the MVP is planned two weeks before the presentation, and the last days are buffer.  
-**Plan B:** use the buffer and weekends; drop Should items in the cut order.
+**Mitigation:** the MVP is planned to be done Wed 4 Nov, eleven days before the deadline, and Fri 13 – Sun 15 Nov are kept for bugs and documentation.  
+**Plan B:** use the weekends; drop Should items in the cut order.
 
 ## 3. The Stripe webhook is hard to get working
 

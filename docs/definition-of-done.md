@@ -10,7 +10,7 @@
 - Build and tests pass in CI before it is merged to `main`.
 - It is merged through a pull request that I have reviewed. This includes all AI-generated code, which I must be able to explain.
 - No secrets are in the code or the repo.
-- UI parts use semantic HTML, have alt texts on images and are usable at mobile width. (Full responsive and accessibility review is a Should in sprint 4; doing the basics continuously is cheaper than fixing them afterwards.)
+- UI parts use semantic HTML, have alt texts on images and are usable at mobile width. (The full responsive and accessibility review is done in the wrap-up; doing the basics continuously is cheaper than fixing them afterwards.)
 
 ## A sprint is done when
 
