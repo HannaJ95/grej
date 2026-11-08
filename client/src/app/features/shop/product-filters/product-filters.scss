@@ -2,12 +2,17 @@
   display: block;
 }
 
+// Sticks only where a parent sets --filters-header-top (the phone panel); top: auto doesn't stick.
 .header {
+  position: sticky;
+  top: var(--filters-header-top, auto);
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-16);
   padding-bottom: var(--space-16);
+  background: var(--color-bg-page);
 
   h2 {
     margin: 0;

@@ -2,20 +2,31 @@ import { Component, computed, inject, input, linkedSignal } from '@angular/core'
 import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../../core/category.service';
 import { countChoices, ProductFilter, toPrice } from '../../../core/product-filter';
-import { ProductService } from '../../../core/product.service';
+import { ProductPage, ProductService } from '../../../core/product.service';
 import { PropertyService } from '../../../core/property.service';
 import { Breadcrumb } from '../../../shared/breadcrumb/breadcrumb';
+import { IconButton } from '../../../shared/icon-button/icon-button';
 import { toIdList } from '../../../shared/id-list';
 import { toPageNumber } from '../../../shared/page-number';
 import { Pagination } from '../../../shared/pagination/pagination';
 import { CategoryTabs } from '../category-tabs/category-tabs';
+import { FilterDrawer } from '../filter-drawer/filter-drawer';
 import { ProductCard } from '../product-card/product-card';
 import { ProductFilters } from '../product-filters/product-filters';
 
 // /produkter?sida=2&kategori=1&kategori=3&material=4&farg=2&minpris=200&maxpris=800
 @Component({
   selector: 'app-product-list',
-  imports: [RouterLink, Breadcrumb, CategoryTabs, Pagination, ProductCard, ProductFilters],
+  imports: [
+    RouterLink,
+    Breadcrumb,
+    CategoryTabs,
+    FilterDrawer,
+    IconButton,
+    Pagination,
+    ProductCard,
+    ProductFilters,
+  ],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss',
 })
@@ -40,7 +51,7 @@ export class ProductList {
     maxPrice: this.maxPrice(),
   }));
 
-  protected readonly hasChoices = computed(() => countChoices(this.filter()) > 0);
+  protected readonly hasChoices = computed(() => this.choiceCount() > 0);
 
   // Fetched here once and given to both the tabs and the filter.
   protected readonly categories = inject(CategoryService).getCategories();
@@ -61,12 +72,16 @@ export class ProductList {
 
   protected readonly result = this.products.getProducts(this.page, this.filter);
 
-  // The resource has no value while it reloads, so the last one is kept and the price slider
-  // neither disappears nor jumps.
-  protected readonly highestPrice = linkedSignal<number | null | undefined, number | null | undefined>({
-    source: () => (this.result.hasValue() ? this.result.value().highestPrice : undefined),
-    computation: (next, previous) => (next === undefined ? previous?.value : next),
+  // The resource has no value while it reloads, so the last one is kept: the price slider
+  // neither disappears nor jumps, and the panel's button keeps its number.
+  private readonly lastResult = linkedSignal<ProductPage | undefined, ProductPage | undefined>({
+    source: () => (this.result.hasValue() ? this.result.value() : undefined),
+    computation: (next, previous) => next ?? previous?.value,
   });
+
+  protected readonly highestPrice = computed(() => this.lastResult()?.highestPrice);
+  protected readonly totalCount = computed(() => this.lastResult()?.totalCount);
+  protected readonly choiceCount = computed(() => countChoices(this.filter()));
 
   // For "Visar 13–24 av 40 grejer". Null until the API has answered, and when there are no
   // products.

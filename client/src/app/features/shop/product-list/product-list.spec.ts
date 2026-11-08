@@ -152,6 +152,9 @@ describe('ProductList', () => {
 
     const filters = harness.routeNativeElement!.querySelector('app-product-filters')!;
     expect(filters.querySelector<HTMLInputElement>('input[type="checkbox"]')!.checked).toBe(true);
+    // Two materials, a color and a price range.
+    const open = harness.routeNativeElement!.querySelector('.open-button')!;
+    expect(open.textContent!.trim()).toBe('Filter (4)');
     expect(harness.routeNativeElement!.querySelector('.results')!.textContent).toContain(
       'Inga grejer matchar filtret.',
     );

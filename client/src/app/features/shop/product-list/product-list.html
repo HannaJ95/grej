@@ -18,11 +18,37 @@
   <app-category-tabs [categories]="options().categories" [selected]="categoryIds()" />
 }
 
-<!-- Lines across the whole screen, the count within the page width. -->
+<!-- Lines across the whole screen, the content within the page width. -->
 <div class="toolbar">
-  <div class="page-width">
+  <div class="page-width toolbar-row">
     @if (shown(); as s) {
       <p class="text-label-s">Visar {{ s.from }}–{{ s.to }} av {{ s.total }} grejer</p>
+    }
+    @if (hasOptions()) {
+      <app-filter-drawer
+        #drawer
+        class="filter-drawer"
+        [choices]="choiceCount()"
+        [resultCount]="totalCount()"
+      >
+        <app-product-filters
+          [categories]="options().categories"
+          [materials]="options().materials"
+          [colors]="options().colors"
+          [filter]="filter()"
+          [highestPrice]="highestPrice()"
+        >
+          <!-- autofocus: the dialog puts the focus here when it opens. -->
+          <button
+            appIconButton
+            icon="close"
+            type="button"
+            aria-label="Stäng"
+            autofocus
+            (click)="drawer.close()"
+          ></button>
+        </app-product-filters>
+      </app-filter-drawer>
     }
   </div>
 </div>
