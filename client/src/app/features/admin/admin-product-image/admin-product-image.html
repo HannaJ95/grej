@@ -1,58 +1,63 @@
-<section aria-labelledby="image-heading">
-  <h3 class="text-heading-s" id="image-heading">Bild</h3>
+<h2 class="text-display-2xs" id="image-title">Bild</h2>
 
-  @if (image(); as current) {
-    <!-- Only the width is set, so the browser keeps the image's proportions. -->
-    <img [src]="current.url" [alt]="current.altText" width="200" />
-    <!-- Outside the form below, so it never sends it. -->
-    <p>
-      <button appButton variant="danger" type="button" (click)="remove()">Ta bort bilden</button>
-    </p>
-    @if (removeError(); as message) {
-      <p role="alert">{{ message }}</p>
-    }
-  } @else {
-    <p>Produkten har ingen bild än.</p>
+@if (image(); as current) {
+  <img class="image" [src]="current.url" [alt]="current.altText" />
+  <!-- Outside the form below, so it never sends it. -->
+  <button class="remove" appLinkButton tone="danger" type="button" (click)="remove()">
+    Ta bort bilden
+  </button>
+  @if (removeError(); as message) {
+    <p class="text-body-s" role="alert">{{ message }}</p>
   }
+} @else {
+  <p class="hint text-body-s">Produkten har ingen bild än.</p>
+}
 
-  <form [formRoot]="imageForm">
-    <p>
-      <label for="image-file">{{ image() ? 'Byt bild' : 'Välj bild' }}</label>
-      <!-- accept only filters the file picker; the rules in admin-product-image.ts still apply. -->
-      <input
-        #fileInput
-        id="image-file"
-        type="file"
-        accept="image/jpeg,image/png,image/webp"
-        (change)="chooseFile($event)"
-        [attr.aria-invalid]="fileError() ? true : null"
-        [attr.aria-describedby]="
-          fileError() ? 'image-file-hint image-file-error' : 'image-file-hint'
-        "
-      />
-    </p>
-    <p id="image-file-hint">jpg, png eller webp, högst 5 MB.</p>
+<form class="fields" aria-labelledby="image-title" [formRoot]="imageForm">
+  <div class="field">
+    <label class="text-label-xs" for="image-file">{{ image() ? 'Byt bild' : 'Välj bild' }}</label>
+    <!-- accept only filters the file picker; the rules in admin-product-image.ts still apply. -->
+    <input
+      #fileInput
+      id="image-file"
+      class="text-body-s"
+      type="file"
+      accept="image/jpeg,image/png,image/webp"
+      (change)="chooseFile($event)"
+      [attr.aria-invalid]="fileError() ? true : null"
+      [attr.aria-describedby]="fileError() ? 'image-file-hint image-file-error' : 'image-file-hint'"
+    />
+    <span class="hint text-body-xs" id="image-file-hint">jpg, png eller webp, högst 5 MB.</span>
     @if (fileError(); as message) {
-      <p id="image-file-error">{{ message }}</p>
+      <span class="error text-body-xs" id="image-file-error">{{ message }}</span>
     }
+  </div>
 
-    <p>
-      <label for="alt-text">Beskrivning av bilden (alt-text)</label>
-      <input
-        id="alt-text"
-        type="text"
-        [formField]="imageForm.altText"
-        [attr.aria-invalid]="altTextError() ? true : null"
-        [attr.aria-describedby]="altTextError() ? 'alt-text-error' : null"
-      />
-    </p>
+  <div class="field">
+    <label class="text-label-xs" for="alt-text">Beskrivning av bilden (alt-text)</label>
+    <input
+      id="alt-text"
+      class="text-body-m-compact"
+      type="text"
+      [formField]="imageForm.altText"
+      [attr.aria-invalid]="altTextError() ? true : null"
+      [attr.aria-describedby]="altTextError() ? 'alt-text-error' : null"
+    />
     @if (altTextError(); as message) {
-      <p id="alt-text-error">{{ message }}</p>
+      <span class="error text-body-xs" id="alt-text-error">{{ message }}</span>
     }
+  </div>
 
-    <button appButton type="submit" [disabled]="imageForm().submitting()">Ladda upp bilden</button>
-    @if (uploadError(); as message) {
-      <p role="alert">{{ message }}</p>
-    }
-  </form>
-</section>
+  <button
+    appButton
+    variant="secondary"
+    size="large"
+    type="submit"
+    [disabled]="imageForm().submitting()"
+  >
+    Ladda upp bilden
+  </button>
+  @if (uploadError(); as message) {
+    <p class="text-body-s" role="alert">{{ message }}</p>
+  }
+</form>

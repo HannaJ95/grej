@@ -17,12 +17,19 @@ p {
   gap: var(--space-8);
 }
 
-// min-height, so zoomed text can make the field taller.
-input,
-select {
+// Only inside .field, so checkboxes keep their own size. min-height, so zoomed text can make
+// the field taller.
+.field input,
+.field select,
+.field textarea {
   width: 100%;
   min-height: var(--size-control-height);
   padding: var(--space-8) var(--space-16);
+}
+
+.field textarea {
+  padding-block: var(--space-12);
+  resize: vertical;
 }
 
 // Room for the chevron that lies on top of the select.
@@ -49,6 +56,10 @@ select {
 }
 
 input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.hint {
   color: var(--color-text-secondary);
 }
 

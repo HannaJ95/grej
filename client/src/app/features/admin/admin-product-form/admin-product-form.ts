@@ -20,19 +20,20 @@ import {
 } from '../../../core/admin-product.service';
 import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
+import { Icon } from '../../../shared/icons/icon';
+import { AdminPageHeader } from '../admin-page-header/admin-page-header';
 import { AdminProductImage } from '../admin-product-image/admin-product-image';
 import { PropertyCheckboxes } from '../property-checkboxes/property-checkboxes';
 
-// What the form's fields hold. Price and stock are null while their fields are empty.
+// Price and stock are null while their fields are empty.
 interface ProductFormModel {
   title: string;
   description: string;
-  // The chosen category's id as text, since a <select>'s value is always text. '' = none chosen.
+  // Text, since a <select>'s value is always text. '' = none chosen.
   categoryId: string;
   price: number | null;
   stock: number | null;
   isActive: boolean;
-  // The ids of the ticked checkboxes.
   materialIds: number[];
   colorIds: number[];
 }
@@ -49,29 +50,44 @@ const NEW_PRODUCT: ProductFormModel = {
   colorIds: [],
 };
 
-// Creates a product (/admin/produkter/ny), or edits and deletes one (/admin/produkter/7).
+// /admin/produkter/ny creates a product, /admin/produkter/7 edits or deletes one.
 @Component({
   selector: 'app-admin-product-form',
-  imports: [FormRoot, FormField, RouterLink, Button, AdminProductImage, PropertyCheckboxes],
+  imports: [
+    FormRoot,
+    FormField,
+    RouterLink,
+    Button,
+    Icon,
+    AdminPageHeader,
+    AdminProductImage,
+    PropertyCheckboxes,
+  ],
   templateUrl: './admin-product-form.html',
+  styleUrls: [
+    '../admin-page.scss',
+    '../admin-form.scss',
+    '../../../shared/checkbox.scss',
+    './admin-product-form.scss',
+  ],
 })
 export class AdminProductForm {
   private readonly products = inject(AdminProductService);
   private readonly categories = inject(AdminCategoryService);
   private readonly router = inject(Router);
 
-  // The :id in the URL, set by the router. Undefined on /admin/produkter/ny.
+  // Undefined on /admin/produkter/ny.
   readonly id = input<string>();
   protected readonly isNew = computed(() => this.id() === undefined);
 
-  // The product as the API had it when the page was opened. Nothing is fetched for a new one.
+  // As the API had it when the page was opened. Nothing is fetched for a new one.
   protected readonly product = this.products.getProduct(this.id);
 
-  // The choices in the category menu. The first page holds up to 100 categories (CategoryListQuery).
+  // The first page holds up to 100 categories (CategoryListQuery).
   protected readonly categoryList = this.categories.getCategories(signal(1));
   protected readonly categoryLabel = categoryLabel;
 
-  // Empty for a new product. Filled in again whenever the product has been fetched.
+  // Filled in again whenever the product has been fetched.
   private readonly model = linkedSignal<ProductFormModel>(() =>
     this.product.hasValue() ? toModel(this.product.value()) : NEW_PRODUCT,
   );
@@ -81,7 +97,7 @@ export class AdminProductForm {
     // The same rules as ProductRequest in the API.
     (field) => {
       required(field.title, { message: 'Fyll i en titel.' });
-      // required lets "   " through, so the title must also contain a character that is not a space.
+      // required() accepts a title of only spaces.
       pattern(field.title, /\S/, { message: 'Fyll i en titel.' });
       maxLength(field.title, 200, { message: 'Titeln får vara högst 200 tecken.' });
       maxLength(field.description, 4000, { message: 'Beskrivningen får vara högst 4000 tecken.' });
@@ -110,8 +126,7 @@ export class AdminProductForm {
   protected readonly saveError = computed(() => this.productForm().errors()[0]?.message);
   protected readonly removeError = signal<string | undefined>(undefined);
 
-  // Runs when the form is sent and every field is valid, like the login page. What it
-  // returns becomes an error on the whole form, shown under the button.
+  // A returned error becomes the form's error (saveError).
   private async save() {
     const input = toInput(this.model());
     try {
@@ -127,7 +142,7 @@ export class AdminProductForm {
         }
         await this.router.navigateByUrl('/admin/produkter');
       } else {
-        // Opens the new product's page, where the admin can add an image.
+        // Its own page, where the admin can add an image.
         const created = await this.products.create(input);
         await this.router.navigate(['/admin/produkter', created.id]);
       }

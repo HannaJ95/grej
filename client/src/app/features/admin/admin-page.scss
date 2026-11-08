@@ -16,6 +16,23 @@ h2 {
   color: var(--color-text-secondary);
 }
 
+// The link back to the list, under the top bar.
+.back {
+  --icon-size: 1rem;
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  width: fit-content;
+  margin-bottom: var(--space-24);
+  padding-block: var(--space-4);
+  color: var(--color-text-primary);
+
+  &:hover {
+    color: var(--color-text-secondary);
+  }
+}
+
 // The card comes first in the DOM, so it is on top in one column and first in the focus order.
 .columns {
   display: grid;

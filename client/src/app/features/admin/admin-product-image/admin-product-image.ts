@@ -20,6 +20,7 @@ import {
 import { AdminProduct, AdminProductService } from '../../../core/admin-product.service';
 import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
+import { LinkButton } from '../../../shared/link-button/link-button';
 
 // The same rules as ImageFile in the API (constraints.md). The browser only knows the file's
 // name and size, so the API also reads the content to check that it really is an image.
@@ -34,19 +35,20 @@ interface ImageFormModel {
 
 const EMPTY: ImageFormModel = { file: null, altText: '' };
 
-// The product's image on the edit page: shows it, uploads a new one and removes it.
+// The product's image card on the edit page: shows, uploads and removes the image.
 @Component({
   selector: 'app-admin-product-image',
-  imports: [FormRoot, FormField, Button],
+  imports: [FormRoot, FormField, Button, LinkButton],
   templateUrl: './admin-product-image.html',
+  styleUrls: ['../admin-form.scss', './admin-product-image.scss'],
 })
 export class AdminProductImage {
   private readonly products = inject(AdminProductService);
 
   readonly product = input.required<AdminProduct>();
 
-  // The image shown now. Starts as the product's, and is changed here after an upload or
-  // removal, instead of fetching the product again, which would empty the product form above.
+  // Changed here after an upload or removal, since fetching the product again would empty the
+  // product form.
   protected readonly image = linkedSignal(() => this.product().image);
 
   private readonly model = signal<ImageFormModel>(EMPTY);
@@ -78,23 +80,22 @@ export class AdminProductImage {
   protected readonly uploadError = computed(() => this.imageForm().errors()[0]?.message);
   protected readonly removeError = signal<string | undefined>(undefined);
 
-  // The <input type="file"> in the template, so it can be emptied after an upload.
+  // Emptied after an upload.
   private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
 
-  // [formField] cannot be used on <input type="file">, since a file input's value can only be
-  // set by the user. So the chosen file is put in the form here instead.
+  // [formField] cannot set a file input's value, so the chosen file is put in the form here.
   protected chooseFile(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0] ?? null;
     this.imageForm.file().value.set(file);
     this.imageForm.file().markAsTouched();
   }
 
-  // Runs when the form is sent and every field is valid, like save() in the product form.
+  // A returned error becomes the form's error (uploadError).
   private async upload() {
     const { file, altText } = this.model();
     try {
       this.image.set(await this.products.uploadImage(this.product().id, file!, altText));
-      // Empties the form for the next image. reset also forgets "touched", so no errors show.
+      // reset also forgets "touched", so the empty fields show no errors.
       this.imageForm().reset(EMPTY);
       this.fileInput().nativeElement.value = '';
       return undefined;
