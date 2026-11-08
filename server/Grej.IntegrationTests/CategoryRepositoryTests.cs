@@ -14,7 +14,7 @@ public class CategoryRepositoryTests
         .Options);
 
     [Fact]
-    public async Task GetSubcategoryIds_ReturnsOnlyTheSubcategoriesOfTheGivenMainCategories()
+    public async Task GetSubcategories_ReturnsOnlyTheSubcategoriesOfTheGivenMainCategories()
     {
         db.Categories.AddRange(
             new Category { Id = 1, Name = "Keramik" },
@@ -24,8 +24,8 @@ public class CategoryRepositoryTests
             new Category { Id = 5, Name = "Dukar", ParentId = 2 });
         await db.SaveChangesAsync();
 
-        var ids = await new CategoryRepository(db).GetSubcategoryIdsAsync([1], CancellationToken.None);
+        var subcategories = await new CategoryRepository(db).GetSubcategoriesAsync([1], CancellationToken.None);
 
-        Assert.Equal([3, 4], ids.Order());
+        Assert.Equal([3, 4], subcategories.Select(c => c.Id).Order());
     }
 }

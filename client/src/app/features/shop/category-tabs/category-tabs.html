@@ -21,7 +21,7 @@
           routerLink="/produkter"
           [queryParams]="{ kategori: category.id, sida: null }"
           queryParamsHandling="merge"
-          [attr.aria-current]="isOnlyChosen(category.id) ? 'page' : null"
+          [attr.aria-current]="isOnlyChosen(category) ? 'page' : null"
         >
           <span class="text-label-m">{{ category.name }} </span>
           <span class="count text-body-s">{{ category.productCount }}</span>

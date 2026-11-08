@@ -25,13 +25,13 @@ describe('FilterGroup', () => {
     const fold = groups[0].querySelector('button')!;
     const content = groups[0].querySelector<HTMLElement>('[role="group"]')!;
     expect(fold.getAttribute('aria-expanded')).toBe('true');
-    expect(content.hidden).toBe(false);
+    expect(content.hasAttribute('inert')).toBe(false);
 
     fold.click();
     await fixture.whenStable();
 
     expect(fold.getAttribute('aria-expanded')).toBe('false');
-    expect(content.hidden).toBe(true);
+    expect(content.hasAttribute('inert')).toBe(true);
   });
 
   it('gives each group ids of its own, which the button and the content point at', async () => {

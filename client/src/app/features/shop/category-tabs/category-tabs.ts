@@ -2,8 +2,8 @@ import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ShopCategory } from '../../../core/category';
 
-// A tab is marked as chosen only when exactly its category is chosen, since the filter column
-// can choose several.
+// A tab is marked as chosen only when its category is the only main category chosen, alone or
+// narrowed by its subcategories, since the filter can choose several.
 @Component({
   selector: 'app-category-tabs',
   imports: [RouterLink],
@@ -21,8 +21,9 @@ export class CategoryTabs {
     this.categories().reduce((sum, category) => sum + category.productCount, 0),
   );
 
-  protected isOnlyChosen(id: number): boolean {
+  protected isOnlyChosen(category: ShopCategory): boolean {
+    const own = [category.id, ...category.subcategories.map((subcategory) => subcategory.id)];
     const selected = this.selected();
-    return selected.length === 1 && selected[0] === id;
+    return selected.includes(category.id) && selected.every((id) => own.includes(id));
   }
 }

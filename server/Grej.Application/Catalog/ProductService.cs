@@ -28,17 +28,9 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
     // Hidden products are never included.
     public async Task<ProductPageDto> GetProductsAsync(ProductListQuery query, CancellationToken cancellationToken)
     {
-        // A main category also shows its subcategories' products (ambiguity.md).
-        IReadOnlyCollection<int> categoryIds = query.CategoryId;
-        if (categoryIds.Count > 0)
-        {
-            var subcategoryIds = await categories.GetSubcategoryIdsAsync(categoryIds, cancellationToken);
-            categoryIds = [.. categoryIds, .. subcategoryIds];
-        }
-
         var filter = new ProductFilter
         {
-            CategoryIds = categoryIds,
+            CategoryIds = await WithSubcategoriesAsync(query.CategoryId, cancellationToken),
             MaterialIds = query.MaterialId,
             ColorIds = query.ColorId,
             MinPrice = query.MinPrice,
@@ -65,6 +57,31 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
     // Called when the admin cancels a paid order. Like DecreaseStockAsync, nothing is saved here.
     public Task IncreaseStockAsync(IReadOnlyCollection<ProductQuantity> items, CancellationToken cancellationToken) =>
         ChangeStockAsync(items, (product, quantity) => product.IncreaseStock(quantity), cancellationToken);
+
+    // A main category shows its subcategories' products too, unless one of its subcategories is
+    // chosen: then only the chosen subcategories are shown (ambiguity.md).
+    private async Task<IReadOnlyCollection<int>> WithSubcategoriesAsync(
+        IReadOnlyCollection<int> chosenIds, CancellationToken cancellationToken)
+    {
+        if (chosenIds.Count == 0)
+        {
+            return chosenIds;
+        }
+
+        var subcategories = await categories.GetSubcategoriesAsync(chosenIds, cancellationToken);
+        var narrowedIds = subcategories
+            .Where(subcategory => chosenIds.Contains(subcategory.Id))
+            .Select(subcategory => subcategory.ParentId!.Value)
+            .ToHashSet();
+
+        return
+        [
+            .. chosenIds.Where(id => !narrowedIds.Contains(id)),
+            .. subcategories
+                .Where(subcategory => !narrowedIds.Contains(subcategory.ParentId!.Value))
+                .Select(subcategory => subcategory.Id),
+        ];
+    }
 
     private async Task ChangeStockAsync(
         IReadOnlyCollection<ProductQuantity> items,

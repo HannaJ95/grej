@@ -60,6 +60,22 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
+    public async Task GetPage_MainCategoryWithAChosenSubcategory_OnlyReturnsTheChosenSubcategories()
+    {
+        // Keramik (1) has Skålar (4) and Vaser (5); Textil (2) has none.
+        subcategories[1] = [4, 5];
+        var client = CreateClient(
+            new Product { Id = 4, Title = "Kudde", Price = 300m, Stock = 1, IsActive = true, CategoryId = 2 },
+            new Product { Id = 3, Title = "Vas", Price = 300m, Stock = 1, IsActive = true, CategoryId = 5 },
+            new Product { Id = 2, Title = "Skål", Price = 300m, Stock = 1, IsActive = true, CategoryId = 4 },
+            new Product { Id = 1, Title = "Kanna", Price = 300m, Stock = 1, IsActive = true, CategoryId = 1 });
+
+        var page = await client.GetFromJsonAsync<ProductPageDto>("/api/products?categoryId=1&categoryId=4&categoryId=2");
+
+        Assert.Equal(["Kudde", "Skål"], page!.Items.Select(p => p.Title));
+    }
+
+    [Fact]
     public async Task GetPage_MaterialColorAndPrice_ReachTheRepository()
     {
         var client = CreateClient(new Product { Id = 1, Title = "Skål", Price = 300m, Stock = 1, IsActive = true });
@@ -155,10 +171,12 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
     // Only knows which subcategories each main category has, which is all ProductService asks.
     private class FakeCategoryRepository(Dictionary<int, int[]> subcategories) : ICategoryRepository
     {
-        public Task<IReadOnlyList<int>> GetSubcategoryIdsAsync(
+        public Task<IReadOnlyList<Category>> GetSubcategoriesAsync(
             IReadOnlyCollection<int> parentIds, CancellationToken cancellationToken) =>
-            Task.FromResult<IReadOnlyList<int>>(
-                parentIds.SelectMany(id => subcategories.GetValueOrDefault(id, [])).ToList());
+            Task.FromResult<IReadOnlyList<Category>>(parentIds
+                .SelectMany(parentId => subcategories.GetValueOrDefault(parentId, [])
+                    .Select(id => new Category { Id = id, Name = "Underkategori", ParentId = parentId }))
+                .ToList());
 
         // The product endpoints use nothing else.
         public Task<Category?> GetByIdAsync(int id, CancellationToken cancellationToken) =>

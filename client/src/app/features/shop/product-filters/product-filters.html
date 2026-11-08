@@ -19,7 +19,7 @@
               [name]="category.name"
               [count]="category.productCount"
               [checked]="filter().categoryIds.includes(category.id)"
-              (toggled)="toggle('categoryIds', category.id, $event)"
+              (toggled)="toggleCategory(category, $event)"
             />
             <!-- A list of their own inside the main category's row, so screen readers tell the
                  levels apart too. -->
@@ -31,7 +31,7 @@
                       [name]="subcategory.name"
                       [count]="subcategory.productCount"
                       [checked]="filter().categoryIds.includes(subcategory.id)"
-                      (toggled)="toggle('categoryIds', subcategory.id, $event)"
+                      (toggled)="toggleSubcategory(category, subcategory.id, $event)"
                     />
                   </li>
                 }

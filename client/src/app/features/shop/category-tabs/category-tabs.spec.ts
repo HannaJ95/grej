@@ -10,7 +10,12 @@ describe('CategoryTabs', () => {
     await TestBed.inject(Router).navigateByUrl(url);
     const fixture = TestBed.createComponent(CategoryTabs);
     fixture.componentRef.setInput('categories', [
-      { id: 1, name: 'Keramik', productCount: 3, subcategories: [] },
+      {
+        id: 1,
+        name: 'Keramik',
+        productCount: 3,
+        subcategories: [{ id: 5, name: 'Skålar', productCount: 1, subcategories: [] }],
+      },
       { id: 2, name: 'Textil', productCount: 2, subcategories: [] },
     ]);
     fixture.componentRef.setInput('selected', selected);
@@ -42,8 +47,11 @@ describe('CategoryTabs', () => {
     expect(chosen(element)).toContain('Alla');
   });
 
-  it('marks a tab as chosen only when exactly its category is chosen', async () => {
+  it('marks a tab as chosen only when its category is the only main category chosen', async () => {
     expect(chosen(await render([2]))).toContain('Textil');
+
+    TestBed.resetTestingModule();
+    expect(chosen(await render([1, 5]))).toContain('Keramik');
 
     TestBed.resetTestingModule();
     expect(chosen(await render([1, 2]))).toBeNull();

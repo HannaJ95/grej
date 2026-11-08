@@ -22,17 +22,24 @@ let nextId = 0;
         <app-icon [name]="open() ? 'minus' : 'plus'" />
       </button>
     </h3>
-    <!-- hidden instead of @if, so aria-controls always points at an element. -->
-    <div role="group" [id]="id" [attr.aria-labelledby]="id + '-heading'" [hidden]="!open()">
-      <ng-content />
+    <!-- inert takes the folded content out of the tab order and away from screen readers. -->
+    <div
+      class="panel"
+      role="group"
+      [id]="id"
+      [attr.aria-labelledby]="id + '-heading'"
+      [class.open]="open()"
+      [attr.inert]="open() ? null : ''"
+    >
+      <div class="clip">
+        <div class="content"><ng-content /></div>
+      </div>
     </div>
   `,
   styles: `
     :host {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-16);
-      padding-block: var(--space-20) var(--space-24);
+      display: block;
+      padding-block: var(--space-20);
       border-top: var(--border-width-default) solid var(--color-border-default);
     }
 
@@ -57,6 +64,36 @@ let nextId = 0;
       text-align: start;
       text-transform: inherit;
       cursor: pointer;
+    }
+
+    // A row of 0fr → 1fr animates the height between 0 and the content's own height.
+    .panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.2s ease;
+
+      &.open {
+        grid-template-rows: 1fr;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+
+    // min-height: 0 lets the row shrink to 0. The padding gives the focus ring room inside the
+    // clip, and the margin puts the content back in its place.
+    .clip {
+      min-height: 0;
+      margin-inline: calc(-1 * var(--space-4));
+      padding-inline: var(--space-4);
+      overflow: hidden;
+    }
+
+    // Inside the clip, so the space above the content folds away with it. The bottom padding is
+    // room for the focus ring.
+    .content {
+      padding-block: var(--space-16) var(--space-4);
     }
   `,
 })

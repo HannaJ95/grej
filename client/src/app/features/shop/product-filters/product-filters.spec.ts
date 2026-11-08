@@ -68,7 +68,7 @@ describe('ProductFilters', () => {
     expect(router.url).toBe('/produkter?kategori=1&maxpris=500&material=4');
   });
 
-  it("shows a subcategory inside its main category's row, and ticks it on its own", async () => {
+  it("shows a subcategory inside its main category's row, and ticking it ticks both", async () => {
     const { fixture, router, element, boxes } = await render();
     const skalar = boxes[1];
 
@@ -78,7 +78,25 @@ describe('ProductFilters', () => {
     skalar.click();
     await fixture.whenStable();
 
-    expect(router.url).toBe('/produkter?kategori=5');
+    expect(router.url).toBe('/produkter?kategori=1&kategori=5');
+  });
+
+  it('unticks the subcategories too when their main category is unticked', async () => {
+    const { fixture, router, boxes } = await render({ categoryIds: [1, 5, 2] });
+
+    boxes[0].click();
+    await fixture.whenStable();
+
+    expect(router.url).toBe('/produkter?kategori=2');
+  });
+
+  it('keeps the main category ticked when its last subcategory is unticked', async () => {
+    const { fixture, router, boxes } = await render({ categoryIds: [1, 5] });
+
+    boxes[1].click();
+    await fixture.whenStable();
+
+    expect(router.url).toBe('/produkter?kategori=1');
   });
 
   it('shows Rensa only when something is chosen, and Rensa removes every choice', async () => {
