@@ -113,7 +113,7 @@ describe('AdminOrderDetails', () => {
     ]);
     expect(texts(page, 'dd')[5]).toMatch(/Storgatan 1\s+123 45 Stockholm\s+SE/);
     expect(texts(page, 'tbody td:first-child')).toEqual(['Skål', 'Vas']);
-    expect(texts(page, 'tbody td:nth-child(2)')).toEqual(['2', '1']);
+    expect(texts(page, 'tbody td:nth-child(2)')).toEqual(['2 st', '1 st']);
     // The API says a paid order that is not shipped can be both shipped and cancelled.
     expect(buttonTexts(page)).toEqual(['Markera som skickad', 'Avbryt ordern']);
   });

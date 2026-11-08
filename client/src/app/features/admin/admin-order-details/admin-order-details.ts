@@ -1,39 +1,37 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, ElementRef, inject, input, signal, viewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, input, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminOrderService } from '../../../core/admin-order.service';
 import { Button } from '../../../shared/button/button';
+import { Icon } from '../../../shared/icons/icon';
+import { AdminPageHeader } from '../admin-page-header/admin-page-header';
 import { ORDER_STATUS_TEXTS, PAYMENT_STATUS_TEXTS } from '../order-texts';
 
-// One order in the CMS, e.g. /admin/ordrar/7, with everything the admin needs to pack and
-// send it, and the buttons to mark it as shipped or cancel it.
+// /admin/ordrar/7: everything the admin needs to pack and send the order, and the buttons to
+// mark it as shipped or cancel it.
 @Component({
   selector: 'app-admin-order-details',
-  imports: [CurrencyPipe, DatePipe, RouterLink, Button],
+  imports: [CurrencyPipe, DatePipe, RouterLink, Button, Icon, AdminPageHeader],
   templateUrl: './admin-order-details.html',
-  styles: `
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-16);
-    }
-  `,
+  styleUrls: ['../admin-page.scss', '../admin-table.scss', './admin-order-details.scss'],
 })
 export class AdminOrderDetails {
   private readonly orders = inject(AdminOrderService);
 
-  // The :id in the URL, set by the router, the same way as in ProductPage.
   readonly id = input.required<string>();
 
   protected readonly order = this.orders.getOrder(this.id);
   protected readonly orderStatusTexts = ORDER_STATUS_TEXTS;
   protected readonly paymentStatusTexts = PAYMENT_STATUS_TEXTS;
 
-  // True while a change is being sent, so the buttons cannot be clicked twice.
+  // The top bar is shown while the order loads too, so the page always has its h1.
+  protected readonly title = computed(() =>
+    this.order.hasValue() ? `Order ${this.order.value().orderNumber}` : 'Order',
+  );
+
+  // Stops the buttons from being clicked twice.
   protected readonly changing = signal(false);
-  // What happened to the last change, shown under the buttons.
   protected readonly message = signal<string | undefined>(undefined);
-  // The <p #feedback> in the template.
   private readonly feedback = viewChild.required<ElementRef<HTMLElement>>('feedback');
 
   protected ship(): Promise<void> {

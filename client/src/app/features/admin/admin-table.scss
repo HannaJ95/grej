@@ -24,6 +24,13 @@
   tbody tr:last-child > * {
     border-bottom: none;
   }
+
+  // The sum row.
+  tfoot :is(th, td) {
+    padding-bottom: 0;
+    border-top: var(--border-width-default) solid var(--color-border-default);
+    border-bottom: none;
+  }
 }
 
 .end {
@@ -35,7 +42,7 @@
 // placement on a cell (grid-area, justify-self) only takes effect here.
 @mixin stacked($table) {
   #{$table},
-  #{$table} tbody {
+  #{$table} :is(tbody, tfoot) {
     display: block;
   }
 
@@ -48,25 +55,31 @@
     white-space: nowrap;
   }
 
-  #{$table} tbody tr {
+  #{$table} :is(tbody, tfoot) tr {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: var(--space-8) var(--space-16);
     padding: var(--space-14) 0;
     border-bottom: 1px solid var(--color-border-subtle);
-
-    // The card's padding is enough above the first row.
-    &:first-child {
-      padding-top: 0;
-    }
-
-    &:last-child {
-      border-bottom: none;
-    }
   }
 
-  #{$table} td {
+  // The card's padding is enough above the first row.
+  #{$table} tbody tr:first-child {
+    padding-top: 0;
+  }
+
+  #{$table} tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  #{$table} tfoot tr {
+    padding-bottom: 0;
+    border-top: var(--border-width-default) solid var(--color-border-default);
+    border-bottom: none;
+  }
+
+  #{$table} :is(tbody, tfoot) :is(th, td) {
     display: block;
     padding: 0;
     border: none;
