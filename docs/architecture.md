@@ -284,7 +284,7 @@ Known limitation: the alt text can only be changed by uploading the image again.
 
 ### Categories
 
-The admin works with categories on two pages, after the admin design in Figma: `/admin/kategorier` (main categories) and `/admin/underkategorier` (all subcategories, under their main categories), with `/admin/underkategorier/3` for one main category's subcategories. Both use `/api/admin/categories`, where `CategoryRequest` has an optional `parentId`. The list is sorted with each main category followed by its subcategories and, like every list, paginated, with up to 100 categories per page. A product must have a category that exists, a main category or a subcategory (ambiguity.md): a missing or unknown `categoryId` gives 400.
+The admin works with categories on two pages: `/admin/kategorier` (main categories) and `/admin/underkategorier` (all subcategories, under their main categories), with `/admin/underkategorier/3` for one main category's subcategories. Both use `/api/admin/categories`, where `CategoryRequest` has an optional `parentId`. The list is sorted with each main category followed by its subcategories and, like every list, paginated, with up to 100 categories per page. A product must have a category that exists, a main category or a subcategory (ambiguity.md): a missing or unknown `categoryId` gives 400.
 
 - Only one level (ambiguity.md). `AdminCategoryService` checks that the chosen main category exists and is not a subcategory or the category itself, and that a category with subcategories does not become a subcategory; otherwise the API answers 400 on `parentId`. A subcategory can be made a main category again by choosing "Ingen" when it is edited.
 - A category that has products or subcategories cannot be deleted. `AdminCategoryService` asks the product repository directly, since both are in the Catalog module, and the API answers 409 with `{ "reason": "hasProducts" }` or `{ "reason": "hasSubcategories" }`, so the CMS can say what to do first. The foreign keys from products and from subcategories (`Restrict`) also stop the delete.
@@ -335,4 +335,4 @@ Known limitation: if the same order is shipped and cancelled at the same time (e
 
 ## Styles
 
-The design, the Figma file and each page's status are in [design.md](design.md). The rules for all Figma work are in the skill `grej-figma` (`.claude/skills/grej-figma/`).
+The design system and how each page looks and behaves are in [design.md](design.md). The rules for UI work are in the skill `grej-ui` (`.claude/skills/grej-ui/`).

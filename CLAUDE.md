@@ -11,7 +11,7 @@ A webshop for art and handmade items with an admin CMS. Built as my examensarbet
 - [constraints.md](docs/constraints.md) – rules the code must follow
 - [ambiguity.md](docs/ambiguity.md) – decisions on unclear requirements
 - [architecture.md](docs/architecture.md) – modules, layers and data model
-- [design.md](docs/design.md) – the Figma file, its components and each page's status
+- [design.md](docs/design.md) – the design system in the code and how each page looks and behaves
 - [sprint-plan.md](docs/sprint-plan.md) – sprints, checkpoints and cut order
 - [definition-of-done.md](docs/definition-of-done.md)
 
@@ -26,20 +26,22 @@ A webshop for art and handmade items with an admin CMS. Built as my examensarbet
 - Never read or print secrets. They live in User Secrets locally and in environment variables in hosting. A hook in `.claude/hooks/` blocks access to them.
 - At the end of a work session, suggest a few lines for [ai-log.md](docs/ai-log.md).
 
-## Guided mode (how we build)
+## How we build
 
-I build, Claude teaches. Claude does not edit project files or run commands that change the project; it only reads files to check my work.
+Claude writes the code with Edit and Write, and I approve each change. I must still be able to explain every line.
 
 - Per sprint-plan item: first an overview in plan mode (what it adds to the whole, numbered parts and which layer each belongs to).
-- Then one numbered part at a time, with steps a), b), c). For each step: why; what each command or package does and which files it creates or changes; for new files, where they go, what they connect to and whether they will grow later; the full code to paste, with the important lines explained; and how to verify.
+- Then one numbered part at a time, with steps a), b), c). For each step: why; what each command or package does and which files it creates or changes; for new files, where they go, what they connect to and whether they will grow later; the code, shown in the chat with the important lines explained; and how to verify.
+- End each part with a "Verifiera" section that repeats, in order, every command I must run.
 - Point out repeated patterns ("this is the same DI as in X").
-- Wait for me to say "klar" (or paste an error) after each part, then read my files before giving the next part.
+- Wait for me to say "klar" (or paste an error) after each part. If I ask a question together with "klar", answer it on its own before the next part.
+- Small changes (a UI tweak, a screenshot, a bug I point at) need no plan mode or parts: make the change, check it and explain it in a few lines.
 - Explanations in Swedish, compared with JavaScript, React, Next.js and Laravel where it helps.
 
-## Design and Figma
+## Design
 
-- For all Figma and design work, use the skill `grej-figma`. The Figma pages and each page's status are in [design.md](docs/design.md).
-- Comments explain why, not what. No Figma sizes or "like in Figma" in comments, and no explanations of how Angular or CSS works in general. Explain those things to me in the chat instead.
+- The design lives in the code: the tokens, text classes and shared components in `client/`, described in [design.md](docs/design.md). For every change to how a page looks or behaves, including small tweaks and screenshots I send, use the skill `grej-ui`.
+- Comments explain why, not what. No pixel sizes from a screenshot in comments, and no explanations of how Angular or CSS works in general. Explain those things to me in the chat instead.
 
 ## Commands
 
