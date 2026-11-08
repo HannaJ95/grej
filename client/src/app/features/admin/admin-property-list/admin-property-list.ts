@@ -21,7 +21,7 @@ import { PROPERTY_TEXTS } from '../property-texts';
   selector: 'app-admin-property-list',
   imports: [TitleCasePipe, Button, LinkButton, Pagination, AdminPageHeader, AdminPropertyCard],
   templateUrl: './admin-property-list.html',
-  styleUrl: '../admin-category-page.scss',
+  styleUrl: '../admin-page.scss',
 })
 export class AdminPropertyList {
   private readonly properties = inject(AdminPropertyService);

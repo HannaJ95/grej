@@ -29,7 +29,7 @@ interface CategoryFormModel {
   selector: 'app-admin-category-card',
   imports: [FormRoot, FormField, Button, Icon],
   templateUrl: './admin-category-card.html',
-  styleUrl: './admin-category-card.scss',
+  styleUrl: '../admin-form.scss',
 })
 export class AdminCategoryCard {
   private readonly categories = inject(AdminCategoryService);

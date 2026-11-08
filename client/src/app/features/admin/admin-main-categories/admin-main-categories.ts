@@ -13,7 +13,7 @@ import { AdminPageHeader } from '../admin-page-header/admin-page-header';
   imports: [RouterLink, Button, AdminCategoryCard, AdminPageHeader],
   templateUrl: './admin-main-categories.html',
   // The same layout as AdminSubcategories.
-  styleUrl: '../admin-category-page.scss',
+  styleUrl: '../admin-page.scss',
 })
 export class AdminMainCategories {
   private readonly categories = inject(AdminCategoryService);

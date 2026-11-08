@@ -25,7 +25,7 @@ interface PropertyFormModel {
   selector: 'app-admin-property-card',
   imports: [FormRoot, FormField, Button],
   templateUrl: './admin-property-card.html',
-  styleUrl: '../admin-category-card/admin-category-card.scss',
+  styleUrl: '../admin-form.scss',
 })
 export class AdminPropertyCard {
   private readonly properties = inject(AdminPropertyService);

@@ -15,7 +15,7 @@ import { AdminPageHeader } from '../admin-page-header/admin-page-header';
   imports: [RouterLink, Button, AdminCategoryCard, AdminPageHeader],
   templateUrl: './admin-subcategories.html',
   // The same layout as AdminMainCategories.
-  styleUrl: '../admin-category-page.scss',
+  styleUrl: '../admin-page.scss',
 })
 export class AdminSubcategories {
   private readonly categories = inject(AdminCategoryService);

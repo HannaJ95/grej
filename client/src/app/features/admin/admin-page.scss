@@ -1,4 +1,4 @@
-// Shared by the category pages and AdminPropertyList.
+// Shared by the admin pages.
 
 // A container, so the columns follow the room beside the menu, not the screen width.
 :host {
@@ -28,7 +28,9 @@ h2 {
   }
 }
 
+// A container, so what is inside follows the card's own width.
 .card {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: var(--space-16);
@@ -50,9 +52,7 @@ h2 {
   }
 }
 
-// A container too, so the rows follow the list's own width.
 .list {
-  container-type: inline-size;
   gap: 0;
 
   @container (width >= 56rem) {
