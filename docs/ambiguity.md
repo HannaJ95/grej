@@ -55,6 +55,10 @@ Why: Unlike a category, a product does not need a material or a color, so nothin
 Decision (Should): Within one property it is "or", between properties it is "and". Filtering on red + blue shows everything that is red or blue. Filtering on red + ceramics shows everything that is red and made of ceramics.
 Why: This is how most webshops work, and a red, white and blue bowl is found whichever of its colors the customer picks.
 
+**What range does the price filter have?**
+Decision (Should): From 0 to the highest price among the products that match the customer's other choices, rounded up to 100 kr. The ends mean no limit.
+Why: This is how most webshops work. The scale fits the chosen category, but ignores the price itself, so it does not shrink while the customer drags.
+
 **Can a product have several images?**
 Decision (Should): Yes, up to 10. The MVP has one image per product.
 
@@ -73,7 +77,8 @@ Decision (Should): Yes. A product can be in any category, a main category or a s
 Why: Simpler rules, and nothing breaks when the admin adds a subcategory later.
 
 **What is shown when the customer selects a category?**
-Decision (Should): All products in the category and its subcategories. The subcategories are shown as filters.
+Decision (Should): All products in the category and its subcategories. The subcategories are shown as filters. If the customer also ticks one of its subcategories, only the chosen subcategories are shown. Ticking a subcategory ticks its main category, and unticking the main category unticks its subcategories.
+Why: The main category says where the customer is, and the subcategories narrow it down, which is how most webshops work.
 
 **What happens to products if the admin deletes a category?**
 Decision: A category that has products or subcategories cannot be deleted. Its products must be moved, and its subcategories deleted, first.
