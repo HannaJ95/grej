@@ -104,10 +104,11 @@ Every Figma component maps to exactly one Angular component, and its properties 
 **The components that exist** (`client/src/app/shared/`), so reuse them before you make new ones:
 
 - `Button`: primary, secondary (2 px frame) and danger, in normal (forms and the CMS) and large (the shop's big buttons). Every variant is equally tall; the secondary's frame is taken from its padding.
+- `LinkButton`: a button that looks like a link (Link/S), for actions on the same page, e.g. "Redigera" and "Ta bort" in a CMS list. `tone` default or danger.
 - `Icon` and `IconButton`: an icon, and a square button with only an icon.
 - `Badge`: a small label on a product image, for example "Slutsåld" and "Få kvar".
 - `Pagination`, `Breadcrumb`, `QuantityStepper` (− 1 +) and `StockStatus` (dot and stock text).
-- In the features: `ProductCard`, `CategoryTabs`, `ProductFilters`, `CartDrawer`, `AddedToCart`, `MobileMenu`, `AdminNav` (Figma: Admin sidebar), `AdminPageHeader` (Figma: Top bar).
+- In the features: `ProductCard`, `CategoryTabs`, `ProductFilters`, `CartDrawer`, `AddedToCart`, `MobileMenu`, `AdminNav` (Figma: Admin sidebar), `AdminPageHeader` (Figma: Top bar), `AdminCategoryCard` and `AdminPropertyCard` (the form card beside a CMS list).
 
 Rules:
 

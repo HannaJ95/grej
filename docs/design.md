@@ -21,6 +21,7 @@ The design is the Figma file GREJ – Webshop design (<link>). The pages Shop an
 | `ProductFilters` | Filters, Filter panel |
 | `AdminNav` | Admin sidebar, Admin app bar |
 | `AdminPageHeader` | Top bar |
+| `LinkButton` | LinkButton |
 
 The rest are filled in the first time a page with them is synced.
 
@@ -36,7 +37,8 @@ The rest are filled in the first time a page with them is synced.
 | Success page | `/kassa/tack` | Built, not synced |
 | Admin layout: menu and app bar | every admin page | Built, not synced |
 | Admin categories | `/admin/kategorier`, `/admin/underkategorier` | Built, not synced |
-| Admin start, products, orders, materials, colors | `/admin`, `/admin/produkter`, `/admin/ordrar`, `/admin/material`, `/admin/farger` | Not styled |
+| Admin materials and colors | `/admin/material`, `/admin/farger` | Built, not synced |
+| Admin start, products, orders | `/admin`, `/admin/produkter`, `/admin/ordrar` | Not styled |
 | Admin login | `/admin/logga-in` | Not styled |
 
 **Synced:** Figma shows exactly what the code shows. **Built, not synced:** built, but Figma can differ (see the notes below). **Not styled:** works, but has the simple look.
@@ -48,6 +50,7 @@ Behaviour that only exists in the code:
 - The buy row on a phone is sticky at the bottom of the screen until the page reaches its place, and not sticky on screens lower than 480 px.
 - The start page's band of words pauses on hover and stands still with reduced motion.
 - The "added to cart" popup closes itself after 5 seconds, paused on hover or focus.
+- The admin card beside a list sticks below the top bar. Figma cannot make a layer inside a grid sticky, so it is only annotated.
 - Hover and focus, until they are variants on the components.
 
 ## Notes from before the page-by-page workflow
@@ -84,8 +87,9 @@ The shop's own design is made in Figma (GREJ – Webshop design) in three sizes:
 
 ### Admin
 
-The CMS has its own pages in the Figma file (page Admin). They use the same variables, text styles and shared components as the shop. So far the layout and the category pages are built after it; the other admin pages keep their simple look inside the layout until they are styled.
+The CMS has its own pages in the Figma file (page Admin). They use the same variables, text styles and shared components as the shop. So far the layout, the category pages and the material and color page are built after it; the other admin pages keep their simple look inside the layout until they are styled.
 
 - `AdminLayout` (`features/admin/admin-layout/`) is the parent route of every admin page except the login page, like `ShopLayout`. From 1024 px `AdminNav` (Figma: Admin sidebar) is a 264 px menu to the left, sticky with its own scroll. Below 1024 px there is an app bar (Figma: Admin app bar) whose menu button opens the same menu as a drawer from the left, a `<dialog>` like `MobileMenu`. Kategorier and Egenskaper fold with a button (`aria-expanded`) and are open on their own pages (`isActive` and `linkedSignal`). The menu shows only pages that exist; the design's Användare och roller, Inställningar, the number of new orders and the name with initials are not built, so it shows the email and its first letter.
-- `AdminPageHeader` is a page's top (Figma: Top bar): a small label, the h1 and room for the page's button. Its line reaches the edges of the main area.
-- The category pages share `admin-category-page.scss`. The page and the list are CSS containers (`container-type: inline-size`), so `@container` places the card to the right of the list when the page is at least 56rem wide, and puts each row on one line when the list is at least 36rem wide. The layout therefore follows the room the page has beside the menu, not the screen's width. The card comes first in the HTML, so it is on top on a narrow screen and the keyboard order matches what is seen.
+- `AdminPageHeader` is a page's top (Figma: Top bar): a small label, the h1 and room for the page's button. Its line reaches the edges of the main area. From 1024 px, when the window is at least 30rem high, it sticks at the top. It measures its own height with a `ResizeObserver` and writes it to `--admin-page-header-height` on `<html>`, since the row wraps when there is no room. `_base.scss` turns that into `--admin-sticky-top` (the app bar's 4rem below 1024 px), which sets `scroll-padding-top` so a focused field is never hidden under it.
+- The category pages and the material and color page share `admin-category-page.scss`. The page and the list are CSS containers (`container-type: inline-size`), so `@container` places the card to the right of the list when the page is at least 56rem wide, and puts each row on one line when the list is at least 36rem wide. The layout therefore follows the room the page has beside the menu, not the screen's width. The card comes first in the HTML, so it is on top on a narrow screen and the keyboard order matches what is seen. Beside the list, in a window at least 30rem high, the card sticks 24 px below `--admin-sticky-top`, so "Redigera" on the last row still shows it. The category pages' Figma frames do not show the sticky top bar and card yet.
+- Materials and colors share one page, `AdminPropertyList` (Figma: Admin / Material), with `AdminPropertyCard` (`?redigera=`) and `LinkButton` in the rows. It differs from Figma in one way: the rows have no product count, since the API's list has none yet (`ProductCount` in `PropertyDto`). "Ta bort" therefore fetches the material first, so the warning can say how many products have it. Färger has no Figma frame of its own; it uses the same design with its own words.
