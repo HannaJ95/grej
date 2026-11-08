@@ -57,10 +57,19 @@
   }
 }
 
-// Less padding below 1024 px, where the row also holds the filter button.
+// Below 1024 px the row holds the filter button, so it sticks below the shop's header and has
+// less padding. z-index 2 puts it above the product cards' layers and below the header.
 .toolbar {
+  position: sticky;
+  top: var(--shop-sticky-top);
+  z-index: 2;
   padding-block: var(--space-8);
   border-block: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-bg-page);
+
+  @media (width >= 64rem), (height < 30rem) {
+    position: static;
+  }
 
   @media (width >= 64rem) {
     padding-block: var(--space-16);
