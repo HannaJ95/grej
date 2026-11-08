@@ -34,12 +34,17 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - "Få kvar – 2 st" (red, 1–2 left)
   - "I lager – 4 st" (yellow, 3–5 left; `--color-feedback-warning`)
   - "I lager – 12 st" (green, 6 or more)
+- `shared/drawer.scss` is shared by the side panels, which are `<dialog>`s: the cart, the filter panel, the phone menu and the admin menu.
+  - Each panel slides in from its side (`--drawer-from`) while the backdrop fades in, and back out when it closes.
+  - Firefox and Safari close the panel at once, without the slide.
+  - "Reduce motion" turns the slide off.
 
 ## Shop
 
 The shop has neutral colors. The CMS uses the same tokens, so it gets the same colors and fonts.
 
 - `ShopLayout` (`features/shop/shop-layout/`) has the shop's header (logo, menu, cart) and footer, and the header sticks at the top. The shop's routes are its children in `app.routes.ts`, so the admin pages have no shop header.
+  - The header's height is `--shop-sticky-top` in `_base.scss`. `scroll-padding-top` uses it, so a focused element is never hidden under the header, and the product list's toolbar sticks below it.
   - Its bands reach the screen's edges. The content inside them uses `.page-width`: centered, at most `--layout-viewport-width` (1440 px), with `--layout-margin` on the sides (20 px on a phone, 32 px on a tablet, 48 px on a computer).
   - On a phone the menu links are in `MobileMenu`, a `<dialog>` like the cart.
   - The footer's big "GREJ." is at most 42 % of the screen width, so it fits between 1024 and 1190 px.
@@ -52,8 +57,19 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - the four newest products (the first four from `GET /api/products`, which sorts the newest first), as a row to swipe through on a phone
   - links to the categories from `GET /api/categories`
 - The product list (`/produkter`) has a breadcrumb, the title with the number of products, `CategoryTabs`, and a toolbar with "Visar 1–12 av 40 grejer". It shows two products per row on a phone, and three on a tablet and a computer.
-  - `CategoryTabs` is a row of links: "Alla" plus one per category with its number. It scrolls sideways below 1024 px and wraps on a computer.
-  - From 1024 px, `ProductFilters` is a 288 px column to the left: "Filter" with "Rensa", and the Kategori group. The group folds with a minus/plus button (`aria-expanded`) and has real checkboxes, styled with `appearance: none` and the check icon on top.
+  - `CategoryTabs` is a row of links: "Alla" plus one per category with its number. It scrolls sideways below 1024 px and wraps on a computer. A tab keeps the other filters.
+  - `ProductFilters` has "Filter" with "Rensa", which removes every choice, and the groups Kategori, Pris, Material and Färg. A group without choices is left out.
+  - Each group is a `FilterGroup`. The minus/plus button in its heading (`aria-expanded`) folds it with a short height animation, and the folded content is `inert`.
+  - The rows are `FilterOption`s: real checkboxes, styled with `appearance: none` and the check icon on top, with the number of products.
+  - Kategori shows each main category's subcategories indented under it. Ticking a subcategory ticks its main category too, and the list then shows only the chosen subcategories.
+  - Pris is `PriceRange`: two fields ("0 kr – 700 kr") and a slider with two square thumbs, which follow each other.
+    - The slider goes from 0 to the highest price among the products of the other choices, rounded up to 100 kr.
+    - A thumb is applied when it is let go, and a field on Enter or when the customer leaves it.
+    - A thumb stops at the other one. Typing moves the thumb at once but never changes the text being typed.
+  - From 1024 px, `ProductFilters` is a 288 px column to the left.
+  - Below 1024 px the toolbar has "Filter (3)", with the number of choices, and sticks below the header (not in a window lower than 30rem).
+    - The button opens `FilterDrawer`, a `<dialog>` from the left with the same `ProductFilters`. It covers the whole screen on a phone and is a 26rem panel on a tablet.
+    - Every choice updates the list behind the panel at once. The heading and the close button stick while the filter scrolls, and "Visa 24 grejer" at the bottom closes the panel.
   - When no product matches the filter, the list says so and links to all products.
 - The product page (`/produkter/:id`) has:
   - a breadcrumb
@@ -85,7 +101,7 @@ The CMS uses the same tokens, text styles and shared components as the shop.
 
 - `AdminLayout` (`features/admin/admin-layout/`) is the parent route of every admin page except the login page, like `ShopLayout`.
   - From 1024 px, `AdminNav` is a 264 px menu to the left, sticky with its own scroll.
-  - Below 1024 px there is an app bar. Its menu button opens the same menu as a drawer from the left, a `<dialog>` like `MobileMenu`.
+  - Below 1024 px there is an app bar. Its menu button opens the same menu as a drawer that slides in from the left, a `<dialog>` like `MobileMenu`.
   - Kategorier and Egenskaper fold with a button (`aria-expanded`), and are open on their own pages (`isActive` and `linkedSignal`).
   - The menu shows the admin's email and its first letter.
 - `AdminPageHeader` is a page's top: a small label, the h1 and room for the page's button. Its line reaches the edges of the main area.

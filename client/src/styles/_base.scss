@@ -25,12 +25,25 @@ body:has(app-admin-layout) {
   padding: 0;
 }
 
-// Keeps focused elements below the shop's sticky header.
+// The height of the shop's sticky header. Focused elements are kept below it, and the product
+// list's toolbar sticks below it.
 html:has(app-shop-layout) {
-  scroll-padding-top: 4.375rem;
+  --shop-sticky-top: 4.375rem;
+
+  scroll-padding-top: var(--shop-sticky-top);
 
   @media (width >= 48rem) {
-    scroll-padding-top: 4.875rem;
+    --shop-sticky-top: 4.875rem;
+  }
+}
+
+// Below 1024 px the product list's toolbar sticks below the header too, so the focus is kept
+// below both. 3.25rem is the toolbar's height.
+html:has(app-product-list) {
+  scroll-padding-top: calc(var(--shop-sticky-top) + 3.25rem);
+
+  @media (width >= 64rem), (height < 30rem) {
+    scroll-padding-top: var(--shop-sticky-top);
   }
 }
 

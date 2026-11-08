@@ -10,7 +10,7 @@ import { AdminNav } from '../admin-nav/admin-nav';
   selector: 'app-admin-layout',
   imports: [RouterOutlet, AdminNav, Badge],
   templateUrl: './admin-layout.html',
-  styleUrl: './admin-layout.scss',
+  styleUrls: ['./admin-layout.scss', '../../../shared/drawer.scss'],
 })
 export class AdminLayout {
   // Read once from the token when the layout is created, i.e. after the login. Logging out

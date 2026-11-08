@@ -1,70 +1,90 @@
 <div class="header">
   <h2 class="text-display-xs">Filter</h2>
-  @if (selected().length > 0) {
-    <button type="button" class="clear text-link-s" (click)="clear()">Rensa</button>
-  }
+  <div class="actions">
+    @if (hasChoices()) {
+      <button appLinkButton type="button" class="clear" (click)="clear()">Rensa</button>
+    }
+    <!-- FilterDrawer's close button. -->
+    <ng-content />
+  </div>
 </div>
 
-<!-- One group: a heading with a button that folds the list, like an accordion. -->
-<section class="group" aria-labelledby="category-heading">
-  <h3 class="group-title text-display-2xs" id="category-heading">
-    <button
-      type="button"
-      class="fold"
-      aria-controls="category-options"
-      [attr.aria-expanded]="categoriesOpen()"
-      (click)="categoriesOpen.set(!categoriesOpen())"
-    >
-      Kategori
-      <app-icon [name]="categoriesOpen() ? 'minus' : 'plus'" />
-    </button>
-  </h3>
-
-  @if (categoriesOpen()) {
-    <ul class="options" id="category-options">
-      @for (category of categories(); track category.id) {
-        <li>
-          <ng-container
-            [ngTemplateOutlet]="option"
-            [ngTemplateOutletContext]="{ $implicit: category }"
-          />
-          <!-- The subcategories in a list of their own inside their main category's row, so
-               screen readers tell the levels apart too. -->
-          @if (category.subcategories.length > 0) {
-            <ul class="options subcategories">
-              @for (subcategory of category.subcategories; track subcategory.id) {
-                <li>
-                  <ng-container
-                    [ngTemplateOutlet]="option"
-                    [ngTemplateOutletContext]="{ $implicit: subcategory }"
-                  />
-                </li>
-              }
-            </ul>
-          }
-        </li>
-      }
-    </ul>
+<div class="groups">
+  @if (categories().length > 0) {
+    <app-filter-group heading="Kategori">
+      <ul class="options">
+        @for (category of categories(); track category.id) {
+          <li>
+            <app-filter-option
+              [name]="category.name"
+              [count]="category.productCount"
+              [checked]="filter().categoryIds.includes(category.id)"
+              (toggled)="toggleCategory(category, $event)"
+            />
+            <!-- A list of their own inside the main category's row, so screen readers tell the
+                 levels apart too. -->
+            @if (category.subcategories.length > 0) {
+              <ul class="options subcategories">
+                @for (subcategory of category.subcategories; track subcategory.id) {
+                  <li>
+                    <app-filter-option
+                      [name]="subcategory.name"
+                      [count]="subcategory.productCount"
+                      [checked]="filter().categoryIds.includes(subcategory.id)"
+                      (toggled)="toggleSubcategory(category, subcategory.id, $event)"
+                    />
+                  </li>
+                }
+              </ul>
+            }
+          </li>
+        }
+      </ul>
+    </app-filter-group>
   }
-</section>
 
-<!-- One checkbox row, used for both main categories and subcategories. -->
-<ng-template #option let-category>
-  <!-- A real checkbox inside the label, so a click on the name ticks it too. -->
-  <label class="option">
-    <span class="box">
-      <!-- #box names the input, so the click handler can read box.checked. -->
-      <input
-        #box
-        type="checkbox"
-        [checked]="selected().includes(category.id)"
-        (change)="toggleCategory(category.id, box.checked)"
+  @if (priceLimit(); as limit) {
+    <app-filter-group heading="Pris">
+      <app-price-range
+        [min]="filter().minPrice"
+        [max]="filter().maxPrice"
+        [limit]="limit"
+        (changed)="showPrices($event)"
       />
-      <app-icon class="check" name="check" />
-    </span>
-    <!-- The space keeps the name and the number apart for screen readers, like in the category
-         tabs. -->
-    <span class="name text-body-m-compact">{{ category.name }} </span>
-    <span class="count text-body-s">{{ category.productCount }}</span>
-  </label>
-</ng-template>
+    </app-filter-group>
+  }
+
+  @if (materials().length > 0) {
+    <app-filter-group heading="Material">
+      <ul class="options">
+        @for (material of materials(); track material.id) {
+          <li>
+            <app-filter-option
+              [name]="material.name"
+              [count]="material.productCount"
+              [checked]="filter().materialIds.includes(material.id)"
+              (toggled)="toggle('materialIds', material.id, $event)"
+            />
+          </li>
+        }
+      </ul>
+    </app-filter-group>
+  }
+
+  @if (colors().length > 0) {
+    <app-filter-group heading="Färg">
+      <ul class="options">
+        @for (color of colors(); track color.id) {
+          <li>
+            <app-filter-option
+              [name]="color.name"
+              [count]="color.productCount"
+              [checked]="filter().colorIds.includes(color.id)"
+              (toggled)="toggle('colorIds', color.id, $event)"
+            />
+          </li>
+        }
+      </ul>
+    </app-filter-group>
+  }
+</div>

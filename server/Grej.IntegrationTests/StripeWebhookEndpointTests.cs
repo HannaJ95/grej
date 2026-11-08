@@ -323,7 +323,10 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
 
         // The webhook never lists products.
         public Task<PagedResult<Product>> GetActivePageAsync(
-            int page, int pageSize, IReadOnlyCollection<int> categoryIds, CancellationToken cancellationToken) =>
+            int page, int pageSize, ProductFilter filter, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        public Task<decimal?> GetHighestActivePriceAsync(ProductFilter filter, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
         // Only GET /api/categories uses this.

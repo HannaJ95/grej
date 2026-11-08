@@ -3,7 +3,6 @@ using Grej.Domain.Catalog;
 
 namespace Grej.Application.Catalog;
 
-// What the application needs from the database to work with categories.
 // Implemented in Infrastructure with EF Core (CategoryRepository).
 public interface ICategoryRepository
 {
@@ -20,17 +19,15 @@ public interface ICategoryRepository
     // True if any category has this one as its main category.
     Task<bool> HasSubcategoriesAsync(int id, CancellationToken cancellationToken);
 
-    // The ids of the subcategories of these main categories. For the shop's product list, where
-    // a main category also shows its subcategories' products.
-    Task<IReadOnlyList<int>> GetSubcategoryIdsAsync(IReadOnlyCollection<int> parentIds, CancellationToken cancellationToken);
+    // The subcategories of these main categories, for the shop's product list.
+    Task<IReadOnlyList<Category>> GetSubcategoriesAsync(IReadOnlyCollection<int> parentIds, CancellationToken cancellationToken);
 
     // All categories at once, sorted by name. For the shop's category filter.
     Task<IReadOnlyList<Category>> GetAllAsync(CancellationToken cancellationToken);
 
-    // Only remembered here. The INSERT or DELETE happens in SaveChangesAsync.
+    // The INSERT or DELETE happens in SaveChangesAsync.
     void Add(Category category);
     void Remove(Category category);
 
-    // Saves the categories added or removed above, and the changes made to categories fetched above.
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }

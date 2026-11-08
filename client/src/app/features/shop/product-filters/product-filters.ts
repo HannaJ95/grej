@@ -1,15 +1,25 @@
-import { NgTemplateOutlet } from '@angular/common';
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { ShopCategory } from '../../../core/category';
-import { Icon } from '../../../shared/icons/icon';
+import {
+  countChoices,
+  NO_FILTER,
+  ProductFilter,
+  toQueryParams,
+} from '../../../core/product-filter';
+import { ShopProperty } from '../../../core/product-property';
+import { LinkButton } from '../../../shared/link-button/link-button';
+import { FilterGroup } from '../filter-group/filter-group';
+import { FilterOption } from '../filter-option/filter-option';
+import { PriceLimits, PriceRange } from '../price-range/price-range';
 
-// Several categories can be chosen ("or", ambiguity.md), and every change goes into the URL, so
-// the list, the tabs and the back button follow it. Ticking a main category also shows its
-// subcategories' products (the API adds them).
+type IdList = 'materialIds' | 'colorIds';
+
+// Every change goes into the URL, so the list, the tabs and the back button follow it. A group
+// without choices is left out.
 @Component({
   selector: 'app-product-filters',
-  imports: [NgTemplateOutlet, Icon],
+  imports: [FilterGroup, FilterOption, LinkButton, PriceRange],
   templateUrl: './product-filters.html',
   styleUrl: './product-filters.scss',
 })
@@ -17,27 +27,65 @@ export class ProductFilters {
   private readonly router = inject(Router);
 
   readonly categories = input.required<ShopCategory[]>();
-  // The chosen category ids, from ?kategori= in the URL.
-  readonly selected = input.required<number[]>();
+  readonly materials = input.required<ShopProperty[]>();
+  readonly colors = input.required<ShopProperty[]>();
+  readonly filter = input.required<ProductFilter>();
+  // From the product list. Null when no product matches, undefined until the API has answered.
+  readonly highestPrice = input<number | null>();
 
-  // The group's list is shown until the customer folds it with the minus button.
-  protected readonly categoriesOpen = signal(true);
+  protected readonly hasChoices = computed(() => countChoices(this.filter()) > 0);
 
-  protected toggleCategory(id: number, checked: boolean): void {
-    const selected = this.selected();
-    this.showCategories(checked ? [...selected, id] : selected.filter((other) => other !== id));
+  // The slider's end, rounded up to 100 kr so its steps land on round numbers.
+  protected readonly priceLimit = computed(() => {
+    const highest = this.highestPrice();
+    return highest ? Math.ceil(highest / 100) * 100 : null;
+  });
+
+  protected showPrices(limits: PriceLimits): void {
+    this.show({ ...this.filter(), minPrice: limits.min, maxPrice: limits.max });
+  }
+
+  protected toggle(list: IdList, id: number, checked: boolean): void {
+    const filter = this.filter();
+    const ids = filter[list];
+    this.show({ ...filter, [list]: checked ? [...ids, id] : ids.filter((other) => other !== id) });
+  }
+
+  // A subcategory only narrows its main category, so unticking the main category unticks them too.
+  protected toggleCategory(category: ShopCategory, checked: boolean): void {
+    const ids = this.filter().categoryIds;
+    const removed = [category.id, ...category.subcategories.map((subcategory) => subcategory.id)];
+    this.showCategories(
+      checked ? [...ids, category.id] : ids.filter((id) => !removed.includes(id)),
+    );
+  }
+
+  // Ticking a subcategory also ticks its main category, and the API then shows only the chosen
+  // subcategories of it.
+  protected toggleSubcategory(parent: ShopCategory, id: number, checked: boolean): void {
+    const ids = this.filter().categoryIds;
+    if (!checked) {
+      this.showCategories(ids.filter((other) => other !== id));
+    } else if (ids.includes(parent.id)) {
+      this.showCategories([...ids, id]);
+    } else {
+      this.showCategories([...ids, parent.id, id]);
+    }
   }
 
   protected clear(): void {
-    this.showCategories([]);
+    this.show(NO_FILTER);
   }
 
-  // Changes ?kategori= and keeps the URL's other query parameters, except ?sida=, since the
-  // new list starts on page 1. null removes a parameter. scroll: 'manual' keeps the page where
-  // it is, so the customer can tick several boxes in a row.
-  private showCategories(ids: number[]): void {
+  private showCategories(categoryIds: number[]): void {
+    this.show({ ...this.filter(), categoryIds });
+  }
+
+  // ?sida= is removed, since the new list starts on page 1. scroll: 'manual' keeps the page still,
+  // so the customer can tick several boxes in a row.
+  private show(filter: ProductFilter): void {
     this.router.navigate(['/produkter'], {
-      queryParams: { kategori: ids.length > 0 ? ids : null, sida: null },
+      queryParams: { ...toQueryParams(filter), sida: null },
       queryParamsHandling: 'merge',
       scroll: 'manual',
     });

@@ -296,17 +296,26 @@ The admin works with categories on two pages: `/admin/kategorier` (main categori
 
 Known limitations: two categories can have the same name, the CMS shows at most 100 categories, and deleting asks with the browser's `confirm()` instead of the design's dialog. The design's address (slug), "Visa i menyn" and dragging to change the order are not built.
 
-### Category filter (shop)
+### Product filters (shop)
 
-The shop filters the product list on one or several categories (Should). `GET /api/categories` is open and returns the main categories, sorted by name, each with `productCount` (the number of active products) and its `subcategories` in the same form. A main category's number includes its subcategories' products, since choosing it shows them all. A category without active products is left out, so the customer never picks one that shows nothing; a main category with no products of its own is still shown if a subcategory has some. `CategoryService` combines `ICategoryRepository.GetAllAsync` with `IProductRepository.CountActiveByCategoryAsync` (one `GROUP BY` query), so the repositories still return domain objects. The list is not paged, since the filter shows every category at once.
+The shop filters the product list on categories, price, materials and colors (Should): "or" within one of them, "and" between them (ambiguity.md).
 
-- `GET /api/products?categoryId=1&categoryId=3` returns products in category 1 or 3 ("or", ambiguity.md), and in their subcategories: `ProductService` adds the subcategories' ids (`ICategoryRepository.GetSubcategoryIdsAsync`) before it asks the product repository. Without `categoryId` it returns all. `ProductListQuery.CategoryId` is an `int[]` with at most 100 ids, and `ProductRepository` adds `Where(... Contains ...)` (`= ANY` in PostgreSQL) only when the list is not empty.
-- In Angular the choice lives only in the URL: `/produkter?kategori=1&kategori=3`. `ProductList` reads it as an input with `toIdList` (`shared/id-list.ts`, like `toPageNumber`), and the tabs, the filter column, the list and the browser's back button all follow it. A tab shows only its category and is marked only when exactly that one is chosen; a checkbox adds or removes one category. Every change starts the list on page 1, and the pagination keeps `kategori`.
+- `GET /api/products` takes `categoryId`, `materialId` and `colorId`, each repeated for several ids (at most 100), and `minPrice` and `maxPrice` (0–999 999.99, both included). Without them it returns all products. `ProductService` turns the query into a `ProductFilter`, and `ProductRepository.ActiveMatching` adds one `Where` per chosen filter: `= ANY` for the categories, and `EXISTS` on the join tables for materials and colors.
+- A main category also shows its subcategories' products, unless one of its subcategories is chosen too. Then only the chosen subcategories are shown (ambiguity.md). `ProductService` works this out with `ICategoryRepository.GetSubcategoriesAsync` before it asks the product repository.
+- The answer is a `ProductPageDto`: the page plus `highestPrice`, the highest price among the products that match every filter except the price (null when none match). The price slider uses it as its end, so the scale fits the other choices but does not shrink while the customer drags. It is a third SQL query (`MAX`) next to the count and the page, and uses the same `ActiveMatching`, so it always filters the same way.
+- The choices come from three open endpoints: `GET /api/categories`, `GET /api/materials` and `GET /api/colors`. They are not paged, since the filter shows every choice at once (constraints.md).
+  - Each leaves out what has no active products, so the customer never picks something that shows nothing, and each has `productCount`, the number of active products.
+  - The categories are the main categories sorted by name, each with its `subcategories`. A main category's number includes its subcategories' products.
+  - `CategoryService` and `PropertyService<T>` combine `GetAllAsync` with one count query (`CountActiveByCategoryAsync`, `CountActiveProductsAsync`), so the repositories still return domain objects. Materials and colors share `PropertyService<T>` and the abstract `PropertiesController<T>`, like the admin side.
+- In Angular the choice lives only in the URL, e.g. `/produkter?kategori=1&kategori=5&material=4&farg=2&minpris=200&maxpris=800`.
+  - `ProductList` reads each parameter as an input (`toIdList`, `toPrice`) into one `ProductFilter` (`core/product-filter.ts`), and the tabs, the filter, the list and the back button all follow it.
+  - `toQueryParams` writes the filter back. Every change starts the list on page 1, and the pagination and the tabs keep the other parameters.
+  - `minpris` is left out at 0 and `maxpris` at the slider's end, so "no limit" stays no limit when the end moves.
+  - Ticking a subcategory also ticks its main category, and unticking a main category unticks its subcategories. A tab is marked when its category is the only main category chosen.
+  - `ProductList` keeps the last answer while the list reloads (`linkedSignal`), so the slider and the panel's "Visa 24 grejer" keep their numbers.
 - The start page's category links go to `/produkter?kategori=<id>`.
 
-- The tabs and the start page show the main categories. The filter column shows each main category's subcategories indented under it, in a list of their own, with the same checkboxes.
-
-Known limitations: on phones and tablets only one category at a time can be chosen (with the tabs), and the subcategories cannot be chosen at all, until the filter drawer is built with the material, color and price filters (sprint 4). No tab is marked when only a subcategory is chosen. A tab click and "Alla" remove any other query parameters.
+Known limitations: the numbers beside the choices count every active product with them, not only those that match the other choices. Every change, also each arrow-key step on the slider, is a new entry in the browser's history.
 
 ### Materials and colors
 

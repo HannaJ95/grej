@@ -7,16 +7,15 @@ namespace Grej.Application;
 
 public static class DependencyInjection
 {
-    // Called once from Program.cs, like AddInfrastructure.
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<ProductService>();
         services.AddScoped<AdminProductService>();
         services.AddScoped<AdminCategoryService>();
         services.AddScoped<CategoryService>();
-        // One line for both AdminPropertyService<Material> and AdminPropertyService<Color>.
-        // typeof(...<>) without a type is an "open generic": DI fills in T when a controller asks.
+        // Open generics: one line covers both Material and Color.
         services.AddScoped(typeof(AdminPropertyService<>));
+        services.AddScoped(typeof(PropertyService<>));
         services.AddScoped<CheckoutService>();
         services.AddScoped<OrderService>();
         services.AddScoped<AdminOrderService>();

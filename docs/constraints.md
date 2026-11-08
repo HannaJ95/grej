@@ -113,7 +113,7 @@ Cancelled
 ## Performance and scale
 
 - Built for a small shop: up to a few hundred products and a handful of simultaneous users.
-- Every list endpoint is paginated; no endpoint returns all rows of a table.
+- Every list endpoint is paginated; no endpoint returns all rows of a table. The exception is the shop's filter choices (categories, materials, colors), which the filter shows all at once and which only include those with active products.
 - Images are not resized automatically in this version, since Supabase's free tier has no image resizing. The admin uploads images at a reasonable size.
 
 ## Failure modes

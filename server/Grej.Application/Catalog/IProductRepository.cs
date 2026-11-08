@@ -3,7 +3,6 @@ using Grej.Domain.Catalog;
 
 namespace Grej.Application.Catalog;
 
-// What the application needs from the database to work with products.
 // Implemented in Infrastructure with EF Core (ProductRepository).
 public interface IProductRepository
 {
@@ -12,9 +11,12 @@ public interface IProductRepository
     // Hidden products are included. Ids that do not exist are skipped, and the order is not fixed.
     Task<IReadOnlyList<Product>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken);
 
-    // Only active products, newest first. Only the given categories, or all if the list is empty.
+    // Only active products that match the filter, newest first.
     Task<PagedResult<Product>> GetActivePageAsync(
-        int page, int pageSize, IReadOnlyCollection<int> categoryIds, CancellationToken cancellationToken);
+        int page, int pageSize, ProductFilter filter, CancellationToken cancellationToken);
+
+    // The highest price among the active products that match the filter. Null if none match.
+    Task<decimal?> GetHighestActivePriceAsync(ProductFilter filter, CancellationToken cancellationToken);
 
     // All products, hidden ones too, newest first. For the CMS.
     Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken);
@@ -29,10 +31,9 @@ public interface IProductRepository
     // The same, but for all products, hidden ones too. For the CMS.
     Task<IReadOnlyDictionary<int, int>> CountByCategoryAsync(CancellationToken cancellationToken);
 
-    // Only remembered here. The INSERT or DELETE happens in SaveChangesAsync.
+    // The INSERT or DELETE happens in SaveChangesAsync.
     void Add(Product product);
     void Remove(Product product);
 
-    // Saves the products added or removed above, and the changes made to products fetched above.
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }

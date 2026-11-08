@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Grej.Infrastructure.Persistence.Repositories;
 
-// Reads and saves products in PostgreSQL with EF Core.
 public class ProductRepository(GrejDbContext db) : IProductRepository
 {
     public Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
@@ -15,21 +14,13 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
     public async Task<IReadOnlyList<Product>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken) =>
         await db.Products.Where(p => ids.Contains(p.Id)).ToListAsync(cancellationToken);
 
-    // Nothing is sent to the database yet; the query is only described here.
     public Task<PagedResult<Product>> GetActivePageAsync(
-        int page, int pageSize, IReadOnlyCollection<int> categoryIds, CancellationToken cancellationToken)
-    {
-        var query = db.Products.Where(p => p.IsActive);
+        int page, int pageSize, ProductFilter filter, CancellationToken cancellationToken) =>
+        ToPageAsync(ActiveMatching(filter), page, pageSize, cancellationToken);
 
-        // A second Where adds AND to the SQL. Contains becomes "CategoryId" = ANY (@ids) in
-        // PostgreSQL, like GetByIdsAsync.
-        if (categoryIds.Count > 0)
-        {
-            query = query.Where(p => categoryIds.Contains(p.CategoryId));
-        }
-
-        return ToPageAsync(query, page, pageSize, cancellationToken);
-    }
+    // decimal? makes MAX return null instead of throwing when no product matches.
+    public Task<decimal?> GetHighestActivePriceAsync(ProductFilter filter, CancellationToken cancellationToken) =>
+        ActiveMatching(filter).MaxAsync(p => (decimal?)p.Price, cancellationToken);
 
     public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
         ToPageAsync(db.Products, page, pageSize, cancellationToken);
@@ -44,7 +35,49 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
     public Task<IReadOnlyDictionary<int, int>> CountByCategoryAsync(CancellationToken cancellationToken) =>
         CountPerCategoryAsync(db.Products, cancellationToken);
 
-    // One SQL query with GROUP BY: one row per category that has products in the query.
+    public void Add(Product product) => db.Products.Add(product);
+
+    public void Remove(Product product) => db.Products.Remove(product);
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
+    // Shared by the page and the highest price, so both always filter the same way.
+    private IQueryable<Product> ActiveMatching(ProductFilter filter)
+    {
+        var query = db.Products.Where(p => p.IsActive);
+
+        if (filter.CategoryIds.Count > 0)
+        {
+            query = query.Where(p => filter.CategoryIds.Contains(p.CategoryId));
+        }
+
+        // EXISTS on the join table: the product has at least one of the chosen materials.
+        if (filter.MaterialIds.Count > 0)
+        {
+            query = query.Where(p => p.Materials.Any(m => filter.MaterialIds.Contains(m.Id)));
+        }
+
+        if (filter.ColorIds.Count > 0)
+        {
+            query = query.Where(p => p.Colors.Any(c => filter.ColorIds.Contains(c.Id)));
+        }
+
+        if (filter.MinPrice is { } minPrice)
+        {
+            query = query.Where(p => p.Price >= minPrice);
+        }
+
+        if (filter.MaxPrice is { } maxPrice)
+        {
+            query = query.Where(p => p.Price <= maxPrice);
+        }
+
+        return query;
+    }
+
     private static async Task<IReadOnlyDictionary<int, int>> CountPerCategoryAsync(
         IQueryable<Product> query, CancellationToken cancellationToken) =>
         await query
@@ -52,26 +85,13 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
             .Select(group => new { CategoryId = group.Key, Count = group.Count() })
             .ToDictionaryAsync(row => row.CategoryId, row => row.Count, cancellationToken);
 
-    public void Add(Product product) => db.Products.Add(product);
-
-    public void Remove(Product product) => db.Products.Remove(product);
-
-    public async Task SaveChangesAsync(CancellationToken cancellationToken)
-    {
-        // EF Core remembers the products it read and sees which properties changed,
-        // so a changed product becomes an UPDATE of only those columns.
-        await db.SaveChangesAsync(cancellationToken);
-    }
-
-    // One page of the products in the query. Shared by both lists above.
     private static async Task<PagedResult<Product>> ToPageAsync(
         IQueryable<Product> query, int page, int pageSize, CancellationToken cancellationToken)
     {
-        // Two SQL queries: one counts all products in the query, one fetches only this page.
         var totalCount = await query.CountAsync(cancellationToken);
         var items = await query
-            // A fixed order is needed, otherwise PostgreSQL may return the rows in any order
-            // and a product could show up on two pages. Highest id = newest.
+            // Without a fixed order PostgreSQL may return the rows in any order, and a product
+            // could show up on two pages. Highest id = newest.
             .OrderByDescending(p => p.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)

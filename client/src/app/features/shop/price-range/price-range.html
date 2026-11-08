@@ -1,0 +1,65 @@
+<div class="fields">
+  <label class="field">
+    <input
+      #lowField
+      class="text-body-m"
+      type="text"
+      inputmode="numeric"
+      autocomplete="off"
+      aria-label="Lägsta pris i kronor"
+      [value]="format(fields().low)"
+      (input)="preview('low', lowField.value)"
+      (change)="type('low', lowField)"
+    />
+    <span class="text-body-m" aria-hidden="true">kr</span>
+  </label>
+  <span class="text-body-m" aria-hidden="true">–</span>
+  <label class="field">
+    <input
+      #highField
+      class="text-body-m"
+      type="text"
+      inputmode="numeric"
+      autocomplete="off"
+      aria-label="Högsta pris i kronor"
+      [value]="format(fields().high)"
+      (input)="preview('high', highField.value)"
+      (change)="type('high', highField)"
+    />
+    <span class="text-body-m" aria-hidden="true">kr</span>
+  </label>
+</div>
+
+<!-- [max] before [value], or the browser cuts the value to its default max of 100. -->
+<div class="slider" [style.--low]="share(range().low)" [style.--high]="share(range().high)">
+  <input
+    #lowThumb
+    type="range"
+    min="0"
+    step="10"
+    aria-label="Lägsta pris"
+    [max]="limit()"
+    [value]="range().low"
+    [attr.aria-valuetext]="format(range().low) + ' kr'"
+    [class.front]="range().low > limit() / 2"
+    (input)="slide('low', lowThumb)"
+    (change)="apply()"
+  />
+  <input
+    #highThumb
+    type="range"
+    min="0"
+    step="10"
+    aria-label="Högsta pris"
+    [max]="limit()"
+    [value]="range().high"
+    [attr.aria-valuetext]="format(range().high) + ' kr'"
+    (input)="slide('high', highThumb)"
+    (change)="apply()"
+  />
+</div>
+
+<div class="scale text-mono-s" aria-hidden="true">
+  <span>0 kr</span>
+  <span>{{ format(limit()) }} kr</span>
+</div>

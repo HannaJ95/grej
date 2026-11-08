@@ -82,8 +82,11 @@
   }
 }
 
-// Always leaves at least 72 px of the page visible beside the drawer.
+// Always leaves at least 72 px of the page visible beside the drawer. The motion is in
+// shared/drawer.scss.
 .drawer {
+  --drawer-from: -100%;
+
   width: min(19.875rem, 100% - var(--space-72));
   max-width: 100%;
   height: 100dvh;
@@ -93,10 +96,6 @@
   border: none;
   border-right: var(--border-width-default) solid var(--color-border-default);
   background: var(--color-bg-surface);
-}
-
-.drawer::backdrop {
-  background: var(--color-overlay-scrim);
 }
 
 main {

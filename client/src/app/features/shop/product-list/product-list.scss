@@ -57,9 +57,19 @@
   }
 }
 
+// Below 1024 px the row holds the filter button, so it sticks below the shop's header and has
+// less padding. z-index 2 puts it above the product cards' layers and below the header.
 .toolbar {
-  padding-block: var(--space-14);
+  position: sticky;
+  top: var(--shop-sticky-top);
+  z-index: 2;
+  padding-block: var(--space-8);
   border-block: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-bg-page);
+
+  @media (width >= 64rem), (height < 30rem) {
+    position: static;
+  }
 
   @media (width >= 64rem) {
     padding-block: var(--space-16);
@@ -68,6 +78,18 @@
   p {
     margin: 0;
   }
+}
+
+// display: flex wins over .page-width's display: block, like .page-title.
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+}
+
+// Stays to the right, also before the count has come.
+.filter-drawer {
+  margin-left: auto;
 }
 
 // minmax(0, 1fr) lets the products' column shrink below its content, so a long word cannot
@@ -88,7 +110,7 @@
   }
 }
 
-// Only on a computer for now; phones and tablets choose with the category tabs.
+// Phones and tablets get FilterDrawer instead.
 .filters {
   display: none;
 

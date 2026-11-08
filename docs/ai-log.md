@@ -167,4 +167,10 @@ A few lines a day about how AI was used: what for, which tool, and what worked o
 - **Design:** My first version, a "Huvudkategori" menu in the category form, felt backwards, so I drew the admin pages in Figma and we built the admin layout (menu) and the category pages after it, with the card on top on narrow screens.
 - **Verification:** Every part was built and tested in a copy first, and Claude measured the pages at 320–1440 px. I found that the list rows were cramped at 1100 px, which we fixed with container queries.
 
-2026-11-08: Switched from a Figma-first to a code-first workflow. The rules for responsive design, WCAG and components were gathered in the skill grej-ui, so they apply to every UI change without me repeating them. Claude then removed the Figma references from the code comments and replaced the palette colors in the hover styles with tokens.
+##2026-11-08
+
+Switched from a Figma-first to a code-first workflow. The rules for responsive design, WCAG and components were gathered in the skill grej-ui, so they apply to every UI change without me repeating them. Claude then removed the Figma references from the code comments and replaced the palette colors in the hover styles with tokens.
+
+- **Building:** Finished sprint 4 item 1: filter by price, material and color, with a price slider whose fields and thumbs follow each other, and a filter panel on phones and tablets. Verified locally.
+- **Design:** I chose the slider's range (up to the highest price of the other choices), that a ticked subcategory narrows its main category, a filter button that stays below the header on phones, and the same slide-in for every side panel.
+- **Verification:** Every part was tested, and Claude checked 320–1440 px and 200 % zoom in Chrome. A check found the slider's black bar drawn over the thumbs, which we fixed.

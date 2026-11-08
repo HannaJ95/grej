@@ -1,0 +1,29 @@
+<button
+  appButton
+  variant="secondary"
+  class="open-button"
+  type="button"
+  aria-haspopup="dialog"
+  (click)="open()"
+>
+  Filter{{ choices() > 0 ? ' (' + choices() + ')' : '' }}
+</button>
+
+<dialog #dialog aria-label="Filter" (click)="closeOnBackdrop($event)">
+  <div class="panel">
+    <div class="body">
+      <ng-content />
+    </div>
+    <!-- aria-live reads the new number out as the choices change the list behind the panel. -->
+    <div class="footer" aria-live="polite">
+      <button appButton size="large" class="show" type="button" (click)="close()">
+        @let count = resultCount();
+        @if (count === undefined) {
+          Visa grejerna
+        } @else {
+          Visa {{ count }} {{ count === 1 ? 'grej' : 'grejer' }}
+        }
+      </button>
+    </div>
+  </div>
+</dialog>

@@ -1,39 +1,90 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../../core/category.service';
-import { ProductService } from '../../../core/product.service';
+import { countChoices, ProductFilter, toPrice } from '../../../core/product-filter';
+import { ProductPage, ProductService } from '../../../core/product.service';
+import { PropertyService } from '../../../core/property.service';
 import { Breadcrumb } from '../../../shared/breadcrumb/breadcrumb';
+import { IconButton } from '../../../shared/icon-button/icon-button';
 import { toIdList } from '../../../shared/id-list';
 import { toPageNumber } from '../../../shared/page-number';
 import { Pagination } from '../../../shared/pagination/pagination';
 import { CategoryTabs } from '../category-tabs/category-tabs';
+import { FilterDrawer } from '../filter-drawer/filter-drawer';
 import { ProductCard } from '../product-card/product-card';
 import { ProductFilters } from '../product-filters/product-filters';
 
-// /produkter, /produkter?sida=2 or /produkter?kategori=1&kategori=3.
+// /produkter?sida=2&kategori=1&kategori=3&material=4&farg=2&minpris=200&maxpris=800
 @Component({
   selector: 'app-product-list',
-  imports: [RouterLink, Breadcrumb, CategoryTabs, Pagination, ProductCard, ProductFilters],
+  imports: [
+    RouterLink,
+    Breadcrumb,
+    CategoryTabs,
+    FilterDrawer,
+    IconButton,
+    Pagination,
+    ProductCard,
+    ProductFilters,
+  ],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss',
 })
 export class ProductList {
   private readonly products = inject(ProductService);
+  private readonly properties = inject(PropertyService);
 
-  // The ?sida= in the URL, set by the router (withComponentInputBinding in app.config.ts).
-  // alias: the URL uses the Swedish word, the code the English one.
+  // Set by the router from the URL (withComponentInputBinding). The aliases are the Swedish
+  // names in the URL, the same as in toQueryParams.
   readonly page = input(1, { alias: 'sida', transform: toPageNumber });
-
-  // The chosen categories, ?kategori=1&kategori=3 in the URL. Empty = all categories.
   readonly categoryIds = input([], { alias: 'kategori', transform: toIdList });
+  readonly materialIds = input([], { alias: 'material', transform: toIdList });
+  readonly colorIds = input([], { alias: 'farg', transform: toIdList });
+  readonly minPrice = input(undefined, { alias: 'minpris', transform: toPrice });
+  readonly maxPrice = input(undefined, { alias: 'maxpris', transform: toPrice });
 
-  // Fetched here once and given to both the tabs and the filter column.
+  protected readonly filter = computed<ProductFilter>(() => ({
+    categoryIds: this.categoryIds(),
+    materialIds: this.materialIds(),
+    colorIds: this.colorIds(),
+    minPrice: this.minPrice(),
+    maxPrice: this.maxPrice(),
+  }));
+
+  protected readonly hasChoices = computed(() => this.choiceCount() > 0);
+
+  // Fetched here once and given to both the tabs and the filter.
   protected readonly categories = inject(CategoryService).getCategories();
+  private readonly materials = this.properties.getProperties('materials');
+  private readonly colors = this.properties.getProperties('colors');
 
-  protected readonly result = this.products.getProducts(this.page, this.categoryIds);
+  // Empty until the API has answered, and if it fails: the filter then has fewer groups.
+  protected readonly options = computed(() => ({
+    categories: this.categories.hasValue() ? this.categories.value() : [],
+    materials: this.materials.hasValue() ? this.materials.value() : [],
+    colors: this.colors.hasValue() ? this.colors.value() : [],
+  }));
 
-  // Which products this page shows, for "Visar 13–24 av 40 grejer". Null until the API has
-  // answered, and when there are no products.
+  protected readonly hasOptions = computed(() => {
+    const { categories, materials, colors } = this.options();
+    return categories.length + materials.length + colors.length > 0;
+  });
+
+  protected readonly result = this.products.getProducts(this.page, this.filter);
+
+  // The resource has no value while it reloads, so the last one is kept: the price slider
+  // neither disappears nor jumps, and the panel's button keeps its number.
+  private readonly lastResult = linkedSignal<ProductPage | undefined, ProductPage | undefined>({
+    source: () => (this.result.hasValue() ? this.result.value() : undefined),
+    computation: (next, previous) => next ?? previous?.value,
+  });
+
+  protected readonly highestPrice = computed(() => this.lastResult()?.highestPrice);
+  protected readonly totalCount = computed(() => this.lastResult()?.totalCount);
+  protected readonly choiceCount = computed(() => countChoices(this.filter()));
+
+  // For "Visar 13–24 av 40 grejer". Null until the API has answered, and when there are no
+  // products.
   protected readonly shown = computed(() => {
     if (!this.result.hasValue() || this.result.value().items.length === 0) {
       return null;

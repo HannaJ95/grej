@@ -3,7 +3,6 @@
   <div class="title-row">
     <!-- Normal case: the text style makes the capitals, so screen readers read words. -->
     <h1 class="title text-display-xl">Alla grejer</h1>
-    <!-- The number comes when the API has answered. -->
     <p class="intro text-body-m">
       @if (result.hasValue()) {
         {{ result.value().totalCount }} handgjorda grejer
@@ -15,26 +14,54 @@
   </div>
 </div>
 
-<!-- Only when the API has answered with categories; with none there is nothing to choose. -->
-@if (categories.hasValue() && categories.value().length > 0) {
-  <app-category-tabs [categories]="categories.value()" [selected]="categoryIds()" />
+@if (options().categories.length > 0) {
+  <app-category-tabs [categories]="options().categories" [selected]="categoryIds()" />
 }
 
-<!-- Lines across the whole screen, the count within the page width. -->
+<!-- Lines across the whole screen, the content within the page width. -->
 <div class="toolbar">
-  <div class="page-width">
+  <div class="page-width toolbar-row">
     @if (shown(); as s) {
       <p class="text-label-s">Visar {{ s.from }}–{{ s.to }} av {{ s.total }} grejer</p>
+    }
+    @if (hasOptions()) {
+      <app-filter-drawer
+        #drawer
+        class="filter-drawer"
+        [choices]="choiceCount()"
+        [resultCount]="totalCount()"
+      >
+        <app-product-filters
+          [categories]="options().categories"
+          [materials]="options().materials"
+          [colors]="options().colors"
+          [filter]="filter()"
+          [highestPrice]="highestPrice()"
+        >
+          <!-- autofocus: the dialog puts the focus here when it opens. -->
+          <button
+            appIconButton
+            icon="close"
+            type="button"
+            aria-label="Stäng"
+            autofocus
+            (click)="drawer.close()"
+          ></button>
+        </app-product-filters>
+      </app-filter-drawer>
     }
   </div>
 </div>
 
 <div class="page-width shop-body">
-  @if (categories.hasValue() && categories.value().length > 0) {
+  @if (hasOptions()) {
     <app-product-filters
       class="filters"
-      [categories]="categories.value()"
-      [selected]="categoryIds()"
+      [categories]="options().categories"
+      [materials]="options().materials"
+      [colors]="options().colors"
+      [filter]="filter()"
+      [highestPrice]="highestPrice()"
     />
   }
 
@@ -46,8 +73,7 @@
       <p role="alert">Produkterna kunde inte visas.</p>
     } @else if (result.hasValue()) {
       @let r = result.value();
-      @if (r.items.length === 0 && categoryIds().length > 0) {
-        <!-- E.g. an old link to a category whose products are now hidden. -->
+      @if (r.items.length === 0 && hasChoices()) {
         <p>
           Inga grejer matchar filtret.
           <a class="text-link-s" routerLink="/produkter">Visa alla grejer</a>
@@ -64,7 +90,6 @@
         </ul>
       }
 
-      <!-- Only shown when there is more than one page. -->
       <app-pagination path="/produkter" [page]="r.page" [totalPages]="r.totalPages" />
     }
   </div>

@@ -2,6 +2,7 @@ import { httpResource } from '@angular/common/http';
 import { Service, Signal, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { PagedResult } from './paged-result';
+import { NO_FILTER, ProductFilter } from './product-filter';
 import { ProductImage } from './product-image';
 
 // A product as the API returns it (ProductDto), both alone and in the list.
@@ -21,10 +22,15 @@ export interface Product {
   colors: string[];
 }
 
+// ProductPageDto in the API. highestPrice ignores the price filter, so the price slider keeps its
+// scale. Null when no product matches the other filters.
+export interface ProductPage extends PagedResult<Product> {
+  highestPrice: number | null;
+}
+
 // "Få kvar" when this many or fewer are left (0 is "Slutsåld").
 export const FEW_LEFT = 2;
 
-// Fetches products from the API.
 @Service()
 export class ProductService {
   // Must be called when a component is created (in a field), like inject().
@@ -33,14 +39,24 @@ export class ProductService {
     return httpResource<Product>(() => `${environment.apiUrl}/api/products/${id()}`);
   }
 
-  // One page of products, e.g. GET /api/products?page=2&categoryId=1&categoryId=3. The API
-  // decides the page size. No category ids = all categories, so the start page can leave them
-  // out. Fetched again whenever one of the signals changes.
-  getProducts(page: Signal<number>, categoryIds: Signal<number[]> = signal([])) {
-    return httpResource<PagedResult<Product>>(() => ({
-      url: `${environment.apiUrl}/api/products`,
-      // An array becomes the same key once per id; an empty one adds nothing.
-      params: { page: page(), categoryId: categoryIds() },
-    }));
+  // E.g. GET /api/products?page=2&categoryId=1&categoryId=3&minPrice=200. The API decides the
+  // page size. The start page leaves out the filter.
+  getProducts(page: Signal<number>, filter: Signal<ProductFilter> = signal(NO_FILTER)) {
+    return httpResource<ProductPage>(() => {
+      const { categoryIds, materialIds, colorIds, minPrice, maxPrice } = filter();
+      return {
+        url: `${environment.apiUrl}/api/products`,
+        // An array repeats the key once per id, and an empty one adds nothing. A price is only
+        // sent when it is set.
+        params: {
+          page: page(),
+          categoryId: categoryIds,
+          materialId: materialIds,
+          colorId: colorIds,
+          ...(minPrice === undefined ? {} : { minPrice }),
+          ...(maxPrice === undefined ? {} : { maxPrice }),
+        },
+      };
+    });
   }
 }
