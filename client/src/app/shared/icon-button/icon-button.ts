@@ -1,12 +1,8 @@
 import { Component, input } from '@angular/core';
 import { Icon, IconName } from '../icons/icon';
 
-// A square button with only an icon, e.g. the close button in the cart (Figma: Close button).
-// Like appButton it is an attribute on a real <button>, so the keyboard and disabled work.
-// The button has no text, so it always needs an aria-label, e.g.
-// <button appIconButton icon="close" aria-label="Stäng">. tone="light" is for dark
-// backgrounds, like the menu. Figma has no hover, so the hover colors are other colors from
-// Figma's palette.
+// A square button with only an icon. It has no text, so it always needs an aria-label:
+// <button appIconButton icon="close" aria-label="Stäng">. tone="light" is for dark backgrounds.
 @Component({
   selector: 'button[appIconButton]',
   imports: [Icon],
@@ -33,7 +29,7 @@ import { Icon, IconName } from '../icons/icon';
     }
 
     :host(:hover:not(:disabled)) {
-      background: var(--color-oat);
+      background: var(--color-bg-hover);
     }
 
     :host(.light) {
@@ -42,7 +38,7 @@ import { Icon, IconName } from '../icons/icon';
     }
 
     :host(.light:hover:not(:disabled)) {
-      background: var(--color-graphite);
+      background: var(--color-bg-inverse-hover);
     }
 
     :host(:disabled) {

@@ -1,8 +1,7 @@
 import { Component, input } from '@angular/core';
 
-// A small label on a product image, e.g. <app-badge tone="light">Slutsåld</app-badge>
-// (Figma: Badge). The text is written normally and shown in capitals, so screen readers read
-// a word instead of letters (the text style Badge has the capitals).
+// <app-badge tone="light">Slutsåld</app-badge>. Write the text in normal case: the text style
+// shows capitals, so screen readers read a word instead of letters.
 @Component({
   selector: 'app-badge',
   host: {
@@ -19,7 +18,6 @@ import { Component, input } from '@angular/core';
       white-space: nowrap;
     }
 
-    // Only the light badge has a frame in Figma, so it is 4 px taller than the dark one.
     :host(.light) {
       border: var(--border-width-default) solid var(--color-border-default);
       background: var(--color-bg-surface);

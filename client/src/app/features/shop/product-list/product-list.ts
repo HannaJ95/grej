@@ -10,8 +10,7 @@ import { CategoryTabs } from '../category-tabs/category-tabs';
 import { ProductCard } from '../product-card/product-card';
 import { ProductFilters } from '../product-filters/product-filters';
 
-// The list of products in the shop, e.g. /produkter, /produkter?sida=2 or
-// /produkter?kategori=1&kategori=3 (Figma: Shop page).
+// /produkter, /produkter?sida=2 or /produkter?kategori=1&kategori=3.
 @Component({
   selector: 'app-product-list',
   imports: [RouterLink, Breadcrumb, CategoryTabs, Pagination, ProductCard, ProductFilters],

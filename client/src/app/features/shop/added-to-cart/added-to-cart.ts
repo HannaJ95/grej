@@ -5,14 +5,11 @@ import { Button } from '../../../shared/button/button';
 import { IconButton } from '../../../shared/icon-button/icon-button';
 import { Icon } from '../../../shared/icons/icon';
 
-// How long the popup stays, like the design says.
 const SHOW_FOR_MS = 5000;
 
-// The small "Tillagd i varukorgen" box under the cart button (Figma: Added to cart popup).
-// It shows when a product is added, from a product card or the product page, and closes by
-// itself after 5 s, with the cross or with Escape. It pauses while the pointer or the focus
-// is on it, so there is time to click. It never takes the focus; screen readers hear it
-// through aria-live instead.
+// Shown when a product is added. Closes by itself, with the cross or with Escape, and pauses
+// while the pointer or the focus is on it, so there is time to click. It never takes the
+// focus; screen readers hear it through aria-live.
 @Component({
   selector: 'app-added-to-cart',
   imports: [CurrencyPipe, Button, Icon, IconButton],

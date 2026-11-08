@@ -4,9 +4,8 @@ import { CartService } from '../../../core/cart.service';
 import { Icon } from '../../../shared/icons/icon';
 import { IconButton } from '../../../shared/icon-button/icon-button';
 
-// The menu button on phones and the panel it opens (Figma: Menu drawer). Built like the cart:
-// a native <dialog>, so the browser closes it on Escape, keeps the focus inside it and puts a
-// backdrop behind it. Only the pages that exist are in it; more links come with more pages.
+// The phone menu. A native <dialog> like the cart, so the browser handles Escape, the focus and
+// the backdrop.
 @Component({
   selector: 'app-mobile-menu',
   imports: [RouterLink, RouterLinkActive, Icon, IconButton],
@@ -29,8 +28,7 @@ export class MobileMenu {
     this.dialog().nativeElement.close();
   }
 
-  // A click on the dialog element itself is a click on the dark backdrop, since the panel
-  // inside it covers the rest. The design closes the menu then.
+  // The panel covers the whole dialog, so a click on the dialog itself is on the backdrop.
   protected closeOnBackdrop(event: MouseEvent): void {
     if (event.target === event.currentTarget) {
       this.close();

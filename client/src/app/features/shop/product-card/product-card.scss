@@ -1,6 +1,3 @@
-// The values come from Figma's Product card and Add to cart button, and the text styles are
-// classes in the template.
-
 // position: relative makes the title link's ::after cover this card and nothing else.
 // container-type lets the add button use the card's width (cqw) to find the image's bottom.
 :host {
@@ -16,8 +13,7 @@
   position: relative;
 }
 
-// The design's 318 × 380 px, as a ratio so it shrinks with the card. object-fit crops the
-// image instead of stretching it. The span without an image is a white box of the same size.
+// The span without an image is a white box of the same size.
 .image {
   display: block;
   width: 100%;
@@ -40,7 +36,6 @@
   padding-right: 2.75rem;
 }
 
-// Heading/S.
 .title {
   color: inherit;
   text-decoration: none;
@@ -68,15 +63,11 @@
   outline: none;
 }
 
-// Price.
 .price {
   margin: 0;
 }
 
-// The add button (Figma: Add to cart button). On a phone and a tablet a dark square with a
-// plus at the right of the price, always shown, since there is no hover on a touch screen:
-// 34 × 30 px with a 12 px plus on a phone, 38 × 32 px with a 14 px plus on a tablet. Its
-// bottom is 5 px above the price's bottom, like in Figma.
+// Always shown below 1024 px, since touch screens have no hover.
 .add {
   --icon-size: 0.75rem;
 
@@ -94,15 +85,13 @@
   padding: 0;
   border: none;
   background: var(--color-bg-inverse);
-  // Figma paints the plus in --color-bg-surface.
-  color: var(--color-bg-surface);
+  color: var(--color-icon-inverse);
   cursor: pointer;
 
   &:hover:not(:disabled) {
-    background: var(--color-graphite);
+    background: var(--color-bg-inverse-hover);
   }
 
-  // 30 % like Figma's disabled button.
   &:disabled {
     opacity: 0.3;
     cursor: not-allowed;
@@ -121,10 +110,9 @@
   display: none;
 }
 
-// On a computer with a mouse: a 54 px bar along the image's bottom edge with Label/S text,
-// shown when the pointer is on the card or the button has keyboard focus. The image is
-// 380/318 as tall as the card is wide (100cqw), so that minus the bar is where the bar
-// starts.
+// On a computer with a mouse: a bar along the image's bottom edge, shown on hover or keyboard
+// focus. The image is 380/318 times as tall as the card is wide (100cqw), so the bar starts
+// there minus its own height.
 @media (width >= 64rem) and (hover: hover) {
   .meta {
     padding-right: 0;
@@ -155,9 +143,7 @@
   }
 }
 
-// Sold out: a light layer over the image and the secondary text color, like the design.
-// Figma's layer is --color-bg-surface at 100 %, which would hide the image completely, so
-// here it is the same color at 70 %.
+// The light layer still lets the image show through.
 :host(.sold-out) {
   color: var(--color-text-secondary);
 

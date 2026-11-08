@@ -1,6 +1,6 @@
 @let p = product();
 <div class="media">
-  <!-- A plain img like in the product list: the images' sizes are not stored. -->
+  <!-- A plain img instead of NgOptimizedImage, since the image sizes are not stored. -->
   @if (p.image; as image) {
     <img class="image" [src]="image.url" [alt]="image.altText" loading="lazy" />
   } @else {
@@ -16,7 +16,7 @@
   <!-- The link covers the whole card (see .title::after), so the image can be clicked too,
        while screen readers only read the title. -->
   <a class="title text-heading-s" [routerLink]="['/produkter', p.id]">{{ p.title }}</a>
-  <!-- '1.0-2': no öre when the price is whole, e.g. "320 kr" like the design. -->
+  <!-- '1.0-2': no öre when the price is whole, e.g. "320 kr". -->
   <p class="price text-price">
     {{ p.price | currency: p.currency : 'symbol' : '1.0-2' }}
     @if (p.isSoldOut) {
@@ -24,9 +24,7 @@
     }
   </p>
 </div>
-<!-- After the link in the page, and above its ::after, so it gets its own clicks. The same
-     CartService.add as the product page, which also shows the "Tillagd" popup. Disabled when
-     the product is sold out or all of it is already in the cart. -->
+<!-- After the link and above its ::after, so it gets its own clicks. -->
 <button
   class="add text-label-s"
   type="button"

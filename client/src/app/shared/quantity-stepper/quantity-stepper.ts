@@ -1,8 +1,7 @@
 import { Component, input, model } from '@angular/core';
 import { Icon } from '../icons/icon';
 
-// − 1 + in one 2 px frame (Figma: Quantity stepper). [(quantity)] binds both ways, e.g.
-// <app-quantity-stepper [(quantity)]="amount" [max]="5" label="Vas" />.
+// <app-quantity-stepper [(quantity)]="amount" [max]="5" label="Vas" />
 @Component({
   selector: 'app-quantity-stepper',
   imports: [Icon],
@@ -26,8 +25,7 @@ import { Icon } from '../icons/icon';
     </button>
   `,
   styles: `
-    // The buttons are squares, so the hover color is too. A page makes the stepper bigger with
-    // --stepper-button-size, e.g. the product page.
+    // A page can make the stepper bigger with --stepper-button-size.
     :host {
       display: inline-flex;
       align-items: center;
@@ -49,7 +47,7 @@ import { Icon } from '../icons/icon';
       cursor: pointer;
 
       &:hover:not(:disabled) {
-        background: var(--color-oat);
+        background: var(--color-bg-hover);
       }
 
       &:disabled {

@@ -21,13 +21,11 @@ import { ProductGallery } from '../product-gallery/product-gallery';
 // Longer descriptions are cut short at the top of the page.
 const SHORT_DESCRIPTION = 150;
 
-// The page for one product, e.g. /produkter/1 (Figma: Produktsida).
 @Component({
   selector: 'app-product-page',
   imports: [CurrencyPipe, Breadcrumb, Button, Icon, QuantityStepper, StockStatus, ProductGallery],
   templateUrl: './product-page.html',
   styleUrl: './product-page.scss',
-  // The page's width and side space (_base.scss), like the product list.
   host: { class: 'page-width' },
 })
 export class ProductPage {

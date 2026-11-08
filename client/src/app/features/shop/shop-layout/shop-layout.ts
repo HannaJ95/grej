@@ -4,9 +4,8 @@ import { AddedToCart } from '../added-to-cart/added-to-cart';
 import { CartDrawer } from '../cart-drawer/cart-drawer';
 import { MobileMenu } from '../mobile-menu/mobile-menu';
 
-// The frame around every shop page: the header with the logo, the menu and the cart, and the
-// footer. The shop's pages are its children in app.routes.ts and are shown in <router-outlet />,
-// like a layout.tsx in Next.js. The admin pages are not inside it.
+// The header and footer around every shop page. The shop's routes are its children in
+// app.routes.ts.
 @Component({
   selector: 'app-shop-layout',
   imports: [RouterLink, RouterLinkActive, RouterOutlet, AddedToCart, CartDrawer, MobileMenu],

@@ -1,5 +1,5 @@
-// One class per Figma text style, e.g. Display/L → .text-display-l. The font sizes come from
-// _tokens.scss, so they follow the breakpoints.
+// One class per text style. The font sizes come from _tokens.scss, so they follow the
+// breakpoints.
 
 // Fallbacks until the Google Fonts in index.html have loaded.
 $font-display: Anton, Impact, 'Arial Narrow', sans-serif;
@@ -13,8 +13,7 @@ $font-text:
   sans-serif;
 $font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
 
-// Sets every property, so a class never inherits e.g. uppercase from its parent. Figma's
-// letter spacing in % becomes em (8 % = 0.08em).
+// Sets every property, so a class never inherits e.g. uppercase from its parent.
 @mixin text-style(
   $font,
   $weight,

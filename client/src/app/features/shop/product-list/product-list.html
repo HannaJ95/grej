@@ -1,7 +1,7 @@
 <div class="page-width page-title">
   <app-breadcrumb [links]="[{ label: 'Hem', path: '/' }]" current="Shop" />
   <div class="title-row">
-    <!-- Written in normal case and made capital by the text style, like the start page. -->
+    <!-- Normal case: the text style makes the capitals, so screen readers read words. -->
     <h1 class="title text-display-xl">Alla grejer</h1>
     <!-- The number comes when the API has answered. -->
     <p class="intro text-body-m">
@@ -20,8 +20,7 @@
   <app-category-tabs [categories]="categories.value()" [selected]="categoryIds()" />
 }
 
-<!-- The design's toolbar: lines across the whole screen, the count within the page width.
-     The sorting and the filter button for phones and tablets will go here too. -->
+<!-- Lines across the whole screen, the count within the page width. -->
 <div class="toolbar">
   <div class="page-width">
     @if (shown(); as s) {
@@ -30,7 +29,6 @@
   </div>
 </div>
 
-<!-- The filter column and the products side by side on a computer (Figma: Shop body). -->
 <div class="page-width shop-body">
   @if (categories.hasValue() && categories.value().length > 0) {
     <app-product-filters

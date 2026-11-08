@@ -1,5 +1,3 @@
-// Phone first; the values come from Figma's "Tack för din beställning" frames.
-
 .confirmation {
   display: flex;
   flex-direction: column;
@@ -56,7 +54,6 @@ p {
   list-style: none;
 }
 
-// The number is in the middle of the text's height, which Figma has at the top.
 .step {
   display: flex;
   align-items: center;
@@ -84,14 +81,12 @@ p {
   color: var(--color-text-secondary);
 }
 
-// The whole width on a phone, as wide as its text from a tablet.
 .continue {
   @media (width >= 48rem) {
     align-self: flex-start;
   }
 }
 
-// Figma's Alert (Info).
 .notice {
   display: flex;
   align-items: flex-start;

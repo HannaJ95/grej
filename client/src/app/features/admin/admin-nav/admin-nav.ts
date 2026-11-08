@@ -6,8 +6,7 @@ import { Badge } from '../../../shared/badge/badge';
 import { Icon } from '../../../shared/icons/icon';
 import { IconButton } from '../../../shared/icon-button/icon-button';
 
-// The CMS's menu (Figma: Admin sidebar). AdminLayout shows it to the left on a computer and in a
-// drawer on tablets and phones. Only the pages that exist are in it.
+// AdminLayout shows it to the left on a computer and in a drawer on tablets and phones.
 @Component({
   selector: 'app-admin-nav',
   imports: [RouterLink, RouterLinkActive, Badge, Icon, IconButton],
@@ -54,8 +53,8 @@ export class AdminNav {
   private readonly onMaterialPage = isActive('/admin/material', this.router);
   private readonly onColorPage = isActive('/admin/farger', this.router);
 
-  // A group is open while one of its pages is shown. The admin can fold it, until the next page
-  // sets it again: linkedSignal follows its source but can also be set.
+  // A group is open while one of its pages is shown. The admin can fold it until the next page
+  // opens it again.
   protected readonly categoriesOpen = linkedSignal(
     () => this.onMainCategoryPage() || this.onSubcategoryPage(),
   );

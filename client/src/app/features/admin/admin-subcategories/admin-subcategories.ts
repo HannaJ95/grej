@@ -7,9 +7,9 @@ import { toId } from '../../../shared/id-list';
 import { AdminCategoryCard } from '../admin-category-card/admin-category-card';
 import { AdminPageHeader } from '../admin-page-header/admin-page-header';
 
-// The CMS's subcategories. /admin/underkategorier shows all of them under their main categories
-// (Figma: Admin – Kategorier – Underkategorier), and /admin/underkategorier/3 only the ones in
-// main category 3, which the card then chooses from the start (Figma: Underkategorier: Keramik).
+// /admin/underkategorier shows all subcategories under their main categories, and
+// /admin/underkategorier/3 only the ones in main category 3, which the card then chooses from
+// the start.
 @Component({
   selector: 'app-admin-subcategories',
   imports: [RouterLink, Button, AdminCategoryCard, AdminPageHeader],

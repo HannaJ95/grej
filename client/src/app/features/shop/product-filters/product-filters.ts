@@ -4,11 +4,9 @@ import { Router } from '@angular/router';
 import { ShopCategory } from '../../../core/category';
 import { Icon } from '../../../shared/icons/icon';
 
-// The filter column next to the products on a computer (Figma: Filters and Filter panel). Only
-// the Kategori group is built; material, color and price come in sprint 4. Several categories
-// can be chosen ("or", ambiguity.md), and every change goes into the URL, so the list, the tabs
-// and the browser's back button all follow it. A main category's subcategories are indented
-// under it; ticking the main category shows its subcategories' products too (the API adds them).
+// Several categories can be chosen ("or", ambiguity.md), and every change goes into the URL, so
+// the list, the tabs and the back button follow it. Ticking a main category also shows its
+// subcategories' products (the API adds them).
 @Component({
   selector: 'app-product-filters',
   imports: [NgTemplateOutlet, Icon],

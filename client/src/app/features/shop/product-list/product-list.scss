@@ -1,17 +1,9 @@
-// The styles are written for a phone first; the media queries change them on a tablet
-// (48rem = 768 px) and a computer (64rem = 1024 px). The values come from Figma's three Shop
-// Page frames, and the text styles are classes in the template. The category tabs are their own
-// component (category-tabs), and so is the filter column (product-filters). Figma's sorting and
-// its filter button for phones and tablets are not built yet.
-
 :host {
   display: block;
 }
 
-// The breadcrumb, the title and the intro under each other, 12 / 16 / 20 px apart. On a
-// computer the intro is next to the title. display: flex wins over .page-width's
-// display: block, since Angular adds an attribute to this file's selectors, which makes them
-// more specific than the global class.
+// display: flex wins over .page-width's display: block, since Angular's style scoping makes
+// this selector more specific than the global class.
 .page-title {
   display: flex;
   flex-direction: column;
@@ -29,8 +21,6 @@
   }
 }
 
-// Under each other on a phone and a tablet; side by side on a computer, with the intro at the
-// bottom right.
 .title-row {
   display: flex;
   flex-direction: column;
@@ -48,14 +38,12 @@
   }
 }
 
-// Display/XL.
 .title {
   margin: 0;
 }
 
-// Body/M on a phone and Body/L from a tablet up, 520 px wide on a tablet and 420 px on a
-// computer. The two styles only differ in size, so the template has text-body-m and the media
-// query changes the size.
+// The body styles only differ in size, so the template has text-body-m and the media query
+// changes the size.
 .intro {
   margin: 0;
 
@@ -69,7 +57,6 @@
   }
 }
 
-// Lines across the whole screen, the count (Label/S) within the page width.
 .toolbar {
   padding-block: var(--space-14);
   border-block: var(--border-width-default) solid var(--color-border-default);
@@ -83,9 +70,8 @@
   }
 }
 
-// 28 / 32 / 48 px above the products and 64 / 80 / 120 px below the pagination. On a computer
-// the 288 px filter column and the products side by side, 56 px apart. minmax(0, 1fr) lets the
-// products' column shrink below the width of its content, so a long word cannot widen it.
+// minmax(0, 1fr) lets the products' column shrink below its content, so a long word cannot
+// widen it.
 .shop-body {
   padding-block: var(--space-28) var(--space-64);
 
@@ -119,8 +105,6 @@
   }
 }
 
-// Two products per row on a phone and three on a tablet and a computer (next to the filters),
-// with the grid's gutter between the columns and 28 / 40 / 48 px between the rows.
 .product-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

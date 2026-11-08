@@ -44,7 +44,7 @@ describe('Pagination', () => {
     return [...list.querySelectorAll('li')].map((li) => li.textContent!.replace('Sida', '').trim());
   }
 
-  it('numbers the pages like the design, with fewer on a phone', async () => {
+  it('numbers the pages, with fewer on a phone', async () => {
     expect(numbers(await show(1, 8))).toEqual(['1', '2', '3', '…', '8']);
   });
 

@@ -1,11 +1,7 @@
-// The values come from Figma's Filters (on the Shop page) and Filter panel, and the text styles
-// are classes in the template.
-
 :host {
   display: block;
 }
 
-// "FILTER" (Display/XS) and "Rensa" (Link/S) at each end, 16 px above the group.
 .header {
   display: flex;
   align-items: center;
@@ -27,7 +23,6 @@
   cursor: pointer;
 }
 
-// A 2 px line above and below, 20 px above the title and 24 px below the last box.
 .group {
   display: flex;
   flex-direction: column;
@@ -40,8 +35,7 @@
   margin: 0;
 }
 
-// The whole title row is the button: the name to the left and the 20 px icon to the right.
-// font: inherit keeps Display/2XS from the heading, since a button has its own font otherwise.
+// font: inherit keeps the heading's text style, since a button has its own font otherwise.
 .fold {
   --icon-size: 1.25rem;
 
@@ -58,7 +52,6 @@
   cursor: pointer;
 }
 
-// 12 px between the rows, like the gap in Figma's Kategori group.
 .options {
   display: flex;
   flex-direction: column;
@@ -68,14 +61,13 @@
   list-style: none;
 }
 
-// A main category's subcategories, 12 px under it like the other rows, and moved in 32 px (the
-// 20 px box and the 12 px gap), so their boxes line up with the main category's name.
+// Indented by the box and the gap, so the subcategories' boxes line up with the main
+// category's name.
 .subcategories {
   margin-top: var(--space-12);
   padding-left: var(--space-32);
 }
 
-// Figma's Checkbox: the box, the name (Body/M Compact) and the number (Body/S) 12 px apart.
 .option {
   display: flex;
   align-items: center;
@@ -83,15 +75,14 @@
   cursor: pointer;
 }
 
-// The checkbox and its check mark on top of each other, 20 × 20 px.
+// The checkbox and its check mark on top of each other.
 .box {
   position: relative;
   display: grid;
   flex-shrink: 0;
 }
 
-// The browser's own look is turned off, so the input can look like Figma: an empty 2 px frame,
-// filled when it is ticked. It is still a real checkbox for the keyboard and screen readers.
+// Still a real checkbox for the keyboard and screen readers, without the browser's own look.
 input {
   appearance: none;
   width: 1.25rem;
@@ -106,8 +97,7 @@ input {
   }
 }
 
-// The 14 px check mark in the light text color, only on a ticked box. pointer-events: none lets
-// a click on the mark reach the checkbox under it.
+// pointer-events: none lets a click on the mark reach the checkbox under it.
 .check {
   --icon-size: 0.875rem;
 

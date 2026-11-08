@@ -1,6 +1,3 @@
-// The values come from Figma's Admin sidebar, Admin nav item and Admin sub nav item. The text
-// styles are classes in the template.
-
 // The menu fills its box and pushes the account part to the bottom.
 :host {
   display: flex;
@@ -39,7 +36,6 @@ ul {
   gap: var(--space-12);
 }
 
-// The group's label and its items with 4 px between them (Figma: Group BUTIK).
 nav {
   display: flex;
   flex-direction: column;
@@ -58,8 +54,7 @@ nav {
   gap: var(--space-4);
 }
 
-// A link or a button that look the same (Admin nav item). min-height instead of height, so a
-// zoomed or long text can make the row taller.
+// Links and buttons look the same. min-height, so zoomed or long text can make the row taller.
 .item {
   --icon-size: 1rem;
 
@@ -77,9 +72,8 @@ nav {
   text-decoration: none;
   cursor: pointer;
 
-  // Figma has no hover, so it is the same color as on other light buttons.
   &:hover {
-    background: var(--color-oat);
+    background: var(--color-bg-hover);
   }
 
   // After :hover, so the chosen page stays dark under the mouse.
@@ -94,12 +88,11 @@ nav {
   rotate: 180deg;
 }
 
-// The second level hangs from a thin line, 14 px in (Figma: Tree).
 .tree {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  // The same 4 px as between the items, since the list is inside its group's item.
+  // The same space as between the items, since the list is inside its group's item.
   margin: var(--space-4) 0 0 var(--space-14);
   border-left: var(--border-width-default) solid var(--color-border-subtle);
 }
@@ -114,7 +107,7 @@ nav {
   text-decoration: none;
 
   &:hover {
-    background: var(--color-oat);
+    background: var(--color-bg-hover);
   }
 
   &.active {
@@ -123,12 +116,10 @@ nav {
   }
 }
 
-// The third level is quieter: normal weight and grey (Figma: Admin sub nav item, Level=3).
 .level-3:not(.active) {
   color: var(--color-text-secondary);
 }
 
-// A quiet number to the right (Figma: Count on Admin sub nav item).
 .count {
   margin-left: auto;
   color: var(--color-text-secondary);
@@ -197,7 +188,7 @@ nav {
   color: var(--color-text-secondary);
 }
 
-// A button that looks like a link (Link/S), since it does something instead of opening a page.
+// A button, since it does something instead of opening a page.
 .logout {
   align-self: flex-start;
   margin: 0 var(--space-14);

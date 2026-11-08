@@ -1,7 +1,3 @@
-// The menu is only shown on a phone (see shop-layout.scss). The values come from Figma's frame
-// "Landing Page – Mobile – meny öppen", and the text styles are classes in the template.
-
-// The 40 px square with three bars (Figma: Menu button in the Header).
 .menu-button {
   display: inline-flex;
   flex-direction: column;
@@ -22,12 +18,10 @@
   }
 
   &:hover {
-    background: var(--color-oat);
+    background: var(--color-bg-hover);
   }
 }
 
-// The panel lies along the right edge in full height, and leaves 56 px of the page visible
-// on the left, like the design.
 dialog {
   margin: 0 0 0 auto;
   width: calc(100% - var(--space-56));
@@ -45,7 +39,6 @@ dialog::backdrop {
 }
 
 // Fills the dialog, so a click on the dialog element itself can only be on the backdrop.
-// The focus ring gets the light border color to be seen on the dark background.
 .panel {
   display: flex;
   flex-direction: column;
@@ -74,7 +67,6 @@ dialog::backdrop {
   list-style: none;
 }
 
-// Display/M, with a 2 px line under each link.
 .link {
   --icon-size: 1.75rem;
 
@@ -85,7 +77,6 @@ dialog::backdrop {
   border-bottom: var(--border-width-default) solid var(--color-border-inverse);
   color: var(--color-text-on-inverse);
 
-  // The current page is underlined, like in the header.
   &:hover,
   &.active {
     text-decoration: underline;
@@ -94,7 +85,6 @@ dialog::backdrop {
   }
 }
 
-// margin-top: auto pushes the footer to the bottom of the panel.
 .panel-footer {
   display: flex;
   flex-direction: column;
@@ -102,7 +92,6 @@ dialog::backdrop {
   margin-top: auto;
 }
 
-// "Varukorg" in Label/M and the count in Label/S, on the page's light color.
 .cart-button {
   display: flex;
   align-items: center;
@@ -114,7 +103,7 @@ dialog::backdrop {
   cursor: pointer;
 
   &:hover {
-    background: var(--color-oat);
+    background: var(--color-bg-hover);
   }
 }
 

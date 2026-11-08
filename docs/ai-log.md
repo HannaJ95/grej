@@ -166,3 +166,5 @@ A few lines a day about how AI was used: what for, which tool, and what worked o
 - **Building:** Finished the last Should item in sprint 3, subcategories (one level). The admin adds them from a main category's own page, and the shop's filter column shows them under their main category; choosing a main category also shows its subcategories' products. Verified locally.
 - **Design:** My first version, a "Huvudkategori" menu in the category form, felt backwards, so I drew the admin pages in Figma and we built the admin layout (menu) and the category pages after it, with the card on top on narrow screens.
 - **Verification:** Every part was built and tested in a copy first, and Claude measured the pages at 320–1440 px. I found that the list rows were cramped at 1100 px, which we fixed with container queries.
+
+2026-11-08: Switched from a Figma-first to a code-first workflow. The rules for responsive design, WCAG and components were gathered in the skill grej-ui, so they apply to every UI change without me repeating them. Claude then removed the Figma references from the code comments and replaced the palette colors in the hover styles with tokens.

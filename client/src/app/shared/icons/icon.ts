@@ -1,7 +1,6 @@
 import { Component, input } from '@angular/core';
 
-// The icons from the design (Figma: Icon), 24 × 24 px with a 2 px line. The files are in
-// public/icons/.
+// The files in public/icons/.
 export type IconName =
   | 'close'
   | 'plus'
@@ -12,10 +11,8 @@ export type IconName =
   | 'arrow-left'
   | 'search';
 
-// One icon, in the color of the text around it. The svg file is used as a mask: the browser
-// paints currentColor through the icon's shape, so the same file works on light and dark
-// backgrounds without a copy per color. Always decoration, so screen readers skip it; the
-// button or link it is in has the text.
+// The svg is a mask over currentColor, so one file works in every text color. Always
+// decoration: the button or link around it has the text.
 @Component({
   selector: 'app-icon',
   host: {

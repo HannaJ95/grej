@@ -1,8 +1,7 @@
 import { Component, input, linkedSignal } from '@angular/core';
 import { ProductImage } from '../../../core/product-image';
 
-// A product's big image with small images to choose from (Figma: the product page's Gallery
-// and Gallery thumbnail). Built for several images, though the API has one per product so far.
+// Built for several images, though the API has one per product so far.
 @Component({
   selector: 'app-product-gallery',
   templateUrl: './product-gallery.html',

@@ -1,5 +1,3 @@
-// Design tokens from the Figma file (page Foundations), named after each variable's code
-// syntax. Sizes are in rem with Figma's px in the comments.
 :root {
   color-scheme: light;
 
@@ -64,75 +62,75 @@
   --space-160: 10rem;
   --border-width-default: 2px;
   --border-width-strong: 3px;
-  --size-control-height: 3.125rem; // 50
+  --size-control-height: 3.125rem;
 
   --shadow-popover: 0 0.5rem 1.5rem rgb(43 42 39 / 18%);
 
   // Responsive values, mobile first. The media queries below override them.
-  --font-size-display-hero: 6.875rem; // 110
-  --font-size-display-xl: 4.5rem; // 72
-  --font-size-display-l: 3rem; // 48
-  --font-size-display-m: 3.5rem; // 56
-  --font-size-display-s: 2.5rem; // 40
-  --font-size-display-xs: 1.875rem; // 30
-  --font-size-display-2xs: 1.75rem; // 28
-  --font-size-display-logo: 2.5rem; // 40
-  --font-size-display-wordmark: 9.375rem; // 150
-  --font-size-body-l: 1.125rem; // 18
-  --font-size-body-m: 1rem; // 16
-  --font-size-body-s: 0.875rem; // 14
-  --font-size-body-xs: 0.8125rem; // 13
-  --font-size-caption: 0.75rem; // 12
-  --font-size-heading-s: 0.9375rem; // 15
-  --font-size-heading-xs: 1rem; // 16
-  --font-size-label-l: 1.125rem; // 18
-  --font-size-label-m: 1rem; // 16
-  --font-size-label-s: 0.9375rem; // 15
-  --font-size-label-xs: 0.875rem; // 14
-  --font-size-price: 0.9375rem; // 15
-  --font-size-badge: 0.75rem; // 12
-  --font-size-mono-s: 0.75rem; // 12
-  --layout-margin: 1.25rem; // 20
-  --layout-gutter: 0.75rem; // 12
+  --font-size-display-hero: 6.875rem;
+  --font-size-display-xl: 4.5rem;
+  --font-size-display-l: 3rem;
+  --font-size-display-m: 3.5rem;
+  --font-size-display-s: 2.5rem;
+  --font-size-display-xs: 1.875rem;
+  --font-size-display-2xs: 1.75rem;
+  --font-size-display-logo: 2.5rem;
+  --font-size-display-wordmark: 9.375rem;
+  --font-size-body-l: 1.125rem;
+  --font-size-body-m: 1rem;
+  --font-size-body-s: 0.875rem;
+  --font-size-body-xs: 0.8125rem;
+  --font-size-caption: 0.75rem;
+  --font-size-heading-s: 0.9375rem;
+  --font-size-heading-xs: 1rem;
+  --font-size-label-l: 1.125rem;
+  --font-size-label-m: 1rem;
+  --font-size-label-s: 0.9375rem;
+  --font-size-label-xs: 0.875rem;
+  --font-size-price: 0.9375rem;
+  --font-size-badge: 0.75rem;
+  --font-size-mono-s: 0.75rem;
+  --layout-margin: 1.25rem;
+  --layout-gutter: 0.75rem;
   --layout-columns: 4;
-  --layout-admin-gutter: 1.25rem; // 20
-  --layout-viewport-width: 24.375rem; // 390
+  --layout-admin-gutter: 1.25rem;
+  --layout-viewport-width: 24.375rem;
 }
 
 // Media queries cannot read custom properties, so the breakpoints are written out:
 // 48rem = 768 px and 64rem = 1024 px.
 @media (width >= 48rem) {
   :root {
-    --font-size-display-hero: 9.375rem; // 150
-    --font-size-display-xl: 7.5rem; // 120
-    --font-size-display-l: 5rem; // 80
-    --font-size-display-m: 4.5rem; // 72
-    --font-size-display-s: 3.5rem; // 56
-    --font-size-display-xs: 2.25rem; // 36
-    --font-size-display-logo: 3.125rem; // 50
-    --font-size-display-wordmark: 18.75rem; // 300
-    --font-size-body-l: 1.25rem; // 20
-    --font-size-heading-s: 1.0625rem; // 17
-    --font-size-price: 1rem; // 16
-    --layout-margin: 2rem; // 32
-    --layout-gutter: 1.25rem; // 20
+    --font-size-display-hero: 9.375rem;
+    --font-size-display-xl: 7.5rem;
+    --font-size-display-l: 5rem;
+    --font-size-display-m: 4.5rem;
+    --font-size-display-s: 3.5rem;
+    --font-size-display-xs: 2.25rem;
+    --font-size-display-logo: 3.125rem;
+    --font-size-display-wordmark: 18.75rem;
+    --font-size-body-l: 1.25rem;
+    --font-size-heading-s: 1.0625rem;
+    --font-size-price: 1rem;
+    --layout-margin: 2rem;
+    --layout-gutter: 1.25rem;
     --layout-columns: 8;
-    --layout-admin-gutter: 2rem; // 32
-    --layout-viewport-width: 48rem; // 768
+    --layout-admin-gutter: 2rem;
+    --layout-viewport-width: 48rem;
   }
 }
 
 @media (width >= 64rem) {
   :root {
-    --font-size-display-hero: 12.5rem; // 200
-    --font-size-display-xl: 11.25rem; // 180
-    --font-size-display-l: 7.5rem; // 120
-    --font-size-display-m: 5.5rem; // 88
-    --font-size-display-wordmark: 31.25rem; // 500
-    --layout-margin: 3rem; // 48
-    --layout-gutter: 1.5rem; // 24
+    --font-size-display-hero: 12.5rem;
+    --font-size-display-xl: 11.25rem;
+    --font-size-display-l: 7.5rem;
+    --font-size-display-m: 5.5rem;
+    --font-size-display-wordmark: 31.25rem;
+    --layout-margin: 3rem;
+    --layout-gutter: 1.5rem;
     --layout-columns: 12;
-    --layout-admin-gutter: 2.5rem; // 40
-    --layout-viewport-width: 90rem; // 1440
+    --layout-admin-gutter: 2.5rem;
+    --layout-viewport-width: 90rem;
   }
 }
