@@ -22,19 +22,22 @@ describe('ProductList', () => {
 
   afterEach(() => httpTesting.verify());
 
-  // Answers the page's request for the categories.
-  function flushCategories(categories: object[] = []): void {
+  // Answers the page's requests for the filter's categories, materials and colors.
+  function flushFilters(categories: object[] = [], materials: object[] = []): void {
     httpTesting.expectOne((req) => req.url.endsWith('/api/categories')).flush(categories);
+    httpTesting.expectOne((req) => req.url.endsWith('/api/materials')).flush(materials);
+    httpTesting.expectOne((req) => req.url.endsWith('/api/colors')).flush([]);
   }
 
   it('fetches the page in ?sida= and links to the pages before and after', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/produkter?sida=2');
     // No categories, so no tabs: the links below are only the page's own.
-    flushCategories();
+    flushFilters();
 
     const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
     expect(request.request.params.get('page')).toBe('2');
+    expect(request.request.params.has('minPrice')).toBe(false);
     request.flush({
       items: [
         { id: 7, title: 'Vas', description: '', price: 300, currency: 'SEK', isSoldOut: false },
@@ -69,7 +72,7 @@ describe('ProductList', () => {
   it('shows the image of each product, with its alt text', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/produkter');
-    flushCategories();
+    flushFilters();
 
     httpTesting
       .expectOne((req) => req.url.endsWith('/api/products'))
@@ -101,7 +104,7 @@ describe('ProductList', () => {
   it('fetches the categories in ?kategori= and shows them as tabs', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/produkter?kategori=3&kategori=1&sida=2');
-    flushCategories([
+    flushFilters([
       { id: 1, name: 'Keramik', productCount: 4, subcategories: [] },
       { id: 3, name: 'Textil', productCount: 2, subcategories: [] },
     ]);
@@ -121,7 +124,7 @@ describe('ProductList', () => {
   it('offers all products when no product matches the filter', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/produkter?kategori=99');
-    flushCategories();
+    flushFilters();
     httpTesting
       .expectOne((req) => req.url.endsWith('/api/products'))
       .flush({ items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 });
@@ -130,5 +133,27 @@ describe('ProductList', () => {
     const results = harness.routeNativeElement!.querySelector('.results')!;
     expect(results.textContent).toContain('Inga grejer matchar filtret.');
     expect(results.querySelector('a')!.getAttribute('href')).toBe('/produkter');
+  });
+
+  it('sends the material, color and price in the URL to the API and ticks them', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/produkter?material=4&material=5&farg=2&minpris=200&maxpris=800');
+    flushFilters([], [{ id: 4, name: 'Lera', productCount: 2 }]);
+
+    const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
+    const params = request.request.params;
+    expect(params.getAll('materialId')).toEqual(['4', '5']);
+    expect(params.getAll('colorId')).toEqual(['2']);
+    expect(params.get('minPrice')).toBe('200');
+    expect(params.get('maxPrice')).toBe('800');
+    expect(request.request.urlWithParams).not.toContain('categoryId');
+    request.flush({ items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 });
+    await harness.fixture.whenStable();
+
+    const filters = harness.routeNativeElement!.querySelector('app-product-filters')!;
+    expect(filters.querySelector<HTMLInputElement>('input[type="checkbox"]')!.checked).toBe(true);
+    expect(harness.routeNativeElement!.querySelector('.results')!.textContent).toContain(
+      'Inga grejer matchar filtret.',
+    );
   });
 });

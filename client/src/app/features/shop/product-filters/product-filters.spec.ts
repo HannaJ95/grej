@@ -1,19 +1,22 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { NO_FILTER, ProductFilter, toQueryParams } from '../../../core/product-filter';
+import { ShopProperty } from '../../../core/product-property';
 import { ProductFilters } from './product-filters';
 
 describe('ProductFilters', () => {
-  // Shows the filters for Keramik (1) with its subcategory Skålar (5), and Textil (2), at
-  // /produkter?sida=2 plus the chosen ids. The boxes are in that order: Keramik, Skålar, Textil.
-  async function render(selected: number[]) {
+  // Keramik (1) with its subcategory Skålar (5), Textil (2), the material Lera (4) and the color
+  // Blå (6), at /produkter?sida=2 plus the chosen filter. The boxes are in that order.
+  async function render(
+    choices: Partial<ProductFilter> = {},
+    colors: ShopProperty[] = [{ id: 6, name: 'Blå', productCount: 3 }],
+  ) {
+    const filter = { ...NO_FILTER, ...choices };
     TestBed.configureTestingModule({
-      // children: [] is a route without a page, so the test can navigate to /produkter.
       providers: [provideRouter([{ path: 'produkter', children: [] }])],
     });
     const router = TestBed.inject(Router);
-    await router.navigateByUrl(
-      `/produkter?sida=2${selected.map((id) => `&kategori=${id}`).join('')}`,
-    );
+    await router.navigate(['/produkter'], { queryParams: { sida: 2, ...toQueryParams(filter) } });
     const fixture = TestBed.createComponent(ProductFilters);
     fixture.componentRef.setInput('categories', [
       {
@@ -24,16 +27,22 @@ describe('ProductFilters', () => {
       },
       { id: 2, name: 'Textil', productCount: 2, subcategories: [] },
     ]);
-    fixture.componentRef.setInput('selected', selected);
+    fixture.componentRef.setInput('materials', [{ id: 4, name: 'Lera', productCount: 2 }]);
+    fixture.componentRef.setInput('colors', colors);
+    fixture.componentRef.setInput('filter', filter);
     await fixture.whenStable();
     const element: HTMLElement = fixture.nativeElement;
     const boxes = [...element.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')];
     return { fixture, router, element, boxes };
   }
 
+  function headings(element: HTMLElement): string[] {
+    return [...element.querySelectorAll('h3')].map((h3) => h3.textContent!.trim());
+  }
+
   it('ticks the chosen categories and adds a new one to the URL, from page 1', async () => {
-    const { fixture, router, boxes } = await render([1]);
-    expect(boxes.map((box) => box.checked)).toEqual([true, false, false]);
+    const { fixture, router, boxes } = await render({ categoryIds: [1] });
+    expect(boxes.map((box) => box.checked)).toEqual([true, false, false, false, false]);
 
     boxes[2].click();
     await fixture.whenStable();
@@ -41,23 +50,28 @@ describe('ProductFilters', () => {
     expect(router.url).toBe('/produkter?kategori=1&kategori=2');
   });
 
-  it('removes an unticked category, and Rensa removes them all', async () => {
-    const { fixture, router, element, boxes } = await render([1, 2]);
+  it('removes an unticked category and keeps the other choices', async () => {
+    const { fixture, router, boxes } = await render({ categoryIds: [1, 2], colorIds: [6] });
 
     boxes[0].click();
     await fixture.whenStable();
-    expect(router.url).toBe('/produkter?kategori=2');
 
-    element.querySelector<HTMLButtonElement>('.clear')!.click();
+    expect(router.url).toBe('/produkter?kategori=2&farg=6');
+  });
+
+  it('adds a material to the URL next to the other choices', async () => {
+    const { fixture, router, boxes } = await render({ categoryIds: [1], maxPrice: 500 });
+
+    boxes[3].click();
     await fixture.whenStable();
-    expect(router.url).toBe('/produkter');
+
+    expect(router.url).toBe('/produkter?kategori=1&maxpris=500&material=4');
   });
 
   it("shows a subcategory inside its main category's row, and ticks it on its own", async () => {
-    const { fixture, router, element, boxes } = await render([]);
+    const { fixture, router, element, boxes } = await render();
     const skalar = boxes[1];
 
-    // The subcategory's list is inside Keramik's row.
     expect(skalar.closest('ul.subcategories')?.closest('li')?.textContent).toContain('Keramik');
     expect(element.querySelector('.subcategories .name')?.textContent?.trim()).toBe('Skålar');
 
@@ -67,21 +81,25 @@ describe('ProductFilters', () => {
     expect(router.url).toBe('/produkter?kategori=5');
   });
 
-  it('shows Rensa only when a category is chosen', async () => {
-    const { element } = await render([]);
+  it('shows Rensa only when something is chosen, and Rensa removes every choice', async () => {
+    expect((await render()).element.querySelector('.clear')).toBeNull();
 
-    expect(element.querySelector('.clear')).toBeNull();
-  });
-
-  it('folds the list of categories with the button in the heading', async () => {
-    const { fixture, element } = await render([]);
-    const fold = element.querySelector<HTMLButtonElement>('.fold')!;
-    expect(fold.getAttribute('aria-expanded')).toBe('true');
-
-    fold.click();
+    TestBed.resetTestingModule();
+    const { fixture, router, element } = await render({
+      categoryIds: [1],
+      materialIds: [4],
+      colorIds: [6],
+      minPrice: 100,
+    });
+    element.querySelector<HTMLButtonElement>('.clear')!.click();
     await fixture.whenStable();
 
-    expect(fold.getAttribute('aria-expanded')).toBe('false');
-    expect(element.querySelector('input')).toBeNull();
+    expect(router.url).toBe('/produkter');
+  });
+
+  it('leaves out a group without choices', async () => {
+    const { element } = await render({}, []);
+
+    expect(headings(element)).toEqual(['Kategori', 'Material']);
   });
 });

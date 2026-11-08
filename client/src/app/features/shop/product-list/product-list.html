@@ -3,7 +3,6 @@
   <div class="title-row">
     <!-- Normal case: the text style makes the capitals, so screen readers read words. -->
     <h1 class="title text-display-xl">Alla grejer</h1>
-    <!-- The number comes when the API has answered. -->
     <p class="intro text-body-m">
       @if (result.hasValue()) {
         {{ result.value().totalCount }} handgjorda grejer
@@ -15,9 +14,8 @@
   </div>
 </div>
 
-<!-- Only when the API has answered with categories; with none there is nothing to choose. -->
-@if (categories.hasValue() && categories.value().length > 0) {
-  <app-category-tabs [categories]="categories.value()" [selected]="categoryIds()" />
+@if (options().categories.length > 0) {
+  <app-category-tabs [categories]="options().categories" [selected]="categoryIds()" />
 }
 
 <!-- Lines across the whole screen, the count within the page width. -->
@@ -30,11 +28,13 @@
 </div>
 
 <div class="page-width shop-body">
-  @if (categories.hasValue() && categories.value().length > 0) {
+  @if (hasOptions()) {
     <app-product-filters
       class="filters"
-      [categories]="categories.value()"
-      [selected]="categoryIds()"
+      [categories]="options().categories"
+      [materials]="options().materials"
+      [colors]="options().colors"
+      [filter]="filter()"
     />
   }
 
@@ -46,8 +46,7 @@
       <p role="alert">Produkterna kunde inte visas.</p>
     } @else if (result.hasValue()) {
       @let r = result.value();
-      @if (r.items.length === 0 && categoryIds().length > 0) {
-        <!-- E.g. an old link to a category whose products are now hidden. -->
+      @if (r.items.length === 0 && hasChoices()) {
         <p>
           Inga grejer matchar filtret.
           <a class="text-link-s" routerLink="/produkter">Visa alla grejer</a>
@@ -64,7 +63,6 @@
         </ul>
       }
 
-      <!-- Only shown when there is more than one page. -->
       <app-pagination path="/produkter" [page]="r.page" [totalPages]="r.totalPages" />
     }
   </div>

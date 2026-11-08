@@ -1,5 +1,4 @@
-// The two lists of choices the admin keeps in the CMS. The same words as in the API's
-// URLs, /api/admin/materials and /api/admin/colors.
+// The same words as in the API's URLs, e.g. /api/materials and /api/admin/colors.
 export type PropertyKind = 'materials' | 'colors';
 
 // A material or a color (PropertyDto in the API).
@@ -8,8 +7,14 @@ export interface ProductProperty {
   name: string;
 }
 
-// One material or color with the number of products that have it (PropertyDetailsDto
-// in the API). The form uses the number to warn before deleting.
+// PropertyDetailsDto in the API. productCount includes hidden products, so the CMS can warn
+// before deleting.
 export interface ProductPropertyDetails extends ProductProperty {
+  productCount: number;
+}
+
+// A material or a color in the shop's filter (ShopPropertyDto in the API). productCount is the
+// number of active products; the API leaves out those without any.
+export interface ShopProperty extends ProductProperty {
   productCount: number;
 }

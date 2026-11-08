@@ -1,25 +1,26 @@
 <nav aria-label="Kategorier">
   <ul class="page-width tabs">
     <li>
-      <!-- No query parameters: every category, from the first page. -->
+      <!-- merge keeps the other filters; sida: null starts the list on page 1. -->
       <a
         class="tab"
         routerLink="/produkter"
+        [queryParams]="{ kategori: null, sida: null }"
+        queryParamsHandling="merge"
         [attr.aria-current]="selected().length === 0 ? 'page' : null"
       >
-        <!-- The space after the name makes screen readers say "Alla 5", not "Alla5". Angular
-             removes spaces between tags, and the browser hides one at the end of a box. -->
+        <!-- The space makes screen readers say "Alla 5", not "Alla5". -->
         <span class="text-label-m">Alla </span>
         <span class="count text-body-s">{{ total() }}</span>
       </a>
     </li>
     @for (category of categories(); track category.id) {
       <li>
-        <!-- Only this category. ?sida= is left out, so the list starts on page 1. -->
         <a
           class="tab"
           routerLink="/produkter"
-          [queryParams]="{ kategori: category.id }"
+          [queryParams]="{ kategori: category.id, sida: null }"
+          queryParamsHandling="merge"
           [attr.aria-current]="isOnlyChosen(category.id) ? 'page' : null"
         >
           <span class="text-label-m">{{ category.name }} </span>
