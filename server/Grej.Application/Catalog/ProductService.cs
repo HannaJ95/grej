@@ -1,9 +1,7 @@
-using Grej.Application.Common;
 using Grej.Domain.Catalog;
 
 namespace Grej.Application.Catalog;
 
-// Use cases for products in the shop.
 public class ProductService(IProductRepository products, ICategoryRepository categories)
 {
     // Returns null if the product does not exist or is hidden (IsActive = false),
@@ -27,12 +25,10 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
         return found.Where(product => product.IsActive).Select(ToDto).ToList();
     }
 
-    // One page of the products in the shop. Hidden products are never included.
-    public async Task<PagedResult<ProductDto>> GetProductsAsync(ProductListQuery query, CancellationToken cancellationToken)
+    // Hidden products are never included.
+    public async Task<ProductPageDto> GetProductsAsync(ProductListQuery query, CancellationToken cancellationToken)
     {
-        // A main category also shows its subcategories' products (ambiguity.md), so their ids are
-        // added to the chosen ones. [.. a, .. b] puts both lists in one, like [...a, ...b] in
-        // JavaScript.
+        // A main category also shows its subcategories' products (ambiguity.md).
         IReadOnlyCollection<int> categoryIds = query.CategoryId;
         if (categoryIds.Count > 0)
         {
@@ -40,13 +36,25 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
             categoryIds = [.. categoryIds, .. subcategoryIds];
         }
 
-        var page = await products.GetActivePageAsync(query.Page, query.PageSize, categoryIds, cancellationToken);
+        var filter = new ProductFilter
+        {
+            CategoryIds = categoryIds,
+            MaterialIds = query.MaterialId,
+            ColorIds = query.ColorId,
+            MinPrice = query.MinPrice,
+            MaxPrice = query.MaxPrice,
+        };
 
-        return new PagedResult<ProductDto>(
+        var page = await products.GetActivePageAsync(query.Page, query.PageSize, filter, cancellationToken);
+        var highestPrice = await products.GetHighestActivePriceAsync(
+            filter with { MinPrice = null, MaxPrice = null }, cancellationToken);
+
+        return new ProductPageDto(
             page.Items.Select(ToDto).ToList(),
             page.Page,
             page.PageSize,
-            page.TotalCount);
+            page.TotalCount,
+            highestPrice);
     }
 
     // Called when an order is paid. Hidden products are included, since a product
@@ -58,7 +66,6 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
     public Task IncreaseStockAsync(IReadOnlyCollection<ProductQuantity> items, CancellationToken cancellationToken) =>
         ChangeStockAsync(items, (product, quantity) => product.IncreaseStock(quantity), cancellationToken);
 
-    // Shared by the two methods above. change is called once per row, like a callback in JavaScript.
     private async Task ChangeStockAsync(
         IReadOnlyCollection<ProductQuantity> items,
         Action<Product, int> change,

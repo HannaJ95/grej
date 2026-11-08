@@ -184,7 +184,10 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
 
         // Checkout never lists products.
         public Task<PagedResult<Product>> GetActivePageAsync(
-            int page, int pageSize, IReadOnlyCollection<int> categoryIds, CancellationToken cancellationToken) =>
+            int page, int pageSize, ProductFilter filter, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        public Task<decimal?> GetHighestActivePriceAsync(ProductFilter filter, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
         // Only GET /api/categories uses this.

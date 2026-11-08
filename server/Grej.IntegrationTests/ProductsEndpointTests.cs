@@ -59,11 +59,39 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal(["Vas", "Skål"], page!.Items.Select(p => p.Title));
     }
 
+    [Fact]
+    public async Task GetPage_MaterialColorAndPrice_ReachTheRepository()
+    {
+        var client = CreateClient(new Product { Id = 1, Title = "Skål", Price = 300m, Stock = 1, IsActive = true });
+
+        await client.GetAsync("/api/products?materialId=4&materialId=5&colorId=2&minPrice=200&maxPrice=800");
+
+        var filter = filters[0];
+        Assert.Equal([4, 5], filter.MaterialIds);
+        Assert.Equal([2], filter.ColorIds);
+        Assert.Equal(200m, filter.MinPrice);
+        Assert.Equal(800m, filter.MaxPrice);
+    }
+
+    [Fact]
+    public async Task GetPage_HighestPrice_IgnoresOnlyThePriceFilter()
+    {
+        var client = CreateClient(new Product { Id = 1, Title = "Skål", Price = 300m, Stock = 1, IsActive = true });
+
+        var page = await client.GetFromJsonAsync<ProductPageDto>("/api/products?colorId=2&maxPrice=100");
+
+        Assert.Equal(filters[0] with { MinPrice = null, MaxPrice = null }, filters[1]);
+        Assert.Equal(300m, page!.HighestPrice);
+    }
+
     [Theory]
     [InlineData("?page=0")]
     [InlineData("?pageSize=49")]
     [InlineData("?categoryId=abc")]
-    public async Task GetPage_InvalidPaging_ReturnsBadRequest(string queryString)
+    [InlineData("?materialId=abc")]
+    [InlineData("?minPrice=-1")]
+    [InlineData("?maxPrice=1000000")]
+    public async Task GetPage_InvalidQuery_ReturnsBadRequest(string queryString)
     {
         var client = CreateClient();
 
@@ -110,15 +138,16 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    // Main category id → its subcategories' ids, for FakeCategoryRepository. Empty unless a test
-    // fills it. xUnit creates a new instance of the class for each test, so no test sees another's.
+    // Main category id → its subcategories' ids. Empty unless a test fills it.
     private readonly Dictionary<int, int[]> subcategories = [];
 
-    // Starts the API with the given products, and the subcategories above, instead of the database.
+    // Every filter that reached FakeProductRepository, in order.
+    private readonly List<ProductFilter> filters = [];
+
     private HttpClient CreateClient(params Product[] products) =>
         factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
             {
-                services.AddScoped<IProductRepository>(_ => new FakeProductRepository(products));
+                services.AddScoped<IProductRepository>(_ => new FakeProductRepository(products, filters));
                 services.AddScoped<ICategoryRepository>(_ => new FakeCategoryRepository(subcategories));
             }))
             .CreateClient();
@@ -155,7 +184,7 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
             throw new NotImplementedException();
     }
 
-    private class FakeProductRepository(Product[] products) : IProductRepository
+    private class FakeProductRepository(Product[] products, List<ProductFilter> filters) : IProductRepository
     {
         public Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
             Task.FromResult(products.FirstOrDefault(p => p.Id == id));
@@ -164,14 +193,24 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
         public Task<IReadOnlyList<Product>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
-        // Only filters on category, so the tests can see which ids reached the repository.
-        // The rest of the filtering and the paging are tested against EF Core in ProductRepositoryTests.
+        // Only filters on category. The rest of the filtering and the paging are tested against
+        // EF Core in ProductRepositoryTests.
         public Task<PagedResult<Product>> GetActivePageAsync(
-            int page, int pageSize, IReadOnlyCollection<int> categoryIds, CancellationToken cancellationToken)
+            int page, int pageSize, ProductFilter filter, CancellationToken cancellationToken)
         {
-            var items = products.Where(p => categoryIds.Count == 0 || categoryIds.Contains(p.CategoryId)).ToList();
+            filters.Add(filter);
+            var items = InCategories(filter).ToList();
             return Task.FromResult(new PagedResult<Product>(items, page, pageSize, items.Count));
         }
+
+        public Task<decimal?> GetHighestActivePriceAsync(ProductFilter filter, CancellationToken cancellationToken)
+        {
+            filters.Add(filter);
+            return Task.FromResult(InCategories(filter).Max(p => (decimal?)p.Price));
+        }
+
+        private IEnumerable<Product> InCategories(ProductFilter filter) =>
+            products.Where(p => filter.CategoryIds.Count == 0 || filter.CategoryIds.Contains(p.CategoryId));
 
         // Only GET /api/categories uses this.
         public Task<IReadOnlyDictionary<int, int>> CountActiveByCategoryAsync(CancellationToken cancellationToken) =>
