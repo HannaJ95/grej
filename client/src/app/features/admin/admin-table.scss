@@ -76,3 +76,8 @@
 @container (width < 36rem) {
   @include stacked('.table');
 }
+
+// Six columns need more room.
+@container (width < 44rem) {
+  @include stacked('.table.wide');
+}

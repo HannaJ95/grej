@@ -74,7 +74,7 @@ describe('AdminOrderList', () => {
 
     expect(all).toBe('true');
     expect(page.querySelector('main a[aria-current="page"]')?.textContent?.trim()).toBe(
-      'Alla ordrar',
+      'Alla beställningar',
     );
     // Stripe has not sent the customer's name yet.
     expect(page.textContent).toContain('Okänd');

@@ -8,7 +8,7 @@ import { ShopCategory } from '../../../core/category';
   selector: 'app-category-tabs',
   imports: [RouterLink],
   templateUrl: './category-tabs.html',
-  styleUrl: './category-tabs.scss',
+  styleUrls: ['../../../shared/tabs.scss', './category-tabs.scss'],
 })
 export class CategoryTabs {
   readonly categories = input.required<ShopCategory[]>();

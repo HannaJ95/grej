@@ -1,71 +1,77 @@
-<h1 class="text-display-xs">Ordrar</h1>
+<app-admin-page-header eyebrow="Butik" title="Beställningar" />
 
-<!-- aria-current tells a screen reader which of the two lists is shown. -->
-<nav aria-label="Visa ordrar">
-  <ul class="filters">
+<p class="intro text-body-m">Att göra visar det som väntar på dig, äldst först.</p>
+
+<nav aria-label="Visa beställningar">
+  <ul class="tabs">
     <li>
-      <a routerLink="/admin/ordrar" [attr.aria-current]="all() ? null : 'page'">Att göra</a>
+      <a class="tab text-label-m" routerLink="/admin/ordrar" [attr.aria-current]="all() ? null : 'page'"
+        >Att göra</a
+      >
     </li>
     <li>
       <a
+        class="tab text-label-m"
         routerLink="/admin/ordrar"
         [queryParams]="{ visa: 'alla' }"
         [attr.aria-current]="all() ? 'page' : null"
+        >Alla beställningar</a
       >
-        Alla ordrar
-      </a>
     </li>
   </ul>
 </nav>
 
-@if (result.isLoading()) {
-  <p role="status">Laddar ordrarna…</p>
-} @else if (result.error()) {
-  <p role="alert">Ordrarna kunde inte visas.</p>
-} @else if (result.hasValue()) {
-  @let r = result.value();
-  @if (r.items.length === 0) {
-    <p>{{ all() ? 'Det finns inga ordrar än.' : 'Det finns inget att göra just nu.' }}</p>
-  } @else {
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">Ordernummer</th>
-          <th scope="col">Datum</th>
-          <th scope="col">Kund</th>
-          <th scope="col">Summa</th>
-          <th scope="col">Betalning</th>
-          <th scope="col">Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (o of r.items; track o.id) {
+<div class="card list">
+  @if (result.hasValue()) {
+    @let r = result.value();
+    @if (r.items.length === 0) {
+      <p class="state">{{ all() ? 'Det finns inga beställningar än.' : 'Det finns inget att göra just nu.' }}</p>
+    } @else {
+      <table class="table wide">
+        <thead>
           <tr>
-            <!-- The order number is the link, like the title in the product list. -->
-            <td>
-              <a [routerLink]="['/admin/ordrar', o.id]">{{ o.orderNumber }}</a>
-            </td>
-            <td>{{ o.createdAt | date: 'short' }}</td>
-            <!-- Stripe sends the name when the order is paid, so an unpaid order has none. -->
-            <td>{{ o.customerName ?? 'Okänd' }}</td>
-            <td>{{ o.total | currency: o.currency }}</td>
-            <td>{{ paymentStatusTexts[o.paymentStatus] }}</td>
-            <td>
-              {{ orderStatusTexts[o.status] }}
-              <!-- Bold, so it stands out without relying on color. -->
-              @if (o.needsRefund) {
-                <br /><strong>Behöver återbetalas</strong>
-              }
-              @if (o.needsCancelling) {
-                <br /><strong>Behöver avbrytas</strong>
-              }
-            </td>
+            <th class="text-mono-s-caps" scope="col">Ordernummer</th>
+            <th class="text-mono-s-caps" scope="col">Datum</th>
+            <th class="text-mono-s-caps" scope="col">Kund</th>
+            <th class="end text-mono-s-caps" scope="col">Summa</th>
+            <th class="text-mono-s-caps" scope="col">Betalning</th>
+            <th class="text-mono-s-caps" scope="col">Status</th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (o of r.items; track o.id) {
+            <tr>
+              <td class="number">
+                <a class="text-link-s" [routerLink]="['/admin/ordrar', o.id]">{{ o.orderNumber }}</a>
+              </td>
+              <td class="date text-body-s">{{ o.createdAt | date: 'yyyy-MM-dd HH:mm' }}</td>
+              <!-- Stripe sends the name when the order is paid, so an unpaid order has none. -->
+              <td class="customer text-body-s" [class.muted]="!o.customerName">
+                {{ o.customerName ?? 'Okänd' }}
+              </td>
+              <td class="total end text-body-s">
+                {{ o.total | currency: o.currency : 'symbol' : '1.0-2' }}
+              </td>
+              <td class="payment text-body-s">{{ paymentStatusTexts[o.paymentStatus] }}</td>
+              <td class="status text-body-s">
+                <span>{{ orderStatusTexts[o.status] }} </span>
+                @if (o.needsRefund) {
+                  <strong class="flag text-label-xs">Behöver återbetalas</strong>
+                }
+                @if (o.needsCancelling) {
+                  <strong class="flag text-label-xs">Behöver avbrytas</strong>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+    <!-- The links keep ?visa=alla. -->
+    <app-pagination path="/admin/ordrar" [page]="r.page" [totalPages]="r.totalPages" />
+  } @else if (result.error()) {
+    <p class="state" role="alert">Beställningarna kunde inte visas.</p>
+  } @else {
+    <p class="state" role="status">Laddar beställningarna…</p>
   }
-
-  <!-- Only shown when there is more than one page. The links keep ?visa=alla (Pagination). -->
-  <app-pagination path="/admin/ordrar" [page]="r.page" [totalPages]="r.totalPages" />
-}
+</div>

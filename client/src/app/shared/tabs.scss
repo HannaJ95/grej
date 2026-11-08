@@ -1,0 +1,31 @@
+// A row of links where the current one is dark, shared by the shop's category tabs and the
+// CMS's order list: <a class="tab" aria-current="page">Alla <span class="count">5</span></a>
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-14) var(--space-24);
+  border: var(--border-width-default) solid var(--color-border-default);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--color-bg-hover);
+  }
+
+  // After :hover, so the chosen tab stays dark under the mouse.
+  &[aria-current='page'] {
+    background: var(--color-bg-inverse);
+    color: var(--color-text-on-inverse);
+
+    .count {
+      color: var(--color-text-on-inverse-secondary);
+    }
+  }
+}
+
+.tab .count {
+  color: var(--color-text-secondary);
+}
