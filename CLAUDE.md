@@ -23,6 +23,7 @@ A webshop for art and handmade items with an admin CMS. Built as my examensarbet
 - Explain the code you write so that I can understand it. I must be able to explain all AI-generated code.
 - Keep answers short: one decision at a time, with a recommended default.
 - Code, comments and docs are in English. All text in the UI is in Swedish.
+- Clean the comments in every file you change: keep only short whys the code doesn't already say.
 - Never read or print secrets. They live in User Secrets locally and in environment variables in hosting. A hook in `.claude/hooks/` blocks access to them.
 - At the end of a work session, suggest a few lines for [ai-log.md](docs/ai-log.md).
 
