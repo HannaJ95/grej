@@ -1,0 +1,43 @@
+.product {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.thumb {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  background: var(--color-bg-image);
+
+  &.empty {
+    background: var(--color-bg-muted);
+  }
+}
+
+.title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+
+  &:hover {
+    color: var(--color-text-secondary);
+  }
+}
+
+.price {
+  white-space: nowrap;
+}
+
+.oversold {
+  color: var(--color-feedback-error);
+}
+
+.hidden {
+  color: var(--color-text-secondary);
+}
+
+// Beside the stock in a stacked row.
+.visible {
+  justify-self: end;
+}

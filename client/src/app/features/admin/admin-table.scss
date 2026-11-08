@@ -1,0 +1,78 @@
+// The tables in the admin's cards. The card is a container (admin-page.scss), so a table
+// follows the card's width, not the screen's.
+
+.table {
+  width: 100%;
+
+  th,
+  td {
+    padding: var(--space-14) var(--space-32) var(--space-14) 0;
+    vertical-align: middle;
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+
+  thead th {
+    padding-top: 0;
+    border-bottom: var(--border-width-default) solid var(--color-border-default);
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+
+  tbody tr:last-child > * {
+    border-bottom: none;
+  }
+}
+
+.end {
+  text-align: right;
+}
+
+// Too narrow for the columns: each row becomes a small grid with two columns. The cells' own
+// text says what they are, so the column headings are kept for screen readers only. Grid
+// placement on a cell (grid-area, justify-self) only takes effect here.
+@mixin stacked($table) {
+  #{$table},
+  #{$table} tbody {
+    display: block;
+  }
+
+  #{$table} thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  #{$table} tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-8) var(--space-16);
+    padding: var(--space-14) 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+
+    // The card's padding is enough above the first row.
+    &:first-child {
+      padding-top: 0;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  #{$table} td {
+    display: block;
+    padding: 0;
+    border: none;
+  }
+}
+
+@container (width < 36rem) {
+  @include stacked('.table');
+}
