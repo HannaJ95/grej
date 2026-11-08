@@ -43,6 +43,17 @@
     </app-filter-group>
   }
 
+  @if (priceLimit(); as limit) {
+    <app-filter-group heading="Pris">
+      <app-price-range
+        [min]="filter().minPrice"
+        [max]="filter().maxPrice"
+        [limit]="limit"
+        (changed)="showPrices($event)"
+      />
+    </app-filter-group>
+  }
+
   @if (materials().length > 0) {
     <app-filter-group heading="Material">
       <ul class="options">

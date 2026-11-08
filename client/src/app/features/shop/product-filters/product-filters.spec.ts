@@ -9,7 +9,10 @@ describe('ProductFilters', () => {
   // Blå (6), at /produkter?sida=2 plus the chosen filter. The boxes are in that order.
   async function render(
     choices: Partial<ProductFilter> = {},
-    colors: ShopProperty[] = [{ id: 6, name: 'Blå', productCount: 3 }],
+    {
+      colors = [{ id: 6, name: 'Blå', productCount: 3 }],
+      highestPrice,
+    }: { colors?: ShopProperty[]; highestPrice?: number | null } = {},
   ) {
     const filter = { ...NO_FILTER, ...choices };
     TestBed.configureTestingModule({
@@ -30,6 +33,7 @@ describe('ProductFilters', () => {
     fixture.componentRef.setInput('materials', [{ id: 4, name: 'Lera', productCount: 2 }]);
     fixture.componentRef.setInput('colors', colors);
     fixture.componentRef.setInput('filter', filter);
+    fixture.componentRef.setInput('highestPrice', highestPrice);
     await fixture.whenStable();
     const element: HTMLElement = fixture.nativeElement;
     const boxes = [...element.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')];
@@ -116,8 +120,22 @@ describe('ProductFilters', () => {
   });
 
   it('leaves out a group without choices', async () => {
-    const { element } = await render({}, []);
+    const { element } = await render({}, { colors: [], highestPrice: null });
 
     expect(headings(element)).toEqual(['Kategori', 'Material']);
+  });
+
+  it('shows Pris up to the highest price rounded up, and puts the chosen price in the URL', async () => {
+    const { fixture, router, element } = await render({ categoryIds: [1] }, { highestPrice: 4321 });
+    expect(headings(element)).toEqual(['Kategori', 'Pris', 'Material', 'Färg']);
+    const lowThumb = element.querySelector<HTMLInputElement>('input[type="range"]')!;
+    expect(lowThumb.max).toBe('4400');
+
+    lowThumb.value = '200';
+    lowThumb.dispatchEvent(new Event('input'));
+    lowThumb.dispatchEvent(new Event('change'));
+    await fixture.whenStable();
+
+    expect(router.url).toBe('/produkter?kategori=1&minpris=200');
   });
 });

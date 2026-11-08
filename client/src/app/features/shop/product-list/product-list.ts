@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../../core/category.service';
 import { countChoices, ProductFilter, toPrice } from '../../../core/product-filter';
@@ -60,6 +60,13 @@ export class ProductList {
   });
 
   protected readonly result = this.products.getProducts(this.page, this.filter);
+
+  // The resource has no value while it reloads, so the last one is kept and the price slider
+  // neither disappears nor jumps.
+  protected readonly highestPrice = linkedSignal<number | null | undefined, number | null | undefined>({
+    source: () => (this.result.hasValue() ? this.result.value().highestPrice : undefined),
+    computation: (next, previous) => (next === undefined ? previous?.value : next),
+  });
 
   // For "Visar 13–24 av 40 grejer". Null until the API has answered, and when there are no
   // products.

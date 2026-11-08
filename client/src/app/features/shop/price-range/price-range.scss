@@ -1,0 +1,162 @@
+:host {
+  --thumb-size: 1.5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-12);
+}
+
+// The box is the label, so a click anywhere in it reaches the field, and the ring goes around the
+// whole box instead of the field inside it.
+.field {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-12) var(--space-16);
+  border: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-bg-surface);
+  cursor: text;
+
+  &:focus-within {
+    outline: var(--border-width-default) solid var(--color-border-default);
+    outline-offset: var(--space-2);
+  }
+
+  // field-sizing makes the field as wide as the number, so "kr" follows it. Without it the field
+  // fills the box and "kr" goes to the end.
+  input {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    outline: none;
+
+    @supports (field-sizing: content) {
+      flex: 0 1 auto;
+      field-sizing: content;
+      min-width: 1ch;
+    }
+  }
+}
+
+@mixin thumb {
+  box-sizing: border-box;
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+  border: var(--border-width-default) solid var(--color-border-default);
+  border-radius: 0;
+  background: var(--color-bg-surface);
+  cursor: grab;
+  pointer-events: auto;
+}
+
+@mixin focus-ring {
+  outline: var(--border-width-default) solid var(--color-border-default);
+  outline-offset: var(--space-2);
+}
+
+// The line and the black bar are drawn here, behind the two sliders. isolate keeps their z-index
+// inside the slider.
+.slider {
+  position: relative;
+  isolation: isolate;
+  height: var(--thumb-size);
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  &::before {
+    inset-inline: 0;
+    height: var(--border-width-default);
+    background: var(--color-border-subtle);
+  }
+
+  // A thumb's centre moves between half a thumb from each end, so the bar uses the same scale.
+  &::after {
+    right: calc(var(--thumb-size) / 2 + (100% - var(--thumb-size)) * (1 - var(--high)));
+    left: calc(var(--thumb-size) / 2 + (100% - var(--thumb-size)) * var(--low));
+    height: var(--border-width-strong);
+    background: var(--color-bg-inverse);
+  }
+}
+
+// Both sliders cover the whole line, above it. Only the thumbs take clicks, so the lower slider
+// can be reached under the upper one.
+input[type='range'] {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  appearance: none;
+  background: none;
+  pointer-events: none;
+
+  // The low thumb goes on top in the right half, so two thumbs at the same end can still be
+  // pulled apart.
+  &.front {
+    z-index: 2;
+  }
+
+  &::-webkit-slider-runnable-track {
+    height: 100%;
+    background: none;
+  }
+
+  &::-moz-range-track {
+    background: none;
+  }
+
+  &::-webkit-slider-thumb {
+    @include thumb;
+
+    appearance: none;
+  }
+
+  &::-moz-range-thumb {
+    @include thumb;
+  }
+
+  &:hover::-webkit-slider-thumb {
+    background: var(--color-bg-hover);
+  }
+
+  &:hover::-moz-range-thumb {
+    background: var(--color-bg-hover);
+  }
+
+  // The ring goes around the thumb instead of the whole line.
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:focus-visible::-webkit-slider-thumb {
+    @include focus-ring;
+  }
+
+  &:focus-visible::-moz-range-thumb {
+    @include focus-ring;
+  }
+}
+
+.scale {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-12);
+  color: var(--color-text-secondary);
+}

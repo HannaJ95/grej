@@ -156,4 +156,24 @@ describe('ProductList', () => {
       'Inga grejer matchar filtret.',
     );
   });
+
+  it('keeps the price slider while the list reloads', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/produkter');
+    flushFilters([{ id: 1, name: 'Keramik', productCount: 4, subcategories: [] }]);
+    const empty = { items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 };
+    httpTesting
+      .expectOne((req) => req.url.endsWith('/api/products'))
+      .flush({ ...empty, highestPrice: 4321 });
+    await harness.fixture.whenStable();
+    const slider = () =>
+      harness.routeNativeElement!.querySelector<HTMLInputElement>('input[type="range"]');
+    expect(slider()!.max).toBe('4400');
+
+    await harness.navigateByUrl('/produkter?minpris=200');
+    const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
+
+    expect(slider()!.max).toBe('4400');
+    request.flush({ ...empty, highestPrice: 4321 });
+  });
 });
