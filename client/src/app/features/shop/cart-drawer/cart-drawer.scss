@@ -7,7 +7,10 @@
   }
 }
 
+// The motion is in ../drawer.scss.
 dialog {
+  --drawer-from: 100%;
+
   margin: 0 0 0 auto;
   width: min(30rem, calc(100% - var(--space-56)));
   max-width: none;
@@ -26,10 +29,6 @@ dialog {
   @media (width >= 64rem) {
     width: 30rem;
   }
-}
-
-dialog::backdrop {
-  background: var(--color-overlay-scrim);
 }
 
 // Fills the dialog, so a click on the dialog element itself can only be on the backdrop.

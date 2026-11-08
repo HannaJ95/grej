@@ -7,8 +7,10 @@
 }
 
 // The whole screen on a phone, a panel on a tablet. The page's background, so the filter looks
-// the same as in the column.
+// the same as in the column. The motion is in ../drawer.scss.
 dialog {
+  --drawer-from: -100%;
+
   margin: 0 auto 0 0;
   width: min(100%, 26rem);
   max-width: none;
@@ -19,48 +21,6 @@ dialog {
   border-right: var(--border-width-default) solid var(--color-border-default);
   background: var(--color-bg-page);
   color: var(--color-text-primary);
-}
-
-// Slides in from the left while the backdrop fades in, and back out when it closes. display and
-// overlay keep the dialog on screen while it slides out; browsers without them just close it.
-dialog,
-dialog::backdrop {
-  transition:
-    translate 0.25s ease,
-    background-color 0.25s ease,
-    display 0.25s allow-discrete,
-    overlay 0.25s allow-discrete;
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-}
-
-dialog {
-  translate: -100% 0;
-}
-
-dialog[open] {
-  translate: 0 0;
-}
-
-dialog::backdrop {
-  background-color: transparent;
-}
-
-dialog[open]::backdrop {
-  background-color: var(--color-overlay-scrim);
-}
-
-// Where the opening starts from.
-@starting-style {
-  dialog[open] {
-    translate: -100% 0;
-  }
-
-  dialog[open]::backdrop {
-    background-color: transparent;
-  }
 }
 
 // Fills the dialog, so a click on the dialog element itself can only be on the backdrop. The
