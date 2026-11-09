@@ -2,6 +2,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, computed, ElementRef, inject, input, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminOrderService } from '../../../core/admin-order.service';
+import { ConfirmQuestion, ConfirmService } from '../../../core/confirm.service';
 import { Button } from '../../../shared/button/button';
 import { Icon } from '../../../shared/icons/icon';
 import { AdminPageHeader } from '../admin-page-header/admin-page-header';
@@ -17,6 +18,7 @@ import { ORDER_STATUS_TEXTS, PAYMENT_STATUS_TEXTS } from '../order-texts';
 })
 export class AdminOrderDetails {
   private readonly orders = inject(AdminOrderService);
+  private readonly confirm = inject(ConfirmService);
 
   readonly id = input.required<string>();
 
@@ -36,7 +38,12 @@ export class AdminOrderDetails {
 
   protected ship(): Promise<void> {
     return this.change(
-      'Vill du markera ordern som skickad? Det går inte att ångra.',
+      {
+        title: 'Markera som skickad?',
+        message: 'Ordern flyttas från Att göra. Det går inte att ångra.',
+        confirmLabel: 'Markera som skickad',
+        tone: 'primary',
+      },
       (id) => this.orders.ship(id),
       'Ordern är markerad som skickad.',
     );
@@ -44,15 +51,25 @@ export class AdminOrderDetails {
 
   protected cancel(): Promise<void> {
     return this.change(
-      'Vill du avbryta ordern? Produkterna läggs tillbaka i lagret. Det går inte att ångra.',
+      {
+        title: 'Avbryt ordern?',
+        message: 'Produkterna läggs tillbaka i lagret. Det går inte att ångra.',
+        hint: 'Är ordern betald återbetalar du kunden i Stripe efteråt.',
+        confirmLabel: 'Avbryt ordern',
+        cancelLabel: 'Behåll ordern',
+      },
       (id) => this.orders.cancel(id),
       'Ordern är avbruten.',
     );
   }
 
   // Shared by the two buttons: asks first, sends the change and fetches the order again.
-  private async change(question: string, send: (id: number) => Promise<void>, done: string) {
-    if (!this.order.hasValue() || !confirm(question)) {
+  private async change(
+    question: ConfirmQuestion,
+    send: (id: number) => Promise<void>,
+    done: string,
+  ) {
+    if (!this.order.hasValue() || !(await this.confirm.ask(question))) {
       return;
     }
     this.changing.set(true);

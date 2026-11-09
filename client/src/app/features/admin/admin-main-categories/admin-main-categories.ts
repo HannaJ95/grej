@@ -2,6 +2,7 @@ import { Component, computed, inject, input, signal, viewChild } from '@angular/
 import { Router, RouterLink } from '@angular/router';
 import { AdminCategoryService } from '../../../core/admin-category.service';
 import { Category } from '../../../core/category';
+import { ConfirmService } from '../../../core/confirm.service';
 import { Button } from '../../../shared/button/button';
 import { toId } from '../../../shared/id-list';
 import { AdminCategoryCard } from '../admin-category-card/admin-category-card';
@@ -18,6 +19,7 @@ import { AdminPageHeader } from '../admin-page-header/admin-page-header';
 export class AdminMainCategories {
   private readonly categories = inject(AdminCategoryService);
   private readonly router = inject(Router);
+  private readonly confirm = inject(ConfirmService);
 
   // ?redigera=3 in the URL: the category shown in the card. Undefined shows an empty card.
   readonly editId = input(undefined, { alias: 'redigera', transform: toId });
@@ -48,7 +50,12 @@ export class AdminMainCategories {
   }
 
   protected async remove(category: Category): Promise<void> {
-    if (!confirm(`Vill du ta bort "${category.name}"? Det går inte att ångra.`)) {
+    const yes = await this.confirm.ask({
+      title: `Ta bort ${category.name}?`,
+      message: 'Kategorin tas bort från butiken. Det går inte att ångra.',
+      confirmLabel: 'Ta bort',
+    });
+    if (!yes) {
       return;
     }
 

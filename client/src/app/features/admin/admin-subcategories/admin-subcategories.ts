@@ -2,6 +2,7 @@ import { Component, computed, inject, input, signal, viewChild } from '@angular/
 import { Router, RouterLink } from '@angular/router';
 import { AdminCategoryService } from '../../../core/admin-category.service';
 import { Category } from '../../../core/category';
+import { ConfirmService } from '../../../core/confirm.service';
 import { Button } from '../../../shared/button/button';
 import { toId } from '../../../shared/id-list';
 import { AdminCategoryCard } from '../admin-category-card/admin-category-card';
@@ -20,6 +21,7 @@ import { AdminPageHeader } from '../admin-page-header/admin-page-header';
 export class AdminSubcategories {
   private readonly categories = inject(AdminCategoryService);
   private readonly router = inject(Router);
+  private readonly confirm = inject(ConfirmService);
 
   // The :id in the URL, set by the router: the main category. Undefined on the page with all.
   readonly mainId = input(undefined, { alias: 'id', transform: toId });
@@ -72,7 +74,12 @@ export class AdminSubcategories {
   // Like AdminMainCategories.remove. A subcategory has no subcategories, so only its products
   // can stop the delete.
   protected async remove(category: Category): Promise<void> {
-    if (!confirm(`Vill du ta bort "${category.name}"? Det går inte att ångra.`)) {
+    const yes = await this.confirm.ask({
+      title: `Ta bort ${category.name}?`,
+      message: 'Kategorin tas bort från butiken. Det går inte att ångra.',
+      confirmLabel: 'Ta bort',
+    });
+    if (!yes) {
       return;
     }
 

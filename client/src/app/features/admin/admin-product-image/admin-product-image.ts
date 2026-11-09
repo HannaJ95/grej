@@ -18,6 +18,7 @@ import {
   validate,
 } from '@angular/forms/signals';
 import { AdminProduct, AdminProductService } from '../../../core/admin-product.service';
+import { ConfirmService } from '../../../core/confirm.service';
 import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
 import { LinkButton } from '../../../shared/link-button/link-button';
@@ -44,6 +45,7 @@ const EMPTY: ImageFormModel = { file: null, altText: '' };
 })
 export class AdminProductImage {
   private readonly products = inject(AdminProductService);
+  private readonly confirm = inject(ConfirmService);
 
   readonly product = input.required<AdminProduct>();
 
@@ -108,7 +110,12 @@ export class AdminProductImage {
   }
 
   protected async remove(): Promise<void> {
-    if (!confirm('Vill du ta bort bilden?')) {
+    const yes = await this.confirm.ask({
+      title: 'Ta bort bilden?',
+      message: 'Produkten visas utan bild tills du laddar upp en ny.',
+      confirmLabel: 'Ta bort',
+    });
+    if (!yes) {
       return;
     }
 

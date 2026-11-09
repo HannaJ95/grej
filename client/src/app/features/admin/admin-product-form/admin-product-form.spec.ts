@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../../app.routes';
+import { ConfirmService } from '../../../core/confirm.service';
 
 describe('AdminProductForm', () => {
   let httpTesting: HttpTestingController;
@@ -41,7 +42,7 @@ describe('AdminProductForm', () => {
 
   afterEach(() => {
     httpTesting.verify();
-    // Puts back the real window.confirm after the test that replaced it.
+    // Removes the spy on ConfirmService.ask after the test that answers the dialog.
     vi.restoreAllMocks();
   });
 
@@ -144,14 +145,18 @@ describe('AdminProductForm', () => {
 
   it('tells the admin to hide a product that is on an order (409)', async () => {
     await openVase();
-    // The test answers "OK" in the browser's "Are you sure?" dialog.
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    // The test answers yes in the confirm dialog.
+    vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(true);
 
     button('Ta bort produkten').click();
 
-    httpTesting
-      .expectOne((req) => req.method === 'DELETE' && req.url.endsWith('/api/admin/products/5'))
-      .flush(null, { status: 409, statusText: 'Conflict' });
+    // Sent once the dialog's answer has arrived.
+    const request = await vi.waitFor(() =>
+      httpTesting.expectOne(
+        (req) => req.method === 'DELETE' && req.url.endsWith('/api/admin/products/5'),
+      ),
+    );
+    request.flush(null, { status: 409, statusText: 'Conflict' });
     await settle();
 
     expect(page().querySelector('[role="alert"]')?.textContent).toContain('Dölj den i stället');

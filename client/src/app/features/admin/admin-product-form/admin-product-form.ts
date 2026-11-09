@@ -13,6 +13,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AdminCategoryService } from '../../../core/admin-category.service';
 import { categoryLabel } from '../../../core/category';
+import { ConfirmService } from '../../../core/confirm.service';
 import {
   AdminProduct,
   AdminProductService,
@@ -75,6 +76,7 @@ export class AdminProductForm {
   private readonly products = inject(AdminProductService);
   private readonly categories = inject(AdminCategoryService);
   private readonly router = inject(Router);
+  private readonly confirm = inject(ConfirmService);
 
   // Undefined on /admin/produkter/ny.
   readonly id = input<string>();
@@ -160,7 +162,13 @@ export class AdminProductForm {
       return;
     }
     const product = this.product.value();
-    if (!confirm(`Vill du ta bort "${product.title}"? Det går inte att ångra.`)) {
+    const yes = await this.confirm.ask({
+      title: `Ta bort ${product.title}?`,
+      message: 'Produkten tas bort från butiken och går inte att få tillbaka.',
+      hint: 'Vill du bara dölja den? Avmarkera Visa i butiken och spara i stället.',
+      confirmLabel: 'Ta bort',
+    });
+    if (!yes) {
       return;
     }
 

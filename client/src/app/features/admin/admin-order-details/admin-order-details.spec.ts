@@ -8,6 +8,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../../app.routes';
+import { ConfirmService } from '../../../core/confirm.service';
 import { OrderDetails } from '../../../core/order';
 
 describe('AdminOrderDetails', () => {
@@ -56,7 +57,7 @@ describe('AdminOrderDetails', () => {
 
   afterEach(() => {
     httpTesting.verify();
-    // Puts back the real window.confirm after the tests that replaced it.
+    // Removes the spies on ConfirmService.ask after the tests that answer the dialog.
     vi.restoreAllMocks();
   });
 
@@ -84,11 +85,13 @@ describe('AdminOrderDetails', () => {
 
   // Answers the POST that a button sent, then the request that fetches the order again.
   async function answerChange(action: 'ship' | 'cancel', status: number, order: OrderDetails) {
-    httpTesting
-      .expectOne(
+    // The POST is sent once the dialog's answer has arrived, so waitFor tries until it has.
+    const post = await vi.waitFor(() =>
+      httpTesting.expectOne(
         (req) => req.method === 'POST' && req.url.endsWith(`/api/admin/orders/7/${action}`),
-      )
-      .flush(null, { status, statusText: status === 204 ? 'No Content' : 'Conflict' });
+      ),
+    );
+    post.flush(null, { status, statusText: status === 204 ? 'No Content' : 'Conflict' });
     // The page asks for the order again once the POST is done. waitFor tries until it has.
     const reload = await vi.waitFor(() =>
       httpTesting.expectOne(
@@ -140,8 +143,8 @@ describe('AdminOrderDetails', () => {
 
   it('marks the order as shipped and shows it again', async () => {
     const page = await show((request) => request.flush(paidOrder));
-    // The test answers "OK" in the browser's "Are you sure?" dialog.
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    // The test answers yes in the confirm dialog.
+    const ask = vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(true);
 
     button(page, 'Markera som skickad').click();
     await answerChange('ship', 204, {
@@ -151,8 +154,8 @@ describe('AdminOrderDetails', () => {
       canBeCancelled: false,
     });
 
-    expect(confirm).toHaveBeenCalledWith(
-      'Vill du markera ordern som skickad? Det går inte att ångra.',
+    expect(ask).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'Markera som skickad?' }),
     );
     expect(texts(page, 'dd')[1]).toBe('Skickad');
     expect(buttonTexts(page)).toEqual([]);
@@ -164,7 +167,7 @@ describe('AdminOrderDetails', () => {
 
   it('sends nothing when the admin answers no', async () => {
     const page = await show((request) => request.flush(paidOrder));
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
+    vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(false);
 
     button(page, 'Avbryt ordern').click();
     await harness.fixture.whenStable();
@@ -175,7 +178,7 @@ describe('AdminOrderDetails', () => {
 
   it('says so when the order cannot be changed, and shows it again', async () => {
     const page = await show((request) => request.flush(paidOrder));
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(true);
 
     button(page, 'Avbryt ordern').click();
     // 409: e.g. the order was shipped in another tab.

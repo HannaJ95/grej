@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AdminProduct } from '../../../core/admin-product.service';
 import { AdminProductImage } from './admin-product-image';
+import { ConfirmService } from '../../../core/confirm.service';
 
 describe('AdminProductImage', () => {
   let httpTesting: HttpTestingController;
@@ -78,15 +79,17 @@ describe('AdminProductImage', () => {
       image: { url: 'https://storage.test/vas.png', altText: 'En blå vas' },
     });
     await fixture.whenStable();
-    // The test answers "OK" in the browser's "Are you sure?" dialog.
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    // The test answers yes in the confirm dialog.
+    vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(true);
 
     button('Ta bort bilden').click();
-    httpTesting
-      .expectOne(
+    // Sent once the dialog's answer has arrived.
+    const request = await vi.waitFor(() =>
+      httpTesting.expectOne(
         (req) => req.method === 'DELETE' && req.url.endsWith('/api/admin/products/5/image'),
-      )
-      .flush(null, { status: 204, statusText: 'No Content' });
+      ),
+    );
+    request.flush(null, { status: 204, statusText: 'No Content' });
     await settle();
 
     expect(page().querySelector('img')).toBeNull();
