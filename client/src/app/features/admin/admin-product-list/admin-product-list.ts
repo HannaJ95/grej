@@ -3,6 +3,7 @@ import { Component, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminProduct, AdminProductService } from '../../../core/admin-product.service';
 import { ConfirmService } from '../../../core/confirm.service';
+import { ToastService } from '../../../core/toast.service';
 import { Button } from '../../../shared/button/button';
 import { LinkButton } from '../../../shared/link-button/link-button';
 import { toPageNumber } from '../../../shared/page-number';
@@ -33,16 +34,15 @@ import {
 export class AdminProductList {
   private readonly products = inject(AdminProductService);
   private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   readonly page = input(1, { alias: 'sida', transform: toPageNumber });
 
   protected readonly result = this.products.getProducts(this.page);
   protected readonly removeError = signal<string | undefined>(undefined);
-  protected readonly removedMessage = signal('');
 
   protected async remove(product: AdminProduct): Promise<void> {
     this.removeError.set(undefined);
-    this.removedMessage.set('');
     if (!(await this.confirm.ask(removeProductQuestion(product.title)))) {
       return;
     }
@@ -51,7 +51,7 @@ export class AdminProductList {
         this.removeError.set(productOnOrderMessage(product.title));
         return;
       }
-      this.removedMessage.set(`${product.title} har tagits bort.`);
+      this.toast.show(`${product.title} har tagits bort.`);
       this.result.reload();
     } catch {
       this.removeError.set(PRODUCT_NOT_REMOVED);

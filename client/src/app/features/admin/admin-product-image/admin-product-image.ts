@@ -19,6 +19,7 @@ import {
 } from '@angular/forms/signals';
 import { AdminProduct, AdminProductService } from '../../../core/admin-product.service';
 import { ConfirmService } from '../../../core/confirm.service';
+import { ToastService } from '../../../core/toast.service';
 import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
 import { LinkButton } from '../../../shared/link-button/link-button';
@@ -46,6 +47,7 @@ const EMPTY: ImageFormModel = { file: null, altText: '' };
 export class AdminProductImage {
   private readonly products = inject(AdminProductService);
   private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   readonly product = input.required<AdminProduct>();
 
@@ -100,6 +102,7 @@ export class AdminProductImage {
       // reset also forgets "touched", so the empty fields show no errors.
       this.imageForm().reset(EMPTY);
       this.fileInput().nativeElement.value = '';
+      this.toast.show('Bilden är uppladdad.');
       return undefined;
     } catch {
       return {
@@ -123,6 +126,7 @@ export class AdminProductImage {
     try {
       await this.products.removeImage(this.product().id);
       this.image.set(null);
+      this.toast.show('Bilden är borttagen.');
     } catch {
       this.removeError.set('Bilden kunde inte tas bort just nu. Försök igen om en stund.');
     }

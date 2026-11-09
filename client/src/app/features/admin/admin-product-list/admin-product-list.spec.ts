@@ -69,7 +69,10 @@ describe('AdminProductList', () => {
     await answerList([]);
 
     expect(ask).toHaveBeenCalledWith(expect.objectContaining({ title: 'Ta bort Utkast?' }));
-    expect(page().querySelector('[role="status"]')?.textContent).toBe('Utkast har tagits bort.');
+    // The toast lives in the layout, outside <main>.
+    expect(harness.routeNativeElement!.querySelector('app-toast .text')?.textContent).toBe(
+      'Utkast har tagits bort.',
+    );
     expect(page().textContent).toContain('Det finns inga produkter än.');
   });
 

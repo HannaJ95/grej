@@ -66,9 +66,3 @@ input::placeholder {
 .error {
   color: var(--color-feedback-error);
 }
-
-// Takes no room while empty. Not display: none, since screen readers only announce changes to
-// rendered content.
-.saved:empty {
-  position: absolute;
-}

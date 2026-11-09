@@ -31,5 +31,7 @@
   <router-outlet />
 </main>
 
-<!-- Every admin page asks through ConfirmService, so the dialog lives here once. -->
+<!-- Every admin page uses ConfirmService and ToastService, so these live here once and a toast
+     stays when the page changes. -->
 <app-confirm-dialog />
+<app-toast />

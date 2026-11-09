@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AdminCategoryService } from '../../../core/admin-category.service';
 import { Category } from '../../../core/category';
 import { ConfirmService } from '../../../core/confirm.service';
+import { ToastService } from '../../../core/toast.service';
 import { Button } from '../../../shared/button/button';
 import { toId } from '../../../shared/id-list';
 import { AdminCategoryCard } from '../admin-category-card/admin-category-card';
@@ -22,6 +23,7 @@ export class AdminSubcategories {
   private readonly categories = inject(AdminCategoryService);
   private readonly router = inject(Router);
   private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   // The :id in the URL, set by the router: the main category. Undefined on the page with all.
   readonly mainId = input(undefined, { alias: 'id', transform: toId });
@@ -57,7 +59,6 @@ export class AdminSubcategories {
   );
 
   protected readonly removeError = signal<string | undefined>(undefined);
-  protected readonly removedMessage = signal('');
 
   private readonly card = viewChild.required(AdminCategoryCard);
 
@@ -84,7 +85,6 @@ export class AdminSubcategories {
     }
 
     this.removeError.set(undefined);
-    this.removedMessage.set('');
     try {
       if ((await this.categories.remove(category.id)) === 'hasProducts') {
         this.removeError.set(
@@ -92,7 +92,7 @@ export class AdminSubcategories {
         );
         return;
       }
-      this.removedMessage.set(`${category.name} har tagits bort.`);
+      this.toast.show(`${category.name} har tagits bort.`);
       if (this.editId() === category.id) {
         this.edit(null);
       }

@@ -14,6 +14,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AdminCategoryService } from '../../../core/admin-category.service';
 import { categoryLabel } from '../../../core/category';
 import { ConfirmService } from '../../../core/confirm.service';
+import { ToastService } from '../../../core/toast.service';
 import {
   AdminProduct,
   AdminProductService,
@@ -82,6 +83,7 @@ export class AdminProductForm {
   private readonly categories = inject(AdminCategoryService);
   private readonly router = inject(Router);
   private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   // Undefined on /admin/produkter/ny.
   readonly id = input<string>();
@@ -177,6 +179,7 @@ export class AdminProductForm {
         this.removeError.set(productOnOrderMessage(product.title));
         return;
       }
+      this.toast.show(`${product.title} har tagits bort.`);
       await this.router.navigateByUrl('/admin/produkter');
     } catch {
       this.removeError.set(PRODUCT_NOT_REMOVED);

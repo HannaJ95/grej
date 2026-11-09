@@ -71,6 +71,11 @@ describe('AdminOrderDetails', () => {
     return harness.routeNativeElement!.querySelector('main')!;
   }
 
+  // The toast lives in the layout, outside <main>.
+  function toastText(): string | undefined {
+    return harness.routeNativeElement!.querySelector('app-toast .text')?.textContent ?? undefined;
+  }
+
   function texts(page: HTMLElement, selector: string): string[] {
     return [...page.querySelectorAll(selector)].map((element) => element.textContent!.trim());
   }
@@ -159,10 +164,9 @@ describe('AdminOrderDetails', () => {
     );
     expect(texts(page, 'dd')[1]).toBe('Skickad');
     expect(buttonTexts(page)).toEqual([]);
-    // The clicked button is gone, so the focus is on the message instead.
-    const message = page.querySelector<HTMLElement>('[role="status"]')!;
-    expect(message.textContent).toBe('Ordern är markerad som skickad.');
-    expect(document.activeElement).toBe(message);
+    expect(toastText()).toBe('Ordern är markerad som skickad.');
+    // The clicked button is gone, so the focus is on the card's heading instead.
+    expect(document.activeElement).toBe(page.querySelector('#status-title'));
   });
 
   it('sends nothing when the admin answers no', async () => {
@@ -173,7 +177,7 @@ describe('AdminOrderDetails', () => {
     await harness.fixture.whenStable();
 
     // afterEach's verify() fails if a POST was sent.
-    expect(page.querySelector('[role="status"]')?.textContent).toBe('');
+    expect(toastText()).toBeUndefined();
   });
 
   it('says so when the order cannot be changed, and shows it again', async () => {
@@ -189,9 +193,10 @@ describe('AdminOrderDetails', () => {
       canBeCancelled: false,
     });
 
-    expect(page.querySelector('[role="status"]')?.textContent).toBe(
+    expect(page.querySelector('[role="alert"]')?.textContent).toBe(
       'Ordern kunde inte ändras just nu. Försök igen om en stund.',
     );
+    expect(toastText()).toBeUndefined();
     expect(texts(page, 'dd')[1]).toBe('Skickad');
   });
 

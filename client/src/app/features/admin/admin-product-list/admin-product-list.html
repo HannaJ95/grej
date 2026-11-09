@@ -8,7 +8,6 @@
   @if (removeError(); as message) {
     <p class="text-body-s" role="alert">{{ message }}</p>
   }
-  <p class="removed text-body-s" role="status">{{ removedMessage() }}</p>
 
   <!-- hasValue first, so the old list stays while it is fetched again. -->
   @if (result.hasValue()) {

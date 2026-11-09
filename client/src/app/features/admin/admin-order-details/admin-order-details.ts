@@ -3,6 +3,7 @@ import { Component, computed, ElementRef, inject, input, signal, viewChild } fro
 import { RouterLink } from '@angular/router';
 import { AdminOrderService } from '../../../core/admin-order.service';
 import { ConfirmQuestion, ConfirmService } from '../../../core/confirm.service';
+import { ToastService } from '../../../core/toast.service';
 import { Button } from '../../../shared/button/button';
 import { Icon } from '../../../shared/icons/icon';
 import { AdminPageHeader } from '../admin-page-header/admin-page-header';
@@ -19,6 +20,7 @@ import { ORDER_STATUS_TEXTS, PAYMENT_STATUS_TEXTS } from '../order-texts';
 export class AdminOrderDetails {
   private readonly orders = inject(AdminOrderService);
   private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   readonly id = input.required<string>();
 
@@ -33,8 +35,8 @@ export class AdminOrderDetails {
 
   // Stops the buttons from being clicked twice.
   protected readonly changing = signal(false);
-  protected readonly message = signal<string | undefined>(undefined);
-  private readonly feedback = viewChild.required<ElementRef<HTMLElement>>('feedback');
+  protected readonly changeError = signal<string | undefined>(undefined);
+  private readonly statusTitle = viewChild.required<ElementRef<HTMLElement>>('statusTitle');
 
   protected ship(): Promise<void> {
     return this.change(
@@ -73,16 +75,16 @@ export class AdminOrderDetails {
       return;
     }
     this.changing.set(true);
-    this.message.set(undefined);
-    // The clicked button disappears when the order has changed, so the focus is moved to
-    // the message instead of being lost.
-    this.feedback().nativeElement.focus();
+    this.changeError.set(undefined);
+    // The clicked button disappears when the order has changed, so the focus is moved to the
+    // card's heading instead of being lost.
+    this.statusTitle().nativeElement.focus();
     try {
       await send(this.order.value().id);
-      this.message.set(done);
+      this.toast.show(done);
     } catch {
       // E.g. 409 if the order was changed in another tab, or the API is down.
-      this.message.set('Ordern kunde inte ändras just nu. Försök igen om en stund.');
+      this.changeError.set('Ordern kunde inte ändras just nu. Försök igen om en stund.');
     } finally {
       this.changing.set(false);
     }

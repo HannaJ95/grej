@@ -6,12 +6,12 @@ import {
   input,
   linkedSignal,
   output,
-  signal,
   viewChild,
 } from '@angular/core';
 import { form, FormField, FormRoot, maxLength, pattern, required } from '@angular/forms/signals';
 import { AdminCategoryService } from '../../../core/admin-category.service';
 import { Category } from '../../../core/category';
+import { ToastService } from '../../../core/toast.service';
 import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
 import { Icon } from '../../../shared/icons/icon';
@@ -33,6 +33,7 @@ interface CategoryFormModel {
 })
 export class AdminCategoryCard {
   private readonly categories = inject(AdminCategoryService);
+  private readonly toast = inject(ToastService);
 
   readonly kind = input<'main' | 'sub'>('main');
   // The category to change, or undefined for a new one.
@@ -83,31 +84,26 @@ export class AdminCategoryCard {
   protected readonly nameError = computed(() => firstError(this.categoryForm.name));
   protected readonly parentError = computed(() => firstError(this.categoryForm.parentId));
   protected readonly saveError = computed(() => this.categoryForm().errors()[0]?.message);
-  // Read by screen readers (role="status"), and seen by everyone, after a save. It stays until
-  // the next save.
-  protected readonly savedMessage = signal('');
 
   // Called by the page, e.g. after "Redigera", so the admin can type at once.
   focusName(): void {
     this.nameInput().nativeElement.focus();
   }
 
-  // Runs when the form is sent and the fields are valid. What it returns becomes an error on the
-  // whole form, shown under the button.
+  // A returned error becomes the form's error (saveError).
   private async save() {
     const name = this.model().name.trim();
     const chosen = this.model().parentId;
     // A main category never has a main category.
     const parentId = this.kind() === 'main' || chosen === '' ? null : Number(chosen);
     const editing = this.editing();
-    this.savedMessage.set('');
     try {
       if (editing) {
         await this.categories.update(editing.id, name, parentId);
-        this.savedMessage.set('Ändringarna är sparade.');
+        this.toast.show('Ändringarna är sparade.');
       } else {
         await this.categories.create(name, parentId);
-        this.savedMessage.set(`${name} har lagts till.`);
+        this.toast.show(`${name} har lagts till.`);
       }
       // An empty name field that is not "touched", so "Fyll i ett namn." is not shown at once.
       // The main category stays chosen, so several subcategories can be added in a row.

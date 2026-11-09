@@ -6,12 +6,12 @@ import {
   input,
   linkedSignal,
   output,
-  signal,
   viewChild,
 } from '@angular/core';
 import { form, FormField, FormRoot, maxLength, pattern, required } from '@angular/forms/signals';
 import { AdminPropertyService } from '../../../core/admin-property.service';
 import { ProductProperty, PropertyKind } from '../../../core/product-property';
+import { ToastService } from '../../../core/toast.service';
 import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
 import { PROPERTY_TEXTS } from '../property-texts';
@@ -29,6 +29,7 @@ interface PropertyFormModel {
 })
 export class AdminPropertyCard {
   private readonly properties = inject(AdminPropertyService);
+  private readonly toast = inject(ToastService);
 
   readonly kind = input.required<PropertyKind>();
   readonly editing = input<ProductProperty>();
@@ -57,7 +58,6 @@ export class AdminPropertyCard {
 
   protected readonly nameError = computed(() => firstError(this.propertyForm.name));
   protected readonly saveError = computed(() => this.propertyForm().errors()[0]?.message);
-  protected readonly savedMessage = signal('');
 
   focusName(): void {
     this.nameInput().nativeElement.focus();
@@ -67,14 +67,13 @@ export class AdminPropertyCard {
   private async save() {
     const name = this.model().name.trim();
     const editing = this.editing();
-    this.savedMessage.set('');
     try {
       if (editing) {
         await this.properties.update(this.kind(), editing.id, name);
-        this.savedMessage.set('Ändringarna är sparade.');
+        this.toast.show('Ändringarna är sparade.');
       } else {
         await this.properties.create(this.kind(), name);
-        this.savedMessage.set(`${name} har lagts till.`);
+        this.toast.show(`${name} har lagts till.`);
       }
       // Untouched again, so the empty field shows no error.
       this.propertyForm().reset({ name: '' });

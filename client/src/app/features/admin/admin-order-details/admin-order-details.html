@@ -10,7 +10,8 @@
   @let o = order.value();
   <div class="details">
     <section class="card" aria-labelledby="status-title">
-      <h2 class="text-display-2xs" id="status-title">Status</h2>
+      <!-- tabindex="-1" lets change() move the focus here without adding it to the Tab order. -->
+      <h2 #statusTitle class="text-display-2xs" id="status-title" tabindex="-1">Status</h2>
       <dl class="facts">
         <div>
           <dt class="text-body-s">Datum</dt>
@@ -61,9 +62,9 @@
           }
         </div>
       }
-      <!-- Always rendered, so screen readers announce a new message. tabindex="-1" lets change()
-           move the focus here without adding it to the Tab order. -->
-      <p #feedback class="feedback text-body-s" role="status" tabindex="-1">{{ message() }}</p>
+      @if (changeError(); as message) {
+        <p class="text-body-s" role="alert">{{ message }}</p>
+      }
     </section>
 
     <section class="card" aria-labelledby="customer-title">

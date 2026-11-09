@@ -73,7 +73,7 @@ describe('AdminPropertyList', () => {
     request.flush({ id: 9, name: 'Bomull' });
     await answerList('materials', [{ id: 9, name: 'Bomull' }, lera, tra]);
 
-    expect(texts('main [role="status"]')).toContain('Bomull har lagts till.');
+    expect(texts('app-toast .text')).toEqual(['Bomull har lagts till.']);
     expect(texts('main .row .name')).toEqual(['Bomull', 'Lera', 'Trä']);
   });
 
@@ -157,7 +157,7 @@ describe('AdminPropertyList', () => {
       .flush(null, { status: 204, statusText: 'No Content' });
     await answerList('materials', [tra]);
 
-    expect(texts('main [role="status"]')).toContain('Lera har tagits bort.');
+    expect(texts('app-toast .text')).toEqual(['Lera har tagits bort.']);
     expect(texts('main .row .name')).toEqual(['Trä']);
   });
 

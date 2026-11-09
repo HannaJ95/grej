@@ -64,11 +64,6 @@ dd {
   gap: var(--space-12);
 }
 
-// Takes no room while empty, like the card's saved message on the category pages.
-.feedback:empty {
-  position: absolute;
-}
-
 // Takes the room that is left, so the numbers stay together on the right.
 .title {
   width: 100%;

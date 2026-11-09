@@ -81,7 +81,7 @@ describe('AdminMainCategories', () => {
     expect(request.request.body).toEqual({ name: 'Glas', parentId: null });
     request.flush({ ...textil, id: 6, name: 'Glas' });
     await answerList();
-    expect(texts('main [role="status"]')).toContain('Glas har lagts till.');
+    expect(texts('app-toast .text')).toEqual(['Glas har lagts till.']);
     expect(nameInput().value).toBe('');
   });
 

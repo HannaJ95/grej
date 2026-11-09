@@ -3,6 +3,7 @@ import { Component, computed, inject, input, signal, viewChild } from '@angular/
 import { Router } from '@angular/router';
 import { AdminPropertyService } from '../../../core/admin-property.service';
 import { ConfirmService } from '../../../core/confirm.service';
+import { ToastService } from '../../../core/toast.service';
 import {
   ProductProperty,
   ProductPropertyDetails,
@@ -28,6 +29,7 @@ export class AdminPropertyList {
   private readonly properties = inject(AdminPropertyService);
   private readonly router = inject(Router);
   private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   readonly kind = input.required<PropertyKind>();
   readonly page = input(1, { alias: 'sida', transform: toPageNumber });
@@ -42,7 +44,6 @@ export class AdminPropertyList {
   );
 
   protected readonly removeError = signal<string | undefined>(undefined);
-  protected readonly removedMessage = signal('');
 
   private readonly card = viewChild.required(AdminPropertyCard);
 
@@ -58,7 +59,6 @@ export class AdminPropertyList {
 
   protected async remove(property: ProductProperty): Promise<void> {
     this.removeError.set(undefined);
-    this.removedMessage.set('');
     try {
       // The list has no product count, and the question needs one.
       const details = await this.properties.get(this.kind(), property.id);
@@ -71,7 +71,7 @@ export class AdminPropertyList {
         return;
       }
       await this.properties.remove(this.kind(), property.id);
-      this.removedMessage.set(`${property.name} har tagits bort.`);
+      this.toast.show(`${property.name} har tagits bort.`);
       if (this.editId() === property.id) {
         this.showInCard(null);
       }

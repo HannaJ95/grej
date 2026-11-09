@@ -77,14 +77,8 @@ h2 {
   }
 }
 
-.list [role='alert'],
-.removed {
+.list [role='alert'] {
   padding-top: var(--space-8);
-}
-
-// Takes no room while empty, like the card's status.
-.removed:empty {
-  position: absolute;
 }
 
 .group-title {
