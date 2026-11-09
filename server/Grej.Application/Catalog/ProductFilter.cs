@@ -9,4 +9,7 @@ public record ProductFilter
     public IReadOnlyCollection<int> ColorIds { get; init; } = [];
     public decimal? MinPrice { get; init; }
     public decimal? MaxPrice { get; init; }
+
+    // Every word must be somewhere in the title, in any case (ambiguity.md).
+    public IReadOnlyCollection<string> SearchWords { get; init; } = [];
 }

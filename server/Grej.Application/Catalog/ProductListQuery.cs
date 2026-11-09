@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Grej.Application.Catalog;
 
-// The query string of GET /api/products, e.g. ?page=2&categoryId=1&categoryId=3&minPrice=200.
+// The query string of GET /api/products, e.g. ?page=2&categoryId=1&categoryId=3&minPrice=200&search=skål.
 public record ProductListQuery
 {
     // The upper limit keeps (Page - 1) * PageSize far from int's max value.
@@ -29,4 +29,8 @@ public record ProductListQuery
 
     [Range(0, 999_999.99)]
     public decimal? MaxPrice { get; init; }
+
+    // Null = no search.
+    [MaxLength(100)]
+    public string? Search { get; init; }
 }

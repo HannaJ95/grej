@@ -103,6 +103,26 @@ public class ProductRepositoryTests
     }
 
     [Fact]
+    public async Task GetActivePage_SearchWords_MatchesTitlesWithEveryWord_IgnoringCase()
+    {
+        db.Products.AddRange(
+            NewProduct(1, "Skål i blå glasyr"),
+            NewProduct(2, "Svarvad skål i ek"),
+            NewProduct(3, "Ljusstake i ek"),
+            NewProduct(4, "Skålar, utkast", isActive: false));
+        await db.SaveChangesAsync();
+        var repository = new ProductRepository(db);
+
+        var oneWord = await repository.GetActivePageAsync(
+            1, 12, new ProductFilter { SearchWords = ["SKÅL"] }, CancellationToken.None);
+        var twoWords = await repository.GetActivePageAsync(
+            1, 12, new ProductFilter { SearchWords = ["ek", "skål"] }, CancellationToken.None);
+
+        Assert.Equal(["Svarvad skål i ek", "Skål i blå glasyr"], oneWord.Items.Select(p => p.Title));
+        Assert.Equal(["Svarvad skål i ek"], twoWords.Items.Select(p => p.Title));
+    }
+
+    [Fact]
     public async Task GetHighestActivePrice_OnlyCountsActiveMatchingProducts_NullWhenNoneMatch()
     {
         db.Products.AddRange(
