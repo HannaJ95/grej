@@ -115,8 +115,15 @@ Why: Only the admin changes the order status (constraints.md). A refunded order 
 Decision: The admin packs and sends the order manually (e.g. at a postal agent) and then marks it as `Shipped` in the CMS. There is no integration with a shipping company.
 
 **Is there a shipping cost?**
-Decision: Not in the MVP, where the shipping cost is included in the product price. As a Should, it is one fixed price shown as its own row in Stripe Checkout, and the order stores the shipping method, cost and currency.
-Why: Storing shipping on the order means more shipping methods or prices per country can be added later without changing old orders.
+Decision: Not in the MVP, where the shipping cost is included in the product price. As a Should, it is calculated from the products' packed weight and size, the way PostNord and DHL price parcels: the chargeable weight is the higher of the total weight and the volume weight (the total volume × 280 kg/m³). Up to 1 kg costs 59 kr, up to 3 kg 79 kr, up to 10 kg 129 kr and up to 20 kg 199 kr. Above 20 kg it costs 199 kr per started 20 kg. There is one method, "Paket till ombud". The cost is shown in the cart and as its own row in Stripe Checkout, and the order stores the method and the cost.
+Why: Art is often large and light, so one fixed price would be far too low for a big painting and too high for a ring. This replaced the fixed price on Mon 9 Nov, at the cost of about a day of the last sprint. Storing shipping on the order means more shipping methods or prices per country can be added later without changing old orders.
+
+**Which weight and size does the admin enter?**
+Decision: The packed parcel's, in grams and centimetres, since that is what a shipping company weighs and measures. They are not shown in the shop.
+
+**How is the parcel worked out when an order has several products?**
+Decision: The weights and the volumes are added together, as if everything is packed in one box.
+Why: It is simple and needs no packing logic. The known limitations are in architecture.md.
 
 **Which currency?**
 Decision: SEK only, but every price, order and payment stores its currency.

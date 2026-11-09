@@ -88,7 +88,7 @@ client/
 | **The webhook is the source of truth** for payments; signature verified; each event handled once | The browser can be closed or manipulated; Stripe may send the same event twice |
 | **Payment is its own entity** with provider and reference, behind `IPaymentProvider` | More payment methods can be added later without changing the order flow |
 | **Two statuses:** payment status (set by the provider) and order status (set by the admin) | Keeps "is it paid?" and "is it shipped?" separate, e.g. shipped but refunded |
-| **Prices calculated in the API** from the database; title and price stored on each order row | Prices in the browser can be manipulated; old orders must not change |
+| **Prices and shipping calculated in the API** from the database; title and price stored on each order row, shipping on the order | Prices in the browser can be manipulated; old orders must not change |
 | **Money as `decimal` + currency** (SEK in this version) | Floating point gives rounding errors; storing the currency keeps more currencies possible |
 | **ASP.NET Core Identity + JWT**, role Admin | Frontend and API are on different domains, which makes tokens simpler than cookies |
 | **Supabase for database and images** | One service I already know for both; images cannot be stored on Render, whose file system is cleared on every deploy |
@@ -107,8 +107,8 @@ sequenceDiagram
 
     C->>F: "Go to checkout"
     F->>A: POST /api/checkout (product ids + quantities)
-    A->>A: Prices and stock from database
-    A->>A: Build Order in memory
+    A->>A: Prices, stock and parcels from database
+    A->>A: Build Order in memory, with shipping
     A->>S: Create Checkout session
     S-->>A: Session id + URL
     A->>A: Save Order (Pending) + Payment (Pending) in one transaction
@@ -130,6 +130,19 @@ The other webhook events update the payment the same way:
 A refund event carries the charge, which knows its PaymentIntent (`pi_…`) but not the Checkout session. So `checkout.session.completed` stores the session's PaymentIntent id on the payment (`ProviderPaymentId`), and `PaymentRepository.GetByReferenceAsync` finds a payment by either id.
 
 Known limitations: payments that were paid before the migration `AddProviderPaymentId` have no PaymentIntent id, so their refunds are ignored (`reset-demo` removes them). A refund that arrives before its payment's `checkout.session.completed` has been handled is ignored too; in practice the admin refunds much later.
+
+### Shipping
+
+The shipping cost comes from the products' packed parcels (Should, ambiguity.md). The rule is in `Grej.Domain/Orders/Shipping.cs`:
+
+- The chargeable weight is the higher of the total weight and the total volume × 0.28 g/cm³ (280 kg/m³, as PostNord), over every row × its quantity. The sums are `decimal`, so a large volume cannot overflow.
+- Up to 1 kg costs 59 kr, up to 3 kg 79 kr, up to 10 kg 129 kr and up to 20 kg 199 kr. Above 20 kg it costs 199 kr per started 20 kg, as several parcels.
+- `CheckoutService` builds a `ShippingItem` per row from the products it already fetches and calls `order.SetShipping(Shipping.Method, Shipping.CostFor(...))` before `AddPayment`, so the payment's amount includes the shipping. `SetShipping` adds the cost to `Total` and refuses a second time or after the payment.
+- `StripePaymentProvider` sends the shipping as a `fixed_amount` shipping option, so Stripe Checkout shows it as its own row, "Paket till ombud".
+- The cart shows the same amount with a copy of the rule in `client/src/app/core/shipping.ts`, for display only, like the prices in the cart. `shipping.spec.ts` uses the same examples as `ShippingTests`, so a change on only one side fails a test. The shop's `ProductDto` has `parcel` for this.
+- The demo orders get their shipping from the same rule in `DemoSeeder`.
+
+Known limitations: the summed volumes are a lower bound for the real box. One item over 20 kg in volume weight, such as a large painting, is priced as several parcels although it cannot be split, and the carriers' largest sizes are not checked. There is one method and no carrier API. A cart saved before shipping was built shows "Frakten läggs till i kassan." until its products are added again. The migration `AddShipping` gave existing products 1 000 g and 30 × 20 × 10 cm, since the columns cannot be empty and the deployed API did not send them yet; `reset-demo` replaced these with the demo data's own values.
 
 ## Data model
 
@@ -161,6 +174,7 @@ erDiagram
 | IsActive | bool | `false` = draft or hidden |
 | CategoryId | → Category | Exactly one |
 | SellerId | → User | Always the admin in this version |
+| WeightGrams, LengthCm, WidthCm, HeightCm | int | The packed parcel, for the shipping cost (see Shipping). Not shown in the shop |
 | CreatedAt, UpdatedAt | datetime | |
 
 **ProductImage**
@@ -198,7 +212,7 @@ erDiagram
 | NeedsAttention | bool | Set on double sale of the last item (Should) |
 | CustomerName, CustomerEmail | string | From Stripe Checkout |
 | AddressLine1, AddressLine2, PostalCode, City, Country | string | From Stripe Checkout; Country is always `SE` for now |
-| ShippingMethod, ShippingCost | string, decimal | Null until shipping cost is built |
+| ShippingMethod, ShippingCost | string, decimal | Set by the checkout with `SetShipping`; null on orders from before shipping was built |
 | Total | decimal | Products + shipping |
 | Currency | string | `SEK` |
 | CreatedAt, UpdatedAt | datetime | |
@@ -255,7 +269,7 @@ In Angular, `authInterceptor` adds `Authorization: Bearer <token>` to requests t
 - Every product gets its own copy of its category's image under `products/{id}/`, like an upload in the CMS. The old files are deleted after the commit.
 - The products are saved in turns across the categories, so the shop's first page (newest first) shows every category.
 - A category can list `subcategories` (Keramik and Konst do), and a product can name one of them in `subcategory`; without it the product is in the main category. The seed saves the subcategories with `Parent` set to their main category, so EF Core fills in `ParentId`.
-- The demo orders are built with the same `Order` methods as real ones: paid, and then shipped or cancelled as the file says. Their `CreatedAt` is set to a number of days ago, so the list shows different dates. The stock in the file is what is left after the orders, so the seed does not change it.
+- Every product has a packed parcel (`parcel`). The demo orders are built with the same `Order` methods as real ones: shipping from the same rule as the checkout, paid, and then shipped or cancelled as the file says. Their `CreatedAt` is set to a number of days ago, so the list shows different dates. The stock in the file is what is left after the orders, so the seed does not change it.
 - `DemoCatalogTests` checks the file against the CMS's rules, so a typo is found by `dotnet test`. The files are copied to the build output but not to the published API.
 
 Known limitation: the demo orders' payments have the provider `Demo` and no Stripe session, so they cannot be refunded in Stripe.
@@ -269,6 +283,7 @@ The CMS has its own endpoints under `/api/admin/` (e.g. `/api/admin/products`), 
 - A product that is on an order cannot be deleted. The Catalog module asks the Orders module through `OrderService`, and the API answers 409; the admin hides the product instead. The foreign key from order rows to products also stops the delete.
 - When the admin saves a product, the form sends the stock the product had when it was last fetched. The page fetches it again after every save. If a customer has bought the product since then, the API answers 409 and saves nothing, so a sale is never overwritten.
 - On "Ny produkt" the image is chosen in the same form, but it is uploaded right after the product is created, since the upload needs the product's id. If the upload fails, the product still exists, and its page says that the image has to be uploaded again.
+- The product form has the packed parcel's weight and size, sent and returned as one object `parcel` (`ParcelRequest`, `ParcelDto`), with the rules in constraints.md.
 
 Known limitation: the stock must be 0 or more when the admin saves. A product with stock below 0 (the last item sold twice) therefore gets at least 0 if the admin edits it before the order is handled.
 
@@ -336,7 +351,7 @@ Known limitations: two materials or colors can have the same name, the product f
 The admin reads orders with `/api/admin/orders` and `/api/admin/orders/{id}`, at `/admin/ordrar` in the CMS. The admin changes the order status with `POST /api/admin/orders/{id}/ship` and `POST /api/admin/orders/{id}/cancel`. Both answer 204, 404 if the order does not exist, and 409 if the order's status or payment does not allow the change.
 
 - By default the list ("Att göra") shows what the admin has to do: paid orders that are not shipped, oldest first, so the order that has waited longest is at the top. These are the orders to ship and the cancelled ones that need a refund, and also the refunded ones that are not cancelled yet. `?all=true` (`?visa=alla` in the CMS) shows every order, also unpaid and cancelled ones, newest first (ambiguity.md).
-- The order page shows the customer, the address and each row with its title and price from the time of purchase. The customer details are empty until the webhook has stored them from Stripe.
+- The order page shows the customer, the address and each row with its title and price from the time of purchase, and the shipping when the order has one. The customer details are empty until the webhook has stored them from Stripe.
 - The rules are in `Order`. `CanBeShipped` is true for a pending, paid order, and `CanBeCancelledByAdmin` for a pending order that is paid or refunded. `NeedsRefund` is true for a cancelled, paid order, and `NeedsCancelling` for a pending, refunded one (the admin refunded in Stripe before cancelling). `MarkAsShipped` and `CancelByAdmin` refuse when a rule is broken. `AdminOrderService` checks first, so a refused change becomes 409 and not an exception.
 - The API sends these answers to the CMS (`canBeShipped`, `canBeCancelled`, `needsRefund`, `needsCancelling`). The CMS shows only the buttons the order allows and has no rules of its own.
 - Cancelling puts the order's products back in stock through `ProductService`, and the order and the stock are saved in one transaction. The admin refunds the customer in the Stripe dashboard, and the webhook then marks the payment as `Refunded` (ambiguity.md).

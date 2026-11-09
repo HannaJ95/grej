@@ -98,7 +98,7 @@ In priority order. Responsive design and accessibility are checked on every page
 - [x] Filter by price, material and color, including the filter panel on phones and tablets
 - [x] Style the remaining admin pages: products, orders, the start page and the login page
 - [x] Search products by name
-- [ ] Fixed shipping cost in Stripe Checkout, stored on the order
+- [x] Shipping cost from the products' packed weight and size, in the cart and in Stripe Checkout, stored on the order (changed on 9 Nov from one fixed price)
 - [ ] Several images per product
 
 Dropped on 8 Nov, when the deadline moved:
@@ -141,7 +141,7 @@ If time runs short, Should items are dropped from the bottom of this list first.
 2. Filter by price, material and color
 3. Styling the remaining admin pages
 4. Search by name
-5. Fixed shipping cost
+5. Shipping cost by weight and size
 6. Several images per product
 
 Flag double sale was dropped on 8 Nov (see sprint 4).

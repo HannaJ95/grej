@@ -104,8 +104,8 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - The row itself sticks, instead of a separate buy bar, so the page never shows two buy buttons.
   - `scroll-padding-bottom` keeps the keyboard focus above it.
   - It does not stick on screens lower than 480 px (e.g. when zoomed in), where it would cover too much.
-- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's image when it is added) and a `QuantityStepper`, plus the products, the shipping and the total, and an empty state.
-  - The shipping is a copy of the API's rule (`core/shipping.ts`), only for showing. A row saved before shipping was built has no parcel, and then the cart shows the sum and "Frakten läggs till i kassan." Its button in the header shows the number of products in a `ButtonCount`, also when the cart is empty.
+- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's image when it is added) and a `QuantityStepper`, plus the products, the shipping and the total, and an empty state. Its button in the header shows the number of products in a `ButtonCount`, also when the cart is empty.
+  - The shipping is a copy of the API's rule (`core/shipping.ts`), only for showing. A row saved before shipping was built has no parcel, and then the cart shows the sum and "Frakten läggs till i kassan."
 - When something is added, `AddedToCart` shows a small popup under the cart button.
   - It closes itself after 5 seconds, which pause on hover or focus. It also closes with the cross or with Escape.
   - It never takes the focus, and screen readers read it through `aria-live`.

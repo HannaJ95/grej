@@ -69,13 +69,14 @@ Cancelled
 - An order is never deleted in the shop or the CMS. Only the developer's `reset-demo` command empties the database (architecture.md).
 - Each order row stores the product's title and price at the time of purchase. Later changes to a product never change old orders.
 - The customer's name, email and address (including country) are taken from Stripe Checkout and stored on the order. Only Swedish addresses are allowed in this version.
-- If shipping cost is built, the order stores the shipping method, cost and currency.
+- The order stores the shipping method and cost, in the order's currency, and its total includes the shipping. Orders from before shipping was built have neither.
 
 ## Prices and money
 
 - Prices are never stored as floating point.
 - Every price, order and payment stores its currency. In this version it is always SEK.
 - The price the customer pays is always calculated by the API from the database. Prices from the browser (cart, localStorage) are never trusted.
+- The same goes for the shipping cost. The cart shows its own copy of the rule, but the checkout calculates the shipping again from the products in the database.
 
 ## Products and categories
 
@@ -85,6 +86,7 @@ Cancelled
 - A category that has products or subcategories cannot be deleted.
 - Every product has an owner (`SellerId`), which is always the admin in this version. This keeps the door open for a marketplace.
 - A product must have a title, a category and a price greater than 0. This is validated in both the form and the API.
+- A product must have its packed parcel's weight (1–100 000 g) and length, width and height (1–300 cm), in whole numbers. This is validated in both the form and the API.
 - A product has one image in the MVP, and at most 10 when several images are built (Should).
 
 ## Stock
