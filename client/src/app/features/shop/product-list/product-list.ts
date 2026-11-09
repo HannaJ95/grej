@@ -74,9 +74,9 @@ export class ProductList {
 
   protected readonly result = this.products.getProducts(this.page, this.filter);
 
-  // The resource has no value while it reloads, so the last one is kept: the price slider
-  // neither disappears nor jumps, and the panel's button keeps its number.
-  private readonly lastResult = linkedSignal<ProductPage | undefined, ProductPage | undefined>({
+  // The resource has no value while it reloads, so the last answer is kept until the next one
+  // comes: the products, the count and the price slider stay, and the page doesn't jump.
+  protected readonly lastResult = linkedSignal<ProductPage | undefined, ProductPage | undefined>({
     source: () => (this.result.hasValue() ? this.result.value() : undefined),
     computation: (next, previous) => next ?? previous?.value,
   });
@@ -85,13 +85,14 @@ export class ProductList {
   protected readonly totalCount = computed(() => this.lastResult()?.totalCount);
   protected readonly choiceCount = computed(() => countChoices(this.filter()));
 
-  // For "Visar 13–24 av 40 grejer". Null until the API has answered, and when there are no
-  // products.
+  // For "Visar 13–24 av 40 grejer" and "0 grejer hittades". Null until the API has answered, and
+  // on a page after the last one.
   protected readonly shown = computed(() => {
-    if (!this.result.hasValue() || this.result.value().items.length === 0) {
+    const result = this.lastResult();
+    if (!result || (result.items.length === 0 && result.totalCount > 0)) {
       return null;
     }
-    const { page, pageSize, items, totalCount } = this.result.value();
+    const { page, pageSize, items, totalCount } = result;
     const from = (page - 1) * pageSize + 1;
     return { from, to: from + items.length - 1, total: totalCount };
   });

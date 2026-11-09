@@ -134,6 +134,36 @@ describe('ProductList', () => {
     const results = harness.routeNativeElement!.querySelector('.results')!;
     expect(results.textContent).toContain('Inga grejer matchar filtret.');
     expect(results.querySelector('a')!.getAttribute('href')).toBe('/produkter');
+    expect(harness.routeNativeElement!.querySelector('.toolbar')!.textContent).toContain(
+      '0 grejer hittades',
+    );
+  });
+
+  it('keeps the products and the count while the list reloads, so the page does not jump', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/produkter');
+    flushFilters();
+    httpTesting
+      .expectOne((req) => req.url.endsWith('/api/products'))
+      .flush({
+        items: [
+          { id: 7, title: 'Vas', description: '', price: 300, currency: 'SEK', isSoldOut: false },
+        ],
+        page: 1,
+        pageSize: 12,
+        totalCount: 1,
+        totalPages: 1,
+      });
+    await harness.fixture.whenStable();
+    const page = harness.routeNativeElement!;
+
+    await harness.navigateByUrl('/produkter?minpris=200');
+    const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
+
+    expect(page.querySelector('.results')!.getAttribute('aria-busy')).toBe('true');
+    expect(page.querySelector('.product-grid')!.textContent).toContain('Vas');
+    expect(page.querySelector('.toolbar')!.textContent).toContain('Visar 1–1 av 1 grejer');
+    request.flush({ items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 });
   });
 
   it('sends the material, color and price in the URL to the API and ticks them', async () => {

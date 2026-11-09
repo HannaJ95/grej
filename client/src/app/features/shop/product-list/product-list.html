@@ -4,8 +4,8 @@
     <!-- Normal case: the text style makes the capitals, so screen readers read words. -->
     <h1 class="title text-display-xl">Alla grejer</h1>
     <p class="intro text-body-m">
-      @if (result.hasValue()) {
-        {{ result.value().totalCount }} handgjorda grejer
+      @if (totalCount() !== undefined) {
+        {{ totalCount() }} handgjorda grejer
       } @else {
         Handgjorda grejer
       }
@@ -22,7 +22,13 @@
 <div class="toolbar">
   <div class="page-width toolbar-row">
     @if (shown(); as s) {
-      <p class="text-label-s">Visar {{ s.from }}–{{ s.to }} av {{ s.total }} grejer</p>
+      <p class="text-label-s">
+        @if (s.total === 0) {
+          0 grejer hittades
+        } @else {
+          Visar {{ s.from }}–{{ s.to }} av {{ s.total }} grejer
+        }
+      </p>
     }
     @if (hasOptions()) {
       <app-filter-drawer
@@ -65,14 +71,10 @@
     />
   }
 
-  <div class="results">
-    @if (result.isLoading()) {
-      <!-- Render's free tier can take up to a minute to wake up. -->
-      <p role="status">Laddar produkterna…</p>
-    } @else if (result.error()) {
+  <div class="results" [attr.aria-busy]="result.isLoading()">
+    @if (result.error()) {
       <p role="alert">Produkterna kunde inte visas.</p>
-    } @else if (result.hasValue()) {
-      @let r = result.value();
+    } @else if (lastResult(); as r) {
       @if (r.items.length === 0 && hasChoices()) {
         <p>
           Inga grejer matchar filtret.
@@ -81,7 +83,7 @@
       } @else if (r.items.length === 0) {
         <p>Det finns inga produkter att visa.</p>
       } @else {
-        <ul class="product-grid">
+        <ul class="product-grid" [class.busy]="result.isLoading()">
           @for (p of r.items; track p.id) {
             <li>
               <app-product-card [product]="p" />
@@ -91,6 +93,9 @@
       }
 
       <app-pagination path="/produkter" [page]="r.page" [totalPages]="r.totalPages" />
+    } @else {
+      <!-- Only before the first answer. Render's free tier can take up to a minute to wake up. -->
+      <p role="status">Laddar produkterna…</p>
     }
   </div>
 </div>
