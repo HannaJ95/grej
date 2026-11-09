@@ -6,19 +6,6 @@
   }
 }
 
-// min-width and min-height let the square grow with the text. The negative margin keeps the
-// button, and so the sticky toolbar, as tall as without it.
-.count {
-  display: inline-grid;
-  place-items: center;
-  min-width: 1.25rem;
-  min-height: 1.25rem;
-  margin-block: calc(-1 * var(--space-2));
-  padding-inline: var(--space-4);
-  background: var(--color-bg-inverse);
-  color: var(--color-text-on-inverse);
-}
-
 // The whole screen on a phone, a panel on a tablet. The page's background, so the filter looks
 // the same as in the column. The motion is in shared/drawer.scss.
 dialog {

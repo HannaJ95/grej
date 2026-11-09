@@ -1,5 +1,13 @@
-<button appButton class="cart-button" type="button" aria-haspopup="dialog" (click)="open()">
-  Varukorg ({{ cart.count() }})
+<button
+  appButton
+  class="cart-button"
+  type="button"
+  aria-haspopup="dialog"
+  [attr.aria-label]="label()"
+  (click)="open()"
+>
+  Varukorg
+  <app-button-count tone="light" [count]="cart.count()" />
 </button>
 
 <dialog #dialog aria-labelledby="cart-title" (click)="closeOnBackdrop($event)">

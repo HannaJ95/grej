@@ -53,9 +53,11 @@ describe('ShopLayout', () => {
     expect(cartDialog.open).toBe(true);
   });
 
-  it('shows the cart button', async () => {
+  it('shows the cart button with the number of products', async () => {
     const element = await show();
+    const button = element.querySelector('header button')!;
 
-    expect(element.querySelector('header button')!.textContent).toContain('Varukorg (0)');
+    expect(button.querySelector('app-button-count')!.textContent).toBe('0');
+    expect(button.getAttribute('aria-label')).toBe('Varukorg, 0 grejer');
   });
 });

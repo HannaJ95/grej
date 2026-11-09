@@ -9,7 +9,7 @@
 >
   Filter
   @if (choices() > 0) {
-    <span class="count text-label-xs">{{ choices() }}</span>
+    <app-button-count [count]="choices()" />
   }
 </button>
 

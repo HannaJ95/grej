@@ -35,12 +35,12 @@ describe('FilterDrawer', () => {
     const { fixture, element, dialog } = await render();
     const open = element.querySelector<HTMLButtonElement>('.open-button')!;
     expect(text(open)).toBe('Filter');
-    expect(open.querySelector('.count')).toBeNull();
+    expect(open.querySelector('app-button-count')).toBeNull();
     expect(open.hasAttribute('aria-label')).toBe(false);
 
     fixture.componentInstance.choices.set(3);
     await fixture.whenStable();
-    expect(open.querySelector('.count')!.textContent).toBe('3');
+    expect(open.querySelector('app-button-count')!.textContent).toBe('3');
     expect(open.getAttribute('aria-label')).toBe('Filter, 3 valda');
 
     open.click();

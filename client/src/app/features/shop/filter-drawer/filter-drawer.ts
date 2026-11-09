@@ -1,11 +1,12 @@
 import { Component, computed, ElementRef, input, viewChild } from '@angular/core';
 import { Button } from '../../../shared/button/button';
+import { ButtonCount } from '../../../shared/button-count/button-count';
 
 // The filter on phones and tablets: a button and a panel from the left, a native <dialog> like
 // CartDrawer. The filter is projected, and every choice updates the list behind the panel at once.
 @Component({
   selector: 'app-filter-drawer',
-  imports: [Button],
+  imports: [Button, ButtonCount],
   templateUrl: './filter-drawer.html',
   styleUrls: ['./filter-drawer.scss', '../../../shared/drawer.scss'],
 })
