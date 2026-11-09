@@ -5,6 +5,11 @@
 <p class="intro text-body-m">Dolda produkter syns bara här, inte i butiken.</p>
 
 <div class="card list">
+  @if (removeError(); as message) {
+    <p class="text-body-s" role="alert">{{ message }}</p>
+  }
+  <p class="removed text-body-s" role="status">{{ removedMessage() }}</p>
+
   <!-- hasValue first, so the old list stays while it is fetched again. -->
   @if (result.hasValue()) {
     @let r = result.value();
@@ -18,6 +23,8 @@
             <th class="end text-mono-s-caps" scope="col">Pris</th>
             <th class="text-mono-s-caps" scope="col">Lager</th>
             <th class="text-mono-s-caps" scope="col">I butiken</th>
+            <!-- No visible heading, but screen readers still get a name for the column. -->
+            <th scope="col" aria-label="Åtgärder"></th>
           </tr>
         </thead>
         <tbody>
@@ -47,6 +54,27 @@
               </td>
               <td class="visible text-body-s" [class.hidden]="!p.isActive">
                 {{ p.isActive ? 'Synlig' : 'Dold' }}
+              </td>
+              <td class="manage">
+                <!-- A link, since editing opens the product's own page. The name in aria-label
+                     tells the many "Redigera" apart, like on the category pages. -->
+                <span class="links">
+                  <a
+                    class="edit text-link-s"
+                    [routerLink]="['/admin/produkter', p.id]"
+                    [attr.aria-label]="'Redigera ' + p.title"
+                    >Redigera</a
+                  >
+                  <button
+                    appLinkButton
+                    tone="danger"
+                    type="button"
+                    [attr.aria-label]="'Ta bort ' + p.title"
+                    (click)="remove(p)"
+                  >
+                    Ta bort
+                  </button>
+                </span>
               </td>
             </tr>
           }

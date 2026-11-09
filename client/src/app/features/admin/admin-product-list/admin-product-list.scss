@@ -41,3 +41,25 @@
 .visible {
   justify-self: end;
 }
+
+.links {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-16);
+  white-space: nowrap;
+}
+
+// Like LinkButton next to it.
+.edit {
+  padding-block: var(--space-4);
+  color: var(--color-text-primary);
+
+  &:hover {
+    color: var(--color-text-secondary);
+  }
+}
+
+// A row of its own under the others in a stacked row.
+.manage {
+  grid-column: 1 / -1;
+}

@@ -24,6 +24,11 @@ import { firstError } from '../../../shared/first-error';
 import { Icon } from '../../../shared/icons/icon';
 import { AdminPageHeader } from '../admin-page-header/admin-page-header';
 import { AdminProductImage } from '../admin-product-image/admin-product-image';
+import {
+  PRODUCT_NOT_REMOVED,
+  productOnOrderMessage,
+  removeProductQuestion,
+} from '../product-texts';
 import { PropertyCheckboxes } from '../property-checkboxes/property-checkboxes';
 
 // Price and stock are null while their fields are empty.
@@ -162,27 +167,19 @@ export class AdminProductForm {
       return;
     }
     const product = this.product.value();
-    const yes = await this.confirm.ask({
-      title: `Ta bort ${product.title}?`,
-      message: 'Produkten tas bort från butiken och går inte att få tillbaka.',
-      hint: 'Vill du bara dölja den? Avmarkera Visa i butiken och spara i stället.',
-      confirmLabel: 'Ta bort',
-    });
-    if (!yes) {
+    if (!(await this.confirm.ask(removeProductQuestion(product.title)))) {
       return;
     }
 
     this.removeError.set(undefined);
     try {
       if ((await this.products.remove(product.id)) === 'onOrder') {
-        this.removeError.set(
-          'Produkten finns i en order och kan inte tas bort. Dölj den i stället: avmarkera "Visa i butiken" och spara.',
-        );
+        this.removeError.set(productOnOrderMessage(product.title));
         return;
       }
       await this.router.navigateByUrl('/admin/produkter');
     } catch {
-      this.removeError.set('Produkten kunde inte tas bort just nu. Försök igen om en stund.');
+      this.removeError.set(PRODUCT_NOT_REMOVED);
     }
   }
 }
