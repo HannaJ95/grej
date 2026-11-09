@@ -9,8 +9,16 @@
   @if (removeError(); as message) {
     <p class="text-body-s" role="alert">{{ message }}</p>
   }
+} @else if (isNew()) {
+  <p class="hint text-body-s">Välj en bild nu, så laddas den upp när du sparar produkten.</p>
 } @else {
   <p class="hint text-body-s">Produkten har ingen bild än.</p>
+}
+
+@if (showUploadFailed()) {
+  <p class="text-body-s" role="alert">
+    Produkten är sparad, men bilden kunde inte laddas upp. Välj den igen och ladda upp den.
+  </p>
 }
 
 <form class="fields" aria-labelledby="image-title" [formRoot]="imageForm">
@@ -48,16 +56,19 @@
     }
   </div>
 
-  <button
-    appButton
-    variant="secondary"
-    size="large"
-    type="submit"
-    [disabled]="imageForm().submitting()"
-  >
-    Ladda upp bilden
-  </button>
-  @if (uploadError(); as message) {
-    <p class="text-body-s" role="alert">{{ message }}</p>
+  <!-- On "Ny produkt" Spara uploads the image with the product. -->
+  @if (!isNew()) {
+    <button
+      appButton
+      variant="secondary"
+      size="large"
+      type="submit"
+      [disabled]="imageForm().submitting()"
+    >
+      Ladda upp bilden
+    </button>
+    @if (uploadError(); as message) {
+      <p class="text-body-s" role="alert">{{ message }}</p>
+    }
   }
 </form>

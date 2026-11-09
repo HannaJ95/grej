@@ -37,7 +37,12 @@ interface ImageFormModel {
 
 const EMPTY: ImageFormModel = { file: null, altText: '' };
 
-// The product's image card on the edit page: shows, uploads and removes the image.
+// The product's image card: shows, uploads and removes the image. On "Ny produkt" there is no
+// product yet, so the card only collects the image, and the product form uploads it after
+// creating the product (pendingImage).
+
+// What pendingImage() gives the product form.
+export type PendingImage = { file: File; altText: string } | null | 'invalid';
 @Component({
   selector: 'app-admin-product-image',
   imports: [FormRoot, FormField, Button, LinkButton],
@@ -49,18 +54,28 @@ export class AdminProductImage {
   private readonly confirm = inject(ConfirmService);
   private readonly toast = inject(ToastService);
 
-  readonly product = input.required<AdminProduct>();
+  // Undefined on "Ny produkt".
+  readonly product = input<AdminProduct>();
+  // True on a new product's page when it was created but its image could not be uploaded.
+  readonly uploadFailed = input(false);
 
-  // Changed here after an upload or removal, since fetching the product again would empty the
-  // product form.
-  protected readonly image = linkedSignal(() => this.product().image);
+  protected readonly isNew = computed(() => !this.product());
+  // Hidden again once an upload has worked.
+  protected readonly showUploadFailed = linkedSignal(() => this.uploadFailed());
+
+  // Changed here after an upload or removal, so the product form is not fetched again.
+  protected readonly image = linkedSignal(() => this.product()?.image ?? null);
 
   private readonly model = signal<ImageFormModel>(EMPTY);
 
   protected readonly imageForm = form(
     this.model,
     (field) => {
-      required(field.file, { message: 'Välj en bild.' });
+      // On "Ny produkt" the image is optional, but a file and its description go together.
+      required(field.file, {
+        message: 'Välj en bild.',
+        when: ({ valueOf }) => !this.isNew() || valueOf(field.altText).trim() !== '',
+      });
       validate(field.file, ({ value }) => {
         const file = value();
         if (file && !IMAGE_TYPES.includes(file.type)) {
@@ -72,7 +87,10 @@ export class AdminProductImage {
         return undefined;
       });
       // The same rules as the API's altText parameter.
-      required(field.altText, { message: 'Beskriv bilden.' });
+      required(field.altText, {
+        message: 'Beskriv bilden.',
+        when: ({ valueOf }) => !this.isNew() || valueOf(field.file) !== null,
+      });
       pattern(field.altText, /\S/, { message: 'Beskriv bilden.' });
       maxLength(field.altText, 200, { message: 'Beskrivningen får vara högst 200 tecken.' });
     },
@@ -94,14 +112,36 @@ export class AdminProductImage {
     this.imageForm.file().markAsTouched();
   }
 
+  // Shows the fields' errors, as a send does. The product form calls it when Spara is pressed.
+  showErrors(): void {
+    this.imageForm.file().markAsTouched();
+    this.imageForm.altText().markAsTouched();
+  }
+
+  // The chosen image, null when none is chosen, or 'invalid' after showing what is missing.
+  pendingImage(): PendingImage {
+    this.showErrors();
+    if (this.imageForm().invalid()) {
+      return 'invalid';
+    }
+    const { file, altText } = this.model();
+    return file ? { file, altText: altText.trim() } : null;
+  }
+
   // A returned error becomes the form's error (uploadError).
   private async upload() {
+    const product = this.product();
+    // Enter in a field on "Ny produkt": the image is sent with the product instead.
+    if (!product) {
+      return undefined;
+    }
     const { file, altText } = this.model();
     try {
-      this.image.set(await this.products.uploadImage(this.product().id, file!, altText));
+      this.image.set(await this.products.uploadImage(product.id, file!, altText));
       // reset also forgets "touched", so the empty fields show no errors.
       this.imageForm().reset(EMPTY);
       this.fileInput().nativeElement.value = '';
+      this.showUploadFailed.set(false);
       this.toast.show('Bilden är uppladdad.');
       return undefined;
     } catch {
@@ -113,6 +153,10 @@ export class AdminProductImage {
   }
 
   protected async remove(): Promise<void> {
+    const product = this.product();
+    if (!product) {
+      return;
+    }
     const yes = await this.confirm.ask({
       title: 'Ta bort bilden?',
       message: 'Produkten visas utan bild tills du laddar upp en ny.',
@@ -124,7 +168,7 @@ export class AdminProductImage {
 
     this.removeError.set(undefined);
     try {
-      await this.products.removeImage(this.product().id);
+      await this.products.removeImage(product.id);
       this.image.set(null);
       this.toast.show('Bilden är borttagen.');
     } catch {

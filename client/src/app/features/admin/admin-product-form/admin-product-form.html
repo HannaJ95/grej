@@ -1,22 +1,59 @@
-<app-admin-page-header eyebrow="Produkter" [title]="isNew() ? 'Ny produkt' : 'Redigera produkt'" />
+@let showForm = isNew() || product.hasValue();
+
+<app-admin-page-header eyebrow="Produkter" [title]="isNew() ? 'Ny produkt' : 'Redigera produkt'">
+  @if (showForm) {
+    <div class="header-actions">
+      @if (!isNew()) {
+        <button appButton variant="danger" size="large" type="button" (click)="remove()">
+          Ta bort produkten
+        </button>
+      }
+      <!-- Outside the form, so form="product-form" connects it to the form. -->
+      <button
+        appButton
+        size="large"
+        type="submit"
+        form="product-form"
+        [disabled]="productForm().submitting()"
+      >
+        Spara
+      </button>
+    </div>
+  }
+</app-admin-page-header>
 
 <a class="back text-link-s" routerLink="/admin/produkter">
   <app-icon name="arrow-left" />
   Alla produkter
 </a>
 
-@if (product.isLoading()) {
-  <p role="status">Laddar produkten…</p>
+<!-- Under the top bar, next to the buttons that caused them. -->
+@if (saveError(); as message) {
+  <p class="page-error text-body-s" role="alert">{{ message }}</p>
+}
+@if (removeError(); as message) {
+  <p class="page-error text-body-s" role="alert">{{ message }}</p>
+}
+
+<!-- hasValue before loading, so the form stays while the product is fetched again after a save. -->
+@if (notFound()) {
+  <p>Produkten finns inte. Den kan ha tagits bort.</p>
 } @else if (product.error()) {
   <p role="alert">Produkten kunde inte visas.</p>
-} @else {
+} @else if (showForm) {
   <!-- The form first, so it is on top in one column and first in the focus order. -->
   <div class="layout">
     <section class="card" aria-labelledby="product-details-title">
       <h2 class="text-display-2xs" id="product-details-title">Uppgifter</h2>
 
       <!-- formRoot turns off the browser's own validation and runs save(). -->
-      <form class="fields" aria-labelledby="product-details-title" [formRoot]="productForm">
+      <form
+        id="product-form"
+        class="fields"
+        aria-labelledby="product-details-title"
+        [formRoot]="productForm"
+        (submit)="showImageErrors()"
+      >
         <div class="field">
           <label class="text-label-xs" for="title">Titel</label>
           <input
@@ -126,42 +163,17 @@
           </span>
           <span class="text-body-m-compact">Visa i butiken</span>
         </label>
-
-        <button
-          class="save"
-          appButton
-          size="large"
-          type="submit"
-          [disabled]="productForm().submitting()"
-        >
-          Spara
-        </button>
-        @if (saveError(); as message) {
-          <p class="text-body-s" role="alert">{{ message }}</p>
-        }
       </form>
     </section>
 
-    <div class="side">
-      <!-- A new product has no id yet, so it gets its image after the first save. -->
-      @if (product.hasValue()) {
-        <app-admin-product-image class="card" [product]="product.value()" />
-      } @else {
-        <section class="card" aria-labelledby="image-title">
-          <h2 class="text-display-2xs" id="image-title">Bild</h2>
-          <p class="hint text-body-s">Spara produkten först. Sedan kan du lägga till en bild.</p>
-        </section>
-      }
-
-      <!-- Outside the form, so it never sends it. -->
-      @if (!isNew()) {
-        <button appButton variant="danger" type="button" (click)="remove()">
-          Ta bort produkten
-        </button>
-        @if (removeError(); as message) {
-          <p class="text-body-s" role="alert">{{ message }}</p>
-        }
-      }
-    </div>
+    <!-- Without a product ("Ny produkt"), the card only collects the image, and Spara uploads
+         it once the product exists. -->
+    <app-admin-product-image
+      class="card"
+      [product]="loadedProduct()"
+      [uploadFailed]="imageFailed"
+    />
   </div>
+} @else {
+  <p role="status">Laddar produkten…</p>
 }

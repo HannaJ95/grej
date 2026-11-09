@@ -96,6 +96,24 @@ describe('AdminProductImage', () => {
     expect(page().textContent).toContain('Produkten har ingen bild än.');
   });
 
+  it('on "Ny produkt", has no upload button and lets the image be left out', async () => {
+    fixture.componentRef.setInput('product', undefined);
+    await fixture.whenStable();
+    const card = fixture.componentInstance;
+
+    expect(button('Ladda upp bilden')).toBeUndefined();
+    expect(card.pendingImage()).toBeNull();
+
+    // A file needs its description, as when it is uploaded on its own.
+    await choose(new File(['png'], 'vas.png', { type: 'image/png' }));
+    expect(card.pendingImage()).toBe('invalid');
+    await fixture.whenStable();
+    expect(page().textContent).toContain('Beskriv bilden.');
+
+    type('#alt-text', ' En blå vas ');
+    expect(card.pendingImage()).toEqual({ file: expect.any(File), altText: 'En blå vas' });
+  });
+
   function page(): HTMLElement {
     return fixture.nativeElement;
   }

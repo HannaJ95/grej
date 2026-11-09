@@ -1,4 +1,5 @@
-import { Component, computed, inject, input, linkedSignal, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, computed, inject, input, linkedSignal, signal, viewChild } from '@angular/core';
 import {
   form,
   FormField,
@@ -89,8 +90,20 @@ export class AdminProductForm {
   readonly id = input<string>();
   protected readonly isNew = computed(() => this.id() === undefined);
 
-  // As the API had it when the page was opened. Nothing is fetched for a new one.
+  // As the API has it. Nothing is fetched for a new one.
   protected readonly product = this.products.getProduct(this.id);
+  protected readonly loadedProduct = computed(() =>
+    this.product.hasValue() ? this.product.value() : undefined,
+  );
+  // E.g. an old link to a product that has been removed.
+  protected readonly notFound = computed(
+    () => (this.product.error() as HttpErrorResponse | undefined)?.status === 404,
+  );
+  // Set by create() when the product was created but its image could not be uploaded.
+  protected readonly imageFailed =
+    this.router.currentNavigation()?.extras.state?.['imageFailed'] === true;
+
+  private readonly imageCard = viewChild(AdminProductImage);
 
   // The first page holds up to 100 categories (CategoryListQuery).
   protected readonly categoryList = this.categories.getCategories(signal(1));
@@ -135,26 +148,33 @@ export class AdminProductForm {
   protected readonly saveError = computed(() => this.productForm().errors()[0]?.message);
   protected readonly removeError = signal<string | undefined>(undefined);
 
+  // On "Ny produkt" the image card's errors are shown together with the form's, also when the
+  // form is not valid and save() never runs.
+  protected showImageErrors(): void {
+    if (this.isNew()) {
+      this.imageCard()?.showErrors();
+    }
+  }
+
   // A returned error becomes the form's error (saveError).
   private async save() {
     const input = toInput(this.model());
     try {
-      if (this.product.hasValue()) {
-        const product = this.product.value();
-        // product.stock is the stock the form was opened with.
-        if ((await this.products.update(product.id, input, product.stock)) === 'stockChanged') {
-          return {
-            kind: 'stockChanged',
-            message:
-              'Lagersaldot har ändrats sedan du öppnade sidan, troligen för att någon har köpt produkten. Inget sparades. Ladda om sidan och gör ändringen igen.',
-          };
-        }
-        await this.router.navigateByUrl('/admin/produkter');
-      } else {
-        // Its own page, where the admin can add an image.
-        const created = await this.products.create(input);
-        await this.router.navigate(['/admin/produkter', created.id]);
+      if (!this.product.hasValue()) {
+        return await this.create(input);
       }
+      const product = this.product.value();
+      // product.stock is the stock the product had when it was last fetched.
+      if ((await this.products.update(product.id, input, product.stock)) === 'stockChanged') {
+        return {
+          kind: 'stockChanged',
+          message:
+            'Lagersaldot har ändrats sedan du öppnade sidan, troligen för att någon har köpt produkten. Inget sparades. Ladda om sidan och gör ändringen igen.',
+        };
+      }
+      this.toast.show('Ändringarna är sparade.');
+      // Fetched again, so the next save compares with the stock that was just saved.
+      this.product.reload();
       return undefined;
     } catch {
       return {
@@ -162,6 +182,27 @@ export class AdminProductForm {
         message: 'Produkten kunde inte sparas just nu. Försök igen om en stund.',
       };
     }
+  }
+
+  // Creates the product, uploads the chosen image and opens the product's own page.
+  private async create(input: ProductInput) {
+    const image = this.imageCard()?.pendingImage() ?? null;
+    if (image === 'invalid') {
+      return { kind: 'image', message: 'Rätta bilden innan du sparar.' };
+    }
+    const created = await this.products.create(input);
+    let imageFailed = false;
+    if (image) {
+      try {
+        await this.products.uploadImage(created.id, image.file, image.altText);
+      } catch {
+        // The product exists anyway, so its page opens and the image card says so.
+        imageFailed = true;
+      }
+    }
+    this.toast.show('Produkten är skapad.');
+    await this.router.navigate(['/admin/produkter', created.id], { state: { imageFailed } });
+    return undefined;
   }
 
   protected async remove(): Promise<void> {

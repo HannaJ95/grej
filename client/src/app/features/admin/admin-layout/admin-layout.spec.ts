@@ -16,13 +16,6 @@ describe('AdminLayout', () => {
       'grej.auth',
       JSON.stringify({ token: `header.${payload}.signature`, expiresAt: '2999-01-01T00:00:00Z' }),
     );
-    // jsdom, which the tests run in, has <dialog> but not showModal(), as in ShopLayout's spec.
-    HTMLDialogElement.prototype.showModal = function (this: HTMLDialogElement) {
-      this.open = true;
-    };
-    HTMLDialogElement.prototype.close = function (this: HTMLDialogElement) {
-      this.open = false;
-    };
     TestBed.configureTestingModule({
       providers: [
         provideRouter(routes, withComponentInputBinding()),
