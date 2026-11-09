@@ -70,7 +70,8 @@ const SHOW_FOR_MS = 5000;
       justify-content: center;
       width: 1.5rem;
       height: 1.5rem;
-      background: var(--color-bg-inverse);
+      // The green of the stock status dot, since a toast always means that something worked.
+      background: var(--color-feedback-success);
       color: var(--color-icon-inverse);
     }
 

@@ -174,3 +174,8 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - **Building:** Finished sprint 4 item 1: filter by price, material and color, with a price slider whose fields and thumbs follow each other, and a filter panel on phones and tablets. Verified locally.
 - **Design:** I chose the slider's range (up to the highest price of the other choices), that a ticked subcategory narrows its main category, a filter button that stays below the header on phones, and the same slide-in for every side panel.
 - **Verification:** Every part was tested, and Claude checked 320–1440 px and 200 % zoom in Chrome. A check found the slider's black bar drawn over the thumbs, which we fixed.
+
+## 2026-11-09
+
+- **Building:** Finished sprint 4 item 2: every admin page now has the shop's look (overview with numbers, product list and page, orders, login). I added our own confirm dialog instead of the browser's, a toast that shows when something is saved, and the product page now stays open after saving and takes an image already when a product is created.
+- **Verification:** Claude checked every page at 320–1440 px in Chrome without changing the shared database. This found a class name clash that broke the product rows and a test that sometimes hung, which we fixed.

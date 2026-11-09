@@ -49,7 +49,7 @@ html:has(app-product-list) {
 
 // The height of what sticks at the top of an admin page: the app bar below 1024 px, and the
 // page's top bar from 1024 px (measured by AdminPageHeader). The card in
-// admin-category-page.scss sticks below it. The extra space-8 keeps the focus ring visible.
+// admin-page.scss sticks below it. The extra space-8 keeps the focus ring visible.
 html:has(app-admin-layout) {
   --admin-sticky-top: 4rem;
 

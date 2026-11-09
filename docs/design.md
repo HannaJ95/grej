@@ -38,6 +38,16 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - Each panel slides in from its side (`--drawer-from`) while the backdrop fades in, and back out when it closes.
   - Firefox and Safari close the panel at once, without the slide.
   - "Reduce motion" turns the slide off.
+- `shared/checkbox.scss` is the square checkbox (a real checkbox with `appearance: none` and the check icon on top), used by the shop's filter and the CMS's product form.
+- `shared/tabs.scss` is a row of bordered links where the current one (`aria-current="page"`) is dark, used by the shop's category tabs and the CMS's order list.
+- `ConfirmDialog` is our own `confirm()`. A page asks with `await confirm.ask({ title, message, hint, confirmLabel })` (`ConfirmService`) and gets true or false.
+  - It is a modal `<dialog>`: the focus stays inside it, Escape and the cross close it, and the focus goes back to the button that asked.
+  - The focus starts on "Avbryt", so Enter never removes anything by mistake. The confirm button is red for what removes something and dark for other changes.
+  - On a phone the buttons are under each other in full width.
+- `Toast` says that something worked: `toast.show('Ändringarna är sparade.')` (`ToastService`). Its check has the green of the stock status dot.
+  - It is shown in the bottom corner for 5 seconds, pauses on hover or focus, and closes with the cross or Escape, like `AddedToCart`.
+  - Screen readers hear it through `aria-live`, and it never takes the focus.
+  - Only successes are toasts. Errors stay next to what went wrong (`role="alert"`) until they are read.
 
 ## Shop
 
@@ -100,7 +110,8 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
 The CMS uses the same tokens, text styles and shared components as the shop.
 
 - `AdminLayout` (`features/admin/admin-layout/`) is the parent route of every admin page except the login page, like `ShopLayout`.
-  - From 1024 px, `AdminNav` is a 264 px menu to the left, sticky with its own scroll.
+  - It holds `ConfirmDialog` and `Toast` once for every admin page, so a toast stays when the page changes.
+  - From 1024 px, `AdminNav` is a 264 px menu to the left. It is exactly the window's height and stays still while the page scrolls; it only scrolls on its own when its content is taller than the window.
   - Below 1024 px there is an app bar. Its menu button opens the same menu as a drawer that slides in from the left, a `<dialog>` like `MobileMenu`.
   - Kategorier and Egenskaper fold with a button (`aria-expanded`), and are open on their own pages (`isActive` and `linkedSignal`).
   - The menu shows the admin's email and its first letter.
@@ -108,11 +119,23 @@ The CMS uses the same tokens, text styles and shared components as the shop.
   - From 1024 px, when the window is at least 30rem high, it sticks at the top.
   - It measures its own height with a `ResizeObserver` and writes it to `--admin-page-header-height` on `<html>`, since the row wraps when there is no room.
   - `_base.scss` turns that height into `--admin-sticky-top` (the app bar's 4rem below 1024 px). That value sets `scroll-padding-top`, so a focused field is never hidden under the header.
-- The category pages and the material and color page share `admin-category-page.scss`.
-  - The page and the list are CSS containers (`container-type: inline-size`). The card goes to the right of the list when the page is at least 56rem wide, and each row fits on one line when the list is at least 36rem wide. So the layout follows the room the page has beside the menu, not the screen's width.
+- The admin pages share three style files in `features/admin/`:
+  - `admin-page.scss`: the page and every `.card` are CSS containers (`container-type: inline-size`), plus the columns, the list rows and the link back to a list.
+  - `admin-form.scss`: the form fields, the select with its chevron, hints and error texts.
+  - `admin-table.scss`: a table in a card. When the card is narrower than 36rem (44rem for the six columns of `.table.wide`), each row becomes a small block with two columns, and the column headings are kept for screen readers only. Each cell's own text says what it is ("2 st", "349 kr/st").
+- So the layout follows the room the page has beside the menu, not the screen's width. On the category pages the card goes to the right of the list when the page is at least 56rem wide, and each row fits on one line when the list is at least 36rem wide.
   - The card comes first in the HTML, so it is on top on a narrow screen and the keyboard order matches what is seen.
   - Beside the list, in a window at least 30rem high, the card sticks 24 px below `--admin-sticky-top`, so "Redigera" on the last row still shows it.
 - Materials and colors share one page, `AdminPropertyList`, with `AdminPropertyCard` (`?redigera=`) and `LinkButton` in the rows.
   - The rows have no product count yet, since `PropertyDto` has none.
   - "Ta bort" therefore fetches the material first, so the warning can say how many products have it.
-- Not styled yet: the admin start page, products, orders and the login page keep the simple look inside the layout. They are styled with the same parts: `AdminPageHeader`, and the list with a card beside it where a page edits rows.
+- The overview (`/admin`, `AdminHome`) has three cards with numbers from lists the API already has: orders to handle, products (hidden ones too) and main categories, each with a link to its list. Each card shows its own loading and error state.
+- The product list (`/admin/produkter`) is a table: a small image and the title as a link, the price, `StockStatus` (or the number sold too many in red), Synlig/Dold, and "Redigera" and "Ta bort".
+- The product page (`/admin/produkter/ny` and `/admin/produkter/7`):
+  - "Spara" and "Ta bort produkten" are large buttons in the top bar, like "Ny produkt" on the list. Spara sits outside the `<form>` and is connected to it with `form="product-form"`. Errors from them are shown under the top bar.
+  - The form card is on the left, and the image card beside it when the page is at least 56rem wide. Price and stock are side by side when the card is at least 28rem wide.
+  - Saving keeps the admin on the page, with a toast, and fetches the product again. A product that does not exist (404) says so.
+  - On "Ny produkt" the image card collects the image without uploading it: a file needs its description, and both are shown with the form's errors. Spara creates the product, uploads the image and opens the product's own page.
+- The order list (`/admin/ordrar`) has the tabs "Att göra" and "Alla beställningar" and a table. "Behöver återbetalas" and "Behöver avbrytas" are bold, red words under the status.
+- The order page (`/admin/ordrar/7`) has the cards Status (facts, warning, buttons) and Kund side by side, and Produkter with the total below them. After shipping or cancelling the button is gone, so the focus moves to the Status heading.
+- The login page is a card in the middle of the window, with "GREJ." and the Admin badge above it and a link back to the shop below.
