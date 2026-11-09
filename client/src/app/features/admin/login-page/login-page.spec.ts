@@ -53,9 +53,9 @@ describe('LoginPage', () => {
       // An expiry in the future, so adminGuard lets the admin in.
       .flush({ token: 'header.payload.signature', expiresAt: '2999-01-01T00:00:00Z' });
 
-    await settle();
-
-    expect(TestBed.inject(Router).url).toBe('/admin');
+    await vi.waitFor(() => expect(TestBed.inject(Router).url).toBe('/admin'));
+    // The overview on /admin asks for its numbers, which this test does not need.
+    httpTesting.match((req) => req.url.includes('/api/admin/'));
   });
 
   function page(): HTMLElement {

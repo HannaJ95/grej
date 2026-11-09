@@ -1,46 +1,89 @@
-<h1 class="text-display-xs">Produkter</h1>
-<p><a appButton routerLink="/admin/produkter/ny">Ny produkt</a></p>
+<app-admin-page-header eyebrow="Butik" title="Produkter">
+  <a appButton size="large" routerLink="/admin/produkter/ny">Ny produkt</a>
+</app-admin-page-header>
 
-@if (result.isLoading()) {
-  <p role="status">Laddar produkterna…</p>
-} @else if (result.error()) {
-  <p role="alert">Produkterna kunde inte visas.</p>
-} @else if (result.hasValue()) {
-  @let r = result.value();
-  @if (r.items.length === 0) {
-    <p>Det finns inga produkter än.</p>
-  } @else {
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">Titel</th>
-          <th scope="col">Pris</th>
-          <th scope="col">Lager</th>
-          <th scope="col">I butiken</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (p of r.items; track p.id) {
-          <tr>
-            <!-- The title is the link, so a screen reader hears which product it opens. -->
-            <td>
-              <a [routerLink]="['/admin/produkter', p.id]">{{ p.title }}</a>
-            </td>
-            <td>{{ p.price | currency: p.currency }}</td>
-            <td>
-              {{ p.stock }}
-              <!-- Below 0: the last item was sold twice, and one order must be refunded. -->
-              @if (p.stock < 0) {
-                (fler sålda än det fanns)
-              }
-            </td>
-            <td>{{ p.isActive ? 'Synlig' : 'Dold' }}</td>
-          </tr>
-        }
-      </tbody>
-    </table>
+<p class="intro text-body-m">Dolda produkter syns bara här, inte i butiken.</p>
+
+<div class="card list">
+  @if (removeError(); as message) {
+    <p class="text-body-s" role="alert">{{ message }}</p>
   }
 
-  <!-- Only shown when there is more than one page. -->
-  <app-pagination path="/admin/produkter" [page]="r.page" [totalPages]="r.totalPages" />
-}
+  <!-- hasValue first, so the old list stays while it is fetched again. -->
+  @if (result.hasValue()) {
+    @let r = result.value();
+    @if (r.items.length === 0) {
+      <p class="state">Det finns inga produkter än.</p>
+    } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="text-mono-s-caps" scope="col">Produkt</th>
+            <th class="end text-mono-s-caps" scope="col">Pris</th>
+            <th class="text-mono-s-caps" scope="col">Lager</th>
+            <th class="text-mono-s-caps" scope="col">I butiken</th>
+            <!-- No visible heading, but screen readers still get a name for the column. -->
+            <th scope="col" aria-label="Åtgärder"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of r.items; track p.id) {
+            <tr>
+              <td>
+                <span class="product">
+                  <!-- The title next to it already names the product. -->
+                  @if (p.image; as image) {
+                    <img class="thumb" [src]="image.url" alt="" loading="lazy" />
+                  } @else {
+                    <span class="thumb empty"></span>
+                  }
+                  <a class="title text-link-s" [routerLink]="['/admin/produkter', p.id]">{{ p.title }}</a>
+                </span>
+              </td>
+              <td class="price end text-body-s">
+                {{ p.price | currency: p.currency : 'symbol' : '1.0-2' }}
+              </td>
+              <td>
+                <!-- Below 0: the last item was sold twice, and one order must be refunded. -->
+                @if (p.stock < 0) {
+                  <span class="oversold text-label-xs">{{ p.stock }} st – fler sålda än det fanns</span>
+                } @else {
+                  <app-stock-status [stock]="p.stock" />
+                }
+              </td>
+              <td class="visible text-body-s" [class.hidden]="!p.isActive">
+                {{ p.isActive ? 'Synlig' : 'Dold' }}
+              </td>
+              <td class="manage">
+                <!-- A link, since editing opens the product's own page. The name in aria-label
+                     tells the many "Redigera" apart, like on the category pages. -->
+                <span class="links">
+                  <a
+                    class="edit text-link-s"
+                    [routerLink]="['/admin/produkter', p.id]"
+                    [attr.aria-label]="'Redigera ' + p.title"
+                    >Redigera</a
+                  >
+                  <button
+                    appLinkButton
+                    tone="danger"
+                    type="button"
+                    [attr.aria-label]="'Ta bort ' + p.title"
+                    (click)="remove(p)"
+                  >
+                    Ta bort
+                  </button>
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+    <app-pagination path="/admin/produkter" [page]="r.page" [totalPages]="r.totalPages" />
+  } @else if (result.error()) {
+    <p class="state" role="alert">Produkterna kunde inte visas.</p>
+  } @else {
+    <p class="state" role="status">Laddar produkterna…</p>
+  }
+</div>

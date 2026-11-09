@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../../app.routes';
+import { ConfirmService } from '../../../core/confirm.service';
 import { Category } from '../../../core/category';
 
 describe('AdminMainCategories', () => {
@@ -53,7 +54,7 @@ describe('AdminMainCategories', () => {
 
   afterEach(() => {
     httpTesting.verify();
-    // Puts back the real window.confirm after the test that replaced it.
+    // Removes the spy on ConfirmService.ask after the test that answers the dialog.
     vi.restoreAllMocks();
   });
 
@@ -80,7 +81,7 @@ describe('AdminMainCategories', () => {
     expect(request.request.body).toEqual({ name: 'Glas', parentId: null });
     request.flush({ ...textil, id: 6, name: 'Glas' });
     await answerList();
-    expect(texts('main [role="status"]')).toContain('Glas har lagts till.');
+    expect(texts('app-toast .text')).toEqual(['Glas har lagts till.']);
     expect(nameInput().value).toBe('');
   });
 
@@ -111,8 +112,8 @@ describe('AdminMainCategories', () => {
 
   it('tells the admin to delete the subcategories first (409)', async () => {
     await open('/admin/kategorier');
-    // The test answers "OK" in the browser's "Are you sure?" dialog.
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    // The test answers yes in the confirm dialog.
+    vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(true);
 
     await click('Ta bort');
 

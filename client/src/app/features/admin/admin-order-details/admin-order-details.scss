@@ -1,0 +1,95 @@
+// Status and customer side by side when the page has room, and the products below them.
+.details {
+  display: grid;
+  gap: var(--space-24);
+
+  @container (width >= 56rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.items {
+  grid-column: 1 / -1;
+}
+
+.facts {
+  margin: 0;
+
+  // The label above the value in a narrow card, so the value gets the whole width.
+  > div {
+    display: grid;
+    gap: var(--space-4);
+    padding-block: var(--space-10);
+    border-bottom: 1px solid var(--color-border-subtle);
+
+    @container (width >= 24rem) {
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+      align-items: baseline;
+      gap: var(--space-16);
+    }
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    &:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+  }
+}
+
+dt {
+  color: var(--color-text-secondary);
+}
+
+// Long email addresses break instead of widening the card.
+dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.notice {
+  padding: var(--space-12) var(--space-16);
+  border: var(--border-width-default) solid var(--color-feedback-error);
+
+  strong {
+    color: var(--color-feedback-error);
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+}
+
+// Takes the room that is left, so the numbers stay together on the right.
+.title {
+  width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.quantity,
+.unit-price,
+.line-total {
+  white-space: nowrap;
+}
+
+// Where each cell goes in a stacked row: product and sum, quantity and unit price.
+.title {
+  grid-area: 1 / 1;
+}
+
+.line-total {
+  grid-area: 1 / 2;
+}
+
+.quantity {
+  grid-area: 2 / 1;
+  justify-self: start;
+}
+
+.unit-price {
+  grid-area: 2 / 2;
+}

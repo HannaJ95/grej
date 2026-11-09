@@ -1,0 +1,33 @@
+.image {
+  display: block;
+  width: 100%;
+  background: var(--color-bg-image);
+}
+
+.remove {
+  align-self: start;
+}
+
+// The browser draws the file field. Its button gets the secondary button's look, and the
+// field itself none of the text field's frame.
+.field input[type='file'] {
+  min-height: 0;
+  padding: 0;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+
+  &::file-selector-button {
+    min-height: var(--size-control-height);
+    margin-right: var(--space-12);
+    padding: var(--space-8) var(--space-16);
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: transparent;
+    color: var(--color-text-primary);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  &:hover::file-selector-button {
+    background: var(--color-bg-hover);
+  }
+}

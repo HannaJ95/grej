@@ -32,7 +32,7 @@ I am still learning frontend, so act as an expert frontend developer and designe
   - `Icon`: the icons in `IconName` (`shared/icons/icon.ts`). A new icon is a 24×24 SVG with a 2 px line in `client/public/icons/` plus its name in `IconName`
   - `Badge`, `Breadcrumb`, `Pagination`, `QuantityStepper`, `StockStatus`
   - The feature components (`ProductCard`, `AdminPageHeader`, the CMS cards …) are in `docs/design.md`.
-- A look that is needed in two places becomes a shared component or a shared scss file, like `admin-category-page.scss`. It is never copied.
+- A look that is needed in two places becomes a shared component or a shared scss file, like `admin-page.scss`. It is never copied.
 - **New admin pages** reuse the existing admin pattern: `AdminPageHeader` at the top, and the list with a card beside it where the page edits rows.
 
 ## Layout and responsive

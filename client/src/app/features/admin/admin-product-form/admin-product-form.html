@@ -1,133 +1,179 @@
-<h1 class="text-display-xs">{{ isNew() ? 'Ny produkt' : 'Redigera produkt' }}</h1>
-<p><a routerLink="/admin/produkter">Tillbaka till produkterna</a></p>
+@let showForm = isNew() || product.hasValue();
 
-@if (product.isLoading()) {
-  <p role="status">Laddar produkten…</p>
+<app-admin-page-header eyebrow="Produkter" [title]="isNew() ? 'Ny produkt' : 'Redigera produkt'">
+  @if (showForm) {
+    <div class="header-actions">
+      @if (!isNew()) {
+        <button appButton variant="danger" size="large" type="button" (click)="remove()">
+          Ta bort produkten
+        </button>
+      }
+      <!-- Outside the form, so form="product-form" connects it to the form. -->
+      <button
+        appButton
+        size="large"
+        type="submit"
+        form="product-form"
+        [disabled]="productForm().submitting()"
+      >
+        Spara
+      </button>
+    </div>
+  }
+</app-admin-page-header>
+
+<a class="back text-link-s" routerLink="/admin/produkter">
+  <app-icon name="arrow-left" />
+  Alla produkter
+</a>
+
+<!-- Under the top bar, next to the buttons that caused them. -->
+@if (saveError(); as message) {
+  <p class="page-error text-body-s" role="alert">{{ message }}</p>
+}
+@if (removeError(); as message) {
+  <p class="page-error text-body-s" role="alert">{{ message }}</p>
+}
+
+<!-- hasValue before loading, so the form stays while the product is fetched again after a save. -->
+@if (notFound()) {
+  <p>Produkten finns inte. Den kan ha tagits bort.</p>
 } @else if (product.error()) {
   <p role="alert">Produkten kunde inte visas.</p>
-} @else {
-  <!-- formRoot turns off the browser's own validation and runs save() in admin-product-form.ts. -->
-  <form [formRoot]="productForm">
-    <p>
-      <label for="title">Titel</label>
-      <!-- aria-invalid and aria-describedby, as on the login page. -->
-      <input
-        id="title"
-        type="text"
-        [formField]="productForm.title"
-        [attr.aria-invalid]="titleError() ? true : null"
-        [attr.aria-describedby]="titleError() ? 'title-error' : null"
-      />
-    </p>
-    @if (titleError(); as message) {
-      <p id="title-error">{{ message }}</p>
-    }
+} @else if (showForm) {
+  <!-- The form first, so it is on top in one column and first in the focus order. -->
+  <div class="layout">
+    <section class="card" aria-labelledby="product-details-title">
+      <h2 class="text-display-2xs" id="product-details-title">Uppgifter</h2>
 
-    <p>
-      <label for="description">Beskrivning</label>
-      <textarea
-        id="description"
-        rows="5"
-        [formField]="productForm.description"
-        [attr.aria-invalid]="descriptionError() ? true : null"
-        [attr.aria-describedby]="descriptionError() ? 'description-error' : null"
-      ></textarea>
-    </p>
-    @if (descriptionError(); as message) {
-      <p id="description-error">{{ message }}</p>
-    }
-
-    <p>
-      <label for="category">Kategori</label>
-      <select
-        id="category"
-        [formField]="productForm.categoryId"
-        [attr.aria-invalid]="categoryError() ? true : null"
-        [attr.aria-describedby]="categoryError() ? 'category-error' : null"
+      <!-- formRoot turns off the browser's own validation and runs save(). -->
+      <form
+        id="product-form"
+        class="fields"
+        aria-labelledby="product-details-title"
+        [formRoot]="productForm"
+        (submit)="showImageErrors()"
       >
-        <!-- value "" is what required() sees as empty. -->
-        <option value="">Välj en kategori</option>
-        <!-- The options arrive after the form. Signal Forms then selects the product's category.
-             A product can be in a main category or a subcategory, e.g. "Keramik › Skålar". -->
-        @if (categoryList.hasValue()) {
-          @for (c of categoryList.value().items; track c.id) {
-            <option [value]="c.id">{{ categoryLabel(c) }}</option>
+        <div class="field">
+          <label class="text-label-xs" for="title">Titel</label>
+          <input
+            id="title"
+            class="text-body-m-compact"
+            type="text"
+            [formField]="productForm.title"
+            [attr.aria-invalid]="titleError() ? true : null"
+            [attr.aria-describedby]="titleError() ? 'title-error' : null"
+          />
+          @if (titleError(); as message) {
+            <span class="error text-body-xs" id="title-error">{{ message }}</span>
           }
-        }
-      </select>
-    </p>
-    @if (categoryError(); as message) {
-      <p id="category-error">{{ message }}</p>
-    }
-    @if (categoryList.error()) {
-      <p role="alert">Kategorierna kunde inte visas.</p>
-    } @else if (categoryList.hasValue() && categoryList.value().items.length === 0) {
-      <p>
-        Det finns inga kategorier än.
-        <a routerLink="/admin/kategorier">Skapa en kategori</a> först.
-      </p>
-    }
+        </div>
 
-    <!-- Several of each, or none. Each group fetches its own choices from the API. -->
-    <app-property-checkboxes [kind]="'materials'" [formField]="productForm.materialIds" />
-    <app-property-checkboxes [kind]="'colors'" [formField]="productForm.colorIds" />
+        <div class="field">
+          <label class="text-label-xs" for="description">Beskrivning (valfri)</label>
+          <textarea
+            id="description"
+            class="text-body-m"
+            rows="6"
+            [formField]="productForm.description"
+            [attr.aria-invalid]="descriptionError() ? true : null"
+            [attr.aria-describedby]="descriptionError() ? 'description-error' : null"
+          ></textarea>
+          @if (descriptionError(); as message) {
+            <span class="error text-body-xs" id="description-error">{{ message }}</span>
+          }
+        </div>
 
-    <p>
-      <label for="price">Pris (kr)</label>
-      <input
-        id="price"
-        type="number"
-        step="0.01"
-        [formField]="productForm.price"
-        [attr.aria-invalid]="priceError() ? true : null"
-        [attr.aria-describedby]="priceError() ? 'price-error' : null"
-      />
-    </p>
-    @if (priceError(); as message) {
-      <p id="price-error">{{ message }}</p>
-    }
+        <div class="field">
+          <label class="text-label-xs" for="category">Kategori</label>
+          <span class="select">
+            <select
+              id="category"
+              class="text-body-m-compact"
+              [formField]="productForm.categoryId"
+              [attr.aria-invalid]="categoryError() ? true : null"
+              [attr.aria-describedby]="categoryError() ? 'category-error' : null"
+            >
+              <!-- value "" is what required() sees as empty. -->
+              <option value="">Välj en kategori</option>
+              <!-- The options can arrive after the form. Signal Forms then selects the right one. -->
+              @if (categoryList.hasValue()) {
+                @for (c of categoryList.value().items; track c.id) {
+                  <option [value]="c.id">{{ categoryLabel(c) }}</option>
+                }
+              }
+            </select>
+            <app-icon name="chevron-down" />
+          </span>
+          @if (categoryError(); as message) {
+            <span class="error text-body-xs" id="category-error">{{ message }}</span>
+          }
+          @if (categoryList.error()) {
+            <p class="text-body-s" role="alert">Kategorierna kunde inte visas.</p>
+          } @else if (categoryList.hasValue() && categoryList.value().items.length === 0) {
+            <p class="text-body-s">
+              Det finns inga kategorier än.
+              <a routerLink="/admin/kategorier">Skapa en kategori</a> först.
+            </p>
+          }
+        </div>
 
-    <p>
-      <label for="stock">Lagersaldo</label>
-      <input
-        id="stock"
-        type="number"
-        step="1"
-        [formField]="productForm.stock"
-        [attr.aria-invalid]="stockError() ? true : null"
-        [attr.aria-describedby]="stockError() ? 'stock-error' : null"
-      />
-    </p>
-    @if (stockError(); as message) {
-      <p id="stock-error">{{ message }}</p>
-    }
+        <div class="pair">
+          <div class="field">
+            <label class="text-label-xs" for="price">Pris (kr)</label>
+            <input
+              id="price"
+              class="text-body-m-compact"
+              type="number"
+              step="0.01"
+              [formField]="productForm.price"
+              [attr.aria-invalid]="priceError() ? true : null"
+              [attr.aria-describedby]="priceError() ? 'price-error' : null"
+            />
+            @if (priceError(); as message) {
+              <span class="error text-body-xs" id="price-error">{{ message }}</span>
+            }
+          </div>
 
-    <p>
-      <input id="isActive" type="checkbox" [formField]="productForm.isActive" />
-      <label for="isActive">Visa i butiken</label>
-    </p>
+          <div class="field">
+            <label class="text-label-xs" for="stock">Lagersaldo</label>
+            <input
+              id="stock"
+              class="text-body-m-compact"
+              type="number"
+              step="1"
+              [formField]="productForm.stock"
+              [attr.aria-invalid]="stockError() ? true : null"
+              [attr.aria-describedby]="stockError() ? 'stock-error' : null"
+            />
+            @if (stockError(); as message) {
+              <span class="error text-body-xs" id="stock-error">{{ message }}</span>
+            }
+          </div>
+        </div>
 
-    <button appButton type="submit" [disabled]="productForm().submitting()">Spara</button>
+        <!-- Each group fetches its own choices from the API. -->
+        <app-property-checkboxes [kind]="'materials'" [formField]="productForm.materialIds" />
+        <app-property-checkboxes [kind]="'colors'" [formField]="productForm.colorIds" />
 
-    <!-- role="alert" makes screen readers read the message as soon as it appears. -->
-    @if (saveError(); as message) {
-      <p role="alert">{{ message }}</p>
-    }
-  </form>
+        <label class="option">
+          <span class="box">
+            <input id="isActive" type="checkbox" [formField]="productForm.isActive" />
+            <app-icon class="check" name="check" />
+          </span>
+          <span class="text-body-m-compact">Visa i butiken</span>
+        </label>
+      </form>
+    </section>
 
-  <!-- The image has its own form, since it is uploaded on its own. A new product has
-       no id yet, so it gets its image after the first save. -->
-  @if (product.hasValue()) {
-    <app-admin-product-image [product]="product.value()" />
-  } @else {
-    <p>Spara produkten först. Sedan kan du lägga till en bild.</p>
-  }
-
-  <!-- Outside the form, so it never sends the form. -->
-  @if (!isNew()) {
-    <button appButton variant="danger" type="button" (click)="remove()">Ta bort produkten</button>
-    @if (removeError(); as message) {
-      <p role="alert">{{ message }}</p>
-    }
-  }
+    <!-- Without a product ("Ny produkt"), the card only collects the image, and Spara uploads
+         it once the product exists. -->
+    <app-admin-product-image
+      class="card"
+      [product]="loadedProduct()"
+      [uploadFailed]="imageFailed"
+    />
+  </div>
+} @else {
+  <p role="status">Laddar produkten…</p>
 }

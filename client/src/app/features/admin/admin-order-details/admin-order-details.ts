@@ -1,44 +1,51 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, ElementRef, inject, input, signal, viewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, input, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminOrderService } from '../../../core/admin-order.service';
+import { ConfirmQuestion, ConfirmService } from '../../../core/confirm.service';
+import { ToastService } from '../../../core/toast.service';
 import { Button } from '../../../shared/button/button';
+import { Icon } from '../../../shared/icons/icon';
+import { AdminPageHeader } from '../admin-page-header/admin-page-header';
 import { ORDER_STATUS_TEXTS, PAYMENT_STATUS_TEXTS } from '../order-texts';
 
-// One order in the CMS, e.g. /admin/ordrar/7, with everything the admin needs to pack and
-// send it, and the buttons to mark it as shipped or cancel it.
+// /admin/ordrar/7: everything the admin needs to pack and send the order, and the buttons to
+// mark it as shipped or cancel it.
 @Component({
   selector: 'app-admin-order-details',
-  imports: [CurrencyPipe, DatePipe, RouterLink, Button],
+  imports: [CurrencyPipe, DatePipe, RouterLink, Button, Icon, AdminPageHeader],
   templateUrl: './admin-order-details.html',
-  styles: `
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-16);
-    }
-  `,
+  styleUrls: ['../admin-page.scss', '../admin-table.scss', './admin-order-details.scss'],
 })
 export class AdminOrderDetails {
   private readonly orders = inject(AdminOrderService);
+  private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
-  // The :id in the URL, set by the router, the same way as in ProductPage.
   readonly id = input.required<string>();
 
   protected readonly order = this.orders.getOrder(this.id);
   protected readonly orderStatusTexts = ORDER_STATUS_TEXTS;
   protected readonly paymentStatusTexts = PAYMENT_STATUS_TEXTS;
 
-  // True while a change is being sent, so the buttons cannot be clicked twice.
+  // The top bar is shown while the order loads too, so the page always has its h1.
+  protected readonly title = computed(() =>
+    this.order.hasValue() ? `Order ${this.order.value().orderNumber}` : 'Order',
+  );
+
+  // Stops the buttons from being clicked twice.
   protected readonly changing = signal(false);
-  // What happened to the last change, shown under the buttons.
-  protected readonly message = signal<string | undefined>(undefined);
-  // The <p #feedback> in the template.
-  private readonly feedback = viewChild.required<ElementRef<HTMLElement>>('feedback');
+  protected readonly changeError = signal<string | undefined>(undefined);
+  private readonly statusTitle = viewChild.required<ElementRef<HTMLElement>>('statusTitle');
 
   protected ship(): Promise<void> {
     return this.change(
-      'Vill du markera ordern som skickad? Det går inte att ångra.',
+      {
+        title: 'Markera som skickad?',
+        message: 'Ordern flyttas från Att göra. Det går inte att ångra.',
+        confirmLabel: 'Markera som skickad',
+        tone: 'primary',
+      },
       (id) => this.orders.ship(id),
       'Ordern är markerad som skickad.',
     );
@@ -46,28 +53,38 @@ export class AdminOrderDetails {
 
   protected cancel(): Promise<void> {
     return this.change(
-      'Vill du avbryta ordern? Produkterna läggs tillbaka i lagret. Det går inte att ångra.',
+      {
+        title: 'Avbryt ordern?',
+        message: 'Produkterna läggs tillbaka i lagret. Det går inte att ångra.',
+        hint: 'Är ordern betald återbetalar du kunden i Stripe efteråt.',
+        confirmLabel: 'Avbryt ordern',
+        cancelLabel: 'Behåll ordern',
+      },
       (id) => this.orders.cancel(id),
       'Ordern är avbruten.',
     );
   }
 
   // Shared by the two buttons: asks first, sends the change and fetches the order again.
-  private async change(question: string, send: (id: number) => Promise<void>, done: string) {
-    if (!this.order.hasValue() || !confirm(question)) {
+  private async change(
+    question: ConfirmQuestion,
+    send: (id: number) => Promise<void>,
+    done: string,
+  ) {
+    if (!this.order.hasValue() || !(await this.confirm.ask(question))) {
       return;
     }
     this.changing.set(true);
-    this.message.set(undefined);
-    // The clicked button disappears when the order has changed, so the focus is moved to
-    // the message instead of being lost.
-    this.feedback().nativeElement.focus();
+    this.changeError.set(undefined);
+    // The clicked button disappears when the order has changed, so the focus is moved to the
+    // card's heading instead of being lost.
+    this.statusTitle().nativeElement.focus();
     try {
       await send(this.order.value().id);
-      this.message.set(done);
+      this.toast.show(done);
     } catch {
       // E.g. 409 if the order was changed in another tab, or the API is down.
-      this.message.set('Ordern kunde inte ändras just nu. Försök igen om en stund.');
+      this.changeError.set('Ordern kunde inte ändras just nu. Försök igen om en stund.');
     } finally {
       this.changing.set(false);
     }

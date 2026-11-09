@@ -1,0 +1,55 @@
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  margin: 0 0 var(--space-24);
+  padding: 0;
+  list-style: none;
+}
+
+.date,
+.total {
+  white-space: nowrap;
+}
+
+.muted {
+  color: var(--color-text-secondary);
+}
+
+// Bold and in words, so it is not told apart by color only.
+.flag {
+  display: block;
+  margin-top: var(--space-4);
+  color: var(--color-feedback-error);
+}
+
+// Where each cell goes in a stacked row: number and sum, date and payment, customer and status.
+.number {
+  grid-area: 1 / 1;
+}
+
+.total {
+  grid-area: 1 / 2;
+}
+
+.date {
+  grid-area: 2 / 1;
+}
+
+.payment {
+  grid-area: 2 / 2;
+}
+
+.customer {
+  grid-area: 3 / 1;
+}
+
+.status {
+  grid-area: 3 / 2;
+}
+
+.total,
+.payment,
+.status {
+  justify-self: end;
+}

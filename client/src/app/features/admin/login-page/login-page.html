@@ -1,42 +1,57 @@
-<h1 class="text-display-xs">Logga in som admin</h1>
+<div class="login">
+  <div class="logo">
+    <span class="text-display-xs">GREJ.</span>
+    <app-badge>Admin</app-badge>
+  </div>
 
-<!-- formRoot turns off the browser's own validation and runs the submission in login-page.ts. -->
-<form [formRoot]="loginForm">
-  <p>
-    <label for="email">E-postadress</label>
-    <!-- aria-invalid and aria-describedby let screen readers tell that the field is wrong, and why. -->
-    <input
-      id="email"
-      type="email"
-      autocomplete="username"
-      [formField]="loginForm.email"
-      [attr.aria-invalid]="emailError() ? true : null"
-      [attr.aria-describedby]="emailError() ? 'email-error' : null"
-    />
-  </p>
-  @if (emailError(); as message) {
-    <p id="email-error">{{ message }}</p>
-  }
+  <section class="card" aria-labelledby="login-title">
+    <h1 class="text-display-xs" id="login-title">Logga in som admin</h1>
 
-  <p>
-    <label for="password">Lösenord</label>
-    <input
-      id="password"
-      type="password"
-      autocomplete="current-password"
-      [formField]="loginForm.password"
-      [attr.aria-invalid]="passwordError() ? true : null"
-      [attr.aria-describedby]="passwordError() ? 'password-error' : null"
-    />
-  </p>
-  @if (passwordError(); as message) {
-    <p id="password-error">{{ message }}</p>
-  }
+    <!-- formRoot turns off the browser's own validation and runs the submission in login-page.ts. -->
+    <form class="fields" aria-labelledby="login-title" [formRoot]="loginForm">
+      <div class="field">
+        <label class="text-label-xs" for="email">E-postadress</label>
+        <input
+          id="email"
+          class="text-body-m-compact"
+          type="email"
+          autocomplete="username"
+          [formField]="loginForm.email"
+          [attr.aria-invalid]="emailError() ? true : null"
+          [attr.aria-describedby]="emailError() ? 'email-error' : null"
+        />
+        @if (emailError(); as message) {
+          <span class="error text-body-xs" id="email-error">{{ message }}</span>
+        }
+      </div>
 
-  <button appButton type="submit" [disabled]="loginForm().submitting()">Logga in</button>
+      <div class="field">
+        <label class="text-label-xs" for="password">Lösenord</label>
+        <input
+          id="password"
+          class="text-body-m-compact"
+          type="password"
+          autocomplete="current-password"
+          [formField]="loginForm.password"
+          [attr.aria-invalid]="passwordError() ? true : null"
+          [attr.aria-describedby]="passwordError() ? 'password-error' : null"
+        />
+        @if (passwordError(); as message) {
+          <span class="error text-body-xs" id="password-error">{{ message }}</span>
+        }
+      </div>
 
-  <!-- role="alert" makes screen readers read the message as soon as it appears. -->
-  @if (loginError(); as message) {
-    <p role="alert">{{ message }}</p>
-  }
-</form>
+      <button appButton size="large" type="submit" [disabled]="loginForm().submitting()">
+        Logga in
+      </button>
+      @if (loginError(); as message) {
+        <p class="text-body-s" role="alert">{{ message }}</p>
+      }
+    </form>
+  </section>
+
+  <a class="back text-link-s" routerLink="/">
+    <app-icon name="arrow-left" />
+    Tillbaka till butiken
+  </a>
+</div>

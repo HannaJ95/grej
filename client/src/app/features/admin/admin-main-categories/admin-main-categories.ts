@@ -2,6 +2,8 @@ import { Component, computed, inject, input, signal, viewChild } from '@angular/
 import { Router, RouterLink } from '@angular/router';
 import { AdminCategoryService } from '../../../core/admin-category.service';
 import { Category } from '../../../core/category';
+import { ConfirmService } from '../../../core/confirm.service';
+import { ToastService } from '../../../core/toast.service';
 import { Button } from '../../../shared/button/button';
 import { toId } from '../../../shared/id-list';
 import { AdminCategoryCard } from '../admin-category-card/admin-category-card';
@@ -13,11 +15,13 @@ import { AdminPageHeader } from '../admin-page-header/admin-page-header';
   imports: [RouterLink, Button, AdminCategoryCard, AdminPageHeader],
   templateUrl: './admin-main-categories.html',
   // The same layout as AdminSubcategories.
-  styleUrl: '../admin-category-page.scss',
+  styleUrl: '../admin-page.scss',
 })
 export class AdminMainCategories {
   private readonly categories = inject(AdminCategoryService);
   private readonly router = inject(Router);
+  private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   // ?redigera=3 in the URL: the category shown in the card. Undefined shows an empty card.
   readonly editId = input(undefined, { alias: 'redigera', transform: toId });
@@ -32,7 +36,6 @@ export class AdminMainCategories {
   );
 
   protected readonly removeError = signal<string | undefined>(undefined);
-  protected readonly removedMessage = signal('');
 
   private readonly card = viewChild.required(AdminCategoryCard);
 
@@ -48,12 +51,16 @@ export class AdminMainCategories {
   }
 
   protected async remove(category: Category): Promise<void> {
-    if (!confirm(`Vill du ta bort "${category.name}"? Det går inte att ångra.`)) {
+    const yes = await this.confirm.ask({
+      title: `Ta bort ${category.name}?`,
+      message: 'Kategorin tas bort från butiken. Det går inte att ångra.',
+      confirmLabel: 'Ta bort',
+    });
+    if (!yes) {
       return;
     }
 
     this.removeError.set(undefined);
-    this.removedMessage.set('');
     try {
       const result = await this.categories.remove(category.id);
       if (result === 'hasProducts') {
@@ -68,7 +75,7 @@ export class AdminMainCategories {
         );
         return;
       }
-      this.removedMessage.set(`${category.name} har tagits bort.`);
+      this.toast.show(`${category.name} har tagits bort.`);
       // The card cannot keep showing a category that is gone.
       if (this.editId() === category.id) {
         this.router.navigate(['/admin/kategorier'], { scroll: 'manual' });

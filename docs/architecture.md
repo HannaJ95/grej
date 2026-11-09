@@ -267,7 +267,8 @@ Before the presentation, `reset-demo` is run once after the feature freeze and t
 The CMS has its own endpoints under `/api/admin/` (e.g. `/api/admin/products`), with `[Authorize(Roles = Roles.Admin)]` on the controller. The shop's endpoints stay open and only show active products. The same rules are checked in the Angular form and in the API, which answers 400 and saves nothing when a rule is broken.
 
 - A product that is on an order cannot be deleted. The Catalog module asks the Orders module through `OrderService`, and the API answers 409; the admin hides the product instead. The foreign key from order rows to products also stops the delete.
-- When the admin saves a product, the form sends the stock it was opened with. If a customer has bought the product since then, the API answers 409 and saves nothing, so a sale is never overwritten.
+- When the admin saves a product, the form sends the stock the product had when it was last fetched. The page fetches it again after every save. If a customer has bought the product since then, the API answers 409 and saves nothing, so a sale is never overwritten.
+- On "Ny produkt" the image is chosen in the same form, but it is uploaded right after the product is created, since the upload needs the product's id. If the upload fails, the product still exists, and its page says that the image has to be uploaded again.
 
 Known limitation: the stock must be 0 or more when the admin saves. A product with stock below 0 (the last item sold twice) therefore gets at least 0 if the admin edits it before the order is handled.
 
@@ -294,7 +295,7 @@ The admin works with categories on two pages: `/admin/kategorier` (main categori
 - A new product gets the logged-in admin as its owner (`SellerId`, from the token's `sub` claim). Editing a product never changes its owner. The product form's menu shows a subcategory as "Keramik › Skålar".
 - The migration `AddCategories` gave every existing product a new category "Övrigt", the admin as owner and the time of the migration as `CreatedAt`/`UpdatedAt`, since the new columns cannot be empty. The old demo product seed was later replaced by `reset-demo` (see Demo data).
 
-Known limitations: two categories can have the same name, the CMS shows at most 100 categories, and deleting asks with the browser's `confirm()` instead of the design's dialog. The design's address (slug), "Visa i menyn" and dragging to change the order are not built.
+Known limitations: two categories can have the same name, and the CMS shows at most 100 categories. The design's address (slug), "Visa i menyn" and dragging to change the order are not built.
 
 ### Product filters (shop)
 

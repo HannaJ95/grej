@@ -8,6 +8,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../../app.routes';
+import { ConfirmService } from '../../../core/confirm.service';
 import { OrderDetails } from '../../../core/order';
 
 describe('AdminOrderDetails', () => {
@@ -56,7 +57,7 @@ describe('AdminOrderDetails', () => {
 
   afterEach(() => {
     httpTesting.verify();
-    // Puts back the real window.confirm after the tests that replaced it.
+    // Removes the spies on ConfirmService.ask after the tests that answer the dialog.
     vi.restoreAllMocks();
   });
 
@@ -68,6 +69,11 @@ describe('AdminOrderDetails', () => {
     await harness.fixture.whenStable();
     // Only the page, without the admin's menu around it, so the menu's buttons are not counted.
     return harness.routeNativeElement!.querySelector('main')!;
+  }
+
+  // The toast lives in the layout, outside <main>.
+  function toastText(): string | undefined {
+    return harness.routeNativeElement!.querySelector('app-toast .text')?.textContent ?? undefined;
   }
 
   function texts(page: HTMLElement, selector: string): string[] {
@@ -84,11 +90,13 @@ describe('AdminOrderDetails', () => {
 
   // Answers the POST that a button sent, then the request that fetches the order again.
   async function answerChange(action: 'ship' | 'cancel', status: number, order: OrderDetails) {
-    httpTesting
-      .expectOne(
+    // The POST is sent once the dialog's answer has arrived, so waitFor tries until it has.
+    const post = await vi.waitFor(() =>
+      httpTesting.expectOne(
         (req) => req.method === 'POST' && req.url.endsWith(`/api/admin/orders/7/${action}`),
-      )
-      .flush(null, { status, statusText: status === 204 ? 'No Content' : 'Conflict' });
+      ),
+    );
+    post.flush(null, { status, statusText: status === 204 ? 'No Content' : 'Conflict' });
     // The page asks for the order again once the POST is done. waitFor tries until it has.
     const reload = await vi.waitFor(() =>
       httpTesting.expectOne(
@@ -113,7 +121,7 @@ describe('AdminOrderDetails', () => {
     ]);
     expect(texts(page, 'dd')[5]).toMatch(/Storgatan 1\s+123 45 Stockholm\s+SE/);
     expect(texts(page, 'tbody td:first-child')).toEqual(['Skål', 'Vas']);
-    expect(texts(page, 'tbody td:nth-child(2)')).toEqual(['2', '1']);
+    expect(texts(page, 'tbody td:nth-child(2)')).toEqual(['2 st', '1 st']);
     // The API says a paid order that is not shipped can be both shipped and cancelled.
     expect(buttonTexts(page)).toEqual(['Markera som skickad', 'Avbryt ordern']);
   });
@@ -140,8 +148,8 @@ describe('AdminOrderDetails', () => {
 
   it('marks the order as shipped and shows it again', async () => {
     const page = await show((request) => request.flush(paidOrder));
-    // The test answers "OK" in the browser's "Are you sure?" dialog.
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    // The test answers yes in the confirm dialog.
+    const ask = vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(true);
 
     button(page, 'Markera som skickad').click();
     await answerChange('ship', 204, {
@@ -151,31 +159,30 @@ describe('AdminOrderDetails', () => {
       canBeCancelled: false,
     });
 
-    expect(confirm).toHaveBeenCalledWith(
-      'Vill du markera ordern som skickad? Det går inte att ångra.',
+    expect(ask).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'Markera som skickad?' }),
     );
     expect(texts(page, 'dd')[1]).toBe('Skickad');
     expect(buttonTexts(page)).toEqual([]);
-    // The clicked button is gone, so the focus is on the message instead.
-    const message = page.querySelector<HTMLElement>('[role="status"]')!;
-    expect(message.textContent).toBe('Ordern är markerad som skickad.');
-    expect(document.activeElement).toBe(message);
+    expect(toastText()).toBe('Ordern är markerad som skickad.');
+    // The clicked button is gone, so the focus is on the card's heading instead.
+    expect(document.activeElement).toBe(page.querySelector('#status-title'));
   });
 
   it('sends nothing when the admin answers no', async () => {
     const page = await show((request) => request.flush(paidOrder));
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
+    vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(false);
 
     button(page, 'Avbryt ordern').click();
     await harness.fixture.whenStable();
 
     // afterEach's verify() fails if a POST was sent.
-    expect(page.querySelector('[role="status"]')?.textContent).toBe('');
+    expect(toastText()).toBeUndefined();
   });
 
   it('says so when the order cannot be changed, and shows it again', async () => {
     const page = await show((request) => request.flush(paidOrder));
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(true);
 
     button(page, 'Avbryt ordern').click();
     // 409: e.g. the order was shipped in another tab.
@@ -186,9 +193,10 @@ describe('AdminOrderDetails', () => {
       canBeCancelled: false,
     });
 
-    expect(page.querySelector('[role="status"]')?.textContent).toBe(
+    expect(page.querySelector('[role="alert"]')?.textContent).toBe(
       'Ordern kunde inte ändras just nu. Försök igen om en stund.',
     );
+    expect(toastText()).toBeUndefined();
     expect(texts(page, 'dd')[1]).toBe('Skickad');
   });
 

@@ -1,10 +1,4 @@
-// Shared by AdminCategoryCard and AdminPropertyCard.
-
-:host {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-16);
-}
+// The form fields of the admin pages.
 
 h2,
 p {
@@ -23,12 +17,19 @@ p {
   gap: var(--space-8);
 }
 
-// min-height, so zoomed text can make the field taller.
-input,
-select {
+// Only inside .field, so checkboxes keep their own size. min-height, so zoomed text can make
+// the field taller.
+.field input,
+.field select,
+.field textarea {
   width: 100%;
   min-height: var(--size-control-height);
   padding: var(--space-8) var(--space-16);
+}
+
+.field textarea {
+  padding-block: var(--space-12);
+  resize: vertical;
 }
 
 // Room for the chevron that lies on top of the select.
@@ -58,12 +59,10 @@ input::placeholder {
   color: var(--color-text-secondary);
 }
 
-.error {
-  color: var(--color-feedback-error);
+.hint {
+  color: var(--color-text-secondary);
 }
 
-// Takes no room while empty. Not display: none, since screen readers only announce changes to
-// rendered content.
-.saved:empty {
-  position: absolute;
+.error {
+  color: var(--color-feedback-error);
 }

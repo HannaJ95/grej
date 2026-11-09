@@ -2,6 +2,8 @@ import { TitleCasePipe } from '@angular/common';
 import { Component, computed, inject, input, signal, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminPropertyService } from '../../../core/admin-property.service';
+import { ConfirmService } from '../../../core/confirm.service';
+import { ToastService } from '../../../core/toast.service';
 import {
   ProductProperty,
   ProductPropertyDetails,
@@ -21,11 +23,13 @@ import { PROPERTY_TEXTS } from '../property-texts';
   selector: 'app-admin-property-list',
   imports: [TitleCasePipe, Button, LinkButton, Pagination, AdminPageHeader, AdminPropertyCard],
   templateUrl: './admin-property-list.html',
-  styleUrl: '../admin-category-page.scss',
+  styleUrl: '../admin-page.scss',
 })
 export class AdminPropertyList {
   private readonly properties = inject(AdminPropertyService);
   private readonly router = inject(Router);
+  private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   readonly kind = input.required<PropertyKind>();
   readonly page = input(1, { alias: 'sida', transform: toPageNumber });
@@ -40,7 +44,6 @@ export class AdminPropertyList {
   );
 
   protected readonly removeError = signal<string | undefined>(undefined);
-  protected readonly removedMessage = signal('');
 
   private readonly card = viewChild.required(AdminPropertyCard);
 
@@ -56,15 +59,19 @@ export class AdminPropertyList {
 
   protected async remove(property: ProductProperty): Promise<void> {
     this.removeError.set(undefined);
-    this.removedMessage.set('');
     try {
       // The list has no product count, and the question needs one.
       const details = await this.properties.get(this.kind(), property.id);
-      if (!confirm(this.removeQuestion(details))) {
+      const yes = await this.confirm.ask({
+        title: `Ta bort ${property.name}?`,
+        message: this.removeMessage(details),
+        confirmLabel: 'Ta bort',
+      });
+      if (!yes) {
         return;
       }
       await this.properties.remove(this.kind(), property.id);
-      this.removedMessage.set(`${property.name} har tagits bort.`);
+      this.toast.show(`${property.name} har tagits bort.`);
       if (this.editId() === property.id) {
         this.showInCard(null);
       }
@@ -85,17 +92,14 @@ export class AdminPropertyList {
     });
   }
 
-  // Products lose it too, so the question says how many have it (ambiguity.md).
-  private removeQuestion({ name, productCount }: ProductPropertyDetails): string {
+  // Products lose it too, so the message says how many have it (ambiguity.md).
+  private removeMessage({ name, productCount }: ProductPropertyDetails): string {
     if (productCount === 0) {
-      return `Vill du ta bort "${name}"? Det går inte att ångra.`;
+      return `Ingen produkt har ${name}. Det går inte att ångra.`;
     }
     const { theOne } = this.texts();
     const products = productCount === 1 ? '1 produkt' : `${productCount} produkter`;
     const them = productCount === 1 ? 'den' : 'dem';
-    return (
-      `${products} har "${name}", och ${theOne} tas bort från ${them} också. ` +
-      `Vill du ändå ta bort ${theOne}? Det går inte att ångra.`
-    );
+    return `${products} har ${name}, och ${theOne} tas bort från ${them} också. Det går inte att ångra.`;
   }
 }

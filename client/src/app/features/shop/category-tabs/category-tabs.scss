@@ -30,32 +30,3 @@
     flex-shrink: 0;
   }
 }
-
-.tab {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
-  padding: var(--space-14) var(--space-24);
-  border: var(--border-width-default) solid var(--color-border-default);
-  color: var(--color-text-primary);
-  text-decoration: none;
-  white-space: nowrap;
-
-  &:hover {
-    background: var(--color-bg-hover);
-  }
-
-  // After :hover, so the chosen tab stays dark under the mouse.
-  &[aria-current='page'] {
-    background: var(--color-bg-inverse);
-    color: var(--color-text-on-inverse);
-
-    .count {
-      color: var(--color-text-on-inverse-secondary);
-    }
-  }
-}
-
-.count {
-  color: var(--color-text-secondary);
-}

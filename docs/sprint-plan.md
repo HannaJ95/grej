@@ -96,7 +96,7 @@ Should (Wed–Fri):
 In priority order. Responsive design and accessibility are checked on every page that changes.
 
 - [x] Filter by price, material and color, including the filter panel on phones and tablets
-- [ ] Style the remaining admin pages: products, orders, the start page and the login page
+- [x] Style the remaining admin pages: products, orders, the start page and the login page
 - [ ] Search products by name
 - [ ] Fixed shipping cost in Stripe Checkout, stored on the order
 - [ ] Several images per product

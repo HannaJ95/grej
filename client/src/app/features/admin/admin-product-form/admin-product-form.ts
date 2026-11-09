@@ -1,4 +1,5 @@
-import { Component, computed, inject, input, linkedSignal, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, computed, inject, input, linkedSignal, signal, viewChild } from '@angular/core';
 import {
   form,
   FormField,
@@ -13,6 +14,8 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AdminCategoryService } from '../../../core/admin-category.service';
 import { categoryLabel } from '../../../core/category';
+import { ConfirmService } from '../../../core/confirm.service';
+import { ToastService } from '../../../core/toast.service';
 import {
   AdminProduct,
   AdminProductService,
@@ -20,19 +23,25 @@ import {
 } from '../../../core/admin-product.service';
 import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
+import { Icon } from '../../../shared/icons/icon';
+import { AdminPageHeader } from '../admin-page-header/admin-page-header';
 import { AdminProductImage } from '../admin-product-image/admin-product-image';
+import {
+  PRODUCT_NOT_REMOVED,
+  productOnOrderMessage,
+  removeProductQuestion,
+} from '../product-texts';
 import { PropertyCheckboxes } from '../property-checkboxes/property-checkboxes';
 
-// What the form's fields hold. Price and stock are null while their fields are empty.
+// Price and stock are null while their fields are empty.
 interface ProductFormModel {
   title: string;
   description: string;
-  // The chosen category's id as text, since a <select>'s value is always text. '' = none chosen.
+  // Text, since a <select>'s value is always text. '' = none chosen.
   categoryId: string;
   price: number | null;
   stock: number | null;
   isActive: boolean;
-  // The ids of the ticked checkboxes.
   materialIds: number[];
   colorIds: number[];
 }
@@ -49,29 +58,58 @@ const NEW_PRODUCT: ProductFormModel = {
   colorIds: [],
 };
 
-// Creates a product (/admin/produkter/ny), or edits and deletes one (/admin/produkter/7).
+// /admin/produkter/ny creates a product, /admin/produkter/7 edits or deletes one.
 @Component({
   selector: 'app-admin-product-form',
-  imports: [FormRoot, FormField, RouterLink, Button, AdminProductImage, PropertyCheckboxes],
+  imports: [
+    FormRoot,
+    FormField,
+    RouterLink,
+    Button,
+    Icon,
+    AdminPageHeader,
+    AdminProductImage,
+    PropertyCheckboxes,
+  ],
   templateUrl: './admin-product-form.html',
+  styleUrls: [
+    '../admin-page.scss',
+    '../admin-form.scss',
+    '../../../shared/checkbox.scss',
+    './admin-product-form.scss',
+  ],
 })
 export class AdminProductForm {
   private readonly products = inject(AdminProductService);
   private readonly categories = inject(AdminCategoryService);
   private readonly router = inject(Router);
+  private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
-  // The :id in the URL, set by the router. Undefined on /admin/produkter/ny.
+  // Undefined on /admin/produkter/ny.
   readonly id = input<string>();
   protected readonly isNew = computed(() => this.id() === undefined);
 
-  // The product as the API had it when the page was opened. Nothing is fetched for a new one.
+  // As the API has it. Nothing is fetched for a new one.
   protected readonly product = this.products.getProduct(this.id);
+  protected readonly loadedProduct = computed(() =>
+    this.product.hasValue() ? this.product.value() : undefined,
+  );
+  // E.g. an old link to a product that has been removed.
+  protected readonly notFound = computed(
+    () => (this.product.error() as HttpErrorResponse | undefined)?.status === 404,
+  );
+  // Set by create() when the product was created but its image could not be uploaded.
+  protected readonly imageFailed =
+    this.router.currentNavigation()?.extras.state?.['imageFailed'] === true;
 
-  // The choices in the category menu. The first page holds up to 100 categories (CategoryListQuery).
+  private readonly imageCard = viewChild(AdminProductImage);
+
+  // The first page holds up to 100 categories (CategoryListQuery).
   protected readonly categoryList = this.categories.getCategories(signal(1));
   protected readonly categoryLabel = categoryLabel;
 
-  // Empty for a new product. Filled in again whenever the product has been fetched.
+  // Filled in again whenever the product has been fetched.
   private readonly model = linkedSignal<ProductFormModel>(() =>
     this.product.hasValue() ? toModel(this.product.value()) : NEW_PRODUCT,
   );
@@ -81,7 +119,7 @@ export class AdminProductForm {
     // The same rules as ProductRequest in the API.
     (field) => {
       required(field.title, { message: 'Fyll i en titel.' });
-      // required lets "   " through, so the title must also contain a character that is not a space.
+      // required() accepts a title of only spaces.
       pattern(field.title, /\S/, { message: 'Fyll i en titel.' });
       maxLength(field.title, 200, { message: 'Titeln får vara högst 200 tecken.' });
       maxLength(field.description, 4000, { message: 'Beskrivningen får vara högst 4000 tecken.' });
@@ -110,27 +148,33 @@ export class AdminProductForm {
   protected readonly saveError = computed(() => this.productForm().errors()[0]?.message);
   protected readonly removeError = signal<string | undefined>(undefined);
 
-  // Runs when the form is sent and every field is valid, like the login page. What it
-  // returns becomes an error on the whole form, shown under the button.
+  // On "Ny produkt" the image card's errors are shown together with the form's, also when the
+  // form is not valid and save() never runs.
+  protected showImageErrors(): void {
+    if (this.isNew()) {
+      this.imageCard()?.showErrors();
+    }
+  }
+
+  // A returned error becomes the form's error (saveError).
   private async save() {
     const input = toInput(this.model());
     try {
-      if (this.product.hasValue()) {
-        const product = this.product.value();
-        // product.stock is the stock the form was opened with.
-        if ((await this.products.update(product.id, input, product.stock)) === 'stockChanged') {
-          return {
-            kind: 'stockChanged',
-            message:
-              'Lagersaldot har ändrats sedan du öppnade sidan, troligen för att någon har köpt produkten. Inget sparades. Ladda om sidan och gör ändringen igen.',
-          };
-        }
-        await this.router.navigateByUrl('/admin/produkter');
-      } else {
-        // Opens the new product's page, where the admin can add an image.
-        const created = await this.products.create(input);
-        await this.router.navigate(['/admin/produkter', created.id]);
+      if (!this.product.hasValue()) {
+        return await this.create(input);
       }
+      const product = this.product.value();
+      // product.stock is the stock the product had when it was last fetched.
+      if ((await this.products.update(product.id, input, product.stock)) === 'stockChanged') {
+        return {
+          kind: 'stockChanged',
+          message:
+            'Lagersaldot har ändrats sedan du öppnade sidan, troligen för att någon har köpt produkten. Inget sparades. Ladda om sidan och gör ändringen igen.',
+        };
+      }
+      this.toast.show('Ändringarna är sparade.');
+      // Fetched again, so the next save compares with the stock that was just saved.
+      this.product.reload();
       return undefined;
     } catch {
       return {
@@ -140,26 +184,46 @@ export class AdminProductForm {
     }
   }
 
+  // Creates the product, uploads the chosen image and opens the product's own page.
+  private async create(input: ProductInput) {
+    const image = this.imageCard()?.pendingImage() ?? null;
+    if (image === 'invalid') {
+      return { kind: 'image', message: 'Rätta bilden innan du sparar.' };
+    }
+    const created = await this.products.create(input);
+    let imageFailed = false;
+    if (image) {
+      try {
+        await this.products.uploadImage(created.id, image.file, image.altText);
+      } catch {
+        // The product exists anyway, so its page opens and the image card says so.
+        imageFailed = true;
+      }
+    }
+    this.toast.show('Produkten är skapad.');
+    await this.router.navigate(['/admin/produkter', created.id], { state: { imageFailed } });
+    return undefined;
+  }
+
   protected async remove(): Promise<void> {
     if (!this.product.hasValue()) {
       return;
     }
     const product = this.product.value();
-    if (!confirm(`Vill du ta bort "${product.title}"? Det går inte att ångra.`)) {
+    if (!(await this.confirm.ask(removeProductQuestion(product.title)))) {
       return;
     }
 
     this.removeError.set(undefined);
     try {
       if ((await this.products.remove(product.id)) === 'onOrder') {
-        this.removeError.set(
-          'Produkten finns i en order och kan inte tas bort. Dölj den i stället: avmarkera "Visa i butiken" och spara.',
-        );
+        this.removeError.set(productOnOrderMessage(product.title));
         return;
       }
+      this.toast.show(`${product.title} har tagits bort.`);
       await this.router.navigateByUrl('/admin/produkter');
     } catch {
-      this.removeError.set('Produkten kunde inte tas bort just nu. Försök igen om en stund.');
+      this.removeError.set(PRODUCT_NOT_REMOVED);
     }
   }
 }

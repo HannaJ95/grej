@@ -32,6 +32,4 @@
   @if (saveError(); as message) {
     <p role="alert">{{ message }}</p>
   }
-  <!-- Always rendered, so screen readers announce a new message. -->
-  <p class="saved text-body-s" role="status">{{ savedMessage() }}</p>
 </form>

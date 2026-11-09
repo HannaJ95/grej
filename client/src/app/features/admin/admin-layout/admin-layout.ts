@@ -2,13 +2,15 @@ import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
 import { Badge } from '../../../shared/badge/badge';
+import { ConfirmDialog } from '../../../shared/confirm-dialog/confirm-dialog';
+import { Toast } from '../../../shared/toast/toast';
 import { AdminNav } from '../admin-nav/admin-nav';
 
 // The menu around every admin page except the login page. On tablets and phones an app bar
 // opens it as a drawer.
 @Component({
   selector: 'app-admin-layout',
-  imports: [RouterOutlet, AdminNav, Badge],
+  imports: [RouterOutlet, AdminNav, Badge, ConfirmDialog, Toast],
   templateUrl: './admin-layout.html',
   styleUrls: ['./admin-layout.scss', '../../../shared/drawer.scss'],
 })

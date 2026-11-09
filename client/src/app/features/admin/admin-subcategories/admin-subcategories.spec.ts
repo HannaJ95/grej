@@ -67,7 +67,7 @@ describe('AdminSubcategories', () => {
     await answerList();
 
     // Ready for the next one in the same main category.
-    expect(texts('main [role="status"]')).toContain('Muggar har lagts till.');
+    expect(texts('app-toast .text')).toEqual(['Muggar har lagts till.']);
     expect(select().value).toBe('3');
   });
 

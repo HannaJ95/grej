@@ -41,15 +41,6 @@ describe('ShopLayout', () => {
   });
 
   it("opens the cart from the phone menu's cart button", async () => {
-    // jsdom, which the tests run in, has <dialog> but not showModal(). These stand-ins only
-    // set open, which is all the test looks at. Each spec file gets its own jsdom, so they do
-    // not reach other tests.
-    HTMLDialogElement.prototype.showModal = function (this: HTMLDialogElement) {
-      this.open = true;
-    };
-    HTMLDialogElement.prototype.close = function (this: HTMLDialogElement) {
-      this.open = false;
-    };
     const element = await show();
     const [cartDialog, menuDialog] = [...element.querySelectorAll('dialog')];
 

@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../../app.routes';
+import { ConfirmService } from '../../../core/confirm.service';
 import {
   ProductProperty,
   ProductPropertyDetails,
@@ -72,7 +73,7 @@ describe('AdminPropertyList', () => {
     request.flush({ id: 9, name: 'Bomull' });
     await answerList('materials', [{ id: 9, name: 'Bomull' }, lera, tra]);
 
-    expect(texts('main [role="status"]')).toContain('Bomull har lagts till.');
+    expect(texts('app-toast .text')).toEqual(['Bomull har lagts till.']);
     expect(texts('main .row .name')).toEqual(['Bomull', 'Lera', 'Trä']);
   });
 
@@ -113,44 +114,50 @@ describe('AdminPropertyList', () => {
 
   it('warns that the products lose it too, and deletes nothing if the admin says no', async () => {
     await open('/admin/material', 'materials', [lera, tra]);
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const ask = vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(false);
 
     await click('Ta bort Lera');
     await answerDetails({ ...lera, productCount: 2 });
 
-    expect(confirm).toHaveBeenCalledWith(
-      '2 produkter har "Lera", och materialet tas bort från dem också. ' +
-        'Vill du ändå ta bort materialet? Det går inte att ångra.',
+    expect(ask).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'Ta bort Lera?',
+        message:
+          '2 produkter har Lera, och materialet tas bort från dem också. Det går inte att ångra.',
+      }),
     );
   });
 
   it('says "1 produkt" and "den" when one product has it', async () => {
     await open('/admin/material', 'materials', [lera, tra]);
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const ask = vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(false);
 
     await click('Ta bort Lera');
     await answerDetails({ ...lera, productCount: 1 });
 
-    expect(confirm).toHaveBeenCalledWith(
-      '1 produkt har "Lera", och materialet tas bort från den också. ' +
-        'Vill du ändå ta bort materialet? Det går inte att ångra.',
+    expect(ask).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: '1 produkt har Lera, och materialet tas bort från den också. Det går inte att ångra.',
+      }),
     );
   });
 
   it('deletes a material that no product has, and fetches the list again', async () => {
     await open('/admin/material', 'materials', [lera, tra]);
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const ask = vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(true);
 
     await click('Ta bort Lera');
     await answerDetails({ ...lera, productCount: 0 });
 
-    expect(confirm).toHaveBeenCalledWith('Vill du ta bort "Lera"? Det går inte att ångra.');
+    expect(ask).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Ingen produkt har Lera. Det går inte att ångra.' }),
+    );
     httpTesting
       .expectOne((req) => req.method === 'DELETE' && req.url.endsWith('/api/admin/materials/3'))
       .flush(null, { status: 204, statusText: 'No Content' });
     await answerList('materials', [tra]);
 
-    expect(texts('main [role="status"]')).toContain('Lera har tagits bort.');
+    expect(texts('app-toast .text')).toEqual(['Lera har tagits bort.']);
     expect(texts('main .row .name')).toEqual(['Trä']);
   });
 

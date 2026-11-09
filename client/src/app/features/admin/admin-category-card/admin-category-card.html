@@ -63,6 +63,4 @@
   @if (saveError(); as message) {
     <p role="alert">{{ message }}</p>
   }
-  <!-- Always in the page, so screen readers notice when the text changes. -->
-  <p class="saved text-body-s" role="status">{{ savedMessage() }}</p>
 </form>

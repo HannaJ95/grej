@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AdminProduct } from '../../../core/admin-product.service';
 import { AdminProductImage } from './admin-product-image';
+import { ConfirmService } from '../../../core/confirm.service';
 
 describe('AdminProductImage', () => {
   let httpTesting: HttpTestingController;
@@ -78,19 +79,39 @@ describe('AdminProductImage', () => {
       image: { url: 'https://storage.test/vas.png', altText: 'En blå vas' },
     });
     await fixture.whenStable();
-    // The test answers "OK" in the browser's "Are you sure?" dialog.
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    // The test answers yes in the confirm dialog.
+    vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(true);
 
     button('Ta bort bilden').click();
-    httpTesting
-      .expectOne(
+    // Sent once the dialog's answer has arrived.
+    const request = await vi.waitFor(() =>
+      httpTesting.expectOne(
         (req) => req.method === 'DELETE' && req.url.endsWith('/api/admin/products/5/image'),
-      )
-      .flush(null, { status: 204, statusText: 'No Content' });
+      ),
+    );
+    request.flush(null, { status: 204, statusText: 'No Content' });
     await settle();
 
     expect(page().querySelector('img')).toBeNull();
     expect(page().textContent).toContain('Produkten har ingen bild än.');
+  });
+
+  it('on "Ny produkt", has no upload button and lets the image be left out', async () => {
+    fixture.componentRef.setInput('product', undefined);
+    await fixture.whenStable();
+    const card = fixture.componentInstance;
+
+    expect(button('Ladda upp bilden')).toBeUndefined();
+    expect(card.pendingImage()).toBeNull();
+
+    // A file needs its description, as when it is uploaded on its own.
+    await choose(new File(['png'], 'vas.png', { type: 'image/png' }));
+    expect(card.pendingImage()).toBe('invalid');
+    await fixture.whenStable();
+    expect(page().textContent).toContain('Beskriv bilden.');
+
+    type('#alt-text', ' En blå vas ');
+    expect(card.pendingImage()).toEqual({ file: expect.any(File), altText: 'En blå vas' });
   });
 
   function page(): HTMLElement {

@@ -1,104 +1,139 @@
-<p><a routerLink="/admin/ordrar">Tillbaka till ordrarna</a></p>
+<app-admin-page-header eyebrow="Beställningar" [title]="title()" />
+
+<a class="back text-link-s" routerLink="/admin/ordrar">
+  <app-icon name="arrow-left" />
+  Alla beställningar
+</a>
 
 <!-- hasValue first, so the order stays on the page while it is fetched again after a change. -->
 @if (order.hasValue()) {
   @let o = order.value();
-  <h1 class="text-display-xs">Order {{ o.orderNumber }}</h1>
+  <div class="details">
+    <section class="card" aria-labelledby="status-title">
+      <!-- tabindex="-1" lets change() move the focus here without adding it to the Tab order. -->
+      <h2 #statusTitle class="text-display-2xs" id="status-title" tabindex="-1">Status</h2>
+      <dl class="facts">
+        <div>
+          <dt class="text-body-s">Datum</dt>
+          <dd class="text-body-m">{{ o.createdAt | date: 'yyyy-MM-dd HH:mm' }}</dd>
+        </div>
+        <div>
+          <dt class="text-body-s">Status</dt>
+          <dd class="text-body-m">{{ orderStatusTexts[o.status] }}</dd>
+        </div>
+        <div>
+          <dt class="text-body-s">Betalning</dt>
+          <dd class="text-body-m">{{ paymentStatusTexts[o.paymentStatus] }}</dd>
+        </div>
+      </dl>
 
-  <!-- Description lists, as on the product page: each row is a heading and its value. -->
-  <dl>
-    <dt>Datum</dt>
-    <dd>{{ o.createdAt | date: 'short' }}</dd>
-    <dt>Status</dt>
-    <dd>{{ orderStatusTexts[o.status] }}</dd>
-    <dt>Betalning</dt>
-    <dd>{{ paymentStatusTexts[o.paymentStatus] }}</dd>
-  </dl>
-
-  @if (o.needsRefund) {
-    <p>
-      <strong>Behöver återbetalas.</strong> Ordern är avbruten men betald. Återbetala kunden i
-      Stripe.
-    </p>
-  }
-  @if (o.needsCancelling) {
-    <p>
-      <strong>Behöver avbrytas.</strong> Ordern är återbetald men inte avbruten. Avbryt den, så
-      läggs produkterna tillbaka i lagret.
-    </p>
-  }
-
-  <!-- Only what the API says the order allows (Order.CanBeShipped, CanBeCancelledByAdmin). -->
-  @if (o.canBeShipped || o.canBeCancelled) {
-    <div class="actions">
-      @if (o.canBeShipped) {
-        <button appButton type="button" [disabled]="changing()" (click)="ship()">
-          Markera som skickad
-        </button>
+      @if (o.needsRefund) {
+        <p class="notice text-body-s">
+          <strong>Behöver återbetalas.</strong> Ordern är avbruten men betald. Återbetala kunden i
+          Stripe.
+        </p>
       }
-      @if (o.canBeCancelled) {
-        <button appButton variant="danger" type="button" [disabled]="changing()" (click)="cancel()">
-          Avbryt ordern
-        </button>
+      @if (o.needsCancelling) {
+        <p class="notice text-body-s">
+          <strong>Behöver avbrytas.</strong> Ordern är återbetald men inte avbruten. Avbryt den, så
+          läggs produkterna tillbaka i lagret.
+        </p>
       }
-    </div>
-  }
-  <!-- Always on the page, so a screen reader reads out what is put in it. tabindex="-1" lets
-       change() move the focus here without adding it to the Tab order. -->
-  <p #feedback role="status" tabindex="-1">{{ message() }}</p>
 
-  <h2 class="text-display-2xs">Kund</h2>
-  <!-- Stripe Checkout collects the name and address, and the webhook stores them on the
-       order when it is paid. -->
-  @if (o.customerName) {
-    <dl>
-      <dt>Namn</dt>
-      <dd>{{ o.customerName }}</dd>
-      <dt>E-post</dt>
-      <dd>{{ o.customerEmail }}</dd>
-      <dt>Adress</dt>
-      <dd>
-        {{ o.addressLine1 }}<br />
-        @if (o.addressLine2) {
-          {{ o.addressLine2 }}<br />
-        }
-        {{ o.postalCode }} {{ o.city }}<br />
-        {{ o.country }}
-      </dd>
-    </dl>
-  } @else {
-    <p>Inga kunduppgifter. Stripe skickar dem när ordern betalas.</p>
-  }
-
-  <h2 class="text-display-2xs">Produkter</h2>
-  <table>
-    <thead>
-      <tr>
-        <th scope="col">Produkt</th>
-        <th scope="col">Antal</th>
-        <th scope="col">Styckpris</th>
-        <th scope="col">Summa</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- The rows have no id of their own, and the list never changes on this page. -->
-      @for (item of o.items; track $index) {
-        <tr>
-          <!-- The title and price from the time of purchase, not the product's current ones. -->
-          <td>{{ item.title }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>{{ item.unitPrice | currency: o.currency }}</td>
-          <td>{{ item.lineTotal | currency: o.currency }}</td>
-        </tr>
+      <!-- Only what the API says the order allows (Order.CanBeShipped, CanBeCancelledByAdmin). -->
+      @if (o.canBeShipped || o.canBeCancelled) {
+        <div class="actions">
+          @if (o.canBeShipped) {
+            <button appButton size="large" type="button" [disabled]="changing()" (click)="ship()">
+              Markera som skickad
+            </button>
+          }
+          @if (o.canBeCancelled) {
+            <button
+              appButton
+              variant="danger"
+              size="large"
+              type="button"
+              [disabled]="changing()"
+              (click)="cancel()"
+            >
+              Avbryt ordern
+            </button>
+          }
+        </div>
       }
-    </tbody>
-    <tfoot>
-      <tr>
-        <th scope="row" colspan="3">Totalt</th>
-        <td>{{ o.total | currency: o.currency }}</td>
-      </tr>
-    </tfoot>
-  </table>
+      @if (changeError(); as message) {
+        <p class="text-body-s" role="alert">{{ message }}</p>
+      }
+    </section>
+
+    <section class="card" aria-labelledby="customer-title">
+      <h2 class="text-display-2xs" id="customer-title">Kund</h2>
+      <!-- Stripe Checkout collects the name and address, and the webhook stores them when the
+           order is paid. -->
+      @if (o.customerName) {
+        <dl class="facts">
+          <div>
+            <dt class="text-body-s">Namn</dt>
+            <dd class="text-body-m">{{ o.customerName }}</dd>
+          </div>
+          <div>
+            <dt class="text-body-s">E-post</dt>
+            <dd class="text-body-m">{{ o.customerEmail }}</dd>
+          </div>
+          <div>
+            <dt class="text-body-s">Adress</dt>
+            <dd class="text-body-m">
+              {{ o.addressLine1 }}<br />
+              @if (o.addressLine2) {
+                {{ o.addressLine2 }}<br />
+              }
+              {{ o.postalCode }} {{ o.city }}<br />
+              {{ o.country }}
+            </dd>
+          </div>
+        </dl>
+      } @else {
+        <p class="text-body-s">Inga kunduppgifter. Stripe skickar dem när ordern betalas.</p>
+      }
+    </section>
+
+    <section class="card items" aria-labelledby="items-title">
+      <h2 class="text-display-2xs" id="items-title">Produkter</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="text-mono-s-caps" scope="col">Produkt</th>
+            <th class="end text-mono-s-caps" scope="col">Antal</th>
+            <th class="end text-mono-s-caps" scope="col">Styckpris</th>
+            <th class="end text-mono-s-caps" scope="col">Summa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- The rows have no id of their own, and the list never changes on this page. -->
+          @for (item of o.items; track $index) {
+            <tr>
+              <!-- The title and price from the time of purchase, not the product's current ones. -->
+              <td class="title text-body-s">{{ item.title }}</td>
+              <td class="quantity end text-body-s">{{ item.quantity }} st</td>
+              <td class="unit-price end text-body-s">
+                {{ item.unitPrice | currency: o.currency : 'symbol' : '1.0-2' }}/st
+              </td>
+              <td class="line-total end text-body-s">
+                {{ item.lineTotal | currency: o.currency : 'symbol' : '1.0-2' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <th class="text-label-s" scope="row" colspan="3">Totalt</th>
+            <td class="end text-label-s">{{ o.total | currency: o.currency : 'symbol' : '1.0-2' }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+  </div>
 } @else if (order.error()) {
   <p role="alert">Ordern kunde inte visas.</p>
 } @else {
