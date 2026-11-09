@@ -95,6 +95,10 @@ public static class DemoSeeder
                 Price = demoProduct.Price,
                 Stock = demoProduct.Stock,
                 IsActive = demoProduct.IsActive,
+                WeightGrams = demoProduct.Parcel.WeightGrams,
+                LengthCm = demoProduct.Parcel.LengthCm,
+                WidthCm = demoProduct.Parcel.WidthCm,
+                HeightCm = demoProduct.Parcel.HeightCm,
                 CategoryId = demoProduct.Subcategory is null
                     ? categories[demoCategory.Name].Id
                     : subcategories[(demoCategory.Name, demoProduct.Subcategory)].Id,
@@ -133,16 +137,20 @@ public static class DemoSeeder
         await db.SaveChangesAsync();
     }
 
-    // Built with the same methods as a real order: the checkout adds the rows and the payment,
-    // the webhook marks it as paid and stores the customer, and the admin ships or cancels it.
+    // Built with the same methods as a real order: the checkout adds the rows, the shipping and
+    // the payment, the webhook marks it as paid and stores the customer, and the admin ships or
+    // cancels it.
     private static Order CreateOrder(DemoOrder demoOrder, Dictionary<string, Product> productsByTitle)
     {
         var order = new Order();
+        var parcels = new List<ShippingItem>();
         foreach (var item in demoOrder.Items)
         {
             var product = productsByTitle[item.Product];
             order.AddItem(product.Id, product.Title, product.Price, item.Quantity);
+            parcels.Add(new ShippingItem(product.WeightGrams, product.LengthCm, product.WidthCm, product.HeightCm, item.Quantity));
         }
+        order.SetShipping(Shipping.Method, Shipping.CostFor(parcels));
 
         // Not a real Checkout session, so Stripe never sends a webhook for it, and it cannot
         // be refunded in Stripe. The reference must be unique (PaymentConfiguration).

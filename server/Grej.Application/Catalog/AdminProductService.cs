@@ -187,6 +187,10 @@ public class AdminProductService(
         product.Stock = request.Stock;
         product.IsActive = request.IsActive;
         product.CategoryId = request.CategoryId;
+        product.WeightGrams = request.Parcel.WeightGrams;
+        product.LengthCm = request.Parcel.LengthCm;
+        product.WidthCm = request.Parcel.WidthCm;
+        product.HeightCm = request.Parcel.HeightCm;
         product.SetMaterials(chosenMaterials);
         product.SetColors(chosenColors);
         return true;
@@ -203,5 +207,6 @@ public class AdminProductService(
         product.CategoryId,
         product.Materials.Select(material => material.Id).ToList(),
         product.Colors.Select(color => color.Id).ToList(),
-        ProductImageDto.From(product.MainImage));
+        ProductImageDto.From(product.MainImage),
+        ParcelDto.From(product));
 }

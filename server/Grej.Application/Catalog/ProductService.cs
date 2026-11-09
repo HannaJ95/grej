@@ -114,5 +114,5 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
         // Sorted here, since the database returns them in no fixed order.
         product.Materials.Select(material => material.Name).Order().ToList(),
         product.Colors.Select(color => color.Name).Order().ToList(),
-        new ParcelDto(product.WeightGrams, product.LengthCm, product.WidthCm, product.HeightCm));
+        ParcelDto.From(product));
 }

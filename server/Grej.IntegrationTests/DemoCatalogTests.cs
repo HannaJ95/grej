@@ -26,9 +26,12 @@ public class DemoCatalogTests
                 Price = product.Price,
                 Stock = product.Stock,
                 CategoryId = 1,
+                Parcel = product.Parcel,
             };
             var results = new List<ValidationResult>();
             Validator.TryValidateObject(request, new ValidationContext(request), results, validateAllProperties: true);
+            // Unlike [ApiController], Validator does not look inside the parcel by itself.
+            Validator.TryValidateObject(request.Parcel, new ValidationContext(request.Parcel), results, validateAllProperties: true);
             errors.AddRange(results.Select(result => $"{product.Title}: {result.ErrorMessage}"));
         }
 
