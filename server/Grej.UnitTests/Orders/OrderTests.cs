@@ -53,6 +53,40 @@ public class OrderTests
     }
 
     [Fact]
+    public void SetShipping_AddsCostToTotalAndPayment()
+    {
+        var order = new Order();
+        order.AddItem(1, "Skål", 450m, 2);
+
+        order.SetShipping("Paket till ombud", 79m);
+        order.AddPayment("Stripe", "cs_test_123");
+
+        Assert.Equal("Paket till ombud", order.ShippingMethod);
+        Assert.Equal(79m, order.ShippingCost);
+        Assert.Equal(979m, order.Total);
+        Assert.Equal(979m, order.Payment!.Amount);
+    }
+
+    [Fact]
+    public void SetShipping_Twice_Throws()
+    {
+        var order = new Order();
+        order.SetShipping("Paket till ombud", 79m);
+
+        Assert.Throws<InvalidOperationException>(() => order.SetShipping("Paket till ombud", 79m));
+        Assert.Equal(79m, order.Total);
+    }
+
+    [Fact]
+    public void SetShipping_AfterPayment_Throws()
+    {
+        var order = UnpaidOrder();
+
+        Assert.Throws<InvalidOperationException>(() => order.SetShipping("Paket till ombud", 79m));
+        Assert.Null(order.ShippingCost);
+    }
+
+    [Fact]
     public void SetCustomerDetails_StoresNameEmailAndAddress()
     {
         var order = new Order();

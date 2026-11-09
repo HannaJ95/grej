@@ -3,7 +3,7 @@ using Grej.Domain.Payments;
 namespace Grej.Domain.Orders;
 
 // An order created in the checkout. It starts as Pending, and its total is
-// always the sum of its rows (constraints.md).
+// always the sum of its rows and its shipping (constraints.md).
 public class Order
 {
     // The real list. Only this class can add to it; EF Core finds it by its name.
@@ -23,6 +23,10 @@ public class Order
     public string? City { get; private set; }
     // Two-letter country code, always "SE" for now.
     public string? Country { get; private set; }
+
+    // Null on orders from before shipping was built.
+    public string? ShippingMethod { get; private set; }
+    public decimal? ShippingCost { get; private set; }
 
     public decimal Total { get; private set; }
     public string Currency { get; private set; } = "SEK";
@@ -62,6 +66,25 @@ public class Order
 
         _items.Add(new OrderItem(productId, title, unitPrice, quantity));
         Total += unitPrice * quantity;
+    }
+
+    // Called after the rows, since the cost depends on them (Shipping.CostFor), and before
+    // the payment, since the payment's amount is the total.
+    public void SetShipping(string method, decimal cost)
+    {
+        if (Payment is not null)
+        {
+            throw new InvalidOperationException("The shipping cannot change once the order has a payment.");
+        }
+
+        if (ShippingMethod is not null)
+        {
+            throw new InvalidOperationException("The order already has shipping.");
+        }
+
+        ShippingMethod = method;
+        ShippingCost = cost;
+        Total += cost;
     }
 
     public void AddPayment(string provider, string providerReference)
