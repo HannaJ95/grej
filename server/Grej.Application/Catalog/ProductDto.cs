@@ -14,4 +14,5 @@ public record ProductDto(
     ProductImageDto? Image,
     // Only the names, sorted, e.g. ["Glas", "Keramik"]. Empty if the product has none.
     IReadOnlyList<string> Materials,
-    IReadOnlyList<string> Colors);
+    IReadOnlyList<string> Colors,
+    ParcelDto Parcel);

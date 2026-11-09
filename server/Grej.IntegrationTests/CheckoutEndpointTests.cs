@@ -23,9 +23,13 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
     private readonly FakeOrderRepository orders = new();
 
     [Fact]
-    public async Task Create_ActiveProduct_SavesPendingOrderAndReturnsPaymentUrl()
+    public async Task Create_ActiveProduct_SavesPendingOrderWithShippingAndReturnsPaymentUrl()
     {
-        var client = CreateClient(new Product { Id = 1, Title = "Skål", Price = 450m, Stock = 2, IsActive = true });
+        var client = CreateClient(new Product
+        {
+            Id = 1, Title = "Skål", Price = 450m, Stock = 2, IsActive = true,
+            WeightGrams = 800, LengthCm = 25, WidthCm = 25, HeightCm = 15,
+        });
 
         var response = await client.PostAsJsonAsync("/api/checkout", Request(productId: 1, quantity: 2));
 
@@ -33,10 +37,14 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         var body = await response.Content.ReadFromJsonAsync<CheckoutResponse>();
         Assert.Equal(FakePaymentProvider.Url, body?.Url);
 
-        // The price comes from the product in the "database", not from the request.
+        // The price and the packed size come from the product in the "database", not from the
+        // request. Two bowls' volume weighs 5 250 g, which costs 129 kr.
         var order = Assert.Single(orders.Saved);
-        Assert.Equal(900m, order.Total);
+        Assert.Equal(Shipping.Method, order.ShippingMethod);
+        Assert.Equal(129m, order.ShippingCost);
+        Assert.Equal(1029m, order.Total);
         Assert.NotNull(order.Payment);
+        Assert.Equal(1029m, order.Payment.Amount);
         Assert.Equal(PaymentStatus.Pending, order.Payment.Status);
         Assert.Equal(FakePaymentProvider.Reference, order.Payment.ProviderReference);
     }
@@ -88,7 +96,8 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal(["Skål", "Tavla"], order.Items.Select(item => item.TitleAtPurchase));
         Assert.Equal([450m, 1200.50m], order.Items.Select(item => item.UnitPrice));
         Assert.Equal([1, 2], order.Items.Select(item => item.Quantity));
-        Assert.Equal(2851m, order.Total);
+        // The rows' part of the total. The shipping is tested above.
+        Assert.Equal(2851m, order.Total - order.ShippingCost);
     }
 
     [Fact]

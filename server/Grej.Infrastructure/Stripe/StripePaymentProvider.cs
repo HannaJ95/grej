@@ -18,6 +18,10 @@ public class StripePaymentProvider(StripeClient stripe, IConfiguration configura
         var frontendUrl = configuration["Frontend:Url"]
             ?? throw new InvalidOperationException("Frontend:Url is not configured.");
 
+        // CheckoutService always sets it, and the payment's amount already includes it.
+        var shippingCost = order.ShippingCost
+            ?? throw new InvalidOperationException("The order has no shipping.");
+
         var options = new SessionCreateOptions
         {
             Mode = "payment",
@@ -41,6 +45,24 @@ public class StripePaymentProvider(StripeClient stripe, IConfiguration configura
             {
                 AllowedCountries = ["SE"],
             },
+            // Our own cost as the only choice, instead of a rate saved in the Stripe dashboard,
+            // so the API decides the shipping the same way as the prices. Shown as its own row.
+            ShippingOptions =
+            [
+                new SessionShippingOptionOptions
+                {
+                    ShippingRateData = new SessionShippingOptionShippingRateDataOptions
+                    {
+                        Type = "fixed_amount",
+                        DisplayName = order.ShippingMethod,
+                        FixedAmount = new SessionShippingOptionShippingRateDataFixedAmountOptions
+                        {
+                            Amount = ToMinorUnits(shippingCost),
+                            Currency = order.Currency.ToLowerInvariant(),
+                        },
+                    },
+                },
+            ],
             SuccessUrl = $"{frontendUrl}/kassa/tack?order={order.OrderNumber}",
             CancelUrl = $"{frontendUrl}/",
             // Makes the order easy to find in the Stripe dashboard.
