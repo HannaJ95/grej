@@ -489,3 +489,5 @@ dist/
 .claude/settings.local.json
 # A local image for the upload request in Grej.Api.http
 server/Grej.Api/test-image.png
+
+/example

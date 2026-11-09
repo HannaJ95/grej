@@ -8,6 +8,8 @@ export interface ProductFilter {
   colorIds: number[];
   minPrice: number | undefined;
   maxPrice: number | undefined;
+  // '' = no search. The API splits it into words.
+  search: string;
 }
 
 export const NO_FILTER: ProductFilter = {
@@ -16,12 +18,16 @@ export const NO_FILTER: ProductFilter = {
   colorIds: [],
   minPrice: undefined,
   maxPrice: undefined,
+  search: '',
 };
 
-// How many choices are made, e.g. for "Filter (3)". A price range counts as one.
+// How many choices are made, e.g. for "Filter (3)". A price range and a search count as one each.
 export function countChoices(filter: ProductFilter): number {
   const price = filter.minPrice !== undefined || filter.maxPrice !== undefined ? 1 : 0;
-  return filter.categoryIds.length + filter.materialIds.length + filter.colorIds.length + price;
+  const search = filter.search ? 1 : 0;
+  return (
+    filter.categoryIds.length + filter.materialIds.length + filter.colorIds.length + price + search
+  );
 }
 
 // The filter as the URL's query parameters, the same names as ProductList's input aliases.
@@ -33,6 +39,7 @@ export function toQueryParams(filter: ProductFilter): Params {
     farg: filter.colorIds.length > 0 ? filter.colorIds : null,
     minpris: filter.minPrice ?? null,
     maxpris: filter.maxPrice ?? null,
+    sok: filter.search || null,
   };
 }
 
@@ -40,4 +47,9 @@ export function toQueryParams(filter: ProductFilter): Params {
 export function toPrice(value: string | undefined): number | undefined {
   const price = Number(value);
   return Number.isInteger(price) && price >= 1 ? price : undefined;
+}
+
+// ?sok=%20skål becomes "skål". Missing becomes '', which is no search.
+export function toSearch(value: string | undefined): string {
+  return value?.trim() ?? '';
 }

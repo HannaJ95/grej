@@ -1,7 +1,7 @@
 import { Component, computed, inject, input, linkedSignal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../../core/category.service';
-import { countChoices, ProductFilter, toPrice } from '../../../core/product-filter';
+import { countChoices, ProductFilter, toPrice, toSearch } from '../../../core/product-filter';
 import { ProductPage, ProductService } from '../../../core/product.service';
 import { PropertyService } from '../../../core/property.service';
 import { Breadcrumb } from '../../../shared/breadcrumb/breadcrumb';
@@ -14,7 +14,7 @@ import { FilterDrawer } from '../filter-drawer/filter-drawer';
 import { ProductCard } from '../product-card/product-card';
 import { ProductFilters } from '../product-filters/product-filters';
 
-// /produkter?sida=2&kategori=1&kategori=3&material=4&farg=2&minpris=200&maxpris=800
+// /produkter?sida=2&kategori=1&kategori=3&material=4&farg=2&minpris=200&maxpris=800&sok=skål
 @Component({
   selector: 'app-product-list',
   imports: [
@@ -42,6 +42,7 @@ export class ProductList {
   readonly colorIds = input([], { alias: 'farg', transform: toIdList });
   readonly minPrice = input(undefined, { alias: 'minpris', transform: toPrice });
   readonly maxPrice = input(undefined, { alias: 'maxpris', transform: toPrice });
+  readonly search = input('', { alias: 'sok', transform: toSearch });
 
   protected readonly filter = computed<ProductFilter>(() => ({
     categoryIds: this.categoryIds(),
@@ -49,6 +50,7 @@ export class ProductList {
     colorIds: this.colorIds(),
     minPrice: this.minPrice(),
     maxPrice: this.maxPrice(),
+    search: this.search(),
   }));
 
   protected readonly hasChoices = computed(() => this.choiceCount() > 0);

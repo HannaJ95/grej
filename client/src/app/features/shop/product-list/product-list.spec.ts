@@ -38,6 +38,7 @@ describe('ProductList', () => {
     const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
     expect(request.request.params.get('page')).toBe('2');
     expect(request.request.params.has('minPrice')).toBe(false);
+    expect(request.request.params.has('search')).toBe(false);
     request.flush({
       items: [
         { id: 7, title: 'Vas', description: '', price: 300, currency: 'SEK', isSoldOut: false },
@@ -155,6 +156,23 @@ describe('ProductList', () => {
     // Two materials, a color and a price range.
     const open = harness.routeNativeElement!.querySelector('.open-button')!;
     expect(open.textContent!.trim()).toBe('Filter (4)');
+    expect(harness.routeNativeElement!.querySelector('.results')!.textContent).toContain(
+      'Inga grejer matchar filtret.',
+    );
+  });
+
+  it('sends the search in ?sok= to the API and counts it as a choice', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/produkter?sok=%20bl%C3%A5%20sk%C3%A5l%20');
+    flushFilters([{ id: 1, name: 'Keramik', productCount: 4, subcategories: [] }]);
+
+    const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
+    expect(request.request.params.get('search')).toBe('blå skål');
+    request.flush({ items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 });
+    await harness.fixture.whenStable();
+
+    const open = harness.routeNativeElement!.querySelector('.open-button')!;
+    expect(open.textContent!.trim()).toBe('Filter (1)');
     expect(harness.routeNativeElement!.querySelector('.results')!.textContent).toContain(
       'Inga grejer matchar filtret.',
     );
