@@ -14,7 +14,7 @@ import { FilterOption } from '../filter-option/filter-option';
 import { FilterSearch } from '../filter-search/filter-search';
 import { PriceLimits, PriceRange } from '../price-range/price-range';
 
-type IdList = 'materialIds' | 'colorIds';
+type IdList = 'categoryIds' | 'materialIds' | 'colorIds';
 
 // Every change goes into the URL, so the list, the tabs and the back button follow it. A group
 // without choices is left out.
@@ -63,19 +63,6 @@ export class ProductFilters {
     this.showCategories(
       checked ? [...ids, category.id] : ids.filter((id) => !removed.includes(id)),
     );
-  }
-
-  // Ticking a subcategory also ticks its main category, and the API then shows only the chosen
-  // subcategories of it.
-  protected toggleSubcategory(parent: ShopCategory, id: number, checked: boolean): void {
-    const ids = this.filter().categoryIds;
-    if (!checked) {
-      this.showCategories(ids.filter((other) => other !== id));
-    } else if (ids.includes(parent.id)) {
-      this.showCategories([...ids, id]);
-    } else {
-      this.showCategories([...ids, parent.id, id]);
-    }
   }
 
   protected clear(): void {

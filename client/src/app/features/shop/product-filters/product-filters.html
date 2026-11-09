@@ -23,17 +23,18 @@
               [checked]="filter().categoryIds.includes(category.id)"
               (toggled)="toggleCategory(category, $event)"
             />
-            <!-- A list of their own inside the main category's row, so screen readers tell the
-                 levels apart too. -->
-            @if (category.subcategories.length > 0) {
+            <!-- Only under a ticked main category, which they narrow. A list of their own inside
+                 its row, so screen readers tell the levels apart too. -->
+            @if (category.subcategories.length > 0 && filter().categoryIds.includes(category.id)) {
               <ul class="options subcategories">
                 @for (subcategory of category.subcategories; track subcategory.id) {
                   <li>
                     <app-filter-option
+                      sub
                       [name]="subcategory.name"
                       [count]="subcategory.productCount"
                       [checked]="filter().categoryIds.includes(subcategory.id)"
-                      (toggled)="toggleSubcategory(category, subcategory.id, $event)"
+                      (toggled)="toggle('categoryIds', subcategory.id, $event)"
                     />
                   </li>
                 }
@@ -57,7 +58,8 @@
   }
 
   @if (materials().length > 0) {
-    <app-filter-group heading="Material">
+    <!-- Folded unless something in it is already chosen, so a choice is never hidden. -->
+    <app-filter-group heading="Material" [startOpen]="filter().materialIds.length > 0">
       <ul class="options">
         @for (material of materials(); track material.id) {
           <li>
@@ -74,7 +76,7 @@
   }
 
   @if (colors().length > 0) {
-    <app-filter-group heading="Färg">
+    <app-filter-group heading="Färg" [startOpen]="filter().colorIds.length > 0">
       <ul class="options">
         @for (color of colors(); track color.id) {
           <li>
