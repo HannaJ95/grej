@@ -155,7 +155,7 @@ describe('ProductList', () => {
     expect(filters.querySelector<HTMLInputElement>('input[type="checkbox"]')!.checked).toBe(true);
     // Two materials, a color and a price range.
     const open = harness.routeNativeElement!.querySelector('.open-button')!;
-    expect(open.textContent!.trim()).toBe('Filter (4)');
+    expect(open.getAttribute('aria-label')).toBe('Filter, 4 valda');
     expect(harness.routeNativeElement!.querySelector('.results')!.textContent).toContain(
       'Inga grejer matchar filtret.',
     );
@@ -172,7 +172,7 @@ describe('ProductList', () => {
     await harness.fixture.whenStable();
 
     const open = harness.routeNativeElement!.querySelector('.open-button')!;
-    expect(open.textContent!.trim()).toBe('Filter (1)');
+    expect(open.getAttribute('aria-label')).toBe('Filter, 1 vald');
     expect(harness.routeNativeElement!.querySelector('.results')!.textContent).toContain(
       'Inga grejer matchar filtret.',
     );

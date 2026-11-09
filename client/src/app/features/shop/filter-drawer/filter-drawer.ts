@@ -1,4 +1,4 @@
-import { Component, ElementRef, input, viewChild } from '@angular/core';
+import { Component, computed, ElementRef, input, viewChild } from '@angular/core';
 import { Button } from '../../../shared/button/button';
 
 // The filter on phones and tablets: a button and a panel from the left, a native <dialog> like
@@ -13,6 +13,15 @@ export class FilterDrawer {
   readonly choices = input.required<number>();
   // Undefined until the list has answered.
   readonly resultCount = input<number>();
+
+  // "Filter, 3 valda", so screen readers know what the number in the square is.
+  protected readonly label = computed(() => {
+    const choices = this.choices();
+    if (choices === 0) {
+      return null;
+    }
+    return `Filter, ${choices} ${choices === 1 ? 'vald' : 'valda'}`;
+  });
 
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
 
