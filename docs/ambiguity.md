@@ -59,6 +59,10 @@ Why: This is how most webshops work, and a red, white and blue bowl is found whi
 Decision (Should): From 0 to the highest price among the products that match the customer's other choices, rounded up to 100 kr. The ends mean no limit.
 Why: This is how most webshops work. The scale fits the chosen category, but ignores the price itself, so it does not shrink while the customer drags.
 
+**What does the search look in?**
+Decision (Should): Only the product's title. Every word must be somewhere in the title, in upper or lower case: "ljusstake ek" finds "Ljusstake i ek". The search is part of the filter: it combines with the other choices as "and", counts as one choice, and "Rensa" removes it.
+Why: The scope says "by name", and a description often mentions other things, like "passar som vas" on a mug. Each new word narrows the result, which is what a customer who adds a word expects.
+
 **Can a product have several images?**
 Decision (Should): Yes, up to 10. The MVP has one image per product.
 
@@ -77,7 +81,7 @@ Decision (Should): Yes. A product can be in any category, a main category or a s
 Why: Simpler rules, and nothing breaks when the admin adds a subcategory later.
 
 **What is shown when the customer selects a category?**
-Decision (Should): All products in the category and its subcategories. The subcategories are shown as filters. If the customer also ticks one of its subcategories, only the chosen subcategories are shown. Ticking a subcategory ticks its main category, and unticking the main category unticks its subcategories.
+Decision (Should): All products in the category and its subcategories. Once the main category is ticked, its subcategories are shown under it as filters. If the customer also ticks one of them, only the chosen subcategories are shown. Unticking the main category unticks its subcategories.
 Why: The main category says where the customer is, and the subcategories narrow it down, which is how most webshops work.
 
 **What happens to products if the admin deletes a category?**
