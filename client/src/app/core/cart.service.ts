@@ -1,7 +1,9 @@
 import { computed, Service, signal } from '@angular/core';
 import { UnavailableItem } from './checkout.service';
+import { Parcel } from './parcel';
 import { Product } from './product.service';
 import { ProductImage } from './product-image';
+import { shippingCost } from './shipping';
 
 // One row in the cart. Title, price and image are copied when the product is added,
 // only to show them; the API always takes the price from the database.
@@ -16,6 +18,8 @@ export interface CartItem {
   // The stock when the product was added, at most MAX_QUANTITY. The API checks
   // the stock again in the checkout, since it may have changed since then.
   maxQuantity: number;
+  // Null in a cart saved before shipping was built, until the product is added again.
+  parcel: Parcel | null;
 }
 
 // The API accepts 1–99 of each product (CheckoutRequest.cs).
@@ -40,6 +44,18 @@ export class CartService {
   readonly total = computed(() =>
     this.items().reduce((sum, item) => sum + item.price * item.quantity, 0),
   );
+
+  // Only for showing, like total. Null when a row has no parcel.
+  readonly shipping = computed(() => {
+    const rows: { parcel: Parcel; quantity: number }[] = [];
+    for (const { parcel, quantity } of this.items()) {
+      if (parcel === null) {
+        return null;
+      }
+      rows.push({ parcel, quantity });
+    }
+    return shippingCost(rows);
+  });
 
   // The row that was added last, for the "Tillagd i varukorgen" popup. A new object every
   // time, so the popup shows again even when the same product is added twice. Null when
@@ -66,14 +82,14 @@ export class CartService {
       return;
     }
 
-    // The product was just fetched, so its stock is newer than the one in the cart.
+    // The product was just fetched, so its stock and parcel are newer than the cart's.
     const maxQuantity = maxQuantityOf(product);
     const existing = this.items().find((item) => item.productId === product.id);
     if (existing) {
       this.save(
         this.items().map((item) =>
           item.productId === product.id
-            ? { ...item, quantity: item.quantity + amount, maxQuantity }
+            ? { ...item, quantity: item.quantity + amount, maxQuantity, parcel: product.parcel }
             : item,
         ),
       );
@@ -86,6 +102,7 @@ export class CartService {
         image: product.image,
         quantity: amount,
         maxQuantity,
+        parcel: product.parcel,
       };
       this.save([...this.items(), item]);
     }
@@ -158,10 +175,10 @@ function maxQuantityOf(product: Product): number {
 function load(): CartItem[] {
   try {
     const saved: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]');
-    // Older saved carts can lack maxQuantity and image. They get the largest quantity, which
-    // the API's stock check fixes in the checkout, and no image.
+    // Older saved carts can lack maxQuantity, image and parcel. They get the largest quantity,
+    // which the API's stock check fixes in the checkout, no image and no parcel.
     return Array.isArray(saved)
-      ? saved.map((item) => ({ maxQuantity: MAX_QUANTITY, image: null, ...item }))
+      ? saved.map((item) => ({ maxQuantity: MAX_QUANTITY, image: null, parcel: null, ...item }))
       : [];
   } catch {
     return [];

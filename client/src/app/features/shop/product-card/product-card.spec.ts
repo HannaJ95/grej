@@ -16,6 +16,7 @@ describe('ProductCard', () => {
     image: { url: 'https://example.com/vas.jpg', altText: 'En blå vas' },
     materials: [],
     colors: [],
+    parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
   };
 
   async function show(product: Product): Promise<HTMLElement> {

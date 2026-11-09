@@ -18,6 +18,7 @@ describe('CartDrawer', () => {
     image: { url: 'https://storage.test/vas.png', altText: 'En blå vas' },
     materials: [],
     colors: [],
+    parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
   };
 
   // Every test starts with an empty cart, since the cart is saved in localStorage.
@@ -54,6 +55,25 @@ describe('CartDrawer', () => {
     expect(element.querySelector('.quantity')!.textContent).toBe('2');
     expect(element.querySelector('.count')!.textContent).toBe('2 grejer');
     expect(element.querySelector('[aria-label="Minska antal Vas"]')).not.toBeNull();
-    expect(element.querySelector('.total')!.textContent).toContain('600');
+    // The test has no Swedish locale, so only the numbers are checked. Two vases' volume
+    // weighs 5 250 g, which costs 129 kr.
+    const lines = [...element.querySelectorAll('.line')].map((line) => line.textContent);
+    expect(lines[0]).toContain('Produkter');
+    expect(lines[0]).toContain('600');
+    expect(lines[1]).toContain('Frakt');
+    expect(lines[1]).toContain('129');
+    expect(element.querySelector('.total')!.textContent).toContain('729');
+  });
+
+  it('says that the shipping is added in the checkout when a row has no parcel', async () => {
+    localStorage.setItem(
+      'grej.cart',
+      JSON.stringify([{ productId: 7, title: 'Vas', price: 300, currency: 'SEK', quantity: 1 }]),
+    );
+
+    const element = await show();
+
+    expect(element.querySelector('.total')!.textContent).toContain('Summa');
+    expect(element.querySelector('.line')!.textContent).toBe('Frakten läggs till i kassan.');
   });
 });

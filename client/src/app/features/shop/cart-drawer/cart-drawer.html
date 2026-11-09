@@ -95,13 +95,34 @@
       </ul>
 
       <div class="summary">
-        <!-- Every price is in SEK in this version (constraints.md). -->
-        <p class="total text-label-m">
-          <span>Summa</span>
-          <span class="text-label-l">{{
-            cart.total() | currency: 'SEK' : 'symbol' : '1.0-2'
-          }}</span>
-        </p>
+        <!-- Every price is in SEK in this version (constraints.md). The spaces at the end of
+             the labels keep a screen reader from reading them together with the amounts. -->
+        <div class="sums">
+          @if (cart.shipping(); as shipping) {
+            <p class="line text-body-s">
+              <span>Produkter </span>
+              <span>{{ cart.total() | currency: 'SEK' : 'symbol' : '1.0-2' }}</span>
+            </p>
+            <p class="line text-body-s">
+              <span>Frakt </span>
+              <span>{{ shipping | currency: 'SEK' : 'symbol' : '1.0-2' }}</span>
+            </p>
+            <p class="total text-label-m">
+              <span>Totalt </span>
+              <span class="text-label-l">{{
+                cart.total() + shipping | currency: 'SEK' : 'symbol' : '1.0-2'
+              }}</span>
+            </p>
+          } @else {
+            <p class="total text-label-m">
+              <span>Summa </span>
+              <span class="text-label-l">{{
+                cart.total() | currency: 'SEK' : 'symbol' : '1.0-2'
+              }}</span>
+            </p>
+            <p class="line text-body-s">Frakten läggs till i kassan.</p>
+          }
+        </div>
         <button
           appButton
           size="large"

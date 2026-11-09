@@ -2,6 +2,7 @@ import { httpResource } from '@angular/common/http';
 import { Service, Signal, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { PagedResult } from './paged-result';
+import { Parcel } from './parcel';
 import { NO_FILTER, ProductFilter } from './product-filter';
 import { ProductImage } from './product-image';
 
@@ -20,6 +21,8 @@ export interface Product {
   // Only the names, sorted, e.g. ["Glasyr", "Lera"]. Empty if the product has none.
   materials: string[];
   colors: string[];
+  // For the shipping in the cart.
+  parcel: Parcel;
 }
 
 // ProductPageDto in the API. highestPrice ignores the price filter, so the price slider keeps its

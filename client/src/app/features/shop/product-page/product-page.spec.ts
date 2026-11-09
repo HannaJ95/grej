@@ -18,6 +18,7 @@ const vase: Product = {
   image: null,
   materials: [],
   colors: [],
+  parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
 };
 
 describe('ProductPage', () => {
