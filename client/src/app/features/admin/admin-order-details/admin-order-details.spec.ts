@@ -20,7 +20,7 @@ describe('AdminOrderDetails', () => {
     id: 7,
     orderNumber: 'GREJ-AB12CD34',
     createdAt: '2026-11-02T12:00:00Z',
-    total: 1100,
+    total: 1179,
     currency: 'SEK',
     status: 'Pending',
     paymentStatus: 'Paid',
@@ -35,6 +35,8 @@ describe('AdminOrderDetails', () => {
     postalCode: '123 45',
     city: 'Stockholm',
     country: 'SE',
+    shippingMethod: 'Paket till ombud',
+    shippingCost: 79,
     items: [
       { title: 'Skål', unitPrice: 450, quantity: 2, lineTotal: 900 },
       { title: 'Vas', unitPrice: 200, quantity: 1, lineTotal: 200 },
@@ -122,8 +124,19 @@ describe('AdminOrderDetails', () => {
     expect(texts(page, 'dd')[5]).toMatch(/Storgatan 1\s+123 45 Stockholm\s+SE/);
     expect(texts(page, 'tbody td:first-child')).toEqual(['Skål', 'Vas']);
     expect(texts(page, 'tbody td:nth-child(2)')).toEqual(['2 st', '1 st']);
+    expect(texts(page, 'tfoot th')).toEqual(['Frakt (Paket till ombud)', 'Totalt']);
+    // The test has no Swedish locale, so only the number is checked.
+    expect(texts(page, 'tfoot td')[0]).toContain('79');
     // The API says a paid order that is not shipped can be both shipped and cancelled.
     expect(buttonTexts(page)).toEqual(['Markera som skickad', 'Avbryt ordern']);
+  });
+
+  it('has no shipping row on an order from before shipping was built', async () => {
+    const page = await show((request) =>
+      request.flush({ ...paidOrder, total: 1100, shippingMethod: null, shippingCost: null }),
+    );
+
+    expect(texts(page, 'tfoot th')).toEqual(['Totalt']);
   });
 
   it('says that an unpaid order has no customer details', async () => {

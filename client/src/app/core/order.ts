@@ -32,6 +32,9 @@ export interface OrderDetails extends OrderSummary {
   postalCode: string | null;
   city: string | null;
   country: string | null;
+  // Null on orders from before shipping was built. total includes the cost.
+  shippingMethod: string | null;
+  shippingCost: number | null;
   items: OrderItem[];
 }
 

@@ -126,6 +126,14 @@
           }
         </tbody>
         <tfoot>
+          @if (o.shippingMethod !== null && o.shippingCost !== null) {
+            <tr>
+              <th class="text-body-s" scope="row" colspan="3">Frakt ({{ o.shippingMethod }})</th>
+              <td class="end text-body-s">
+                {{ o.shippingCost | currency: o.currency : 'symbol' : '1.0-2' }}
+              </td>
+            </tr>
+          }
           <tr>
             <th class="text-label-s" scope="row" colspan="3">Totalt</th>
             <td class="end text-label-s">{{ o.total | currency: o.currency : 'symbol' : '1.0-2' }}</td>

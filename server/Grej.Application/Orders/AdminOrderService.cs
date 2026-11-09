@@ -105,6 +105,8 @@ public class AdminOrderService(IOrderRepository orders, ProductService products)
         order.PostalCode,
         order.City,
         order.Country,
+        order.ShippingMethod,
+        order.ShippingCost,
         order.Items
             .Select(item => new OrderItemDto(item.TitleAtPurchase, item.UnitPrice, item.Quantity, item.UnitPrice * item.Quantity))
             .ToList());
