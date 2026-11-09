@@ -72,12 +72,17 @@
 .sidebar {
   display: none;
 
+  // Exactly the window's height, so it stays still while the page scrolls and only scrolls on
+  // its own when its content is taller. min-height: 0 undoes AdminNav's 100 %, which in the
+  // grid would mean the whole page's height.
   @media (width >= 64rem) {
     display: flex;
     position: sticky;
     top: 0;
     height: 100dvh;
+    min-height: 0;
     overflow-y: auto;
+    overscroll-behavior: contain;
     border-right: var(--border-width-default) solid var(--color-border-default);
   }
 }
