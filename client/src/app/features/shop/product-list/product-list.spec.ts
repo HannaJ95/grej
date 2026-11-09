@@ -186,6 +186,9 @@ describe('ProductList', () => {
     // Two materials, a color and a price range.
     const open = harness.routeNativeElement!.querySelector('.open-button')!;
     expect(open.getAttribute('aria-label')).toBe('Filter, 4 valda');
+    // Only the material with a name and the price get chips.
+    const chips = harness.routeNativeElement!.querySelectorAll('.toolbar .chip');
+    expect([...chips].map((chip) => chip.textContent!.trim())).toEqual(['200–800 kr', 'Lera']);
     expect(harness.routeNativeElement!.querySelector('.results')!.textContent).toContain(
       'Inga grejer matchar filtret.',
     );

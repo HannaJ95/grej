@@ -1,4 +1,11 @@
-import { countChoices, NO_FILTER, toPrice, toQueryParams, toSearch } from './product-filter';
+import {
+  countChoices,
+  NO_FILTER,
+  toPrice,
+  toQueryParams,
+  toSearch,
+  withoutCategory,
+} from './product-filter';
 
 describe('product-filter', () => {
   it('turns the filter into query parameters, with null for what is not chosen', () => {
@@ -27,6 +34,22 @@ describe('product-filter', () => {
     expect(toPrice('12.5')).toBeUndefined();
     expect(toPrice('abc')).toBeUndefined();
     expect(toPrice(undefined)).toBeUndefined();
+  });
+
+  it('removes a main category together with its subcategories, and keeps the rest', () => {
+    const keramik = {
+      id: 1,
+      name: 'Keramik',
+      productCount: 3,
+      subcategories: [{ id: 5, name: 'Skålar', productCount: 1, subcategories: [] }],
+    };
+
+    const filter = withoutCategory(
+      { ...NO_FILTER, categoryIds: [1, 5, 2], colorIds: [6] },
+      keramik,
+    );
+
+    expect(filter).toEqual({ ...NO_FILTER, categoryIds: [2], colorIds: [6] });
   });
 
   it('reads the search from the URL without the spaces around it', () => {

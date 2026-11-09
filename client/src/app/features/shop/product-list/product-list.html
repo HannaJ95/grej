@@ -30,6 +30,9 @@
         }
       </p>
     }
+    @if (chips().length > 0) {
+      <app-active-filters class="active-filters" [chips]="chips()" />
+    }
     @if (hasOptions()) {
       <app-filter-drawer
         #drawer

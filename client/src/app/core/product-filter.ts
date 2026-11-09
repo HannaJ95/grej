@@ -1,4 +1,5 @@
 import { Params } from '@angular/router';
+import { ShopCategory } from './category';
 
 // The shop's product filter (ProductFilter in the API). "Or" within a list, "and" between them
 // (ambiguity.md). An empty list or an undefined price means no filter.
@@ -28,6 +29,13 @@ export function countChoices(filter: ProductFilter): number {
   return (
     filter.categoryIds.length + filter.materialIds.length + filter.colorIds.length + price + search
   );
+}
+
+// A subcategory only narrows its main category, so removing the main category removes its
+// subcategories too.
+export function withoutCategory(filter: ProductFilter, category: ShopCategory): ProductFilter {
+  const removed = [category.id, ...category.subcategories.map((subcategory) => subcategory.id)];
+  return { ...filter, categoryIds: filter.categoryIds.filter((id) => !removed.includes(id)) };
 }
 
 // The filter as the URL's query parameters, the same names as ProductList's input aliases.

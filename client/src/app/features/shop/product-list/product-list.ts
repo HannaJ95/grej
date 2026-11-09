@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, linkedSignal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, LOCALE_ID } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../../core/category.service';
 import { countChoices, ProductFilter, toPrice, toSearch } from '../../../core/product-filter';
@@ -9,6 +9,8 @@ import { IconButton } from '../../../shared/icon-button/icon-button';
 import { toIdList } from '../../../shared/id-list';
 import { toPageNumber } from '../../../shared/page-number';
 import { Pagination } from '../../../shared/pagination/pagination';
+import { ActiveFilters } from '../active-filters/active-filters';
+import { filterChips } from '../active-filters/filter-chips';
 import { CategoryTabs } from '../category-tabs/category-tabs';
 import { FilterDrawer } from '../filter-drawer/filter-drawer';
 import { ProductCard } from '../product-card/product-card';
@@ -19,6 +21,7 @@ import { ProductFilters } from '../product-filters/product-filters';
   selector: 'app-product-list',
   imports: [
     RouterLink,
+    ActiveFilters,
     Breadcrumb,
     CategoryTabs,
     FilterDrawer,
@@ -33,6 +36,7 @@ import { ProductFilters } from '../product-filters/product-filters';
 export class ProductList {
   private readonly products = inject(ProductService);
   private readonly properties = inject(PropertyService);
+  private readonly locale = inject(LOCALE_ID);
 
   // Set by the router from the URL (withComponentInputBinding). The aliases are the Swedish
   // names in the URL, the same as in toQueryParams.
@@ -66,6 +70,10 @@ export class ProductList {
     materials: this.materials.hasValue() ? this.materials.value() : [],
     colors: this.colors.hasValue() ? this.colors.value() : [],
   }));
+
+  protected readonly chips = computed(() =>
+    filterChips(this.filter(), this.options(), this.locale),
+  );
 
   protected readonly hasOptions = computed(() => {
     const { categories, materials, colors } = this.options();

@@ -75,7 +75,9 @@
     padding-block: var(--space-16);
   }
 
+  // The count keeps its one line when the chips need room.
   p {
+    flex-shrink: 0;
     margin: 0;
   }
 }
@@ -85,6 +87,24 @@
   display: flex;
   align-items: center;
   gap: var(--space-16);
+
+  // Room for one row of chips, so the toolbar doesn't grow when the first choice is made.
+  @media (width >= 64rem) {
+    min-height: calc(
+      var(--font-size-label-xs) + 2 * var(--space-4) + 2 * var(--border-width-default)
+    );
+  }
+}
+
+// Only from 1024 px, where the toolbar doesn't stick and has room. On a phone and a tablet the
+// filter button's number and the panel show the choices.
+.active-filters {
+  display: none;
+
+  @media (width >= 64rem) {
+    display: flex;
+    flex: 1;
+  }
 }
 
 // Stays to the right, also before the count has come.
