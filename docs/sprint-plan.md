@@ -97,7 +97,7 @@ In priority order. Responsive design and accessibility are checked on every page
 
 - [x] Filter by price, material and color, including the filter panel on phones and tablets
 - [x] Style the remaining admin pages: products, orders, the start page and the login page
-- [ ] Search products by name
+- [x] Search products by name
 - [ ] Fixed shipping cost in Stripe Checkout, stored on the order
 - [ ] Several images per product
 

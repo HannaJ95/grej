@@ -13,34 +13,15 @@
   gap: var(--space-12);
 }
 
-// The box is the label, so a click anywhere in it reaches the field, and the ring goes around the
-// whole box instead of the field inside it.
-.field {
-  display: flex;
+// The box itself is in shared/field-box.scss.
+.field-box {
   align-items: baseline;
   gap: var(--space-4);
-  min-width: 0;
-  padding: var(--space-12) var(--space-16);
-  border: var(--border-width-default) solid var(--color-border-default);
-  background: var(--color-bg-surface);
-  cursor: text;
-
-  &:focus-within {
-    outline: var(--border-width-default) solid var(--color-border-default);
-    outline-offset: var(--space-2);
-  }
 
   // field-sizing makes the field as wide as the number, so "kr" follows it. Without it the field
   // fills the box and "kr" goes to the end.
-  input {
-    flex: 1;
-    min-width: 0;
-    padding: 0;
-    border: none;
-    background: none;
-    outline: none;
-
-    @supports (field-sizing: content) {
+  @supports (field-sizing: content) {
+    input {
       flex: 0 1 auto;
       field-sizing: content;
       min-width: 1ch;

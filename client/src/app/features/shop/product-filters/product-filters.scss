@@ -25,6 +25,12 @@
   gap: var(--space-16);
 }
 
+// The top padding keeps the field's focus ring below the heading, whose background covers what
+// scrolls under it.
+.search {
+  padding-block: var(--space-4) var(--space-20);
+}
+
 // Each group draws the line above it, so the last line is drawn here.
 .groups {
   border-bottom: var(--border-width-default) solid var(--color-border-default);
@@ -42,6 +48,47 @@
 // Indented by the box and its gap, so the subcategories' boxes line up with the main category's
 // name.
 .subcategories {
-  margin-top: var(--space-12);
+  min-height: 0;
   padding-left: var(--space-32);
+
+  // On the first row instead of the list, so the space folds away with it.
+  > li:first-child {
+    margin-top: var(--space-12);
+  }
+}
+
+// Angular adds the classes while the list comes and goes (animate.enter and animate.leave). A row
+// of 0fr → 1fr animates the height, like FilterGroup. The list is only clipped while it moves, so
+// the focus ring is never cut off.
+.unfold {
+  display: grid;
+}
+
+.unfolding,
+.folding {
+  animation: unfold 0.2s ease;
+
+  .subcategories {
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+.folding {
+  animation-direction: reverse;
+}
+
+@keyframes unfold {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+
+  to {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
 }

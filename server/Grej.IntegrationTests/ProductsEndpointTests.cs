@@ -100,6 +100,26 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal(300m, page!.HighestPrice);
     }
 
+    [Fact]
+    public async Task GetPage_Search_ReachesTheRepositoryAsWords()
+    {
+        var client = CreateClient(new Product { Id = 1, Title = "Skål", Price = 300m, Stock = 1, IsActive = true });
+
+        await client.GetAsync($"/api/products?search={Uri.EscapeDataString(" blå  skål ")}");
+
+        Assert.Equal(["blå", "skål"], filters[0].SearchWords);
+    }
+
+    [Fact]
+    public async Task GetPage_TooLongSearch_ReturnsBadRequest()
+    {
+        var client = CreateClient();
+
+        var response = await client.GetAsync($"/api/products?search={new string('a', 101)}");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
     [Theory]
     [InlineData("?page=0")]
     [InlineData("?pageSize=49")]

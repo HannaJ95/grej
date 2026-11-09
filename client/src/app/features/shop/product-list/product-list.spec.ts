@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../../app.routes';
 
@@ -20,7 +20,10 @@ describe('ProductList', () => {
     httpTesting = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => httpTesting.verify());
+  afterEach(() => {
+    document.body.replaceChildren();
+    httpTesting.verify();
+  });
 
   // Answers the page's requests for the filter's categories, materials and colors.
   function flushFilters(categories: object[] = [], materials: object[] = []): void {
@@ -38,6 +41,7 @@ describe('ProductList', () => {
     const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
     expect(request.request.params.get('page')).toBe('2');
     expect(request.request.params.has('minPrice')).toBe(false);
+    expect(request.request.params.has('search')).toBe(false);
     request.flush({
       items: [
         { id: 7, title: 'Vas', description: '', price: 300, currency: 'SEK', isSoldOut: false },
@@ -121,18 +125,57 @@ describe('ProductList', () => {
     expect(tabs.querySelector('[aria-current]')).toBeNull();
   });
 
-  it('offers all products when no product matches the filter', async () => {
+  it('says what matched nothing, and Rensa alla filter moves the focus to the count', async () => {
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/produkter?kategori=99');
+    // Attached, so focus() works.
+    document.body.appendChild(harness.fixture.nativeElement);
+    await harness.navigateByUrl('/produkter?material=4');
+    flushFilters([], [{ id: 4, name: 'Lera', productCount: 2 }]);
+    const empty = { items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 };
+    httpTesting.expectOne((req) => req.url.endsWith('/api/products')).flush(empty);
+    await harness.fixture.whenStable();
+    const page = harness.routeNativeElement!;
+
+    const results = page.querySelector('.results')!;
+    expect(results.querySelector('h2')!.textContent).toBe('Inga grejer hittades');
+    expect(results.textContent).toContain('Vi hittade inget som matchar Lera.');
+    const count = page.querySelector('.toolbar p')!;
+    expect(count.textContent).toContain('0 grejer hittades');
+
+    results.querySelector<HTMLButtonElement>('button[appButton]')!.click();
+    expect(document.activeElement).toBe(count);
+
+    // Not whenStable, which would wait for the new request. One task lets the router finish.
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(TestBed.inject(Router).url).toBe('/produkter');
+    httpTesting.expectOne((req) => req.url.endsWith('/api/products')).flush(empty);
+  });
+
+  it('keeps the products and the count while the list reloads, so the page does not jump', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/produkter');
     flushFilters();
     httpTesting
       .expectOne((req) => req.url.endsWith('/api/products'))
-      .flush({ items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 });
+      .flush({
+        items: [
+          { id: 7, title: 'Vas', description: '', price: 300, currency: 'SEK', isSoldOut: false },
+        ],
+        page: 1,
+        pageSize: 12,
+        totalCount: 1,
+        totalPages: 1,
+      });
     await harness.fixture.whenStable();
+    const page = harness.routeNativeElement!;
 
-    const results = harness.routeNativeElement!.querySelector('.results')!;
-    expect(results.textContent).toContain('Inga grejer matchar filtret.');
-    expect(results.querySelector('a')!.getAttribute('href')).toBe('/produkter');
+    await harness.navigateByUrl('/produkter?minpris=200');
+    const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
+
+    expect(page.querySelector('.results')!.getAttribute('aria-busy')).toBe('true');
+    expect(page.querySelector('.product-grid')!.textContent).toContain('Vas');
+    expect(page.querySelector('.toolbar')!.textContent).toContain('Visar 1–1 av 1 grejer');
+    request.flush({ items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 });
   });
 
   it('sends the material, color and price in the URL to the API and ticks them', async () => {
@@ -154,9 +197,29 @@ describe('ProductList', () => {
     expect(filters.querySelector<HTMLInputElement>('input[type="checkbox"]')!.checked).toBe(true);
     // Two materials, a color and a price range.
     const open = harness.routeNativeElement!.querySelector('.open-button')!;
-    expect(open.textContent!.trim()).toBe('Filter (4)');
+    expect(open.getAttribute('aria-label')).toBe('Filter, 4 valda');
+    // Only the material with a name and the price get chips.
+    const chips = harness.routeNativeElement!.querySelectorAll('.toolbar .chip');
+    expect([...chips].map((chip) => chip.textContent!.trim())).toEqual(['200–800 kr', 'Lera']);
     expect(harness.routeNativeElement!.querySelector('.results')!.textContent).toContain(
-      'Inga grejer matchar filtret.',
+      'Inga grejer hittades',
+    );
+  });
+
+  it('sends the search in ?sok= to the API and counts it as a choice', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/produkter?sok=%20bl%C3%A5%20sk%C3%A5l%20');
+    flushFilters([{ id: 1, name: 'Keramik', productCount: 4, subcategories: [] }]);
+
+    const request = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
+    expect(request.request.params.get('search')).toBe('blå skål');
+    request.flush({ items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 });
+    await harness.fixture.whenStable();
+
+    const open = harness.routeNativeElement!.querySelector('.open-button')!;
+    expect(open.getAttribute('aria-label')).toBe('Filter, 1 vald');
+    expect(harness.routeNativeElement!.querySelector('.results')!.textContent).toContain(
+      'Vi hittade inget som matchar ”blå skål”.',
     );
   });
 

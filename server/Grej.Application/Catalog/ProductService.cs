@@ -35,6 +35,7 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
             ColorIds = query.ColorId,
             MinPrice = query.MinPrice,
             MaxPrice = query.MaxPrice,
+            SearchWords = query.Search?.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [],
         };
 
         var page = await products.GetActivePageAsync(query.Page, query.PageSize, filter, cancellationToken);

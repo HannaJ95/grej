@@ -179,3 +179,7 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 
 - **Building:** Finished sprint 4 item 2: every admin page now has the shop's look (overview with numbers, product list and page, orders, login). I added our own confirm dialog instead of the browser's, a toast that shows when something is saved, and the product page now stays open after saving and takes an image already when a product is created.
 - **Verification:** Claude checked every page at 320–1440 px in Chrome without changing the shared database. This found a class name clash that broke the product rows and a test that sometimes hung, which we fixed.
+
+- **Building:** Finished sprint 4 item 3: search products by name, as a search field at the top of the filter. Chosen filters as chips with ×, a box when nothing matches, the counts in small squares on the Filter and cart buttons, Material and Färg folded, and subcategories only under a ticked main category. Verified locally.
+- **Design:** Noticed the page jumping while a filter loaded; Claude measured that the list was replaced by a loading text, so the old products now stay until the new ones come.
+- **Verification:** Claude tested in Chrome at 320–1440 px and found two bugs the tests had missed: the browser's own search event put "[object Event]" in the URL, and the search field's focus ring was hidden under the heading.

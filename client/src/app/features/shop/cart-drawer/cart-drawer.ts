@@ -1,16 +1,25 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, DOCUMENT, ElementRef, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  DOCUMENT,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../../core/cart.service';
 import { CheckoutService } from '../../../core/checkout.service';
 import { Button } from '../../../shared/button/button';
+import { ButtonCount } from '../../../shared/button-count/button-count';
 import { IconButton } from '../../../shared/icon-button/icon-button';
 import { QuantityStepper } from '../../../shared/quantity-stepper/quantity-stepper';
 
 // The cart button and its panel, a native <dialog>, so the browser handles Escape, the focus
 // and the backdrop.
 @Component({
-  imports: [CurrencyPipe, RouterLink, Button, IconButton, QuantityStepper],
+  imports: [CurrencyPipe, RouterLink, Button, ButtonCount, IconButton, QuantityStepper],
   selector: 'app-cart-drawer',
   styleUrls: ['./cart-drawer.scss', '../../../shared/drawer.scss'],
   templateUrl: './cart-drawer.html',
@@ -32,6 +41,12 @@ export class CartDrawer {
   protected readonly buyFailed = signal(false);
   // True when the API has changed the cart because some products ran out.
   protected readonly cartChanged = signal(false);
+
+  // "Varukorg, 2 grejer", so screen readers know what the number in the square is.
+  protected readonly label = computed(() => {
+    const count = this.cart.count();
+    return `Varukorg, ${count} ${count === 1 ? 'grej' : 'grejer'}`;
+  });
 
   // Public, so the layout can open the cart from the phone menu too.
   open(): void {

@@ -43,11 +43,11 @@ export class ProductService {
   // page size. The start page leaves out the filter.
   getProducts(page: Signal<number>, filter: Signal<ProductFilter> = signal(NO_FILTER)) {
     return httpResource<ProductPage>(() => {
-      const { categoryIds, materialIds, colorIds, minPrice, maxPrice } = filter();
+      const { categoryIds, materialIds, colorIds, minPrice, maxPrice, search } = filter();
       return {
         url: `${environment.apiUrl}/api/products`,
-        // An array repeats the key once per id, and an empty one adds nothing. A price is only
-        // sent when it is set.
+        // An array repeats the key once per id, and an empty one adds nothing. A price or a
+        // search is only sent when it is set.
         params: {
           page: page(),
           categoryId: categoryIds,
@@ -55,6 +55,7 @@ export class ProductService {
           colorId: colorIds,
           ...(minPrice === undefined ? {} : { minPrice }),
           ...(maxPrice === undefined ? {} : { maxPrice }),
+          ...(search ? { search } : {}),
         },
       };
     });

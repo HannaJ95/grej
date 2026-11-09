@@ -1,7 +1,15 @@
-import { Component, computed, inject, input, linkedSignal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  input,
+  linkedSignal,
+  LOCALE_ID,
+  viewChild,
+} from '@angular/core';
 import { CategoryService } from '../../../core/category.service';
-import { countChoices, ProductFilter, toPrice } from '../../../core/product-filter';
+import { countChoices, ProductFilter, toPrice, toSearch } from '../../../core/product-filter';
 import { ProductPage, ProductService } from '../../../core/product.service';
 import { PropertyService } from '../../../core/property.service';
 import { Breadcrumb } from '../../../shared/breadcrumb/breadcrumb';
@@ -9,20 +17,24 @@ import { IconButton } from '../../../shared/icon-button/icon-button';
 import { toIdList } from '../../../shared/id-list';
 import { toPageNumber } from '../../../shared/page-number';
 import { Pagination } from '../../../shared/pagination/pagination';
+import { ActiveFilters } from '../active-filters/active-filters';
+import { filterChips } from '../active-filters/filter-chips';
 import { CategoryTabs } from '../category-tabs/category-tabs';
 import { FilterDrawer } from '../filter-drawer/filter-drawer';
+import { NoResults } from '../no-results/no-results';
 import { ProductCard } from '../product-card/product-card';
 import { ProductFilters } from '../product-filters/product-filters';
 
-// /produkter?sida=2&kategori=1&kategori=3&material=4&farg=2&minpris=200&maxpris=800
+// /produkter?sida=2&kategori=1&kategori=3&material=4&farg=2&minpris=200&maxpris=800&sok=skål
 @Component({
   selector: 'app-product-list',
   imports: [
-    RouterLink,
+    ActiveFilters,
     Breadcrumb,
     CategoryTabs,
     FilterDrawer,
     IconButton,
+    NoResults,
     Pagination,
     ProductCard,
     ProductFilters,
@@ -33,6 +45,8 @@ import { ProductFilters } from '../product-filters/product-filters';
 export class ProductList {
   private readonly products = inject(ProductService);
   private readonly properties = inject(PropertyService);
+  private readonly locale = inject(LOCALE_ID);
+  private readonly count = viewChild<ElementRef<HTMLElement>>('count');
 
   // Set by the router from the URL (withComponentInputBinding). The aliases are the Swedish
   // names in the URL, the same as in toQueryParams.
@@ -42,6 +56,7 @@ export class ProductList {
   readonly colorIds = input([], { alias: 'farg', transform: toIdList });
   readonly minPrice = input(undefined, { alias: 'minpris', transform: toPrice });
   readonly maxPrice = input(undefined, { alias: 'maxpris', transform: toPrice });
+  readonly search = input('', { alias: 'sok', transform: toSearch });
 
   protected readonly filter = computed<ProductFilter>(() => ({
     categoryIds: this.categoryIds(),
@@ -49,6 +64,7 @@ export class ProductList {
     colorIds: this.colorIds(),
     minPrice: this.minPrice(),
     maxPrice: this.maxPrice(),
+    search: this.search(),
   }));
 
   protected readonly hasChoices = computed(() => this.choiceCount() > 0);
@@ -65,6 +81,10 @@ export class ProductList {
     colors: this.colors.hasValue() ? this.colors.value() : [],
   }));
 
+  protected readonly chips = computed(() =>
+    filterChips(this.filter(), this.options(), this.locale),
+  );
+
   protected readonly hasOptions = computed(() => {
     const { categories, materials, colors } = this.options();
     return categories.length + materials.length + colors.length > 0;
@@ -72,9 +92,9 @@ export class ProductList {
 
   protected readonly result = this.products.getProducts(this.page, this.filter);
 
-  // The resource has no value while it reloads, so the last one is kept: the price slider
-  // neither disappears nor jumps, and the panel's button keeps its number.
-  private readonly lastResult = linkedSignal<ProductPage | undefined, ProductPage | undefined>({
+  // The resource has no value while it reloads, so the last answer is kept until the next one
+  // comes: the products, the count and the price slider stay, and the page doesn't jump.
+  protected readonly lastResult = linkedSignal<ProductPage | undefined, ProductPage | undefined>({
     source: () => (this.result.hasValue() ? this.result.value() : undefined),
     computation: (next, previous) => next ?? previous?.value,
   });
@@ -83,14 +103,21 @@ export class ProductList {
   protected readonly totalCount = computed(() => this.lastResult()?.totalCount);
   protected readonly choiceCount = computed(() => countChoices(this.filter()));
 
-  // For "Visar 13–24 av 40 grejer". Null until the API has answered, and when there are no
-  // products.
+  // For "Visar 13–24 av 40 grejer" and "0 grejer hittades". Null until the API has answered, and
+  // on a page after the last one.
   protected readonly shown = computed(() => {
-    if (!this.result.hasValue() || this.result.value().items.length === 0) {
+    const result = this.lastResult();
+    if (!result || (result.items.length === 0 && result.totalCount > 0)) {
       return null;
     }
-    const { page, pageSize, items, totalCount } = this.result.value();
+    const { page, pageSize, items, totalCount } = result;
     const from = (page - 1) * pageSize + 1;
     return { from, to: from + items.length - 1, total: totalCount };
   });
+
+  // The button that removed every filter disappears, so the focus moves to the count, which reads
+  // out the new number when it comes.
+  protected focusCount(): void {
+    this.count()?.nativeElement.focus();
+  }
 }

@@ -14,7 +14,7 @@ type Side = 'low' | 'high';
 @Component({
   selector: 'app-price-range',
   templateUrl: './price-range.html',
-  styleUrl: './price-range.scss',
+  styleUrls: ['../../../shared/field-box.scss', './price-range.scss'],
 })
 export class PriceRange {
   private readonly locale = inject(LOCALE_ID);

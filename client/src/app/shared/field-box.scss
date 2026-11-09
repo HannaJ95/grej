@@ -1,0 +1,29 @@
+// A text field in a framed box, shared by the price fields and the search:
+// <label class="field-box"><input /></label>
+// The box is the label, so a click anywhere in it reaches the field, and the ring goes around the
+// whole box instead of the field inside it.
+.field-box {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: var(--space-12) var(--space-16);
+  border: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  cursor: text;
+
+  &:focus-within {
+    outline: var(--border-width-default) solid var(--color-border-default);
+    outline-offset: var(--space-2);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    color: inherit;
+    outline: none;
+  }
+}

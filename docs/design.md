@@ -26,6 +26,9 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
 - `LinkButton` (`button[appLinkButton]`) is a button that looks like a link, for actions on the same page, such as "Redigera" and "Ta bort" in a CMS list. It has `tone` default or danger.
 - `Icon` shows one of the icons in `public/icons/` as a CSS mask, so it takes the text color around it. `IconButton` is a square button with only an icon (e.g. close), and always needs an `aria-label`.
 - `Badge` is a small label on a product image, e.g. "Slutsåld" and "Få kvar".
+- `ButtonCount` is a number in a small square on a button: dark on the light "Filter" button, light (`tone="light"`) on the dark cart button.
+  - The button's `aria-label` says what the number is, e.g. "Varukorg, 2 grejer".
+  - It takes no more height than its own text, so the button keeps its height.
 - `Pagination` shows the links to the page before and after, and the page numbers (`?sida=`), e.g. 1 2 3 … 8. A phone gets a shorter list. It shows nothing when the list fits on one page.
 - `Breadcrumb` shows e.g. "Hem / Shop / Vas" above a page's title. The current page comes last and is not a link.
 - `QuantityStepper` is the − 1 + control in the cart and on the product page (`[(quantity)]` with `min` and `max`). Its buttons are squares of `--stepper-button-size`, which the product page sets so the stepper is as tall as the large button.
@@ -38,6 +41,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - Each panel slides in from its side (`--drawer-from`) while the backdrop fades in, and back out when it closes.
   - Firefox and Safari close the panel at once, without the slide.
   - "Reduce motion" turns the slide off.
+- `shared/field-box.scss` is a text field in a framed box, used by the price fields and the search. The box is the label, so a click anywhere in it reaches the field, and the focus ring goes around the whole box.
 - `shared/checkbox.scss` is the square checkbox (a real checkbox with `appearance: none` and the check icon on top), used by the shop's filter and the CMS's product form.
 - `shared/tabs.scss` is a row of bordered links where the current one (`aria-current="page"`) is dark, used by the shop's category tabs and the CMS's order list.
 - `ConfirmDialog` is our own `confirm()`. A page asks with `await confirm.ask({ title, message, hint, confirmLabel })` (`ConfirmService`) and gets true or false.
@@ -66,21 +70,28 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - a moving band of words, which pauses on hover and stands still for people who have turned on "reduce motion"
   - the four newest products (the first four from `GET /api/products`, which sorts the newest first), as a row to swipe through on a phone
   - links to the categories from `GET /api/categories`
-- The product list (`/produkter`) has a breadcrumb, the title with the number of products, `CategoryTabs`, and a toolbar with "Visar 1–12 av 40 grejer". It shows two products per row on a phone, and three on a tablet and a computer.
+- The product list (`/produkter`) has a breadcrumb, the title with the number of products, `CategoryTabs`, and a toolbar with "Visar 1–12 av 40 grejer" ("0 grejer hittades" when nothing matches). It shows two products per row on a phone, and three on a tablet and a computer.
+  - Screen readers hear the toolbar's count after each choice (`aria-live`).
+  - While a new choice loads, the old products and the count stay, so the page doesn't jump. The products fade only if the answer takes more than 0.3 s.
+  - From 1024 px the toolbar also shows the chosen filters as chips (`ActiveFilters`). × removes one and moves the focus to the chip beside it, and "Rensa alla" removes them all. The toolbar has room for one row of chips, so it doesn't grow with the first choice.
   - `CategoryTabs` is a row of links: "Alla" plus one per category with its number. It scrolls sideways below 1024 px and wraps on a computer. A tab keeps the other filters.
-  - `ProductFilters` has "Filter" with "Rensa", which removes every choice, and the groups Kategori, Pris, Material and Färg. A group without choices is left out.
-  - Each group is a `FilterGroup`. The minus/plus button in its heading (`aria-expanded`) folds it with a short height animation, and the folded content is `inert`.
+  - `ProductFilters` has "Filter" with "Rensa", which removes every choice, the search field, and the groups Kategori, Pris, Material and Färg. A group without choices is left out.
+  - The search (`FilterSearch`) is a `<form role="search">` with the search icon in a field box. Like the price fields, it searches on Enter or when the customer leaves the field.
+  - Each group is a `FilterGroup`. The minus/plus button in its heading (`aria-expanded`) folds it with a short height animation, and the folded content is `inert`. Material and Färg start folded, unless something in them is already chosen.
   - The rows are `FilterOption`s: real checkboxes, styled with `appearance: none` and the check icon on top, with the number of products.
-  - Kategori shows each main category's subcategories indented under it. Ticking a subcategory ticks its main category too, and the list then shows only the chosen subcategories.
+  - Kategori shows a main category's subcategories under it once the main category is ticked: indented, one text size smaller, and unfolding with the same height animation (`animate.enter` and `animate.leave`). Ticking one shows only the chosen subcategories.
   - Pris is `PriceRange`: two fields ("0 kr – 700 kr") and a slider with two square thumbs, which follow each other.
     - The slider goes from 0 to the highest price among the products of the other choices, rounded up to 100 kr.
     - A thumb is applied when it is let go, and a field on Enter or when the customer leaves it.
     - A thumb stops at the other one. Typing moves the thumb at once but never changes the text being typed.
   - From 1024 px, `ProductFilters` is a 288 px column to the left.
-  - Below 1024 px the toolbar has "Filter (3)", with the number of choices, and sticks below the header (not in a window lower than 30rem).
+  - Below 1024 px the toolbar has "Filter" with the number of choices in a `ButtonCount`, and sticks below the header (not in a window lower than 30rem).
     - The button opens `FilterDrawer`, a `<dialog>` from the left with the same `ProductFilters`. It covers the whole screen on a phone and is a 26rem panel on a tablet.
     - Every choice updates the list behind the panel at once. The heading and the close button stick while the filter scrolls, and "Visa 24 grejer" at the bottom closes the panel.
-  - When no product matches the filter, the list says so and links to all products.
+  - When no product matches the filter, `NoResults` shows a framed box:
+    - "Inga grejer hittades" and what was chosen, e.g. "Vi hittade inget som matchar Konst, max 150 kr och Svart"
+    - "Rensa alla filter", which moves the focus to the toolbar's count, since the button disappears
+    - with more than one choice, light chips to remove one at a time
 - The product page (`/produkter/:id`) has:
   - a breadcrumb
   - `ProductGallery`: a big image and thumbnails to choose from. It is built for several images, although the API has one.
@@ -93,7 +104,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - The row itself sticks, instead of a separate buy bar, so the page never shows two buy buttons.
   - `scroll-padding-bottom` keeps the keyboard focus above it.
   - It does not stick on screens lower than 480 px (e.g. when zoomed in), where it would cover too much.
-- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's image when it is added) and a `QuantityStepper`, plus the total and an empty state.
+- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's image when it is added) and a `QuantityStepper`, plus the total and an empty state. Its button in the header shows the number of products in a `ButtonCount`, also when the cart is empty.
 - When something is added, `AddedToCart` shows a small popup under the cart button.
   - It closes itself after 5 seconds, which pause on hover or focus. It also closes with the cross or with Escape.
   - It never takes the focus, and screen readers read it through `aria-live`.

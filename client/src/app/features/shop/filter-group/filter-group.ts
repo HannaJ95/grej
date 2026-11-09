@@ -1,11 +1,11 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input, OnInit, signal } from '@angular/core';
 import { Icon } from '../../../shared/icons/icon';
 
 // The column and the phone panel both show the filter, so each group needs ids of its own.
 let nextId = 0;
 
 // One group in the product filter: a heading whose button folds the content, like an accordion.
-// <app-filter-group heading="Material">…</app-filter-group>
+// <app-filter-group heading="Material" [startOpen]="false">…</app-filter-group>
 @Component({
   selector: 'app-filter-group',
   imports: [Icon],
@@ -97,9 +97,15 @@ let nextId = 0;
     }
   `,
 })
-export class FilterGroup {
+export class FilterGroup implements OnInit {
   readonly heading = input.required<string>();
+  // Read once, so the group never folds by itself while the customer uses it.
+  readonly startOpen = input(true);
 
   protected readonly id = `filter-group-${nextId++}`;
   protected readonly open = signal(true);
+
+  ngOnInit(): void {
+    this.open.set(this.startOpen());
+  }
 }

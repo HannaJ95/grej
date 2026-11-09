@@ -4,9 +4,13 @@
   class="open-button"
   type="button"
   aria-haspopup="dialog"
+  [attr.aria-label]="label()"
   (click)="open()"
 >
-  Filter{{ choices() > 0 ? ' (' + choices() + ')' : '' }}
+  Filter
+  @if (choices() > 0) {
+    <app-button-count [count]="choices()" />
+  }
 </button>
 
 <dialog #dialog aria-label="Filter" (click)="closeOnBackdrop($event)">

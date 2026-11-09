@@ -75,6 +75,13 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
             query = query.Where(p => p.Price <= maxPrice);
         }
 
+        // One Where per word, so every word must match. Not EF.Functions.ILike, which only works
+        // in PostgreSQL and not in the in-memory database the tests use.
+        foreach (var word in filter.SearchWords)
+        {
+            query = query.Where(p => p.Title.ToLower().Contains(word.ToLower()));
+        }
+
         return query;
     }
 

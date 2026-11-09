@@ -1,0 +1,41 @@
+import { TestBed } from '@angular/core/testing';
+import { FilterSearch } from './filter-search';
+
+describe('FilterSearch', () => {
+  async function render(value = '') {
+    const fixture = TestBed.createComponent(FilterSearch);
+    fixture.componentRef.setInput('value', value);
+    const searches: string[] = [];
+    fixture.componentInstance.searched.subscribe((search) => searches.push(search));
+    await fixture.whenStable();
+    const element: HTMLElement = fixture.nativeElement;
+    const field = element.querySelector<HTMLInputElement>('input[type="search"]')!;
+    return { element, field, searches };
+  }
+
+  it('shows the search from the URL in a search landmark', async () => {
+    const { element, field } = await render('vas');
+
+    expect(field.value).toBe('vas');
+    expect(field.getAttribute('aria-label')).toBe('Sök bland grejerna');
+    expect(element.querySelector('form')!.getAttribute('role')).toBe('search');
+  });
+
+  it('sends the text without the spaces around it when the field is committed', async () => {
+    const { field, searches } = await render();
+
+    field.value = '  blå skål ';
+    field.dispatchEvent(new Event('change'));
+
+    expect(searches).toEqual(['blå skål']);
+  });
+
+  it('stays on the page when the form is sent', async () => {
+    const { element } = await render();
+    const submit = new Event('submit', { cancelable: true });
+
+    element.querySelector('form')!.dispatchEvent(submit);
+
+    expect(submit.defaultPrevented).toBe(true);
+  });
+});
