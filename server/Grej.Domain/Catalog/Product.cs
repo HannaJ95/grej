@@ -16,6 +16,12 @@ public class Product
     public int Stock { get; set; }
     public bool IsActive { get; set; }
 
+    // The packed parcel, which the shipping cost is based on (Shipping).
+    public int WeightGrams { get; set; }
+    public int LengthCm { get; set; }
+    public int WidthCm { get; set; }
+    public int HeightCm { get; set; }
+
     // Exactly one category per product (constraints.md). The foreign key is in ProductConfiguration.
     public int CategoryId { get; set; }
 

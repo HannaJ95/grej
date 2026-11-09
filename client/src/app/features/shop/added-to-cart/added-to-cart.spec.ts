@@ -15,6 +15,7 @@ describe('AddedToCart', () => {
     image: null,
     materials: [],
     colors: [],
+    parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
   };
 
   // vi.useFakeTimers: the test moves the clock itself, instead of waiting 5 real seconds.

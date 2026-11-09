@@ -25,10 +25,14 @@
     border-bottom: none;
   }
 
-  // The sum row.
+  // The sum rows (e.g. shipping and total), with one line above them. On tfoot itself, so it
+  // is one line also when the rows are stacked.
+  tfoot {
+    border-top: var(--border-width-default) solid var(--color-border-default);
+  }
+
   tfoot :is(th, td) {
     padding-bottom: 0;
-    border-top: var(--border-width-default) solid var(--color-border-default);
     border-bottom: none;
   }
 }
@@ -75,7 +79,6 @@
 
   #{$table} tfoot tr {
     padding-bottom: 0;
-    border-top: var(--border-width-default) solid var(--color-border-default);
     border-bottom: none;
   }
 

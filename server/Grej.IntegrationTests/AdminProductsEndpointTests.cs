@@ -26,6 +26,9 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
     private const string Email = "admin@example.com";
     private const string Password = "Test-password-1";
 
+    // A valid packed parcel, so the requests only break the rule a test is about.
+    private static readonly object Parcel = new { weightGrams = 800, lengthCm = 25, widthCm = 25, heightCm = 15 };
+
     private readonly WebApplicationFactory<Program> app;
 
     public AdminProductsEndpointTests(WebApplicationFactory<Program> factory)
@@ -78,7 +81,7 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         var client = await CreateAdminClientAsync();
 
         var response = await client.PostAsJsonAsync("/api/admin/products",
-            new { title = "  Vas  ", description = "Blå", price = 300m, stock = 2, isActive = true, categoryId });
+            new { title = "  Vas  ", description = "Blå", price = 300m, stock = 2, isActive = true, categoryId, parcel = Parcel });
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         var created = await response.Content.ReadFromJsonAsync<AdminProductDto>();
@@ -87,8 +90,41 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         Assert.Equal("Vas", saved?.Title);
         Assert.Equal(300m, saved?.Price);
         Assert.Equal(categoryId, saved?.CategoryId);
+        Assert.Equal((800, 25, 25, 15), (saved?.WeightGrams, saved?.LengthCm, saved?.WidthCm, saved?.HeightCm));
         // The owner is the admin who was logged in (constraints.md).
         Assert.Equal(await GetAdminIdAsync(), saved?.SellerId);
+        Assert.Equal(new ParcelDto(800, 25, 25, 15), created.Parcel);
+    }
+
+    [Theory]
+    [InlineData(0, 25, 25, 15)]
+    [InlineData(100_001, 25, 25, 15)]
+    [InlineData(800, 301, 25, 15)]
+    [InlineData(800, 25, 0, 15)]
+    [InlineData(800, 25, 25, -1)]
+    public async Task Create_InvalidParcel_ReturnsBadRequestAndSavesNothing(int weightGrams, int lengthCm, int widthCm, int heightCm)
+    {
+        var categoryId = await AddCategoryAsync();
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsJsonAsync("/api/admin/products",
+            new { title = "Vas", price = 300m, stock = 1, isActive = true, categoryId, parcel = new { weightGrams, lengthCm, widthCm, heightCm } });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(0, await CountProductsAsync());
+    }
+
+    [Fact]
+    public async Task Create_WithoutParcel_ReturnsBadRequestAndSavesNothing()
+    {
+        var categoryId = await AddCategoryAsync();
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsJsonAsync("/api/admin/products",
+            new { title = "Vas", price = 300m, stock = 1, isActive = true, categoryId });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(0, await CountProductsAsync());
     }
 
     [Theory]
@@ -101,7 +137,7 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         var client = await CreateAdminClientAsync();
 
         var response = await client.PostAsJsonAsync("/api/admin/products",
-            new { title = "Vas", description = "", price = 300m, stock = 1, isActive = true, categoryId });
+            new { title = "Vas", description = "", price = 300m, stock = 1, isActive = true, categoryId, parcel = Parcel });
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal(0, await CountProductsAsync());
@@ -117,7 +153,7 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         var client = await CreateAdminClientAsync();
 
         var response = await client.PostAsJsonAsync("/api/admin/products",
-            new { title = "Skål", price = 300m, stock = 1, isActive = true, categoryId, materialIds = new[] { clay, glaze }, colorIds = new[] { blue } });
+            new { title = "Skål", price = 300m, stock = 1, isActive = true, categoryId, materialIds = new[] { clay, glaze }, colorIds = new[] { blue }, parcel = Parcel });
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         var created = await response.Content.ReadFromJsonAsync<AdminProductDto>();
@@ -138,7 +174,7 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         var client = await CreateAdminClientAsync();
 
         var response = await client.PostAsJsonAsync("/api/admin/products",
-            new { title = "Skål", price = 300m, stock = 1, isActive = true, categoryId, materialIds, colorIds });
+            new { title = "Skål", price = 300m, stock = 1, isActive = true, categoryId, materialIds, colorIds, parcel = Parcel });
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal(0, await CountProductsAsync());
@@ -157,7 +193,7 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         var client = await CreateAdminClientAsync();
 
         var response = await client.PostAsJsonAsync("/api/admin/products",
-            new { title, description = "", price, stock, isActive = true, categoryId });
+            new { title, description = "", price, stock, isActive = true, categoryId, parcel = Parcel });
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal(0, await CountProductsAsync());
@@ -173,7 +209,7 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         var client = await CreateAdminClientAsync();
 
         var response = await client.PutAsJsonAsync($"/api/admin/products/{id}",
-            new { title = "Blå vas", description = "", price = 350m, stock = 3, isActive = true, categoryId = newCategoryId, originalStock = 1 });
+            new { title = "Blå vas", description = "", price = 350m, stock = 3, isActive = true, categoryId = newCategoryId, originalStock = 1, parcel = Parcel });
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         var saved = await FindProductAsync(id);
@@ -181,6 +217,7 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         Assert.Equal(3, saved?.Stock);
         Assert.True(saved?.IsActive);
         Assert.Equal(newCategoryId, saved?.CategoryId);
+        Assert.Equal((800, 25, 25, 15), (saved?.WeightGrams, saved?.LengthCm, saved?.WidthCm, saved?.HeightCm));
         Assert.True(saved?.UpdatedAt > product.UpdatedAt);
     }
 
@@ -194,11 +231,11 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         var client = await CreateAdminClientAsync();
         // Created through the API with clay and blue, the way the form does it.
         var created = await (await client.PostAsJsonAsync("/api/admin/products",
-                new { title = "Skål", price = 300m, stock = 1, isActive = true, categoryId, materialIds = new[] { clay }, colorIds = new[] { blue } }))
+                new { title = "Skål", price = 300m, stock = 1, isActive = true, categoryId, materialIds = new[] { clay }, colorIds = new[] { blue }, parcel = Parcel }))
             .Content.ReadFromJsonAsync<AdminProductDto>();
 
         var response = await client.PutAsJsonAsync($"/api/admin/products/{created!.Id}",
-            new { title = "Skål", price = 300m, stock = 1, isActive = true, categoryId, materialIds = new[] { glass }, colorIds = Array.Empty<int>(), originalStock = 1 });
+            new { title = "Skål", price = 300m, stock = 1, isActive = true, categoryId, materialIds = new[] { glass }, colorIds = Array.Empty<int>(), originalStock = 1, parcel = Parcel });
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         var saved = await client.GetFromJsonAsync<AdminProductDto>($"/api/admin/products/{created.Id}");
@@ -215,7 +252,7 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         var client = await CreateAdminClientAsync();
 
         var response = await client.PutAsJsonAsync($"/api/admin/products/{id}",
-            new { title = "Blå vas", description = "", price = 0m, stock = 1, isActive = true, categoryId, originalStock = 1 });
+            new { title = "Blå vas", description = "", price = 0m, stock = 1, isActive = true, categoryId, originalStock = 1, parcel = Parcel });
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal("Vas", (await FindProductAsync(id))?.Title);
@@ -230,7 +267,7 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         var client = await CreateAdminClientAsync();
 
         var response = await client.PutAsJsonAsync($"/api/admin/products/{id}",
-            new { title = "Blå vas", description = "", price = 300m, stock = 1, isActive = true, categoryId, originalStock = 1 });
+            new { title = "Blå vas", description = "", price = 300m, stock = 1, isActive = true, categoryId, originalStock = 1, parcel = Parcel });
 
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
         var saved = await FindProductAsync(id);
@@ -245,7 +282,7 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         var client = await CreateAdminClientAsync();
 
         var response = await client.PutAsJsonAsync("/api/admin/products/99",
-            new { title = "Vas", description = "", price = 300m, stock = 1, isActive = true, categoryId, originalStock = 1 });
+            new { title = "Vas", description = "", price = 300m, stock = 1, isActive = true, categoryId, originalStock = 1, parcel = Parcel });
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
@@ -258,7 +295,7 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         var client = await CreateAdminClientAsync();
 
         var response = await client.PutAsJsonAsync($"/api/admin/products/{id}",
-            new { title = "Blå vas", description = "", price = 300m, stock = 1, isActive = true, categoryId = 99, originalStock = 1 });
+            new { title = "Blå vas", description = "", price = 300m, stock = 1, isActive = true, categoryId = 99, originalStock = 1, parcel = Parcel });
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         var saved = await FindProductAsync(id);

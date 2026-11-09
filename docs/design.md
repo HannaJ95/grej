@@ -104,7 +104,8 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - The row itself sticks, instead of a separate buy bar, so the page never shows two buy buttons.
   - `scroll-padding-bottom` keeps the keyboard focus above it.
   - It does not stick on screens lower than 480 px (e.g. when zoomed in), where it would cover too much.
-- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's image when it is added) and a `QuantityStepper`, plus the total and an empty state. Its button in the header shows the number of products in a `ButtonCount`, also when the cart is empty.
+- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's image when it is added) and a `QuantityStepper`, plus the products, the shipping and the total, and an empty state. Its button in the header shows the number of products in a `ButtonCount`, also when the cart is empty.
+  - The shipping is a copy of the API's rule (`core/shipping.ts`), only for showing. A row saved before shipping was built has no parcel, and then the cart shows the sum and "Frakten läggs till i kassan."
 - When something is added, `AddedToCart` shows a small popup under the cart button.
   - It closes itself after 5 seconds, which pause on hover or focus. It also closes with the cross or with Escape.
   - It never takes the focus, and screen readers read it through `aria-live`.
@@ -145,8 +146,9 @@ The CMS uses the same tokens, text styles and shared components as the shop.
 - The product page (`/admin/produkter/ny` and `/admin/produkter/7`):
   - "Spara" and "Ta bort produkten" are large buttons in the top bar, like "Ny produkt" on the list. Spara sits outside the `<form>` and is connected to it with `form="product-form"`. Errors from them are shown under the top bar.
   - The form card is on the left, and the image card beside it when the page is at least 56rem wide. Price and stock are side by side when the card is at least 28rem wide.
+  - Under them, the group "Paketets vikt och mått" (a `<fieldset>` with a hint) has the packed weight and the three sides, which the checkout calculates the shipping from: two per row from 28rem, all four from 36rem. A new product starts with them empty.
   - Saving keeps the admin on the page, with a toast, and fetches the product again. A product that does not exist (404) says so.
   - On "Ny produkt" the image card collects the image without uploading it: a file needs its description, and both are shown with the form's errors. Spara creates the product, uploads the image and opens the product's own page.
 - The order list (`/admin/ordrar`) has the tabs "Att göra" and "Alla beställningar" and a table. "Behöver återbetalas" and "Behöver avbrytas" are bold, red words under the status.
-- The order page (`/admin/ordrar/7`) has the cards Status (facts, warning, buttons) and Kund side by side, and Produkter with the total below them. After shipping or cancelling the button is gone, so the focus moves to the Status heading.
+- The order page (`/admin/ordrar/7`) has the cards Status (facts, warning, buttons) and Kund side by side, and Produkter with the shipping (when the order has one) and the total below them. After shipping or cancelling the button is gone, so the focus moves to the Status heading.
 - The login page is a card in the middle of the window, with "GREJ." and the Admin badge above it and a link back to the shop below.

@@ -45,7 +45,7 @@ The MVP is a single-seller webshop with an admin CMS = all **Must** items below.
 - Accessibility: keyboard navigation, alt texts on images, sufficient contrast
 - Several images per product
 - Subcategories, one level (e.g. Ceramics → Plates, Cups, Bowls)
-- Shipping cost: one fixed price, shown as its own row in Stripe Checkout
+- Shipping cost from the products' packed weight and size, with one method ("Paket till ombud"), shown in the cart and as its own row in Stripe Checkout. Changed on 9 Nov from one fixed price (ambiguity.md)
 - Flag an order when the last item was sold twice at the same time
 
 ### Could

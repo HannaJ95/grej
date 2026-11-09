@@ -113,5 +113,6 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
         ProductImageDto.From(product.MainImage),
         // Sorted here, since the database returns them in no fixed order.
         product.Materials.Select(material => material.Name).Order().ToList(),
-        product.Colors.Select(color => color.Name).Order().ToList());
+        product.Colors.Select(color => color.Name).Order().ToList(),
+        ParcelDto.From(product));
 }

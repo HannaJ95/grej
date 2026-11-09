@@ -23,6 +23,7 @@ describe('AdminProductForm', () => {
     materialIds: [3],
     colorIds: [2],
     image: null,
+    parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
   };
 
   beforeEach(async () => {
@@ -55,6 +56,7 @@ describe('AdminProductForm', () => {
     expect(page().textContent).toContain('Fyll i en titel.');
     expect(page().textContent).toContain('Välj en kategori.');
     expect(page().textContent).toContain('Fyll i ett pris.');
+    expect(page().textContent).toContain('Fyll i vikten.');
   });
 
   it('creates a hidden product and opens it, so an image can be added', async () => {
@@ -64,6 +66,7 @@ describe('AdminProductForm', () => {
     type('#title', 'Vas');
     choose('#category', '2');
     type('#price', '250');
+    typeParcel();
     await send();
 
     const request = httpTesting.expectOne((req) => req.url.endsWith('/api/admin/products'));
@@ -79,6 +82,7 @@ describe('AdminProductForm', () => {
       isActive: false,
       materialIds: [],
       colorIds: [],
+      parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
     });
     request.flush({ ...vase, categoryId: 2, price: 250, stock: 1, isActive: false });
 
@@ -98,6 +102,7 @@ describe('AdminProductForm', () => {
     type('#title', 'Vas');
     choose('#category', '2');
     type('#price', '250');
+    typeParcel();
     await chooseFile(new File(['png'], 'vas.png', { type: 'image/png' }));
     type('#alt-text', 'En blå vas');
 
@@ -137,6 +142,7 @@ describe('AdminProductForm', () => {
     type('#title', 'Vas');
     choose('#category', '2');
     type('#price', '250');
+    typeParcel();
     await send();
     await settle();
     expect(page().querySelector('[role="alert"]')?.textContent).toBe('Rätta bilden innan du sparar.');
@@ -206,6 +212,29 @@ describe('AdminProductForm', () => {
     expect(request.request.body.materialIds).toEqual([4]);
     // Blå was not touched, so it is sent as it was.
     expect(request.request.body.colorIds).toEqual([2]);
+  });
+
+  it("shows the product's parcel, and stops one that breaks the API's rules", async () => {
+    await openVase();
+    expect(page().querySelector<HTMLInputElement>('#weight')?.value).toBe('900');
+
+    type('#weight', '2.5');
+    type('#length', '301');
+    await send();
+    expect(page().textContent).toContain('Vikten måste vara ett heltal.');
+    expect(page().textContent).toContain('Längden får vara högst 300 cm.');
+
+    // expectOne below fails if the first try was sent too.
+    type('#weight', '1200');
+    type('#length', '60');
+    await send();
+    const request = httpTesting.expectOne((req) => req.url.endsWith('/api/admin/products/5'));
+    expect(request.request.body.parcel).toEqual({
+      weightGrams: 1200,
+      lengthCm: 60,
+      widthCm: 25,
+      heightCm: 15,
+    });
   });
 
   it('saves nothing and says so when the stock has changed (409)', async () => {
@@ -310,6 +339,14 @@ describe('AdminProductForm', () => {
     const input = page().querySelector<HTMLInputElement>(selector)!;
     input.value = value;
     input.dispatchEvent(new Event('input'));
+  }
+
+  // Fills in the packed parcel, which every product needs.
+  function typeParcel(): void {
+    type('#weight', '900');
+    type('#length', '25');
+    type('#width', '25');
+    type('#height', '15');
   }
 
   // Chooses an option the way a user does. Signal Forms listens for "input", as in type().

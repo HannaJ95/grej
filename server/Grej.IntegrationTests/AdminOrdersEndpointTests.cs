@@ -117,6 +117,8 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
         var item = Assert.Single(details.Items);
         // 2 × 450 kr, calculated by the API.
         Assert.Equal(("Skål", 2, 900m), (item.Title, item.Quantity, item.LineTotal));
+        Assert.Equal(("Paket till ombud", 79m), (details.ShippingMethod, details.ShippingCost));
+        Assert.Equal(979m, details.Total);
     }
 
     [Fact]
@@ -312,6 +314,7 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
     {
         var order = new Order();
         order.AddItem(productId: 1, title: "Skål", unitPrice: 450m, quantity: 2);
+        order.SetShipping("Paket till ombud", 79m);
         order.AddPayment("Stripe", $"cs_test_{Guid.NewGuid():N}");
         handle?.Invoke(order);
 

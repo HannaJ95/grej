@@ -33,6 +33,11 @@ public record ProductRequest
     // not exist gives 400 from AdminProductsController, like CategoryId.
     public IReadOnlyList<int> MaterialIds { get; init; } = [];
     public IReadOnlyList<int> ColorIds { get; init; } = [];
+
+    // Every product needs one, or the checkout cannot calculate the shipping. [ApiController]
+    // also checks the rules inside it.
+    [Required]
+    public required ParcelRequest Parcel { get; init; }
 }
 
 // What the CMS form sends to save changes: the same fields and rules, plus the

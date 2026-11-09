@@ -161,10 +161,24 @@ dialog {
   }
 }
 
+// Closer to each other than to the button.
+.sums {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.line,
 .total {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  column-gap: var(--space-16);
+}
+
+.line {
+  color: var(--color-text-secondary);
 }
 
 .full-width {

@@ -40,6 +40,9 @@ public record OrderDetailsDto(
     string? PostalCode,
     string? City,
     string? Country,
+    // Null on orders from before shipping was built. Total includes the cost.
+    string? ShippingMethod,
+    decimal? ShippingCost,
     IReadOnlyList<OrderItemDto> Items);
 
 // One row on the order, with the title and price from the time of purchase. LineTotal is

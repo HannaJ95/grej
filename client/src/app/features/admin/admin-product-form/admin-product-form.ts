@@ -9,6 +9,7 @@ import {
   min,
   pattern,
   required,
+  SchemaPath,
   validate,
 } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
@@ -33,7 +34,7 @@ import {
 } from '../product-texts';
 import { PropertyCheckboxes } from '../property-checkboxes/property-checkboxes';
 
-// Price and stock are null while their fields are empty.
+// The numbers are null while their fields are empty.
 interface ProductFormModel {
   title: string;
   description: string;
@@ -44,9 +45,16 @@ interface ProductFormModel {
   isActive: boolean;
   materialIds: number[];
   colorIds: number[];
+  parcel: {
+    weightGrams: number | null;
+    lengthCm: number | null;
+    widthCm: number | null;
+    heightCm: number | null;
+  };
 }
 
-// A new product starts as a hidden draft with one item, since most art is unique.
+// A new product starts as a hidden draft with one item, since most art is unique. The parcel
+// starts empty, so the admin measures it instead of keeping a guess.
 const NEW_PRODUCT: ProductFormModel = {
   title: '',
   description: '',
@@ -56,6 +64,7 @@ const NEW_PRODUCT: ProductFormModel = {
   isActive: false,
   materialIds: [],
   colorIds: [],
+  parcel: { weightGrams: null, lengthCm: null, widthCm: null, heightCm: null },
 };
 
 // /admin/produkter/ny creates a product, /admin/produkter/7 edits or deletes one.
@@ -130,12 +139,12 @@ export class AdminProductForm {
       required(field.stock, { message: 'Fyll i lagersaldot.' });
       min(field.stock, 0, { message: 'Lagersaldot kan inte vara mindre än 0.' });
       max(field.stock, 10_000, { message: 'Lagersaldot får vara högst 10 000.' });
-      validate(field.stock, ({ value }) => {
-        const stock = value();
-        return stock !== null && !Number.isInteger(stock)
-          ? { kind: 'integer', message: 'Lagersaldot måste vara ett heltal.' }
-          : undefined;
-      });
+      wholeNumber(field.stock, 'Lagersaldot måste vara ett heltal.');
+      // ParcelRequest in the API.
+      parcelRules(field.parcel.weightGrams, 'Vikten', 'g', 100_000);
+      parcelRules(field.parcel.lengthCm, 'Längden', 'cm', 300);
+      parcelRules(field.parcel.widthCm, 'Bredden', 'cm', 300);
+      parcelRules(field.parcel.heightCm, 'Höjden', 'cm', 300);
     },
     { submission: { action: () => this.save() } },
   );
@@ -145,6 +154,10 @@ export class AdminProductForm {
   protected readonly categoryError = computed(() => firstError(this.productForm.categoryId));
   protected readonly priceError = computed(() => firstError(this.productForm.price));
   protected readonly stockError = computed(() => firstError(this.productForm.stock));
+  protected readonly weightError = computed(() => firstError(this.productForm.parcel.weightGrams));
+  protected readonly lengthError = computed(() => firstError(this.productForm.parcel.lengthCm));
+  protected readonly widthError = computed(() => firstError(this.productForm.parcel.widthCm));
+  protected readonly heightError = computed(() => firstError(this.productForm.parcel.heightCm));
   protected readonly saveError = computed(() => this.productForm().errors()[0]?.message);
   protected readonly removeError = signal<string | undefined>(undefined);
 
@@ -238,16 +251,40 @@ function toModel(product: AdminProduct): ProductFormModel {
     isActive: product.isActive,
     materialIds: product.materialIds,
     colorIds: product.colorIds,
+    parcel: product.parcel,
   };
 }
 
-// The form is only sent when every required field is filled in, so price and stock are never
+// The form is only sent when every required field is filled in, so the numbers are never
 // null here, and categoryId is never ''.
 function toInput(model: ProductFormModel): ProductInput {
+  const { parcel } = model;
   return {
     ...model,
     categoryId: Number(model.categoryId),
     price: model.price!,
     stock: model.stock!,
+    parcel: {
+      weightGrams: parcel.weightGrams!,
+      lengthCm: parcel.lengthCm!,
+      widthCm: parcel.widthCm!,
+      heightCm: parcel.heightCm!,
+    },
   };
+}
+
+// A number field also accepts e.g. 2.5.
+function wholeNumber(path: SchemaPath<number | null>, message: string): void {
+  validate(path, ({ value }) => {
+    const number = value();
+    return number !== null && !Number.isInteger(number) ? { kind: 'integer', message } : undefined;
+  });
+}
+
+// "what" starts the messages, e.g. "Längden får vara högst 300 cm."
+function parcelRules(path: SchemaPath<number | null>, what: string, unit: string, highest: number): void {
+  required(path, { message: `Fyll i ${what.toLowerCase()}.` });
+  min(path, 1, { message: `${what} måste vara minst 1 ${unit}.` });
+  max(path, highest, { message: `${what} får vara högst ${highest.toLocaleString('sv-SE')} ${unit}.` });
+  wholeNumber(path, `${what} måste vara ett heltal.`);
 }

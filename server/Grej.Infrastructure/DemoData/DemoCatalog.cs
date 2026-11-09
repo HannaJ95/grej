@@ -61,6 +61,7 @@ public record DemoProduct(
     bool IsActive,
     IReadOnlyList<string> Materials,
     IReadOnlyList<string> Colors,
+    ParcelRequest Parcel,
     // One of its category's Subcategories, or null when the product is in the main category.
     string? Subcategory = null);
 

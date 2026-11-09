@@ -104,8 +104,14 @@ namespace Grej.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("HeightCm")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
+
+                    b.Property<int>("LengthCm")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Price")
                         .HasPrecision(10, 2)
@@ -126,6 +132,12 @@ namespace Grej.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("WeightGrams")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("WidthCm")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -212,6 +224,14 @@ namespace Grej.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("PostalCode")
                         .HasColumnType("text");
+
+                    b.Property<decimal?>("ShippingCost")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
+                    b.Property<string>("ShippingMethod")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Status")
                         .IsRequired()

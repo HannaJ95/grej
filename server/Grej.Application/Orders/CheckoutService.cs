@@ -20,6 +20,7 @@ public class CheckoutService(ProductService products, IOrderRepository orders, I
 
         var order = new Order();
         var unavailable = new List<UnavailableItem>();
+        var parcels = new List<ShippingItem>();
 
         foreach (var item in request.Items)
         {
@@ -38,6 +39,8 @@ public class CheckoutService(ProductService products, IOrderRepository orders, I
             {
                 // The price comes from the database, never from the browser (constraints.md).
                 order.AddItem(product.Id, product.Title, product.Price, item.Quantity);
+                var parcel = product.Parcel;
+                parcels.Add(new ShippingItem(parcel.WeightGrams, parcel.LengthCm, parcel.WidthCm, parcel.HeightCm, item.Quantity));
             }
         }
 
@@ -45,6 +48,9 @@ public class CheckoutService(ProductService products, IOrderRepository orders, I
         {
             return CheckoutResult.Unavailable(unavailable);
         }
+
+        // Like the prices, from the database. The cart's own shipping amount is only shown.
+        order.SetShipping(Shipping.Method, Shipping.CostFor(parcels));
 
         // The order only exists in memory until the provider has created the session,
         // so a failed call to Stripe never leaves an order without a payment.

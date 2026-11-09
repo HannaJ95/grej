@@ -21,6 +21,7 @@ describe('AdminProductImage', () => {
     materialIds: [],
     colorIds: [],
     image: null,
+    parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
   };
 
   beforeEach(async () => {

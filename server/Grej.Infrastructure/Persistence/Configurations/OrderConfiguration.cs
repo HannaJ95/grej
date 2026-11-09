@@ -17,6 +17,8 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(o => o.Status).HasConversion<string>().HasMaxLength(20);
         builder.Property(o => o.Total).HasPrecision(10, 2);
         builder.Property(o => o.Currency).HasMaxLength(3);
+        builder.Property(o => o.ShippingMethod).HasMaxLength(100);
+        builder.Property(o => o.ShippingCost).HasPrecision(10, 2);
 
         // Only the country has a fixed length: Stripe always sends a two-letter code ("SE").
         // Name, email and address are typed by the customer in Stripe Checkout, not in our

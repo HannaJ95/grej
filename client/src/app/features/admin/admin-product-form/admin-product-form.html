@@ -152,6 +152,78 @@
           </div>
         </div>
 
+        <fieldset class="parcel" aria-describedby="parcel-hint">
+          <legend class="text-label-xs">Paketets vikt och mått</legend>
+          <p class="hint text-body-s" id="parcel-hint">
+            Som paketet blir när produkten är packad. Kassan räknar ut frakten från dem.
+          </p>
+          <div class="parcel-fields">
+            <div class="field">
+              <label class="text-label-xs" for="weight">Vikt (g)</label>
+              <input
+                id="weight"
+                class="text-body-m-compact"
+                type="number"
+                step="1"
+                [formField]="productForm.parcel.weightGrams"
+                [attr.aria-invalid]="weightError() ? true : null"
+                [attr.aria-describedby]="weightError() ? 'weight-error' : null"
+              />
+              @if (weightError(); as message) {
+                <span class="error text-body-xs" id="weight-error">{{ message }}</span>
+              }
+            </div>
+
+            <div class="field">
+              <label class="text-label-xs" for="length">Längd (cm)</label>
+              <input
+                id="length"
+                class="text-body-m-compact"
+                type="number"
+                step="1"
+                [formField]="productForm.parcel.lengthCm"
+                [attr.aria-invalid]="lengthError() ? true : null"
+                [attr.aria-describedby]="lengthError() ? 'length-error' : null"
+              />
+              @if (lengthError(); as message) {
+                <span class="error text-body-xs" id="length-error">{{ message }}</span>
+              }
+            </div>
+
+            <div class="field">
+              <label class="text-label-xs" for="width">Bredd (cm)</label>
+              <input
+                id="width"
+                class="text-body-m-compact"
+                type="number"
+                step="1"
+                [formField]="productForm.parcel.widthCm"
+                [attr.aria-invalid]="widthError() ? true : null"
+                [attr.aria-describedby]="widthError() ? 'width-error' : null"
+              />
+              @if (widthError(); as message) {
+                <span class="error text-body-xs" id="width-error">{{ message }}</span>
+              }
+            </div>
+
+            <div class="field">
+              <label class="text-label-xs" for="height">Höjd (cm)</label>
+              <input
+                id="height"
+                class="text-body-m-compact"
+                type="number"
+                step="1"
+                [formField]="productForm.parcel.heightCm"
+                [attr.aria-invalid]="heightError() ? true : null"
+                [attr.aria-describedby]="heightError() ? 'height-error' : null"
+              />
+              @if (heightError(); as message) {
+                <span class="error text-body-xs" id="height-error">{{ message }}</span>
+              }
+            </div>
+          </div>
+        </fieldset>
+
         <!-- Each group fetches its own choices from the API. -->
         <app-property-checkboxes [kind]="'materials'" [formField]="productForm.materialIds" />
         <app-property-checkboxes [kind]="'colors'" [formField]="productForm.colorIds" />

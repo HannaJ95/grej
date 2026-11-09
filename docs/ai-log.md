@@ -183,3 +183,8 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - **Building:** Finished sprint 4 item 3: search products by name, as a search field at the top of the filter. Chosen filters as chips with ×, a box when nothing matches, the counts in small squares on the Filter and cart buttons, Material and Färg folded, and subcategories only under a ticked main category. Verified locally.
 - **Design:** Noticed the page jumping while a filter loaded; Claude measured that the list was replaced by a loading text, so the old products now stay until the new ones come.
 - **Verification:** Claude tested in Chrome at 320–1440 px and found two bugs the tests had missed: the browser's own search event put "[object Event]" in the URL, and the search field's focus ring was hidden under the heading.
+
+- **Building:** Finished sprint 4 item 4, but changed it from a fixed price to shipping by the packed weight and size, with volume weight like PostNord. The admin enters the parcel in the product form, the API calculates the shipping in the checkout and sends it to Stripe as its own row, and the cart and the order page show it. Verified locally.
+- **Design:** I changed the scope after Claude looked up how carriers price parcels, since a big painting costs far more to send than a ring. The cart uses a copy of the rule to avoid an extra request, but the amount from the API is the one that is paid and shown in checkout.
+- **Verification:** The same examples are tested in C# and TypeScript, so the two copies of the rule cannot drift apart. Claude's check in Chrome found a double line above the order's sums on phones.
+

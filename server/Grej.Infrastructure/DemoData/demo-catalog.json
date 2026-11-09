@@ -47,7 +47,8 @@
           "stock": 6,
           "isActive": true,
           "materials": ["Stengods"],
-          "colors": ["Blå"]
+          "colors": ["Blå"],
+          "parcel": { "weightGrams": 900, "lengthCm": 25, "widthCm": 25, "heightCm": 15 }
         },
         {
           "title": "Mugg med stort öra",
@@ -57,7 +58,8 @@
           "stock": 12,
           "isActive": true,
           "materials": ["Stengods"],
-          "colors": ["Vit"]
+          "colors": ["Vit"],
+          "parcel": { "weightGrams": 600, "lengthCm": 18, "widthCm": 15, "heightCm": 15 }
         },
         {
           "title": "Hög vas i grönt",
@@ -67,7 +69,8 @@
           "stock": 3,
           "isActive": true,
           "materials": ["Stengods"],
-          "colors": ["Grön"]
+          "colors": ["Grön"],
+          "parcel": { "weightGrams": 1800, "lengthCm": 40, "widthCm": 20, "heightCm": 20 }
         },
         {
           "title": "Kanna med pip",
@@ -76,7 +79,8 @@
           "stock": 0,
           "isActive": true,
           "materials": ["Lergods"],
-          "colors": ["Terrakotta", "Vit"]
+          "colors": ["Terrakotta", "Vit"],
+          "parcel": { "weightGrams": 1400, "lengthCm": 30, "widthCm": 25, "heightCm": 25 }
         },
         {
           "title": "Stort serveringsfat",
@@ -86,7 +90,8 @@
           "stock": 1,
           "isActive": true,
           "materials": ["Stengods"],
-          "colors": ["Grå", "Beige"]
+          "colors": ["Grå", "Beige"],
+          "parcel": { "weightGrams": 2500, "lengthCm": 45, "widthCm": 45, "heightCm": 12 }
         },
         {
           "title": "Ljusstake för kronljus",
@@ -95,7 +100,8 @@
           "stock": 8,
           "isActive": true,
           "materials": ["Lergods"],
-          "colors": ["Terrakotta"]
+          "colors": ["Terrakotta"],
+          "parcel": { "weightGrams": 500, "lengthCm": 20, "widthCm": 12, "heightCm": 12 }
         },
         {
           "title": "Espressokoppar, två stycken",
@@ -105,7 +111,8 @@
           "stock": 4,
           "isActive": true,
           "materials": ["Porslin"],
-          "colors": ["Vit", "Svart"]
+          "colors": ["Vit", "Svart"],
+          "parcel": { "weightGrams": 700, "lengthCm": 25, "widthCm": 15, "heightCm": 12 }
         },
         {
           "title": "Blomkruka med fat",
@@ -115,7 +122,8 @@
           "stock": 5,
           "isActive": true,
           "materials": ["Lergods"],
-          "colors": ["Terrakotta"]
+          "colors": ["Terrakotta"],
+          "parcel": { "weightGrams": 2000, "lengthCm": 30, "widthCm": 30, "heightCm": 28 }
         },
         {
           "title": "Tekanna",
@@ -124,7 +132,8 @@
           "stock": 2,
           "isActive": false,
           "materials": ["Stengods"],
-          "colors": ["Blå", "Vit"]
+          "colors": ["Blå", "Vit"],
+          "parcel": { "weightGrams": 1600, "lengthCm": 30, "widthCm": 25, "heightCm": 22 }
         }
       ]
     },
@@ -140,7 +149,8 @@
           "stock": 15,
           "isActive": true,
           "materials": ["Linne"],
-          "colors": ["Beige"]
+          "colors": ["Beige"],
+          "parcel": { "weightGrams": 200, "lengthCm": 25, "widthCm": 20, "heightCm": 3 }
         },
         {
           "title": "Vävd kudde i ull",
@@ -149,7 +159,8 @@
           "stock": 4,
           "isActive": true,
           "materials": ["Ull"],
-          "colors": ["Grå", "Vit"]
+          "colors": ["Grå", "Vit"],
+          "parcel": { "weightGrams": 900, "lengthCm": 45, "widthCm": 35, "heightCm": 12 }
         },
         {
           "title": "Handvävd löpare",
@@ -158,7 +169,8 @@
           "stock": 3,
           "isActive": true,
           "materials": ["Bomull", "Linne"],
-          "colors": ["Blå", "Vit"]
+          "colors": ["Blå", "Vit"],
+          "parcel": { "weightGrams": 400, "lengthCm": 35, "widthCm": 25, "heightCm": 5 }
         },
         {
           "title": "Tygkasse med tryck",
@@ -167,7 +179,8 @@
           "stock": 20,
           "isActive": true,
           "materials": ["Bomull"],
-          "colors": ["Beige", "Grön"]
+          "colors": ["Beige", "Grön"],
+          "parcel": { "weightGrams": 150, "lengthCm": 25, "widthCm": 20, "heightCm": 2 }
         },
         {
           "title": "Pläd i ull",
@@ -176,7 +189,8 @@
           "stock": 1,
           "isActive": true,
           "materials": ["Ull"],
-          "colors": ["Röd", "Brun"]
+          "colors": ["Röd", "Brun"],
+          "parcel": { "weightGrams": 1300, "lengthCm": 45, "widthCm": 35, "heightCm": 12 }
         },
         {
           "title": "Grytlappar, två stycken",
@@ -185,7 +199,8 @@
           "stock": 0,
           "isActive": true,
           "materials": ["Bomull"],
-          "colors": ["Gul"]
+          "colors": ["Gul"],
+          "parcel": { "weightGrams": 150, "lengthCm": 22, "widthCm": 20, "heightCm": 3 }
         },
         {
           "title": "Bordsduk i linne",
@@ -194,7 +209,8 @@
           "stock": 2,
           "isActive": true,
           "materials": ["Linne"],
-          "colors": ["Vit"]
+          "colors": ["Vit"],
+          "parcel": { "weightGrams": 700, "lengthCm": 35, "widthCm": 30, "heightCm": 5 }
         },
         {
           "title": "Korg i bomullsrep",
@@ -203,7 +219,8 @@
           "stock": 6,
           "isActive": true,
           "materials": ["Bomull"],
-          "colors": ["Vit", "Svart"]
+          "colors": ["Vit", "Svart"],
+          "parcel": { "weightGrams": 800, "lengthCm": 32, "widthCm": 32, "heightCm": 25 }
         }
       ]
     },
@@ -221,7 +238,8 @@
           "stock": 1,
           "isActive": true,
           "materials": ["Papper", "Akvarellfärg"],
-          "colors": ["Blå", "Rosa"]
+          "colors": ["Blå", "Rosa"],
+          "parcel": { "weightGrams": 800, "lengthCm": 50, "widthCm": 40, "heightCm": 4 }
         },
         {
           "title": "Röda hus, akrylmålning",
@@ -231,7 +249,8 @@
           "stock": 1,
           "isActive": true,
           "materials": ["Duk", "Akrylfärg"],
-          "colors": ["Röd", "Grön"]
+          "colors": ["Röd", "Grön"],
+          "parcel": { "weightGrams": 2500, "lengthCm": 80, "widthCm": 65, "heightCm": 8 }
         },
         {
           "title": "Fåglar, linoleumtryck",
@@ -241,7 +260,8 @@
           "stock": 5,
           "isActive": true,
           "materials": ["Papper"],
-          "colors": ["Svart", "Vit"]
+          "colors": ["Svart", "Vit"],
+          "parcel": { "weightGrams": 400, "lengthCm": 45, "widthCm": 35, "heightCm": 3 }
         },
         {
           "title": "Blommor, konsttryck",
@@ -251,7 +271,8 @@
           "stock": 10,
           "isActive": true,
           "materials": ["Papper"],
-          "colors": ["Gul", "Rosa", "Grön"]
+          "colors": ["Gul", "Rosa", "Grön"],
+          "parcel": { "weightGrams": 300, "lengthCm": 55, "widthCm": 8, "heightCm": 8 }
         },
         {
           "title": "Höstlöv, akvarell",
@@ -261,7 +282,8 @@
           "stock": 0,
           "isActive": true,
           "materials": ["Papper", "Akvarellfärg"],
-          "colors": ["Röd", "Gul"]
+          "colors": ["Röd", "Gul"],
+          "parcel": { "weightGrams": 700, "lengthCm": 45, "widthCm": 35, "heightCm": 4 }
         },
         {
           "title": "Abstrakt i blått",
@@ -271,7 +293,8 @@
           "stock": 1,
           "isActive": true,
           "materials": ["Duk", "Akrylfärg"],
-          "colors": ["Blå", "Grå"]
+          "colors": ["Blå", "Grå"],
+          "parcel": { "weightGrams": 4000, "lengthCm": 120, "widthCm": 100, "heightCm": 8 }
         },
         {
           "title": "Katten, blyertsteckning",
@@ -281,7 +304,8 @@
           "stock": 1,
           "isActive": true,
           "materials": ["Papper"],
-          "colors": ["Grå"]
+          "colors": ["Grå"],
+          "parcel": { "weightGrams": 500, "lengthCm": 40, "widthCm": 30, "heightCm": 4 }
         },
         {
           "title": "Små akvareller, serie",
@@ -291,7 +315,8 @@
           "stock": 3,
           "isActive": false,
           "materials": ["Papper", "Akvarellfärg"],
-          "colors": ["Blå", "Grön"]
+          "colors": ["Blå", "Grön"],
+          "parcel": { "weightGrams": 400, "lengthCm": 30, "widthCm": 25, "heightCm": 3 }
         }
       ]
     },
@@ -307,7 +332,8 @@
           "stock": 7,
           "isActive": true,
           "materials": ["Silver"],
-          "colors": ["Silver"]
+          "colors": ["Silver"],
+          "parcel": { "weightGrams": 100, "lengthCm": 15, "widthCm": 10, "heightCm": 5 }
         },
         {
           "title": "Halsband med mässingshänge",
@@ -316,7 +342,8 @@
           "stock": 9,
           "isActive": true,
           "materials": ["Mässing"],
-          "colors": ["Guld"]
+          "colors": ["Guld"],
+          "parcel": { "weightGrams": 120, "lengthCm": 15, "widthCm": 10, "heightCm": 5 }
         },
         {
           "title": "Hamrad silverring",
@@ -325,7 +352,8 @@
           "stock": 4,
           "isActive": true,
           "materials": ["Silver"],
-          "colors": ["Silver"]
+          "colors": ["Silver"],
+          "parcel": { "weightGrams": 80, "lengthCm": 10, "widthCm": 10, "heightCm": 5 }
         },
         {
           "title": "Armband med glaspärlor",
@@ -334,7 +362,8 @@
           "stock": 10,
           "isActive": true,
           "materials": ["Glas"],
-          "colors": ["Blå", "Grön"]
+          "colors": ["Blå", "Grön"],
+          "parcel": { "weightGrams": 120, "lengthCm": 15, "widthCm": 10, "heightCm": 5 }
         },
         {
           "title": "Cirkelörhängen i mässing",
@@ -343,7 +372,8 @@
           "stock": 0,
           "isActive": true,
           "materials": ["Mässing"],
-          "colors": ["Guld"]
+          "colors": ["Guld"],
+          "parcel": { "weightGrams": 100, "lengthCm": 15, "widthCm": 10, "heightCm": 5 }
         },
         {
           "title": "Brosch i silver",
@@ -352,7 +382,8 @@
           "stock": 1,
           "isActive": true,
           "materials": ["Silver"],
-          "colors": ["Silver"]
+          "colors": ["Silver"],
+          "parcel": { "weightGrams": 100, "lengthCm": 15, "widthCm": 10, "heightCm": 5 }
         },
         {
           "title": "Tunn silverkedja",
@@ -361,7 +392,8 @@
           "stock": 3,
           "isActive": true,
           "materials": ["Silver"],
-          "colors": ["Silver"]
+          "colors": ["Silver"],
+          "parcel": { "weightGrams": 80, "lengthCm": 15, "widthCm": 10, "heightCm": 5 }
         },
         {
           "title": "Manschettknappar i mässing",
@@ -370,7 +402,8 @@
           "stock": 5,
           "isActive": true,
           "materials": ["Mässing"],
-          "colors": ["Guld"]
+          "colors": ["Guld"],
+          "parcel": { "weightGrams": 120, "lengthCm": 15, "widthCm": 10, "heightCm": 5 }
         }
       ]
     },
@@ -386,7 +419,8 @@
           "stock": 6,
           "isActive": true,
           "materials": ["Ek"],
-          "colors": ["Brun"]
+          "colors": ["Brun"],
+          "parcel": { "weightGrams": 1500, "lengthCm": 45, "widthCm": 28, "heightCm": 5 }
         },
         {
           "title": "Smörkniv i björk",
@@ -395,7 +429,8 @@
           "stock": 18,
           "isActive": true,
           "materials": ["Björk"],
-          "colors": ["Beige"]
+          "colors": ["Beige"],
+          "parcel": { "weightGrams": 100, "lengthCm": 22, "widthCm": 6, "heightCm": 3 }
         },
         {
           "title": "Salladsbestick i björk",
@@ -404,7 +439,8 @@
           "stock": 8,
           "isActive": true,
           "materials": ["Björk"],
-          "colors": ["Beige"]
+          "colors": ["Beige"],
+          "parcel": { "weightGrams": 250, "lengthCm": 35, "widthCm": 12, "heightCm": 5 }
         },
         {
           "title": "Svarvad skål i valnöt",
@@ -413,7 +449,8 @@
           "stock": 1,
           "isActive": true,
           "materials": ["Valnöt"],
-          "colors": ["Brun"]
+          "colors": ["Brun"],
+          "parcel": { "weightGrams": 900, "lengthCm": 30, "widthCm": 30, "heightCm": 14 }
         },
         {
           "title": "Ljusstake i ek",
@@ -422,7 +459,8 @@
           "stock": 0,
           "isActive": true,
           "materials": ["Ek"],
-          "colors": ["Brun"]
+          "colors": ["Brun"],
+          "parcel": { "weightGrams": 700, "lengthCm": 25, "widthCm": 15, "heightCm": 15 }
         },
         {
           "title": "Glasunderlägg, fyra stycken",
@@ -431,7 +469,8 @@
           "stock": 5,
           "isActive": true,
           "materials": ["Ek"],
-          "colors": ["Brun"]
+          "colors": ["Brun"],
+          "parcel": { "weightGrams": 300, "lengthCm": 15, "widthCm": 15, "heightCm": 6 }
         },
         {
           "title": "Klädkrok i ek",
@@ -440,7 +479,8 @@
           "stock": 11,
           "isActive": true,
           "materials": ["Ek"],
-          "colors": ["Brun"]
+          "colors": ["Brun"],
+          "parcel": { "weightGrams": 400, "lengthCm": 20, "widthCm": 12, "heightCm": 8 }
         }
       ]
     }

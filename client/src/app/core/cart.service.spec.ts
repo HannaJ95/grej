@@ -12,6 +12,7 @@ const vase: Product = {
   image: null,
   materials: [],
   colors: [],
+  parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
 };
 const plate: Product = {
   id: 2,
@@ -24,6 +25,7 @@ const plate: Product = {
   image: null,
   materials: [],
   colors: [],
+  parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
 };
 
 describe('CartService', () => {
@@ -133,6 +135,7 @@ describe('CartService', () => {
         image: null,
         quantity: 1,
         maxQuantity: 3,
+        parcel: vase.parcel,
       },
     ]);
   });
@@ -167,6 +170,30 @@ describe('CartService', () => {
     const item = new CartService().items()[0];
     expect(item.maxQuantity).toBe(99);
     expect(item.image).toBeNull();
+  });
+
+  it("shows the shipping for the rows' parcels", () => {
+    const cart = new CartService();
+
+    // One vase's volume weighs 2 625 g, two weigh 5 250 g.
+    cart.add(vase);
+    expect(cart.shipping()).toBe(79);
+    cart.add(vase);
+    expect(cart.shipping()).toBe(129);
+  });
+
+  it('has no shipping for a row saved without a parcel, until the product is added again', () => {
+    localStorage.setItem(
+      'grej.cart',
+      JSON.stringify([{ productId: 1, title: 'Vas', price: 300, currency: 'SEK', quantity: 1 }]),
+    );
+    const cart = new CartService();
+    expect(cart.items()[0].parcel).toBeNull();
+    expect(cart.shipping()).toBeNull();
+
+    cart.add(vase);
+
+    expect(cart.shipping()).toBe(129);
   });
 
   it('starts empty when the saved cart is broken', () => {
