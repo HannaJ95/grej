@@ -11,6 +11,7 @@ import { ShopProperty } from '../../../core/product-property';
 import { LinkButton } from '../../../shared/link-button/link-button';
 import { FilterGroup } from '../filter-group/filter-group';
 import { FilterOption } from '../filter-option/filter-option';
+import { FilterSearch } from '../filter-search/filter-search';
 import { PriceLimits, PriceRange } from '../price-range/price-range';
 
 type IdList = 'materialIds' | 'colorIds';
@@ -19,7 +20,7 @@ type IdList = 'materialIds' | 'colorIds';
 // without choices is left out.
 @Component({
   selector: 'app-product-filters',
-  imports: [FilterGroup, FilterOption, LinkButton, PriceRange],
+  imports: [FilterGroup, FilterOption, FilterSearch, LinkButton, PriceRange],
   templateUrl: './product-filters.html',
   styleUrl: './product-filters.scss',
 })
@@ -40,6 +41,10 @@ export class ProductFilters {
     const highest = this.highestPrice();
     return highest ? Math.ceil(highest / 100) * 100 : null;
   });
+
+  protected showSearch(search: string): void {
+    this.show({ ...this.filter(), search });
+  }
 
   protected showPrices(limits: PriceLimits): void {
     this.show({ ...this.filter(), minPrice: limits.min, maxPrice: limits.max });

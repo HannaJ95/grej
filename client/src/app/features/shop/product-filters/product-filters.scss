@@ -25,6 +25,12 @@
   gap: var(--space-16);
 }
 
+// The top padding keeps the field's focus ring below the heading, whose background covers what
+// scrolls under it.
+.search {
+  padding-block: var(--space-4) var(--space-20);
+}
+
 // Each group draws the line above it, so the last line is drawn here.
 .groups {
   border-bottom: var(--border-width-default) solid var(--color-border-default);

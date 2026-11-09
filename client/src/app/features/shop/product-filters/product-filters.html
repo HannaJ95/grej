@@ -9,6 +9,8 @@
   </div>
 </div>
 
+<app-filter-search class="search" [value]="filter().search" (searched)="showSearch($event)" />
+
 <div class="groups">
   @if (categories().length > 0) {
     <app-filter-group heading="Kategori">

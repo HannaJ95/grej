@@ -103,6 +103,19 @@ describe('ProductFilters', () => {
     expect(router.url).toBe('/produkter?kategori=1');
   });
 
+  it('puts the search in the URL from page 1, next to the other choices', async () => {
+    const { fixture, router, element } = await render({ categoryIds: [1] });
+    const field = element.querySelector<HTMLInputElement>('input[type="search"]')!;
+
+    field.value = 'vas';
+    field.dispatchEvent(new Event('change'));
+    // Chrome's own event on Enter, which must not reach the filter.
+    field.dispatchEvent(new Event('search', { bubbles: true }));
+    await fixture.whenStable();
+
+    expect(router.url).toBe('/produkter?kategori=1&sok=vas');
+  });
+
   it('shows Rensa only when something is chosen, and Rensa removes every choice', async () => {
     expect((await render()).element.querySelector('.clear')).toBeNull();
 
@@ -112,6 +125,7 @@ describe('ProductFilters', () => {
       materialIds: [4],
       colorIds: [6],
       minPrice: 100,
+      search: 'vas',
     });
     element.querySelector<HTMLButtonElement>('.clear')!.click();
     await fixture.whenStable();
