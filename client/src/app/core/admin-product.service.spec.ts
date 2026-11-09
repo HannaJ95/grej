@@ -16,6 +16,7 @@ describe('AdminProductService', () => {
     categoryId: 1,
     materialIds: [3],
     colorIds: [],
+    parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
   };
 
   beforeEach(() => {

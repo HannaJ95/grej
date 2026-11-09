@@ -3,6 +3,7 @@ import { inject, Service, Signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PagedResult } from './paged-result';
+import { Parcel } from './parcel';
 import { ProductImage } from './product-image';
 
 // A product as the CMS sees it (AdminProductDto in the API): hidden products too,
@@ -20,6 +21,7 @@ export interface AdminProduct {
   materialIds: number[];
   colorIds: number[];
   image: ProductImage | null;
+  parcel: Parcel;
 }
 
 // What the CMS form sends when a product is created or saved (ProductRequest in the API).
@@ -33,6 +35,7 @@ export interface ProductInput {
   // Several of each, or none (ambiguity.md). They replace the product's old ones.
   materialIds: number[];
   colorIds: number[];
+  parcel: Parcel;
 }
 
 // Reads and changes products through the API's admin endpoints. authInterceptor adds
