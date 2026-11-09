@@ -26,19 +26,21 @@
             <!-- Only under a ticked main category, which they narrow. A list of their own inside
                  its row, so screen readers tell the levels apart too. -->
             @if (category.subcategories.length > 0 && filter().categoryIds.includes(category.id)) {
-              <ul class="options subcategories">
-                @for (subcategory of category.subcategories; track subcategory.id) {
-                  <li>
-                    <app-filter-option
-                      sub
-                      [name]="subcategory.name"
-                      [count]="subcategory.productCount"
-                      [checked]="filter().categoryIds.includes(subcategory.id)"
-                      (toggled)="toggle('categoryIds', subcategory.id, $event)"
-                    />
-                  </li>
-                }
-              </ul>
+              <div class="unfold" animate.enter="unfolding" animate.leave="folding">
+                <ul class="options subcategories">
+                  @for (subcategory of category.subcategories; track subcategory.id) {
+                    <li>
+                      <app-filter-option
+                        sub
+                        [name]="subcategory.name"
+                        [count]="subcategory.productCount"
+                        [checked]="filter().categoryIds.includes(subcategory.id)"
+                        (toggled)="toggle('categoryIds', subcategory.id, $event)"
+                      />
+                    </li>
+                  }
+                </ul>
+              </div>
             }
           </li>
         }
