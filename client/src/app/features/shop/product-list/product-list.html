@@ -22,7 +22,9 @@
 <div class="toolbar">
   <div class="page-width toolbar-row">
     @if (shown(); as s) {
-      <p class="text-label-s">
+      <!-- aria-live reads out the new number after each choice. tabindex="-1" lets focusCount()
+           move the focus here without adding it to the Tab order. -->
+      <p #count class="text-label-s" tabindex="-1" aria-live="polite">
         @if (s.total === 0) {
           0 grejer hittades
         } @else {
@@ -79,10 +81,7 @@
       <p role="alert">Produkterna kunde inte visas.</p>
     } @else if (lastResult(); as r) {
       @if (r.items.length === 0 && hasChoices()) {
-        <p>
-          Inga grejer matchar filtret.
-          <a class="text-link-s" routerLink="/produkter">Visa alla grejer</a>
-        </p>
+        <app-no-results [chips]="chips()" (cleared)="focusCount()" />
       } @else if (r.items.length === 0) {
         <p>Det finns inga produkter att visa.</p>
       } @else {

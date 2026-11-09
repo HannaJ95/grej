@@ -1,5 +1,13 @@
-import { Component, computed, inject, input, linkedSignal, LOCALE_ID } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  input,
+  linkedSignal,
+  LOCALE_ID,
+  viewChild,
+} from '@angular/core';
 import { CategoryService } from '../../../core/category.service';
 import { countChoices, ProductFilter, toPrice, toSearch } from '../../../core/product-filter';
 import { ProductPage, ProductService } from '../../../core/product.service';
@@ -13,6 +21,7 @@ import { ActiveFilters } from '../active-filters/active-filters';
 import { filterChips } from '../active-filters/filter-chips';
 import { CategoryTabs } from '../category-tabs/category-tabs';
 import { FilterDrawer } from '../filter-drawer/filter-drawer';
+import { NoResults } from '../no-results/no-results';
 import { ProductCard } from '../product-card/product-card';
 import { ProductFilters } from '../product-filters/product-filters';
 
@@ -20,12 +29,12 @@ import { ProductFilters } from '../product-filters/product-filters';
 @Component({
   selector: 'app-product-list',
   imports: [
-    RouterLink,
     ActiveFilters,
     Breadcrumb,
     CategoryTabs,
     FilterDrawer,
     IconButton,
+    NoResults,
     Pagination,
     ProductCard,
     ProductFilters,
@@ -37,6 +46,7 @@ export class ProductList {
   private readonly products = inject(ProductService);
   private readonly properties = inject(PropertyService);
   private readonly locale = inject(LOCALE_ID);
+  private readonly count = viewChild<ElementRef<HTMLElement>>('count');
 
   // Set by the router from the URL (withComponentInputBinding). The aliases are the Swedish
   // names in the URL, the same as in toQueryParams.
@@ -104,4 +114,10 @@ export class ProductList {
     const from = (page - 1) * pageSize + 1;
     return { from, to: from + items.length - 1, total: totalCount };
   });
+
+  // The button that removed every filter disappears, so the focus moves to the count, which reads
+  // out the new number when it comes.
+  protected focusCount(): void {
+    this.count()?.nativeElement.focus();
+  }
 }
