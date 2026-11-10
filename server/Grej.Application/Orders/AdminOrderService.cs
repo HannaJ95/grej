@@ -60,13 +60,12 @@ public class AdminOrderService(IOrderRepository orders, ProductService products,
 
         order.CancelByAdmin();
 
-        // The stock comes back here, since a refund never changes it (constraints.md). Through
-        // ProductService, since the stock belongs to the Catalog module.
+        // Here, since a refund never changes the stock (constraints.md). Through ProductService,
+        // since the stock belongs to Catalog.
         var items = order.Items.Select(item => new ProductQuantity(item.ProductId, item.Quantity)).ToList();
         await products.IncreaseStockAsync(items, cancellationToken);
 
-        // One transaction. If a webhook changed the stock since it was read, nothing is saved
-        // and this throws (ProductConfiguration).
+        // One transaction. Throws if a webhook changed the stock meanwhile (ProductConfiguration).
         await orders.SaveChangesAsync(cancellationToken);
         return ChangeOrderStatusResult.Changed;
     }
@@ -112,7 +111,7 @@ public class AdminOrderService(IOrderRepository orders, ProductService products,
             .Select(item => new OrderItemDto(item.TitleAtPurchase, item.UnitPrice, item.Quantity, item.UnitPrice * item.Quantity))
             .ToList());
 
-    // Every saved order has a payment, so it is only null if a query forgot Include(o => o.Payment).
+    // Only null if a query forgot Include(o => o.Payment).
     private static string PaymentStatusOf(Order order) =>
         order.Payment?.Status.ToString()
             ?? throw new InvalidOperationException($"Order {order.Id} was read without its payment.");

@@ -2,10 +2,9 @@ using Grej.Domain.Payments;
 
 namespace Grej.Application.Payments;
 
-// Where the admin finds a payment at its provider, e.g. in Stripe's dashboard. Implemented in
-// Infrastructure (StripeDashboard), like IPaymentProvider, so the application does not know Stripe.
+// The payment's page at its provider, e.g. Stripe's dashboard. Implemented in Infrastructure.
 public interface IPaymentDashboard
 {
-    // Null when the provider has no page for it: unpaid, demo and old payments have no id.
+    // Null without an id: unpaid, demo and old payments.
     string? UrlFor(Payment payment);
 }

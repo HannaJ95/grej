@@ -135,7 +135,7 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
     public async Task GetById_PaymentWithoutId_HasNoLink()
     {
         var unpaid = await AddOrderAsync();
-        // Paid without an id, like the demo orders and the orders paid before AddProviderPaymentId.
+        // Like the demo orders and those paid before AddProviderPaymentId.
         var paidWithoutId = await AddOrderAsync(Pay);
         var client = await CreateAdminClientAsync();
 
