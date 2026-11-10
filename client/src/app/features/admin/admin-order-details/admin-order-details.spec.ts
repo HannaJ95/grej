@@ -26,6 +26,7 @@ describe('AdminOrderDetails', () => {
     paymentStatus: 'Paid',
     needsRefund: false,
     needsCancelling: false,
+    needsAttention: false,
     canBeShipped: true,
     canBeCancelled: true,
     customerName: 'Anna Svensson',
@@ -63,7 +64,7 @@ describe('AdminOrderDetails', () => {
     vi.restoreAllMocks();
   });
 
-  // Opens /admin/ordrar/7 and lets answer() reply to the page's request.
+  // answer() replies to the page's request.
   async function show(answer: (request: TestRequest) => void) {
     harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/admin/ordrar/7');
@@ -99,7 +100,7 @@ describe('AdminOrderDetails', () => {
       ),
     );
     post.flush(null, { status, statusText: status === 204 ? 'No Content' : 'Conflict' });
-    // The page asks for the order again once the POST is done. waitFor tries until it has.
+    // Then the page asks for the order again.
     const reload = await vi.waitFor(() =>
       httpTesting.expectOne(
         (req) => req.method === 'GET' && req.url.endsWith('/api/admin/orders/7'),
@@ -127,7 +128,6 @@ describe('AdminOrderDetails', () => {
     expect(texts(page, 'tfoot th')).toEqual(['Frakt (Paket till ombud)', 'Totalt']);
     // The test has no Swedish locale, so only the number is checked.
     expect(texts(page, 'tfoot td')[0]).toContain('79');
-    // The API says a paid order that is not shipped can be both shipped and cancelled.
     expect(buttonTexts(page)).toEqual(['Markera som skickad', 'Avbryt ordern']);
   });
 
@@ -243,6 +243,13 @@ describe('AdminOrderDetails', () => {
     expect(texts(page, 'dd')[2]).toBe('Återbetald');
     expect(page.textContent).toContain('Behöver avbrytas.');
     expect(buttonTexts(page)).toEqual(['Avbryt ordern']);
+  });
+
+  it('says that an order sold twice needs attention and can still be shipped', async () => {
+    const page = await show((request) => request.flush({ ...paidOrder, needsAttention: true }));
+
+    expect(page.textContent).toContain('Dubbelsåld.');
+    expect(buttonTexts(page)).toEqual(['Markera som skickad', 'Avbryt ordern']);
   });
 
   it('says so when the order cannot be shown, e.g. an unknown id', async () => {

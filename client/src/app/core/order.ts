@@ -1,31 +1,31 @@
-// The statuses as the API sends them, as text (OrderStatus and PaymentStatus in the API).
+// As text, the way the API sends them.
 export type OrderStatus = 'Pending' | 'Shipped' | 'Cancelled';
 export type PaymentStatus = 'Pending' | 'Paid' | 'Expired' | 'Refunded';
 
-// One row in the CMS's order list (OrderSummaryDto in the API).
+// OrderSummaryDto in the API.
 export interface OrderSummary {
   id: number;
   orderNumber: string;
-  // In UTC, e.g. "2026-11-02T16:43:54Z". The date pipe shows it in the browser's time zone.
+  // In UTC. The date pipe shows it in the browser's time zone.
   createdAt: string;
-  // Null until the order is paid, since Stripe Checkout collects it.
+  // Null until the order is paid.
   customerName: string | null;
   total: number;
   currency: string;
   status: OrderStatus;
   paymentStatus: PaymentStatus;
-  // Cancelled but still paid, so the admin must refund it in Stripe.
   needsRefund: boolean;
-  // Refunded in Stripe but not cancelled, so the admin must cancel it to restock its products.
   needsCancelling: boolean;
+  // Paid after another customer had bought the last item, and not shipped or cancelled yet.
+  needsAttention: boolean;
 }
 
-// One order with its customer and rows (OrderDetailsDto in the API).
+// OrderDetailsDto in the API.
 export interface OrderDetails extends OrderSummary {
   // The API's answers to the order's rules, so the CMS needs no rules of its own.
   canBeShipped: boolean;
   canBeCancelled: boolean;
-  // All null until the order is paid, like customerName.
+  // Null until the order is paid.
   customerEmail: string | null;
   addressLine1: string | null;
   addressLine2: string | null;
@@ -38,8 +38,7 @@ export interface OrderDetails extends OrderSummary {
   items: OrderItem[];
 }
 
-// One row on an order, with the title and price from the time of purchase (OrderItemDto
-// in the API). lineTotal is calculated by the API.
+// OrderItemDto in the API. The title and price are from the time of purchase.
 export interface OrderItem {
   title: string;
   unitPrice: number;

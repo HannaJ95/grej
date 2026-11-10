@@ -10,7 +10,7 @@
   @let o = order.value();
   <div class="details">
     <section class="card" aria-labelledby="status-title">
-      <!-- tabindex="-1" lets change() move the focus here without adding it to the Tab order. -->
+      <!-- change() moves the focus here. -->
       <h2 #statusTitle class="text-display-2xs" id="status-title" tabindex="-1">Status</h2>
       <dl class="facts">
         <div>
@@ -39,8 +39,14 @@
           läggs produkterna tillbaka i lagret.
         </p>
       }
+      @if (o.needsAttention) {
+        <p class="notice text-body-s">
+          <strong>Dubbelsåld.</strong> En produkt i ordern var redan slutsåld när ordern betalades.
+          Avbryt ordern och återbetala kunden i Stripe, eller skicka den om du kan göra en till.
+        </p>
+      }
 
-      <!-- Only what the API says the order allows (Order.CanBeShipped, CanBeCancelledByAdmin). -->
+      <!-- Only what the API says the order allows. -->
       @if (o.canBeShipped || o.canBeCancelled) {
         <div class="actions">
           @if (o.canBeShipped) {
@@ -69,8 +75,6 @@
 
     <section class="card" aria-labelledby="customer-title">
       <h2 class="text-display-2xs" id="customer-title">Kund</h2>
-      <!-- Stripe Checkout collects the name and address, and the webhook stores them when the
-           order is paid. -->
       @if (o.customerName) {
         <dl class="facts">
           <div>

@@ -21,6 +21,7 @@ describe('AdminOrderList', () => {
     paymentStatus: 'Paid',
     needsRefund: false,
     needsCancelling: false,
+    needsAttention: false,
   };
 
   beforeEach(() => {
@@ -39,8 +40,7 @@ describe('AdminOrderList', () => {
 
   afterEach(() => httpTesting.verify());
 
-  // Opens url and answers the page's request with these orders. Returns the page and
-  // the ?all= the request asked for.
+  // Returns the page and the ?all= the request asked for.
   async function show(url: string, items: OrderSummary[]) {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(url);
@@ -58,8 +58,7 @@ describe('AdminOrderList', () => {
     expect(all).toBe('false');
     expect(page.querySelector('a[href="/admin/ordrar/7"]')?.textContent).toBe('GREJ-AB12CD34');
     expect(page.querySelector('main a[aria-current="page"]')?.textContent?.trim()).toBe('Att göra');
-    // The date and the sum are left out: the tests run without the app's Swedish locale
-    // (app.config.ts), so the pipes format them in English here.
+    // Not the date and the sum, since the tests have no Swedish locale (app.config.ts).
     const cells = [...page.querySelectorAll('tbody td')].map((td) => td.textContent?.trim());
     expect([cells[2], cells[4], cells[5]]).toEqual(['Anna Svensson', 'Betald', 'Ej skickad']);
   });
@@ -105,5 +104,13 @@ describe('AdminOrderList', () => {
 
     const status = page.querySelector('tbody td:last-child')?.textContent;
     expect(status).toMatch(/Ej skickad\s+Behöver avbrytas/);
+  });
+
+  it('shows which orders were sold twice', async () => {
+    const oversoldOrder: OrderSummary = { ...paidOrder, needsAttention: true };
+    const { page } = await show('/admin/ordrar', [oversoldOrder]);
+
+    const status = page.querySelector('tbody td:last-child')?.textContent;
+    expect(status).toMatch(/Ej skickad\s+Dubbelsåld/);
   });
 });
