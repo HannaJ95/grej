@@ -28,7 +28,7 @@ public class ProductRepositoryTests
         db.Products.AddRange(NewProduct(1, "Skål"), NewProduct(2, "Utkast", isActive: false), NewProduct(3, "Vas"));
         await db.SaveChangesAsync();
 
-        var page = await new ProductRepository(db).GetActivePageAsync(1, 12, new ProductFilter(), CancellationToken.None);
+        var page = await new ProductRepository(db).GetActivePageAsync(1, 12, new ProductFilter(), ProductSort.Newest, CancellationToken.None);
 
         Assert.Equal(["Vas", "Skål"], page.Items.Select(p => p.Title));
         Assert.Equal(2, page.TotalCount);
@@ -40,7 +40,7 @@ public class ProductRepositoryTests
         db.Products.AddRange(NewProduct(1, "Skål"), NewProduct(2, "Vas"), NewProduct(3, "Fat"));
         await db.SaveChangesAsync();
 
-        var page = await new ProductRepository(db).GetActivePageAsync(2, 2, new ProductFilter(), CancellationToken.None);
+        var page = await new ProductRepository(db).GetActivePageAsync(2, 2, new ProductFilter(), ProductSort.Newest, CancellationToken.None);
 
         Assert.Equal(["Skål"], page.Items.Select(p => p.Title));
         Assert.Equal(3, page.TotalCount);
@@ -58,7 +58,7 @@ public class ProductRepositoryTests
         await db.SaveChangesAsync();
 
         var page = await new ProductRepository(db).GetActivePageAsync(
-            1, 12, new ProductFilter { CategoryIds = [1, 3] }, CancellationToken.None);
+            1, 12, new ProductFilter { CategoryIds = [1, 3] }, ProductSort.Newest, CancellationToken.None);
 
         Assert.Equal(["Halsband", "Skål"], page.Items.Select(p => p.Title));
         Assert.Equal(2, page.TotalCount);
@@ -70,7 +70,7 @@ public class ProductRepositoryTests
         await AddMaterialAndColorProductsAsync();
 
         var page = await new ProductRepository(db).GetActivePageAsync(
-            1, 12, new ProductFilter { MaterialIds = [lera.Id, glas.Id] }, CancellationToken.None);
+            1, 12, new ProductFilter { MaterialIds = [lera.Id, glas.Id] }, ProductSort.Newest, CancellationToken.None);
 
         Assert.Equal(["Vit skål", "Vit vas", "Blå skål"], page.Items.Select(p => p.Title));
     }
@@ -81,7 +81,7 @@ public class ProductRepositoryTests
         await AddMaterialAndColorProductsAsync();
 
         var page = await new ProductRepository(db).GetActivePageAsync(
-            1, 12, new ProductFilter { MaterialIds = [lera.Id, glas.Id], ColorIds = [blå.Id] }, CancellationToken.None);
+            1, 12, new ProductFilter { MaterialIds = [lera.Id, glas.Id], ColorIds = [blå.Id] }, ProductSort.Newest, CancellationToken.None);
 
         Assert.Equal(["Blå skål"], page.Items.Select(p => p.Title));
     }
@@ -97,7 +97,7 @@ public class ProductRepositoryTests
         await db.SaveChangesAsync();
 
         var page = await new ProductRepository(db).GetActivePageAsync(
-            1, 12, new ProductFilter { MinPrice = 200m, MaxPrice = 300m }, CancellationToken.None);
+            1, 12, new ProductFilter { MinPrice = 200m, MaxPrice = 300m }, ProductSort.Newest, CancellationToken.None);
 
         Assert.Equal(["Vas", "Skål"], page.Items.Select(p => p.Title));
     }
@@ -114,12 +114,32 @@ public class ProductRepositoryTests
         var repository = new ProductRepository(db);
 
         var oneWord = await repository.GetActivePageAsync(
-            1, 12, new ProductFilter { SearchWords = ["SKÅL"] }, CancellationToken.None);
+            1, 12, new ProductFilter { SearchWords = ["SKÅL"] }, ProductSort.Newest, CancellationToken.None);
         var twoWords = await repository.GetActivePageAsync(
-            1, 12, new ProductFilter { SearchWords = ["ek", "skål"] }, CancellationToken.None);
+            1, 12, new ProductFilter { SearchWords = ["ek", "skål"] }, ProductSort.Newest, CancellationToken.None);
 
         Assert.Equal(["Svarvad skål i ek", "Skål i blå glasyr"], oneWord.Items.Select(p => p.Title));
         Assert.Equal(["Svarvad skål i ek"], twoWords.Items.Select(p => p.Title));
+    }
+
+    [Fact]
+    public async Task GetActivePage_SortedByPrice_NewestFirstAtTheSamePrice()
+    {
+        db.Products.AddRange(
+            NewProduct(1, "Vas", price: 300m),
+            NewProduct(2, "Kort", price: 100m),
+            NewProduct(3, "Skål", price: 300m),
+            NewProduct(4, "Tavla", price: 900m));
+        await db.SaveChangesAsync();
+        var repository = new ProductRepository(db);
+
+        var ascending = await repository.GetActivePageAsync(
+            1, 12, new ProductFilter(), ProductSort.PriceAscending, CancellationToken.None);
+        var descending = await repository.GetActivePageAsync(
+            1, 12, new ProductFilter(), ProductSort.PriceDescending, CancellationToken.None);
+
+        Assert.Equal(["Kort", "Skål", "Vas", "Tavla"], ascending.Items.Select(p => p.Title));
+        Assert.Equal(["Tavla", "Skål", "Vas", "Kort"], descending.Items.Select(p => p.Title));
     }
 
     [Fact]

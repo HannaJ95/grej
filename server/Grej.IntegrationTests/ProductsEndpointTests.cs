@@ -121,12 +121,27 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
     }
 
     [Theory]
+    [InlineData("", ProductSort.Newest)]
+    [InlineData("?sort=priceAscending", ProductSort.PriceAscending)]
+    [InlineData("?sort=PRICEDESCENDING", ProductSort.PriceDescending)]
+    public async Task GetPage_Sort_ReachesTheRepository(string queryString, ProductSort expected)
+    {
+        var client = CreateClient();
+
+        await client.GetAsync($"/api/products{queryString}");
+
+        Assert.Equal([expected], sorts);
+    }
+
+    [Theory]
     [InlineData("?page=0")]
     [InlineData("?pageSize=49")]
     [InlineData("?categoryId=abc")]
     [InlineData("?materialId=abc")]
     [InlineData("?minPrice=-1")]
     [InlineData("?maxPrice=1000000")]
+    [InlineData("?sort=popular")]
+    [InlineData("?sort=7")]
     public async Task GetPage_InvalidQuery_ReturnsBadRequest(string queryString)
     {
         var client = CreateClient();
@@ -177,13 +192,14 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
     // Main category id → its subcategories' ids. Empty unless a test fills it.
     private readonly Dictionary<int, int[]> subcategories = [];
 
-    // Every filter that reached FakeProductRepository, in order.
+    // Every filter and sort that reached FakeProductRepository, in order.
     private readonly List<ProductFilter> filters = [];
+    private readonly List<ProductSort> sorts = [];
 
     private HttpClient CreateClient(params Product[] products) =>
         factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
             {
-                services.AddScoped<IProductRepository>(_ => new FakeProductRepository(products, filters));
+                services.AddScoped<IProductRepository>(_ => new FakeProductRepository(products, filters, sorts));
                 services.AddScoped<ICategoryRepository>(_ => new FakeCategoryRepository(subcategories));
             }))
             .CreateClient();
@@ -222,7 +238,8 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
             throw new NotImplementedException();
     }
 
-    private class FakeProductRepository(Product[] products, List<ProductFilter> filters) : IProductRepository
+    private class FakeProductRepository(Product[] products, List<ProductFilter> filters, List<ProductSort> sorts)
+        : IProductRepository
     {
         public Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
             Task.FromResult(products.FirstOrDefault(p => p.Id == id));
@@ -231,12 +248,13 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
         public Task<IReadOnlyList<Product>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
-        // Only filters on category. The rest of the filtering and the paging are tested against
-        // EF Core in ProductRepositoryTests.
+        // Only filters on category, and doesn't sort. The rest of the filtering, the sorting and the
+        // paging are tested against EF Core in ProductRepositoryTests.
         public Task<PagedResult<Product>> GetActivePageAsync(
-            int page, int pageSize, ProductFilter filter, CancellationToken cancellationToken)
+            int page, int pageSize, ProductFilter filter, ProductSort sort, CancellationToken cancellationToken)
         {
             filters.Add(filter);
+            sorts.Add(sort);
             var items = InCategories(filter).ToList();
             return Task.FromResult(new PagedResult<Product>(items, page, pageSize, items.Count));
         }

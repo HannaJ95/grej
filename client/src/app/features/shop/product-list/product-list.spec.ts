@@ -239,6 +239,22 @@ describe('ProductList', () => {
     );
   });
 
+  it('sends the sort in ?sortera= to the API, and leaves out the newest first', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/produkter?sortera=lagst-pris');
+    flushFilters();
+    const empty = { items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 };
+
+    const sorted = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
+    expect(sorted.request.params.get('sort')).toBe('priceAscending');
+    sorted.flush(empty);
+
+    await harness.navigateByUrl('/produkter?sortera=nyast');
+    const newest = httpTesting.expectOne((req) => req.url.endsWith('/api/products'));
+    expect(newest.request.params.has('sort')).toBe(false);
+    newest.flush(empty);
+  });
+
   it('keeps the price slider while the list reloads', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/produkter');

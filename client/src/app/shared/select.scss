@@ -1,0 +1,87 @@
+// A <select> with the chevron icon instead of the browser's own arrow, shared by the CMS forms and
+// the shop's sort:
+// <span class="select"><select>…</select><app-icon name="chevron-down" /></span>
+// Put it after a stylesheet that sets the select's padding, so the room for the chevron wins.
+.select {
+  position: relative;
+  display: block;
+
+  select {
+    padding-right: var(--space-48);
+    appearance: none;
+    cursor: pointer;
+  }
+
+  // Lets a click on the chevron reach the select under it.
+  app-icon {
+    --icon-size: 1rem;
+
+    position: absolute;
+    top: 50%;
+    right: var(--space-16);
+    translate: 0 -50%;
+    pointer-events: none;
+  }
+}
+
+// Chrome's customizable select: still a real <select>, but its list can be styled like the other
+// popovers. Other browsers keep appearance: none above and show their own list.
+@supports (appearance: base-select) {
+  .select select,
+  .select select::picker(select) {
+    appearance: base-select;
+  }
+
+  // base-select makes the select a flex box, which would put the text at the top of a tall field.
+  .select select {
+    align-items: center;
+  }
+
+  // The chevron above is used instead, the same in every browser.
+  .select select::picker-icon {
+    display: none;
+  }
+
+  .select:has(select:open) app-icon {
+    rotate: 180deg;
+  }
+
+  // Below the select when it fits. The browser's default opens it where there is most room.
+  .select select::picker(select) {
+    position-try-order: normal;
+    margin-block: var(--space-4);
+    padding: 0;
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-bg-surface);
+    color: var(--color-text-primary);
+    box-shadow: var(--shadow-popover);
+  }
+
+  // The same weight for all, since the check marks the chosen one.
+  .select option {
+    gap: var(--space-16);
+    padding: var(--space-12) var(--space-16);
+    font-weight: inherit;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--color-bg-hover);
+    }
+
+    // Inside the option, so the list's edge doesn't cut the ring.
+    &:focus-visible {
+      outline-offset: calc(var(--border-width-default) * -2);
+    }
+
+    // The check icon, at the end. The browser only shows it on the chosen option.
+    &::checkmark {
+      order: 1;
+      width: 1rem;
+      height: 1rem;
+      margin-left: auto;
+      background: currentColor;
+      content: '';
+      mask: url('/icons/check.svg') center / contain no-repeat;
+    }
+  }
+}

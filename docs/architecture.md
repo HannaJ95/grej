@@ -335,22 +335,26 @@ Known limitations: two categories can have the same name, and the CMS shows at m
 
 ### Product filters (shop)
 
-The shop filters the product list on categories, price, materials and colors, and searches the titles (Should): "or" within one of them, "and" between them (ambiguity.md).
+The shop filters the product list on categories, price, materials and colors, searches the titles and sorts the list (Should): "or" within one of them, "and" between them (ambiguity.md).
 
 - `GET /api/products` takes `categoryId`, `materialId` and `colorId`, each repeated for several ids (at most 100), and `minPrice` and `maxPrice` (0–999 999.99, both included). Without them it returns all products. `ProductService` turns the query into a `ProductFilter`, and `ProductRepository.ActiveMatching` adds one `Where` per chosen filter: `= ANY` for the categories, and `EXISTS` on the join tables for materials and colors.
 - `search` (at most 100 characters) is split into words in `ProductService`, and `ActiveMatching` adds one `Where` per word: `p.Title.ToLower().Contains(word.ToLower())`, which EF Core turns into `lower("Title") LIKE '%word%'`, with `%` and `_` in the word escaped. Not `EF.Functions.ILike`, which the in-memory database in `ProductRepositoryTests` cannot run.
+- `sort` is `newest` (the default), `priceAscending` or `priceDescending` (`ProductSort`, in any case; anything else gives 400).
+  - It is its own parameter to `GetActivePageAsync`, not part of `ProductFilter`, since the highest price does not depend on it.
+  - `ProductRepository.Sorted` orders by the price or the id, and the id (newest first) decides between equal prices, so the pages never overlap. `ToPageAsync` only takes an ordered query, and the CMS's list uses `Sorted` too, always newest first.
 - A main category also shows its subcategories' products, unless one of its subcategories is chosen too. Then only the chosen subcategories are shown (ambiguity.md). `ProductService` works this out with `ICategoryRepository.GetSubcategoriesAsync` before it asks the product repository.
 - The answer is a `ProductPageDto`: the page plus `highestPrice`, the highest price among the products that match every filter except the price (null when none match). The price slider uses it as its end, so the scale fits the other choices but does not shrink while the customer drags. It is a third SQL query (`MAX`) next to the count and the page, and uses the same `ActiveMatching`, so it always filters the same way.
 - The choices come from three open endpoints: `GET /api/categories`, `GET /api/materials` and `GET /api/colors`. They are not paged, since the filter shows every choice at once (constraints.md).
   - Each leaves out what has no active products, so the customer never picks something that shows nothing, and each has `productCount`, the number of active products.
   - The categories are the main categories sorted by name, each with its `subcategories`. A main category's number includes its subcategories' products.
   - `CategoryService` and `PropertyService<T>` combine `GetAllAsync` with one count query (`CountActiveByCategoryAsync`, `CountActiveProductsAsync`), so the repositories still return domain objects. Materials and colors share `PropertyService<T>` and the abstract `PropertiesController<T>`, like the admin side.
-- In Angular the choice lives only in the URL, e.g. `/produkter?kategori=1&kategori=5&material=4&farg=2&minpris=200&maxpris=800&sok=skål`.
+- In Angular the choice lives only in the URL, e.g. `/produkter?kategori=1&kategori=5&material=4&farg=2&minpris=200&maxpris=800&sok=skål&sortera=lagst-pris`.
   - `ProductList` reads each parameter as an input (`toIdList`, `toPrice`, `toSearch`) into one `ProductFilter` (`core/product-filter.ts`), and the tabs, the filter, the chips, the list and the back button all follow it.
   - `toQueryParams` writes the filter back, and `injectShowFilter()` (`features/shop/show-filter.ts`) puts it in the URL for the filter, the chips and the no-results box. Every change starts the list on page 1, and the pagination and the tabs keep the other parameters.
   - `minpris` is left out at 0 and `maxpris` at the slider's end, so "no limit" stays no limit when the end moves.
   - The subcategories are only shown under a ticked main category, and removing a main category removes its subcategories too (`withoutCategory`). A tab is marked when its category is the only main category chosen.
   - `filterChips()` turns the filter into chips with the choices' names, each with the filter without it, for the toolbar and the no-results box.
+  - `?sortera=` (`lagst-pris` or `hogst-pris`, left out for the newest first) is its own input beside the filter, read by `toSort` (`core/product-sort.ts`). `SORTS` holds each sort's Swedish label and its value in the API, and `SortSelect` writes it to the URL. The filter's links merge the parameters, so they keep the sort.
   - `ProductList` keeps the last answer while the list reloads (`linkedSignal`), so the products, the count, the slider and the panel's "Visa 24 grejer" stay until the new answer comes, and the page doesn't jump.
 - The start page's category links go to `/produkter?kategori=<id>`.
 

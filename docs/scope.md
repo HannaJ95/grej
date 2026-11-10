@@ -49,6 +49,7 @@ The MVP is a single-seller webshop with an admin CMS = all **Must** items below.
 - Flag an order when the last item was sold twice at the same time
 - A link from an order in the CMS to its payment in Stripe, and the order number on the payment in Stripe (added 10 Nov)
 - Search orders in the CMS by order number, customer and product (added 10 Nov)
+- Sort the product list by newest or price (added 10 Nov)
 
 ### Could
 

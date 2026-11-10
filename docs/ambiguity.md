@@ -63,6 +63,10 @@ Why: This is how most webshops work. The scale fits the chosen category, but ign
 Decision (Should): Only the product's title. Every word must be somewhere in the title, in upper or lower case: "ljusstake ek" finds "Ljusstake i ek". The search is part of the filter: it combines with the other choices as "and", counts as one choice, and "Rensa" removes it.
 Why: The scope says "by name", and a description often mentions other things, like "passar som vas" on a mug. Each new word narrows the result, which is what a customer who adds a word expects.
 
+**How can the product list be sorted?**
+Decision (Should): Newest first (the default), lowest price first or highest price first. Products with the same price come newest first, and sold-out products are sorted like the others. The sort is not a filter: it does not count as a choice, and "Rensa", the chips and the tabs keep it. A new sort starts on page 1.
+Why: Date and price are what the shop has data for. There are no ratings or sales numbers to sort on by popularity. A fixed order for equal prices keeps a product from showing up on two pages.
+
 **Can a product have several images?**
 Decision (Should): Yes, up to 10. The MVP had one image per product.
 

@@ -38,9 +38,13 @@ html:has(app-shop-layout) {
 }
 
 // Below 1024 px the product list's toolbar sticks below the header too, so the focus is kept
-// below both. 3.25rem is the toolbar's height.
+// below both. The toolbar's height: two rows on a phone, one on a tablet.
 html:has(app-product-list) {
-  scroll-padding-top: calc(var(--shop-sticky-top) + 3.25rem);
+  scroll-padding-top: calc(var(--shop-sticky-top) + 4.6875rem);
+
+  @media (width >= 48rem) {
+    scroll-padding-top: calc(var(--shop-sticky-top) + 3.25rem);
+  }
 
   @media (width >= 64rem), (height < 30rem) {
     scroll-padding-top: var(--shop-sticky-top);

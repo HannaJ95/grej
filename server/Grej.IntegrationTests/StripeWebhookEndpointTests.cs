@@ -328,7 +328,7 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
             throw new NotImplementedException();
 
         public Task<PagedResult<Product>> GetActivePageAsync(
-            int page, int pageSize, ProductFilter filter, CancellationToken cancellationToken) =>
+            int page, int pageSize, ProductFilter filter, ProductSort sort, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
         public Task<decimal?> GetHighestActivePriceAsync(ProductFilter filter, CancellationToken cancellationToken) =>

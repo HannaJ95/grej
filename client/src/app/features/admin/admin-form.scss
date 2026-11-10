@@ -32,29 +32,6 @@ p {
   resize: vertical;
 }
 
-// Room for the chevron that lies on top of the select.
-.select {
-  position: relative;
-  display: block;
-
-  select {
-    padding-right: var(--space-48);
-    appearance: none;
-    cursor: pointer;
-  }
-
-  // Lets a click on the chevron reach the select under it.
-  app-icon {
-    --icon-size: 1rem;
-
-    position: absolute;
-    top: 50%;
-    right: var(--space-16);
-    translate: 0 -50%;
-    pointer-events: none;
-  }
-}
-
 input::placeholder {
   color: var(--color-text-secondary);
 }

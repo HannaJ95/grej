@@ -2,7 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Grej.Application.Catalog;
 
-// The query string of GET /api/products, e.g. ?page=2&categoryId=1&categoryId=3&minPrice=200&search=skål.
+// The query string of GET /api/products, e.g.
+// ?page=2&categoryId=1&categoryId=3&minPrice=200&search=skål&sort=priceAscending.
 public record ProductListQuery
 {
     // The upper limit keeps (Page - 1) * PageSize far from int's max value.
@@ -33,4 +34,8 @@ public record ProductListQuery
     // Null = no search.
     [MaxLength(100)]
     public string? Search { get; init; }
+
+    // The name in any case, e.g. priceAscending. The binding answers 400 to anything else, also to
+    // a number that is not one of the values, such as ?sort=7.
+    public ProductSort Sort { get; init; } = ProductSort.Newest;
 }

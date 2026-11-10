@@ -5,6 +5,7 @@ import { PagedResult } from './paged-result';
 import { Parcel } from './parcel';
 import { NO_FILTER, ProductFilter } from './product-filter';
 import { ProductImage } from './product-image';
+import { DEFAULT_SORT, ProductSort, SORTS } from './product-sort';
 
 // A product as the API returns it (ProductDto), both alone and in the list.
 export interface Product {
@@ -42,15 +43,20 @@ export class ProductService {
     return httpResource<Product>(() => `${environment.apiUrl}/api/products/${id()}`);
   }
 
-  // E.g. GET /api/products?page=2&categoryId=1&categoryId=3&minPrice=200. The API decides the
-  // page size. The start page leaves out the filter.
-  getProducts(page: Signal<number>, filter: Signal<ProductFilter> = signal(NO_FILTER)) {
+  // E.g. GET /api/products?page=2&categoryId=1&categoryId=3&minPrice=200&sort=priceAscending. The
+  // API decides the page size. The start page leaves out the filter and the sort.
+  getProducts(
+    page: Signal<number>,
+    filter: Signal<ProductFilter> = signal(NO_FILTER),
+    sort: Signal<ProductSort> = signal(DEFAULT_SORT),
+  ) {
     return httpResource<ProductPage>(() => {
       const { categoryIds, materialIds, colorIds, minPrice, maxPrice, search } = filter();
+      const order = sort();
       return {
         url: `${environment.apiUrl}/api/products`,
-        // An array repeats the key once per id, and an empty one adds nothing. A price or a
-        // search is only sent when it is set.
+        // An array repeats the key once per id, and an empty one adds nothing. A price, a search
+        // or a sort is only sent when it is set.
         params: {
           page: page(),
           categoryId: categoryIds,
@@ -59,6 +65,7 @@ export class ProductService {
           ...(minPrice === undefined ? {} : { minPrice }),
           ...(maxPrice === undefined ? {} : { maxPrice }),
           ...(search ? { search } : {}),
+          ...(order === DEFAULT_SORT ? {} : { sort: SORTS[order].api }),
         },
       };
     });
