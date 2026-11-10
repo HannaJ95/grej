@@ -65,8 +65,14 @@ public class StripePaymentProvider(StripeClient stripe, IConfiguration configura
             ],
             SuccessUrl = $"{frontendUrl}/kassa/tack?order={order.OrderNumber}",
             CancelUrl = $"{frontendUrl}/",
-            // Makes the order easy to find in the Stripe dashboard.
             Metadata = new Dictionary<string, string> { ["orderNumber"] = order.OrderNumber },
+            // The dashboard's payment list shows the PaymentIntent, not the session, so the
+            // order number goes there too, as the description shown in the list.
+            PaymentIntentData = new SessionPaymentIntentDataOptions
+            {
+                Description = order.OrderNumber,
+                Metadata = new Dictionary<string, string> { ["orderNumber"] = order.OrderNumber },
+            },
         };
 
         var session = await stripe.V1.Checkout.Sessions.CreateAsync(options, cancellationToken: cancellationToken);
