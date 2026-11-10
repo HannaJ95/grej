@@ -1,7 +1,13 @@
 :host {
+  // The big image's height, which the thumbnail column beside it also keeps to.
+  --main-height: 23.75rem;
+
   display: flex;
   flex-direction: column;
   gap: var(--space-10);
+  // As an item in the product page's grid it would otherwise be at least as wide as the whole
+  // row of thumbnails, and make the page scroll sideways instead of the row.
+  min-width: 0;
 
   @media (width >= 64rem) {
     display: grid;
@@ -14,7 +20,7 @@
 .main {
   display: block;
   width: 100%;
-  height: 23.75rem;
+  height: var(--main-height);
   object-fit: contain;
   background: var(--color-bg-image);
 
@@ -24,13 +30,17 @@
   }
 }
 
+// Up to 10 thumbnails: one row that scrolls sideways below 1024 px, like CategoryTabs, and from
+// 1024 px a column beside the big image that scrolls up and down.
 .thumbnails {
   display: flex;
-  flex-wrap: wrap;
   gap: var(--space-10);
-  margin: 0;
-  padding: 0;
+  // A scrolling box clips the focus ring, so the thumbnails get room around them, and the
+  // negative margin cancels that room.
+  margin: calc(-1 * var(--space-4));
+  padding: var(--space-4);
   list-style: none;
+  overflow-x: auto;
 
   @media (width >= 48rem) {
     gap: var(--space-8);
@@ -41,6 +51,13 @@
     grid-column: 1;
     grid-row: 1;
     gap: var(--space-12);
+    max-height: calc(var(--main-height) + 2 * var(--space-4));
+    overflow: hidden auto;
+  }
+
+  // The thumbnails keep their size instead of shrinking to fit the row.
+  > li {
+    flex-shrink: 0;
   }
 }
 
@@ -69,8 +86,10 @@
     height: 6.25rem;
   }
 
+  // The column's width, so a scrollbar that takes room makes them narrower instead of cutting them.
   @media (width >= 64rem) {
-    width: 5.5rem;
-    height: 6.5625rem;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 5.5 / 6.5625;
   }
 }
