@@ -18,8 +18,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Grej.IntegrationTests;
 
-// Tests the CMS's order endpoints the same way as AdminCategoriesEndpointTests: the real
-// API, repositories and admin login, with EF Core's in-memory database.
+// The real API, repositories and admin login, with EF Core's in-memory database.
 public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private const string Email = "admin@example.com";
@@ -92,7 +91,7 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
         var page = await client.GetFromJsonAsync<PagedResult<OrderSummaryDto>>("/api/admin/orders?all=true");
 
         Assert.Equal([expired.Id, unpaid.Id, paid.Id], page!.Items.Select(o => o.Id));
-        // The statuses are sent as text, which the CMS turns into Swedish.
+        // As text, not as numbers.
         Assert.Equal(["Expired", "Pending", "Paid"], page.Items.Select(o => o.PaymentStatus));
         Assert.Equal(["Cancelled", "Pending", "Pending"], page.Items.Select(o => o.Status));
     }
@@ -119,6 +118,22 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
         Assert.Equal(("Skål", 2, 900m), (item.Title, item.Quantity, item.LineTotal));
         Assert.Equal(("Paket till ombud", 79m), (details.ShippingMethod, details.ShippingCost));
         Assert.Equal(979m, details.Total);
+    }
+
+    [Fact]
+    public async Task Get_OversoldOrder_NeedsAttention()
+    {
+        var oversold = await AddOrderAsync(PayOversold);
+        await AddOrderAsync(Pay);
+        var client = await CreateAdminClientAsync();
+
+        var page = await client.GetFromJsonAsync<PagedResult<OrderSummaryDto>>("/api/admin/orders");
+        var details = await client.GetFromJsonAsync<OrderDetailsDto>($"/api/admin/orders/{oversold.Id}");
+
+        Assert.Equal([true, false], page!.Items.Select(o => o.NeedsAttention));
+        Assert.True(details!.NeedsAttention);
+        // Only a warning (ambiguity.md).
+        Assert.True(details.CanBeShipped);
     }
 
     [Fact]
@@ -254,8 +269,15 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
-    // What the webhook does when a Checkout session is paid or expires (OrderService).
+    // As the webhook leaves them.
     private static void Pay(Order order) => order.Payment!.MarkAsPaid();
+
+    // Another customer paid for the last item first.
+    private static void PayOversold(Order order)
+    {
+        Pay(order);
+        order.MarkAsOversold();
+    }
 
     private static void Expire(Order order)
     {
@@ -263,14 +285,12 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
         order.Cancel();
     }
 
-    // What the webhook does when the admin refunds in Stripe (charge.refunded).
     private static void Refund(Order order)
     {
         Pay(order);
         order.Payment!.MarkAsRefunded();
     }
 
-    // What the admin does in the CMS after the order was paid (AdminOrderService).
     private static void Ship(Order order)
     {
         Pay(order);
@@ -290,8 +310,8 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
         order.Payment!.MarkAsRefunded();
     }
 
-    // The product that AddOrderAsync's row points to (id 1). Only the tests that change the
-    // stock need it, since the in-memory database does not check foreign keys.
+    // The product of AddOrderAsync's row. Only the tests that change the stock need it, since
+    // the in-memory database does not check foreign keys.
     private async Task AddProductAsync(int stock)
     {
         using var scope = app.Services.CreateScope();
@@ -308,8 +328,7 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
         return (await db.Products.SingleAsync()).Stock;
     }
 
-    // Saves an order with one row and a payment, like the checkout does. handle can pay or
-    // expire it first. Its own scope = its own DbContext, like a separate request.
+    // Its own scope = its own DbContext, like a separate request.
     private async Task<Order> AddOrderAsync(Action<Order>? handle = null)
     {
         var order = new Order();
@@ -325,7 +344,7 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
         return order;
     }
 
-    // Logs in the way the frontend does, and sends the token with every request.
+    // Logs in the way the frontend does.
     private async Task<HttpClient> CreateAdminClientAsync()
     {
         await AdminSeeder.SeedAsync(app.Services);
