@@ -50,6 +50,9 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - Firefox and Safari close the panel at once, without the slide.
   - "Reduce motion" turns the slide off.
 - `shared/field-box.scss` is a text field in a framed box, used by the price fields and the search. The box is the label, so a click anywhere in it reaches the field, and the focus ring goes around the whole box.
+- `shared/select.scss` is a `<select>` with the chevron icon instead of the browser's own arrow, used by the CMS forms and the shop's sort.
+  - In Chrome it is a customizable select (`appearance: base-select`), still a real `<select>`. Its list looks like the other popovers: a 2 px frame, the surface color and `--shadow-popover`, the hover color on the row under the mouse or the keyboard, and the check icon on the chosen one. It opens below the field when it fits, and the chevron turns while it is open.
+  - Other browsers show their own list.
 - `shared/checkbox.scss` is the square checkbox (a real checkbox with `appearance: none` and the check icon on top), used by the shop's filter and the CMS's product form.
 - `shared/tabs.scss` is a row of bordered links where the current one (`aria-current="page"`) is dark, used by the shop's category tabs and the CMS's order list.
 - `ConfirmDialog` is our own `confirm()`. A page asks with `await confirm.ask({ title, message, hint, confirmLabel })` (`ConfirmService`) and gets true or false.
@@ -81,7 +84,11 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
 - The product list (`/produkter`) has a breadcrumb, the title with the number of products, `CategoryTabs`, and a toolbar with "Visar 1–12 av 40 grejer" ("0 grejer hittades" when nothing matches). It shows two products per row on a phone, and three on a tablet and a computer.
   - Screen readers hear the toolbar's count after each choice (`aria-live`).
   - While a new choice loads, the old products and the count stay, so the page doesn't jump. The products fade only if the answer takes more than 0.3 s.
-  - From 1024 px the toolbar also shows the chosen filters as chips (`ActiveFilters`). × removes one and moves the focus to the chip beside it, and "Rensa alla" removes them all. The toolbar has room for one row of chips, so it doesn't grow with the first choice.
+  - From 1024 px the toolbar also shows the chosen filters as chips (`ActiveFilters`). × removes one and moves the focus to the chip beside it, and "Rensa alla" removes them all. The sort box is taller than a row of chips, so the toolbar doesn't grow with the first choice.
+  - `SortSelect` at the end of the toolbar sorts the list: "Nyast först", "Lägst pris" or "Högst pris" (`?sortera=`).
+    - It is a field box, "Sortera: Nyast först", with a `shared/select.scss` select. On a phone only the choice shows; "Sortera" is the select's `aria-label` everywhere.
+    - It keeps the width of the longest choice, so it doesn't jump when the choice changes, but shrinks with large text on a narrow screen.
+    - A new sort starts on page 1. "Rensa", the chips and the tabs keep it.
   - `CategoryTabs` is a row of links: "Alla" plus one per category with its number. It scrolls sideways below 1024 px and wraps on a computer. A tab keeps the other filters.
   - `ProductFilters` has "Filter" with "Rensa", which removes every choice, the search field, and the groups Kategori, Pris, Material and Färg. A group without choices is left out.
   - The search is a `SearchField`, "Sök bland grejerna".
@@ -93,7 +100,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
     - A thumb is applied when it is let go, and a field on Enter or when the customer leaves it.
     - A thumb stops at the other one. Typing moves the thumb at once but never changes the text being typed.
   - From 1024 px, `ProductFilters` is a 288 px column to the left.
-  - Below 1024 px the toolbar has "Filter" with the number of choices in a `ButtonCount`, and sticks below the header (not in a window lower than 30rem).
+  - Below 1024 px the toolbar has "Filter" with the number of choices in a `ButtonCount`, and sticks below the header (not in a window lower than 30rem). On a phone the count has a row of its own, with Filter and the sort below it; from 768 px they are on one row.
     - The button opens `FilterDrawer`, a `<dialog>` from the left with the same `ProductFilters`. It covers the whole screen on a phone and is a 26rem panel on a tablet.
     - Every choice updates the list behind the panel at once. The heading and the close button stick while the filter scrolls, and "Visa 24 grejer" at the bottom closes the panel.
   - When no product matches the filter, `NoResults` shows a framed box:
@@ -143,7 +150,7 @@ The CMS uses the same tokens, text styles and shared components as the shop.
   - `_base.scss` turns that height into `--admin-sticky-top` (the app bar's 4rem below 1024 px). That value sets `scroll-padding-top`, so a focused field is never hidden under the header.
 - The admin pages share three style files in `features/admin/`:
   - `admin-page.scss`: the page and every `.card` are CSS containers (`container-type: inline-size`), plus the columns, the list rows and the text links with an icon (`.back` to a list, `.icon-link`).
-  - `admin-form.scss`: the form fields, the select with its chevron, hints and error texts.
+  - `admin-form.scss`: the form fields, hints and error texts. The selects also use `shared/select.scss`.
   - `admin-table.scss`: a table in a card. When the card is narrower than 36rem (44rem for the six columns of `.table.wide`), each row becomes a small block with two columns, and the column headings are kept for screen readers only. Each cell's own text says what it is ("2 st", "349 kr/st").
 - So the layout follows the room the page has beside the menu, not the screen's width. On the category pages the card goes to the right of the list when the page is at least 56rem wide, and each row fits on one line when the list is at least 36rem wide.
   - The card comes first in the HTML, so it is on top on a narrow screen and the keyboard order matches what is seen.

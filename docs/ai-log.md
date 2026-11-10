@@ -205,3 +205,7 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - **Building:** Added an order search to the CMS: the admin finds an order by its number, the customer's name or email, or a product on it, within the chosen tab, and sees the number of hits. The shop's search field became a shared component. Verified locally against the database.
 - **Design:** I asked for the search to the right of the tabs on a computer, at full width on its own row when it wraps, and for the number of hits. Claude placed "Rensa sökningen" below the field so the row doesn't jump.
 - **Verification:** Claude's check in Chrome at 320–1440 px and 200 % text found that the search field widened the page with large text, which we fixed.
+
+Building: Added sorting to the shop's product list: newest first, lowest or highest price, from a box in the toolbar. The select lists in the shop and the CMS got the same look as the other popovers in Chrome. Verified locally against the database.
+Design: I chose the three sorts and two rows in the toolbar on a phone. Claude kept a real <select> and moved its style to a shared file. When the restyled list made the box change width with each choice, Claude gave it the width of the longest choice.
+Verification: Claude's check in Chrome at 320–1440 px and 200 % text found that the box went past the screen's edge, which we fixed. axe was not run.
