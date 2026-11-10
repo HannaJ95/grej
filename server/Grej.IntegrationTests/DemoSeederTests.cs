@@ -73,15 +73,16 @@ public class DemoSeederTests
     [Fact]
     public async Task SeedAsync_ProductWithImagesOfItsOwn_GetsThemInOrder()
     {
-        // The file has no such product yet, so the first product gets two of the files.
+        // Set here instead of read from the file, so the test does not depend on its images.
         var category = catalog.Categories[0];
         var product = category.Products[0] with
         {
-            Images = [new DemoImage("konst.jpg", "Första"), new DemoImage(category.Image, "Andra")],
+            Images = [new DemoImage("square.png", "Första"), new DemoImage(category.Image, "Andra")],
         };
+        var withoutImages = category.Products[1] with { Images = null };
         var changed = catalog with
         {
-            Categories = [category with { Products = [product, .. category.Products.Skip(1)] }, .. catalog.Categories.Skip(1)],
+            Categories = [category with { Products = [product, withoutImages, .. category.Products.Skip(2)] }, .. catalog.Categories.Skip(1)],
         };
 
         await SeedAsync(changed);
@@ -89,8 +90,7 @@ public class DemoSeederTests
         await using var db = new GrejDbContext(options);
         var saved = await db.Products.SingleAsync(p => p.Title == product.Title);
         Assert.Equal(["Första", "Andra"], saved.Images.Select(image => image.AltText));
-        // The other products still get their category's image.
-        var other = await db.Products.FirstAsync(p => p.Title == category.Products[1].Title);
+        var other = await db.Products.SingleAsync(p => p.Title == withoutImages.Title);
         Assert.Equal(category.ImageAltText, Assert.Single(other.Images).AltText);
     }
 
