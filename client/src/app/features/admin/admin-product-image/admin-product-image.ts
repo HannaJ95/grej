@@ -24,6 +24,7 @@ import { ToastService } from '../../../core/toast.service';
 import { Badge } from '../../../shared/badge/badge';
 import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
+import { InfoTip } from '../../../shared/info-tip/info-tip';
 import { LinkButton } from '../../../shared/link-button/link-button';
 
 // The same rules as ImageFile in the API (constraints.md). The browser only knows the file's
@@ -47,7 +48,7 @@ export type PendingImage = { file: File; altText: string } | null | 'invalid';
 // creating the product (pendingImage).
 @Component({
   selector: 'app-admin-product-image',
-  imports: [FormRoot, FormField, Badge, Button, LinkButton],
+  imports: [FormRoot, FormField, Badge, Button, InfoTip, LinkButton],
   templateUrl: './admin-product-image.html',
   styleUrls: ['../admin-form.scss', './admin-product-image.scss'],
 })

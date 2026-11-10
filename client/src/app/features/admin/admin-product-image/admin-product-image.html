@@ -80,7 +80,21 @@
     </div>
 
     <div class="field">
-      <label class="text-label-xs" for="alt-text">Beskrivning av bilden (alt-text)</label>
+      <!-- The button is beside the label, not in it, so a click on it never reaches the field. -->
+      <div class="label-row">
+        <label class="text-label-xs" for="alt-text">Beskrivning av bilden (alt-text)</label>
+        <app-info-tip label="Vad är alt-text?">
+          <p class="text-label-s">Vad är alt-text?</p>
+          <p class="text-body-s">
+            En kort beskrivning av bilden. Den läses upp för den som inte kan se bilden, till
+            exempel med en skärmläsare, och visas om bilden inte kan laddas.
+          </p>
+          <p class="text-body-s">
+            Beskriv det köparen behöver veta, som form, färg och material: ”Blå skål i stengods,
+            sedd uppifrån”. Börja inte med ”Bild av”, det säger skärmläsaren redan.
+          </p>
+        </app-info-tip>
+      </div>
       <input
         id="alt-text"
         class="text-body-m-compact"

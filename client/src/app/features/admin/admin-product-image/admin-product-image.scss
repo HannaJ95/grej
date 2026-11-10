@@ -8,9 +8,9 @@ h3 {
   list-style: none;
 }
 
+// The image above its text in a narrow card (e.g. with large text), beside it when there is room.
 .image {
   display: grid;
-  grid-template-columns: 4.5rem minmax(0, 1fr);
   align-items: start;
   gap: var(--space-16);
   padding-block: var(--space-16);
@@ -19,12 +19,16 @@ h3 {
   &:first-child {
     padding-top: 0;
   }
+
+  @container (width >= 14rem) {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+  }
 }
 
 // Square and cropped, so every row is equally tall whatever the image's shape.
 .thumb {
   display: block;
-  width: 100%;
+  width: 4.5rem;
   aspect-ratio: 1;
   object-fit: cover;
   background: var(--color-bg-image);
@@ -36,6 +40,12 @@ h3 {
   align-items: flex-start;
   gap: var(--space-8);
   min-width: 0;
+}
+
+.label-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
 }
 
 // An alt text can be one long word or a pasted address.
