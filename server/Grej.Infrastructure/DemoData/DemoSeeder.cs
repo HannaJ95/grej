@@ -118,7 +118,7 @@ public static class DemoSeeder
             var image = images[demoCategory.Name];
             var path = $"products/{product.Id}/{Guid.NewGuid():N}{image.Extension}";
             var url = await storage.UploadAsync(path, image, CancellationToken.None);
-            product.SetImage(url, path, demoCategory.ImageAltText);
+            product.AddImage(url, path, demoCategory.ImageAltText);
         }
         await db.SaveChangesAsync();
 
