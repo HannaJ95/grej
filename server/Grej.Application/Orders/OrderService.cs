@@ -3,15 +3,13 @@ using Grej.Domain.Orders;
 
 namespace Grej.Application.Orders;
 
-// Use cases for orders after the checkout. More are added when the webhook
-// and the CMS handle orders.
 public class OrderService(IOrderRepository orders, ProductService products)
 {
-    // Called by the webhook the first time the order's payment becomes Paid.
-    // Nothing is saved here; the webhook saves everything in one transaction.
+    // The first time the payment becomes Paid. Nothing is saved here, since the webhook saves
+    // the payment, the order and the stock in one transaction.
     public async Task HandlePaidAsync(int orderId, CustomerDetails? customer, CancellationToken cancellationToken)
     {
-        // A payment is only saved together with its order, so the order always exists.
+        // A payment is only saved together with its order.
         var order = await orders.GetByIdAsync(orderId, cancellationToken)
             ?? throw new InvalidOperationException($"Order {orderId} does not exist.");
 
@@ -21,26 +19,24 @@ public class OrderService(IOrderRepository orders, ProductService products)
             order.SetCustomerDetails(customer);
         }
 
-        // The stock decreases when the order is paid, never when a product is
-        // added to the cart (constraints.md).
         var items = order.Items.Select(item => new ProductQuantity(item.ProductId, item.Quantity)).ToList();
-        await products.DecreaseStockAsync(items, cancellationToken);
+        if (await products.DecreaseStockAsync(items, cancellationToken))
+        {
+            order.MarkAsOversold();
+        }
     }
 
-    // Called by the webhook the first time the order's payment becomes Expired.
-    // Like HandlePaidAsync, nothing is saved here.
+    // Like HandlePaidAsync, the first time the payment becomes Expired.
     public async Task HandleExpiredAsync(int orderId, CancellationToken cancellationToken)
     {
         var order = await orders.GetByIdAsync(orderId, cancellationToken)
             ?? throw new InvalidOperationException($"Order {orderId} does not exist.");
 
-        // The customer never paid, so the order will never be shipped (constraints.md).
-        // The stock is not touched: it only decreases when an order is paid.
+        // The stock is not touched, since it only decreases when an order is paid.
         order.Cancel();
     }
 
-    // Called by the CMS before a product is deleted, since a product on an
-    // order is never hard deleted (constraints.md).
+    // A product on an order is never hard deleted (constraints.md).
     public Task<bool> IsProductOrderedAsync(int productId, CancellationToken cancellationToken) =>
         orders.ContainsProductAsync(productId, cancellationToken);
 }

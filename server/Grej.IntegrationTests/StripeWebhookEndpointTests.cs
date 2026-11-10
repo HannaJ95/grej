@@ -15,9 +15,8 @@ using Product = Grej.Domain.Catalog.Product;
 
 namespace Grej.IntegrationTests;
 
-// Tests POST /api/webhooks/stripe through the real API and the real signature check,
-// with fakes instead of the database. The tests sign their webhooks with a test
-// secret, the same way Stripe signs real webhooks with the real secret.
+// The real API and signature check, with fakes instead of the database. The tests sign with a
+// test secret, the way Stripe signs with the real one.
 public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
     : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -25,8 +24,7 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
     private const string Reference = "cs_test_fake";
     private const string PaymentIntent = "pi_test_fake";
 
-    // New instances per test (like in CheckoutEndpointTests), so each test starts with
-    // a Pending payment for an order of one item, of a product with stock 1.
+    // New per test: a Pending payment for one item of a product with stock 1.
     private readonly Product product = new() { Id = 1, Title = "Skål", Price = 450m, Stock = 1, IsActive = true };
     private readonly FakePaymentRepository payments = new(Reference, productId: 1);
 
@@ -38,6 +36,21 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(PaymentStatus.Paid, payments.Payment.Status);
         Assert.Equal(0, product.Stock);
+        Assert.False(payments.Order.IsOversold);
+        Assert.True(payments.Saved);
+    }
+
+    [Fact]
+    public async Task Post_PaidSessionAfterLastItemWasSold_MarksOrderAsOversold()
+    {
+        // Another customer paid for the last item first.
+        product.Stock = 0;
+
+        var response = await PostAsync(CheckoutCompleted(Reference), signedWith: Secret);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(-1, product.Stock);
+        Assert.True(payments.Order.IsOversold);
         Assert.True(payments.Saved);
     }
 
@@ -134,7 +147,7 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
     [Fact]
     public async Task Post_AlreadyProcessedEvent_ReturnsOkAndChangesNothing()
     {
-        // As if the event had been handled before, e.g. by an earlier request.
+        // As if an earlier request had handled it.
         payments.ProcessedEvents.Add("evt_test");
 
         var response = await PostAsync(CheckoutCompleted(Reference), signedWith: Secret);
@@ -167,8 +180,8 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         Assert.False(payments.Saved);
     }
 
-    // The parts of a checkout.session.completed event that the API reads. Sessions created
-    // before Checkout asked for a shipping address have no collected_information.
+    // Only the parts of the events that the API reads. Sessions created before Checkout asked
+    // for a shipping address have no collected_information.
     private static string CheckoutCompleted(string sessionId, bool withAddress = true) => $$"""
         {
           "id": "evt_test",
@@ -187,7 +200,6 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         }
         """;
 
-    // The parts of a checkout.session.expired event that the API reads.
     private static string CheckoutExpired(string sessionId) => $$"""
         {
           "id": "evt_test_expired",
@@ -203,8 +215,7 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         }
         """;
 
-    // The parts of a charge.refunded event that the API reads. "refunded" is false
-    // when only part of the amount has been returned.
+    // "refunded" is false after a partial refund.
     private static string ChargeRefunded(string paymentIntentId, bool fully = true) => $$"""
         {
           "id": "evt_test_refunded",
@@ -221,7 +232,6 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         }
         """;
 
-    // The name and the Swedish address the customer typed in Stripe Checkout.
     private const string CollectedInformation = """
         {
           "shipping_details": {
@@ -231,7 +241,6 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         }
         """;
 
-    // Starts the API with the test secret and the fakes, and sends a signed webhook.
     private async Task<HttpResponseMessage> PostAsync(string payload, string signedWith)
     {
         var client = factory.WithWebHostBuilder(builder =>
@@ -257,7 +266,6 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         return await client.SendAsync(request);
     }
 
-    // Holds one Pending payment instead of reading from the database.
     private class FakePaymentRepository : IPaymentRepository
     {
         public FakePaymentRepository(string reference, int productId)
@@ -272,7 +280,7 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         public Order Order { get; }
         public Payment Payment { get; }
         public bool Saved { get; private set; }
-        // The ids of the events that have been handled, like the ProcessedWebhookEvents table.
+        // Like the ProcessedWebhookEvents table.
         public HashSet<string> ProcessedEvents { get; } = [];
 
         // Both of the payment's ids, like PaymentRepository.
@@ -291,18 +299,16 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         }
     }
 
-    // Holds the payment's order. Its Id and the payment's OrderId are both 0,
-    // since nothing is saved to a database in these tests.
+    // The order's Id and the payment's OrderId are both 0, since nothing is saved.
     private class FakeOrderRepository(Order order) : IOrderRepository
     {
         public Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
             Task.FromResult(id == order.Id ? order : null);
 
-        // The webhook never creates orders.
+        // The webhook only reads the order, and PaymentRepository saves it.
         public Task AddAsync(Order order, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
-        // Only the CMS uses these.
         public Task<PagedResult<Order>> GetPageAsync(bool all, int page, int pageSize, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
         public Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken) =>
@@ -311,17 +317,15 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
             throw new NotImplementedException();
     }
 
-    // Holds the ordered product, so the tests can check its stock.
     private class FakeProductRepository(Product product) : IProductRepository
     {
         public Task<IReadOnlyList<Product>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken) =>
             Task.FromResult<IReadOnlyList<Product>>(ids.Contains(product.Id) ? [product] : []);
 
-        // The webhook fetches all ordered products at once, with GetByIdsAsync.
+        // The webhook only uses GetByIdsAsync.
         public Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
-        // The webhook never lists products.
         public Task<PagedResult<Product>> GetActivePageAsync(
             int page, int pageSize, ProductFilter filter, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
@@ -329,14 +333,12 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         public Task<decimal?> GetHighestActivePriceAsync(ProductFilter filter, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
-        // Only GET /api/categories uses this.
         public Task<IReadOnlyDictionary<int, int>> CountActiveByCategoryAsync(CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
         public Task<IReadOnlyDictionary<int, int>> CountByCategoryAsync(CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
-        // Only the CMS uses these.
         public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
         public Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken cancellationToken) =>
