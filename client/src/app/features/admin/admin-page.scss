@@ -27,6 +27,8 @@ h2 {
   width: fit-content;
   padding-block: var(--space-4);
   color: var(--color-text-primary);
+  // With large text one word can be wider than a narrow card.
+  overflow-wrap: anywhere;
 
   &:hover {
     color: var(--color-text-secondary);
