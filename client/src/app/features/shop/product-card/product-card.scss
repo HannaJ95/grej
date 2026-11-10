@@ -22,6 +22,31 @@
   background: var(--color-bg-image);
 }
 
+// The second image, over the first on hover or keyboard focus. Not shown on touch screens, so
+// they never download it; there the product page's gallery shows it.
+.preview {
+  display: none;
+}
+
+@media (hover: hover) {
+  .preview {
+    display: block;
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  :host(:hover) .preview,
+  :host(:has(.title:focus-visible)) .preview {
+    opacity: 1;
+  }
+}
+
 .badge {
   position: absolute;
   top: var(--space-14);
