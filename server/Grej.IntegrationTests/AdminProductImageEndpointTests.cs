@@ -55,22 +55,22 @@ public class AdminProductImageEndpointTests : IClassFixture<WebApplicationFactor
     }
 
     [Fact]
-    public async Task SetImage_WithoutToken_ReturnsUnauthorized()
+    public async Task AddImage_WithoutToken_ReturnsUnauthorized()
     {
         var id = await AddProductAsync();
 
-        var response = await app.CreateClient().PutAsync($"/api/admin/products/{id}/image", ImageForm(Png, "En vas"));
+        var response = await app.CreateClient().PostAsync(ImagesUrl(id), ImageForm(Png, "En vas"));
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
-    public async Task SetImage_PngImage_UploadsItAndSavesWhereItIs()
+    public async Task AddImage_PngImage_UploadsItAndSavesWhereItIs()
     {
         var id = await AddProductAsync();
         var client = await CreateAdminClientAsync();
 
-        var response = await client.PutAsync($"/api/admin/products/{id}/image", ImageForm(Png, "  En blå vas  "));
+        var response = await client.PostAsync(ImagesUrl(id), ImageForm(Png, "  En blå vas  "));
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var path = Assert.Single(storage.Uploaded);
@@ -81,19 +81,19 @@ public class AdminProductImageEndpointTests : IClassFixture<WebApplicationFactor
         Assert.Equal(path, image.StoragePath);
         Assert.Equal($"https://storage.test/{path}", image.Url);
         Assert.Equal("En blå vas", image.AltText);
-        Assert.Equal(new ProductImageDto(image.Url, "En blå vas"), await response.Content.ReadFromJsonAsync<ProductImageDto>());
+        Assert.Equal([new ProductImageDto(image.Id, image.Url, "En blå vas")], await ReadImagesAsync(response));
     }
 
     [Theory]
     [InlineData("GIF89a")]
     [InlineData("Hej, jag är en bild!")]
-    public async Task SetImage_FileThatIsNotJpgPngOrWebp_ReturnsBadRequestAndUploadsNothing(string content)
+    public async Task AddImage_FileThatIsNotJpgPngOrWebp_ReturnsBadRequestAndUploadsNothing(string content)
     {
         var id = await AddProductAsync();
         var client = await CreateAdminClientAsync();
 
         // The form says image/jpeg, but the content decides.
-        var response = await client.PutAsync($"/api/admin/products/{id}/image", ImageForm(Encoding.UTF8.GetBytes(content), "En vas"));
+        var response = await client.PostAsync(ImagesUrl(id), ImageForm(Encoding.UTF8.GetBytes(content), "En vas"));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Empty(storage.Uploaded);
@@ -101,14 +101,14 @@ public class AdminProductImageEndpointTests : IClassFixture<WebApplicationFactor
     }
 
     [Fact]
-    public async Task SetImage_LargerThan5MB_ReturnsBadRequestAndUploadsNothing()
+    public async Task AddImage_LargerThan5MB_ReturnsBadRequestAndUploadsNothing()
     {
         var id = await AddProductAsync();
         var client = await CreateAdminClientAsync();
         var content = new byte[ImageFile.MaxBytes + 1];
         Png.CopyTo(content, 0);
 
-        var response = await client.PutAsync($"/api/admin/products/{id}/image", ImageForm(content, "En vas"));
+        var response = await client.PostAsync(ImagesUrl(id), ImageForm(content, "En vas"));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Empty(storage.Uploaded);
@@ -117,93 +117,172 @@ public class AdminProductImageEndpointTests : IClassFixture<WebApplicationFactor
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    public async Task SetImage_WithoutAltText_ReturnsBadRequest(string altText)
+    public async Task AddImage_WithoutAltText_ReturnsBadRequest(string altText)
     {
         var id = await AddProductAsync();
         var client = await CreateAdminClientAsync();
 
-        var response = await client.PutAsync($"/api/admin/products/{id}/image", ImageForm(Png, altText));
+        var response = await client.PostAsync(ImagesUrl(id), ImageForm(Png, altText));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Empty(storage.Uploaded);
     }
 
     [Fact]
-    public async Task SetImage_AltTextLongerThan200_ReturnsBadRequest()
+    public async Task AddImage_AltTextLongerThan200_ReturnsBadRequest()
     {
         var id = await AddProductAsync();
         var client = await CreateAdminClientAsync();
 
-        var response = await client.PutAsync($"/api/admin/products/{id}/image", ImageForm(Png, new string('a', 201)));
+        var response = await client.PostAsync(ImagesUrl(id), ImageForm(Png, new string('a', 201)));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
-    public async Task SetImage_UnknownProduct_ReturnsNotFoundAndUploadsNothing()
+    public async Task AddImage_UnknownProduct_ReturnsNotFoundAndUploadsNothing()
     {
         var client = await CreateAdminClientAsync();
 
-        var response = await client.PutAsync("/api/admin/products/99/image", ImageForm(Png, "En vas"));
+        var response = await client.PostAsync(ImagesUrl(99), ImageForm(Png, "En vas"));
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         Assert.Empty(storage.Uploaded);
     }
 
     [Fact]
-    public async Task SetImage_ProductWithImage_ReplacesItAndDeletesTheOldFile()
+    public async Task AddImage_ProductWithImage_PutsTheNewOneLastAndDeletesNothing()
     {
         var id = await AddProductAsync();
         var client = await CreateAdminClientAsync();
-        await client.PutAsync($"/api/admin/products/{id}/image", ImageForm(Png, "Gammal bild"));
-        var oldPath = Assert.Single(storage.Uploaded);
+        await client.PostAsync(ImagesUrl(id), ImageForm(Png, "Första"));
 
-        await client.PutAsync($"/api/admin/products/{id}/image", ImageForm(Png, "Ny bild"));
+        var response = await client.PostAsync(ImagesUrl(id), ImageForm(Png, "Andra"));
 
-        Assert.Equal([oldPath], storage.Deleted);
-        var image = Assert.Single((await FindProductAsync(id))!.Images);
-        Assert.Equal("Ny bild", image.AltText);
+        Assert.Equal(["Första", "Andra"], (await ReadImagesAsync(response)).Select(image => image.AltText));
+        Assert.Equal(storage.Uploaded, (await FindProductAsync(id))!.Images.Select(image => image.StoragePath));
+        Assert.Empty(storage.Deleted);
     }
 
     [Fact]
-    public async Task RemoveImage_DeletesTheRowAndTheFile()
+    public async Task AddImage_ProductWithTenImages_ReturnsConflictAndUploadsNothing()
     {
-        var id = await AddProductAsync();
+        var id = await AddProductAsync(imageCount: Product.MaxImages);
         var client = await CreateAdminClientAsync();
-        await client.PutAsync($"/api/admin/products/{id}/image", ImageForm(Png, "En vas"));
 
-        var response = await client.DeleteAsync($"/api/admin/products/{id}/image");
+        var response = await client.PostAsync(ImagesUrl(id), ImageForm(Png, "Den elfte"));
 
-        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-        Assert.Equal(storage.Uploaded, storage.Deleted);
-        Assert.Empty((await FindProductAsync(id))!.Images);
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Empty(storage.Uploaded);
+        Assert.Equal(Product.MaxImages, (await FindProductAsync(id))!.Images.Count);
     }
 
     [Fact]
-    public async Task Delete_ProductWithImage_DeletesTheFileToo()
+    public async Task RemoveImage_DeletesOnlyThatRowAndFile()
     {
-        var id = await AddProductAsync();
+        var id = await AddProductAsync(imageCount: 2);
         var client = await CreateAdminClientAsync();
-        await client.PutAsync($"/api/admin/products/{id}/image", ImageForm(Png, "En vas"));
+        var images = (await FindProductAsync(id))!.Images;
+        var first = images[0];
+        var second = images[1];
+
+        var response = await client.DeleteAsync($"{ImagesUrl(id)}/{first.Id}");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal([first.StoragePath], storage.Deleted);
+        Assert.Equal([second.Id], (await ReadImagesAsync(response)).Select(image => image.Id));
+        Assert.Equal(second.Id, Assert.Single((await FindProductAsync(id))!.Images).Id);
+    }
+
+    [Fact]
+    public async Task RemoveImage_AnotherProductsImage_ReturnsNotFoundAndDeletesNothing()
+    {
+        var id = await AddProductAsync(imageCount: 1);
+        var otherId = await AddProductAsync(imageCount: 1);
+        var client = await CreateAdminClientAsync();
+        var othersImage = Assert.Single((await FindProductAsync(otherId))!.Images);
+
+        var response = await client.DeleteAsync($"{ImagesUrl(id)}/{othersImage.Id}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Empty(storage.Deleted);
+        Assert.Single((await FindProductAsync(otherId))!.Images);
+    }
+
+    [Fact]
+    public async Task OrderImages_NewOrder_IsSavedAndAnswered()
+    {
+        var id = await AddProductAsync(imageCount: 3);
+        var client = await CreateAdminClientAsync();
+        var ids = (await FindProductAsync(id))!.Images.Select(image => image.Id).ToList();
+        int[] newOrder = [ids[2], ids[0], ids[1]];
+
+        var response = await client.PutAsJsonAsync($"{ImagesUrl(id)}/order", new ImageOrderRequest(newOrder));
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(newOrder, (await ReadImagesAsync(response)).Select(image => image.Id));
+        Assert.Equal(newOrder, (await FindProductAsync(id))!.Images.Select(image => image.Id));
+    }
+
+    // Each list is given as positions in the product's images; -1 is an id no image has.
+    [Theory]
+    [InlineData(new[] { 1, 0 })]
+    [InlineData(new[] { 1, 1, 0 })]
+    [InlineData(new[] { 2, 1, -1 })]
+    public async Task OrderImages_IdsThatAreNotExactlyTheImages_ReturnsBadRequestAndChangesNothing(int[] positions)
+    {
+        var id = await AddProductAsync(imageCount: 3);
+        var client = await CreateAdminClientAsync();
+        var ids = (await FindProductAsync(id))!.Images.Select(image => image.Id).ToList();
+        var imageIds = positions.Select(position => position < 0 ? 999 : ids[position]).ToList();
+
+        var response = await client.PutAsJsonAsync($"{ImagesUrl(id)}/order", new ImageOrderRequest(imageIds));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(ids, (await FindProductAsync(id))!.Images.Select(image => image.Id));
+    }
+
+    [Fact]
+    public async Task OrderImages_UnknownProduct_ReturnsNotFound()
+    {
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PutAsJsonAsync($"{ImagesUrl(99)}/order", new ImageOrderRequest([1]));
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Delete_ProductWithImages_DeletesTheFilesToo()
+    {
+        var id = await AddProductAsync(imageCount: 2);
+        var client = await CreateAdminClientAsync();
+        var paths = (await FindProductAsync(id))!.Images.Select(image => image.StoragePath).ToList();
 
         var response = await client.DeleteAsync($"/api/admin/products/{id}");
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-        Assert.Equal(storage.Uploaded, storage.Deleted);
+        Assert.Equal(paths.Order(), storage.Deleted.Order());
     }
 
     [Fact]
-    public async Task GetProduct_InTheShop_IncludesTheImage()
+    public async Task GetProduct_InTheShop_IncludesTheImagesInOrder()
     {
-        var id = await AddProductAsync();
+        var id = await AddProductAsync(imageCount: 2);
         var client = await CreateAdminClientAsync();
-        await client.PutAsync($"/api/admin/products/{id}/image", ImageForm(Png, "En vas"));
+        var ids = (await FindProductAsync(id))!.Images.Select(image => image.Id).ToList();
+        await client.PutAsJsonAsync($"{ImagesUrl(id)}/order", new ImageOrderRequest([ids[1], ids[0]]));
 
         var product = await app.CreateClient().GetFromJsonAsync<ProductDto>($"/api/products/{id}");
 
-        Assert.Equal("En vas", product?.Image?.AltText);
-        Assert.Equal($"https://storage.test/{storage.Uploaded[0]}", product?.Image?.Url);
+        Assert.Equal([ids[1], ids[0]], product!.Images.Select(image => image.Id));
+        Assert.Equal("Bild 2", product.Images[0].AltText);
     }
+
+    private static string ImagesUrl(int productId) => $"/api/admin/products/{productId}/images";
+
+    private static async Task<List<ProductImageDto>> ReadImagesAsync(HttpResponseMessage response) =>
+        (await response.Content.ReadFromJsonAsync<List<ProductImageDto>>())!;
 
     // The same form the CMS sends: the file and the alt text as two parts. The file's
     // name and type are wrong on purpose, since the API must read the format from the content.
@@ -228,12 +307,18 @@ public class AdminProductImageEndpointTests : IClassFixture<WebApplicationFactor
         return client;
     }
 
-    // An active product, so the shop's endpoint shows it too.
-    private async Task<int> AddProductAsync()
+    // An active product, so the shop's endpoint shows it too. Its images are saved straight to the
+    // database, so the fake storage has uploaded nothing when the test starts.
+    private async Task<int> AddProductAsync(int imageCount = 0)
     {
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<GrejDbContext>();
         var product = new Product { Title = "Vas", Price = 300m, Stock = 1, IsActive = true };
+        for (var number = 1; number <= imageCount; number++)
+        {
+            var path = $"products/test/{Guid.NewGuid():N}.png";
+            product.AddImage($"https://storage.test/{path}", path, $"Bild {number}");
+        }
         db.Products.Add(product);
         await db.SaveChangesAsync();
         return product.Id;

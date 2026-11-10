@@ -10,8 +10,8 @@ public record ProductDto(
     string Currency,
     int Stock,
     bool IsSoldOut,
-    // Null if the product has no image.
-    ProductImageDto? Image,
+    // The main image first, which the lists and the cart show. Empty if the product has none.
+    IReadOnlyList<ProductImageDto> Images,
     // Only the names, sorted, e.g. ["Glas", "Keramik"]. Empty if the product has none.
     IReadOnlyList<string> Materials,
     IReadOnlyList<string> Colors,

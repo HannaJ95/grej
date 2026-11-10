@@ -49,7 +49,7 @@ public static class DemoSeeder
         await SeedAsync(db, storage, catalog, admin.Id);
         await transaction.CommitAsync();
 
-        // Last, as in AdminProductService.SetImageAsync. DeleteAsync never throws, so at worst
+        // Last, as in AdminProductService.RemoveImageAsync. DeleteAsync never throws, so at worst
         // an unused file is left.
         foreach (var path in oldPaths)
         {

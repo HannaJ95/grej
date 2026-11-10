@@ -128,23 +128,6 @@ public class Product
         return true;
     }
 
-    // Replaced by AddImage and RemoveImage(image) in the next part.
-    public ProductImage? SetImage(string url, string storagePath, string altText)
-    {
-        var old = RemoveImage();
-        _images.Add(new ProductImage(url, storagePath, altText, sortOrder: 0));
-        MarkAsUpdated();
-        return old;
-    }
-
-    public ProductImage? RemoveImage()
-    {
-        var old = MainImage;
-        _images.Clear();
-        MarkAsUpdated();
-        return old;
-    }
-
     // The CMS form always sends the whole choice, so the old list is replaced.
     public void SetMaterials(IEnumerable<Material> materials)
     {

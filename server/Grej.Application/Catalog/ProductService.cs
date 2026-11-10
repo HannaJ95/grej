@@ -110,7 +110,7 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
         // the admin; the customer only needs to know that none are left.
         Math.Max(product.Stock, 0),
         product.IsSoldOut,
-        ProductImageDto.From(product.MainImage),
+        ProductImageDto.ListFrom(product),
         // Sorted here, since the database returns them in no fixed order.
         product.Materials.Select(material => material.Name).Order().ToList(),
         product.Colors.Select(color => color.Name).Order().ToList(),

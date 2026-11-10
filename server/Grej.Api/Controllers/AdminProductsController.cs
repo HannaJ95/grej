@@ -85,13 +85,13 @@ public class AdminProductsController(AdminProductService products) : ControllerB
         };
     }
 
-    // E.g. PUT /api/admin/products/7/image. Sent as a form with a file (multipart/form-data),
-    // since JSON cannot carry a file. Replaces the product's image (one per product).
-    [HttpPut("{id}/image")]
+    // E.g. POST /api/admin/products/7/images. Sent as a form with a file (multipart/form-data),
+    // since JSON cannot carry a file.
+    [HttpPost("{id}/images")]
     // Larger requests are refused (413) before they are read. A bit more than ImageFile.MaxBytes,
     // since the request also holds the alt text and the form's separators.
     [RequestSizeLimit(ImageFile.MaxBytes + 100_000)]
-    public async Task<IActionResult> SetImage(
+    public async Task<IActionResult> AddImage(
         int id,
         IFormFile file,
         [FromForm, MaxLength(200)] string altText,
@@ -109,21 +109,36 @@ public class AdminProductsController(AdminProductService products) : ControllerB
             return ValidationProblem(ModelState);
         }
 
-        var saved = await products.SetImageAsync(id, image, altText, cancellationToken);
-        if (saved is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(saved);
+        return ImageChanged(await products.AddImageAsync(id, image, altText, cancellationToken));
     }
 
-    [HttpDelete("{id}/image")]
-    public async Task<IActionResult> RemoveImage(int id, CancellationToken cancellationToken)
-    {
-        var found = await products.RemoveImageAsync(id, cancellationToken);
+    [HttpDelete("{id}/images/{imageId}")]
+    public async Task<IActionResult> RemoveImage(int id, int imageId, CancellationToken cancellationToken) =>
+        ImageChanged(await products.RemoveImageAsync(id, imageId, cancellationToken));
 
-        return found ? NoContent() : NotFound();
+    // E.g. PUT /api/admin/products/7/images/order with {"imageIds": [12, 10, 11]}.
+    [HttpPut("{id}/images/order")]
+    public async Task<IActionResult> OrderImages(int id, ImageOrderRequest request, CancellationToken cancellationToken) =>
+        ImageChanged(await products.OrderImagesAsync(id, request.ImageIds, cancellationToken));
+
+    // Every image endpoint answers with the product's images in order, so the CMS shows what was saved.
+    private IActionResult ImageChanged(ImageChangeResult result)
+    {
+        // 409: the file was fine, but the product has no room for another image.
+        return result.Status switch
+        {
+            ImageChangeStatus.NotFound => NotFound(),
+            ImageChangeStatus.Full => Conflict(),
+            ImageChangeStatus.WrongImages => WrongImages(),
+            _ => Ok(result.Images),
+        };
+    }
+
+    // The same kind of 400 answer as ChoiceNotFound below.
+    private IActionResult WrongImages()
+    {
+        ModelState.AddModelError(nameof(ImageOrderRequest.ImageIds), "The ids must be the product's images, each once.");
+        return ValidationProblem(ModelState);
     }
 
     // The same kind of 400 answer as when a rule in ProductRequest is broken, so the

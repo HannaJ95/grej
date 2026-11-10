@@ -100,7 +100,7 @@ public class DemoCatalogTests
         {
             // Throws if the file is missing or is not a jpg, png or webp image of at most 5 MB.
             DemoCatalog.ReadImage(category.Image);
-            // The same limit as the alt text in AdminProductsController.SetImage.
+            // The same limit as the alt text in AdminProductsController.AddImage.
             Assert.InRange(category.ImageAltText.Length, 1, 200);
         });
     }
