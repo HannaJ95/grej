@@ -1,34 +1,33 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Service, Signal } from '@angular/core';
+import { inject, Service, Signal, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { OrderDetails, OrderSummary } from './order';
 import { PagedResult } from './paged-result';
 
-// Reads and changes orders through the API's admin endpoints, the same way as
-// AdminCategoryService. authInterceptor adds the admin's token to every request.
+// authInterceptor adds the admin's token to every request.
 @Service()
 export class AdminOrderService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiUrl}/api/admin/orders`;
 
-  // One page of orders. When all is false, only paid orders that are not shipped yet
-  // (to ship or to refund) and refunded ones to cancel, oldest first; when it is true,
-  // every order, newest first.
-  getOrders(page: Signal<number>, all: Signal<boolean>) {
-    return httpResource<PagedResult<OrderSummary>>(() => ({
-      url: this.url,
-      params: { page: page(), all: all() },
-    }));
+  // all = false gives what the admin has to do, oldest first; true every order, newest first.
+  // The search is only sent when it is set.
+  getOrders(page: Signal<number>, all: Signal<boolean>, search: Signal<string> = signal('')) {
+    return httpResource<PagedResult<OrderSummary>>(() => {
+      const text = search();
+      return {
+        url: this.url,
+        params: { page: page(), all: all(), ...(text ? { search: text } : {}) },
+      };
+    });
   }
 
-  // One order with its customer and rows. Fetched again whenever the id changes.
   getOrder(id: Signal<string>) {
     return httpResource<OrderDetails>(() => `${this.url}/${id()}`);
   }
 
-  // Throws on errors, e.g. 409 when the order is no longer paid and pending, or when the
-  // API is down. The request has no body: the URL says everything.
+  // Throws on errors, e.g. 409 when the order can no longer be shipped.
   async ship(id: number): Promise<void> {
     await firstValueFrom(this.http.post(`${this.url}/${id}/ship`, null));
   }
