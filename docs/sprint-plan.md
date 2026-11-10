@@ -100,10 +100,10 @@ In priority order. Responsive design and accessibility are checked on every page
 - [x] Search products by name
 - [x] Shipping cost from the products' packed weight and size, in the cart and in Stripe Checkout, stored on the order (changed on 9 Nov from one fixed price)
 - [x] Several images per product
+- [x] Flag double sale of the last item: the order is shown as "Dubbelsåld" in the CMS (dropped on 8 Nov, built on 10 Nov after the other items)
 
 Dropped on 8 Nov, when the deadline moved:
 
-- Flag double sale of the last item, since a negative stock already shows it
 - The Could items: order confirmation email, dark and light mode
 
 ## Wrap-up (Fri 13 – Sun 15 Nov)
@@ -144,6 +144,6 @@ If time runs short, Should items are dropped from the bottom of this list first.
 5. Shipping cost by weight and size
 6. Several images per product
 
-Flag double sale was dropped on 8 Nov (see sprint 4).
+Flag double sale was dropped on 8 Nov and built on 10 Nov, after the other items (see sprint 4).
 
 The own visual design is not in this list. It was not decided at the checkpoint Fri 23 Oct, so it is decided by Wed 4 Nov, with the component library and own colors from sprint 2 as plan B.

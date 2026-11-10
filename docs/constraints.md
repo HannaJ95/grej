@@ -92,7 +92,7 @@ Cancelled
 ## Stock
 
 - Stock decreases only when a payment becomes `Paid`, not when a product is added to the cart.
-- If two customers buy the last item at the same time, the stock goes below 0. This shows the admin that one of the orders must be cancelled and refunded.
+- If two customers buy the last item at the same time, the stock goes below 0. The order whose payment took it below 0 is flagged "Dubbelsåld" in the CMS, so the admin knows which one to cancel and refund (ambiguity.md).
 - When the admin cancels an order that has not been shipped (paid, or already refunded in Stripe), the stock is increased again automatically. A refund never changes the stock.
 - When a shipped order is returned, the admin adjusts the stock manually in the CMS.
 - A product with stock 0 or less is shown as sold out and cannot be added to the cart.

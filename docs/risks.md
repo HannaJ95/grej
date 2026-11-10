@@ -57,4 +57,4 @@ Render's free tier sleeps after inactivity (slow first request) and its file sys
 ## 9. Two customers buy the last unique item at the same time
 
 **Mitigation:** stock is checked before checkout and decreased when the payment is confirmed.
-**Plan B:** the stock goes below 0, which shows the admin that one of the orders must be cancelled and refunded in Stripe (see [constraints.md](constraints.md)).
+**Plan B:** the stock goes below 0, and the order that was paid last is flagged "Dubbelsåld" in the CMS, so the admin cancels it and refunds it in Stripe (see [constraints.md](constraints.md)).

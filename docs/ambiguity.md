@@ -113,6 +113,10 @@ Why: Automatic refunds are more code and more risk, and refunds are rare in a sm
 Decision: The payment becomes `Refunded` and the order stays `Pending`. It can no longer be shipped, but the admin can cancel it, which puts the products back in stock. Until then the default list shows it as "needs cancelling".
 Why: Only the admin changes the order status (constraints.md). A refunded order can also be one that was shipped and returned, which must stay `Shipped`, so the refund itself never cancels the order.
 
+**Which order is flagged when the last item is sold twice?**
+Decision: The one that was paid last, i.e. the one whose payment took the stock below 0. The CMS shows it as "Dubbelsåld" until the admin ships, cancels or refunds it. It can still be shipped.
+Why: The customer who paid first should get the item. Two webhooks at the same time cannot both be saved (the concurrency token on the stock), so the one that is handled again is always the one that finds the stock at 0. The admin of a shop with handmade items may be able to make one more, so the flag is a warning and does not block shipping.
+
 ## Shipping, money and countries
 
 **How are orders shipped?**

@@ -118,10 +118,12 @@ sequenceDiagram
     S-->>F: Redirect to success page ("being confirmed")
     S->>A: Webhook checkout.session.completed
     A->>A: Verify signature, skip if already handled
-    A->>A: Payment → Paid, stock decreased
+    A->>A: Payment → Paid, stock decreased, order flagged if the stock went below 0
 ```
 
 The order is saved only after Stripe has created the session, together with its rows and payment in one transaction. If Stripe does not answer, nothing is saved, so there is never an order whose payment can never be paid. If the database fails after Stripe has answered, the customer never gets the URL and the unused session expires in Stripe, so the webhook must ignore sessions it does not know.
+
+When two customers have paid for the last item, the second payment takes the stock below 0. `ProductService.DecreaseStockAsync` answers whether one of the order's products is now oversold (`Product.IsOversold`, stock below 0), and `OrderService` then calls `Order.MarkAsOversold`, in the same transaction as the payment and the stock (ambiguity.md).
 
 The other webhook events update the payment the same way:
 - `checkout.session.expired` sets the payment to `Expired` and the order to `Cancelled`.
@@ -209,7 +211,7 @@ erDiagram
 | Id | int | |
 | OrderNumber | string | Shown to the customer on the success page |
 | Status | enum | `Pending`, `Shipped`, `Cancelled` |
-| NeedsAttention | bool | Set on double sale of the last item (Should) |
+| IsOversold | bool | Set by the webhook when the order's payment took a product's stock below 0 (the last item sold twice) |
 | CustomerName, CustomerEmail | string | From Stripe Checkout |
 | AddressLine1, AddressLine2, PostalCode, City, Country | string | From Stripe Checkout; Country is always `SE` for now |
 | ShippingMethod, ShippingCost | string, decimal | Set by the checkout with `SetShipping`; null on orders from before shipping was built |
@@ -369,13 +371,13 @@ The admin reads orders with `/api/admin/orders` and `/api/admin/orders/{id}`, at
 
 - By default the list ("Att göra") shows what the admin has to do: paid orders that are not shipped, oldest first, so the order that has waited longest is at the top. These are the orders to ship and the cancelled ones that need a refund, and also the refunded ones that are not cancelled yet. `?all=true` (`?visa=alla` in the CMS) shows every order, also unpaid and cancelled ones, newest first (ambiguity.md).
 - The order page shows the customer, the address and each row with its title and price from the time of purchase, and the shipping when the order has one. The customer details are empty until the webhook has stored them from Stripe.
-- The rules are in `Order`. `CanBeShipped` is true for a pending, paid order, and `CanBeCancelledByAdmin` for a pending order that is paid or refunded. `NeedsRefund` is true for a cancelled, paid order, and `NeedsCancelling` for a pending, refunded one (the admin refunded in Stripe before cancelling). `MarkAsShipped` and `CancelByAdmin` refuse when a rule is broken. `AdminOrderService` checks first, so a refused change becomes 409 and not an exception.
-- The API sends these answers to the CMS (`canBeShipped`, `canBeCancelled`, `needsRefund`, `needsCancelling`). The CMS shows only the buttons the order allows and has no rules of its own.
+- The rules are in `Order`. `CanBeShipped` is true for a pending, paid order, and `CanBeCancelledByAdmin` for a pending order that is paid or refunded. `NeedsRefund` is true for a cancelled, paid order, and `NeedsCancelling` for a pending, refunded one (the admin refunded in Stripe before cancelling). `NeedsAttention` is true for an oversold order that can still be shipped, so after a cancel or a refund `NeedsRefund` or `NeedsCancelling` takes over. `MarkAsShipped` and `CancelByAdmin` refuse when a rule is broken. `AdminOrderService` checks first, so a refused change becomes 409 and not an exception.
+- The API sends these answers to the CMS (`canBeShipped`, `canBeCancelled`, `needsRefund`, `needsCancelling`, `needsAttention`). The CMS shows only the buttons the order allows and has no rules of its own.
 - Cancelling puts the order's products back in stock through `ProductService`, and the order and the stock are saved in one transaction. The admin refunds the customer in the Stripe dashboard, and the webhook then marks the payment as `Refunded` (ambiguity.md).
 - The statuses are sent as text (`"Paid"`), and the CMS shows them in Swedish (`order-texts.ts`). Row totals are calculated in the API, like every price.
 - The pagination keeps the list's other query parameters, so `?visa=alla` is kept on the next page.
 
-Known limitation: if the same order is shipped and cancelled at the same time (e.g. in two tabs), both changes can be saved, and the last one decides the status. Two cancels at the same time cannot both be saved, because of the concurrency token on `Product.Stock`, so the stock is never increased twice.
+Known limitations: if the same order is shipped and cancelled at the same time (e.g. in two tabs), both changes can be saved, and the last one decides the status. Two cancels at the same time cannot both be saved, because of the concurrency token on `Product.Stock`, so the stock is never increased twice. An oversold order is flagged as a whole, also when only one of its products ran out, and orders paid before the migration `AddOrderIsOversold` are never flagged.
 
 ## Styles
 
