@@ -10,7 +10,8 @@ public class AdminOrderService(IOrderRepository orders, ProductService products,
 {
     public async Task<PagedResult<OrderSummaryDto>> GetOrdersAsync(OrderListQuery query, CancellationToken cancellationToken)
     {
-        var page = await orders.GetPageAsync(query.All, query.Page, query.PageSize, cancellationToken);
+        var searchWords = query.Search?.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+        var page = await orders.GetPageAsync(query.All, searchWords, query.Page, query.PageSize, cancellationToken);
 
         return new PagedResult<OrderSummaryDto>(
             page.Items.Select(ToSummaryDto).ToList(),

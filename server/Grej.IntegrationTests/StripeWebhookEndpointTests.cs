@@ -309,7 +309,8 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         public Task AddAsync(Order order, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
-        public Task<PagedResult<Order>> GetPageAsync(bool all, int page, int pageSize, CancellationToken cancellationToken) =>
+        public Task<PagedResult<Order>> GetPageAsync(
+            bool all, IReadOnlyCollection<string> searchWords, int page, int pageSize, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
         public Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
