@@ -207,7 +207,8 @@ export class AdminProductForm {
     let imageFailed = false;
     if (image) {
       try {
-        await this.products.uploadImage(created.id, image.file, image.altText);
+        // A new product has room, so the answer is never 'full'.
+        await this.products.addImage(created.id, image.file, image.altText);
       } catch {
         // The product exists anyway, so its page opens and the image card says so.
         imageFailed = true;

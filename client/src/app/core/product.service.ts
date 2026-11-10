@@ -16,8 +16,8 @@ export interface Product {
   // How many can be bought. Never below 0 (ProductService.ToDto in the API).
   stock: number;
   isSoldOut: boolean;
-  // Null if the product has no image.
-  image: ProductImage | null;
+  // The main image first, which the lists and the cart show. Empty if the product has none.
+  images: ProductImage[];
   // Only the names, sorted, e.g. ["Glasyr", "Lera"]. Empty if the product has none.
   materials: string[];
   colors: string[];

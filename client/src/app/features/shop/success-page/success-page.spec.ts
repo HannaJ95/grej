@@ -13,7 +13,7 @@ const vase: Product = {
   currency: 'SEK',
   stock: 3,
   isSoldOut: false,
-  image: null,
+  images: [],
   materials: [],
   colors: [],
   parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },

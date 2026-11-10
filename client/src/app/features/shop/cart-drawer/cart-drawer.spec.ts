@@ -15,7 +15,7 @@ describe('CartDrawer', () => {
     currency: 'SEK',
     stock: 3,
     isSoldOut: false,
-    image: { url: 'https://storage.test/vas.png', altText: 'En blå vas' },
+    images: [{ id: 1, url: 'https://storage.test/vas.png', altText: 'En blå vas' }],
     materials: [],
     colors: [],
     parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },

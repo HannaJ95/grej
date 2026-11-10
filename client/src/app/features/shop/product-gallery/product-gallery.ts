@@ -1,7 +1,7 @@
 import { Component, input, linkedSignal } from '@angular/core';
 import { ProductImage } from '../../../core/product-image';
 
-// Built for several images, though the API has one per product so far.
+// The product's images, the main image first, with a thumbnail for each.
 @Component({
   selector: 'app-product-gallery',
   templateUrl: './product-gallery.html',

@@ -1,11 +1,69 @@
+h3 {
+  margin: 0;
+}
+
+.images {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// The image above its text in a narrow card (e.g. with large text), beside it when there is room.
 .image {
+  display: grid;
+  align-items: start;
+  gap: var(--space-16);
+  padding-block: var(--space-16);
+  border-bottom: 1px solid var(--color-border-subtle);
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  @container (width >= 14rem) {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+  }
+}
+
+// Square and cropped, so every row is equally tall whatever the image's shape.
+.thumb {
   display: block;
-  width: 100%;
+  width: 4.5rem;
+  aspect-ratio: 1;
+  object-fit: cover;
   background: var(--color-bg-image);
 }
 
-.remove {
-  align-self: start;
+.about {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8) var(--space-16);
+}
+
+// Closer together than to "Ta bort", as one pair.
+.arrows {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.label-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+// An alt text can be one long word or a pasted address.
+.alt-text {
+  overflow-wrap: anywhere;
 }
 
 // The browser draws the file field. Its button gets the secondary button's look, and the

@@ -147,3 +147,14 @@ img {
   max-width: 100%;
   height: auto;
 }
+
+// Only for screen readers, e.g. a message that says what a click changed. The same technique as
+// the stacked table's headings in admin-table.scss.
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

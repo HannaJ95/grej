@@ -38,12 +38,6 @@ export class ProductPage {
 
   protected readonly product = this.products.getProduct(this.id);
 
-  // A list, so the gallery is ready for more images than the API's one.
-  protected readonly images = computed(() => {
-    const image = this.product.hasValue() ? this.product.value().image : null;
-    return image ? [image] : [];
-  });
-
   // Null when the description is short enough to show whole.
   protected readonly shortDescription = computed(() =>
     this.product.hasValue() ? shorten(this.product.value().description) : null,

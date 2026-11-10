@@ -3,6 +3,9 @@ namespace Grej.Domain.Catalog;
 // A product in the shop.
 public class Product
 {
+    // constraints.md
+    public const int MaxImages = 10;
+
     // The real list, like Order._items. Only this class can change it.
     private readonly List<ProductImage> _images = [];
     private readonly List<Material> _materials = [];
@@ -33,12 +36,13 @@ public class Product
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
 
-    // A list, so several images (Should) need no new table. At most one for now
-    // (constraints.md), since SetImage replaces the image.
-    public IReadOnlyList<ProductImage> Images => _images;
+    // Sorted, since EF Core fills _images in no fixed order. The first is the main image.
+    public IReadOnlyList<ProductImage> Images => _images.OrderBy(image => image.SortOrder).ToList();
 
-    // The image shown in the shop. Null if the product has no image.
-    public ProductImage? MainImage => _images.MinBy(image => image.SortOrder);
+    // The image in the shop's lists and the cart. Null if the product has no image.
+    public ProductImage? MainImage => Images.FirstOrDefault();
+
+    public bool HasRoomForImage => _images.Count < MaxImages;
 
     // Several of each, or none (ambiguity.md). Stored in the join tables ProductMaterials
     // and ProductColors (ProductConfiguration).
@@ -76,23 +80,52 @@ public class Product
         MarkAsUpdated();
     }
 
-    // One image per product in this version (constraints.md), so a new image replaces
-    // the old one. Returns the old image, so the caller can delete its file.
-    public ProductImage? SetImage(string url, string storagePath, string altText)
+    // A new image goes last. The caller checks HasRoomForImage first, before it uploads the file.
+    public ProductImage AddImage(string url, string storagePath, string altText)
     {
-        var old = RemoveImage();
-        _images.Add(new ProductImage(url, storagePath, altText, sortOrder: 0));
+        if (!HasRoomForImage)
+        {
+            throw new InvalidOperationException($"A product can have at most {MaxImages} images.");
+        }
+
+        // One more than the highest, since a removed image leaves a gap in the numbers.
+        var sortOrder = _images.Count == 0 ? 0 : _images.Max(image => image.SortOrder) + 1;
+        var image = new ProductImage(url, storagePath, altText, sortOrder);
+        _images.Add(image);
         MarkAsUpdated();
-        return old;
+        return image;
     }
 
-    // Returns the removed image, or null if the product had none.
-    public ProductImage? RemoveImage()
+    // False if the image is not this product's. When the main image is removed, the next one
+    // becomes the main image.
+    public bool RemoveImage(ProductImage image)
     {
-        var old = MainImage;
-        _images.Clear();
+        if (!_images.Remove(image))
+        {
+            return false;
+        }
+
         MarkAsUpdated();
-        return old;
+        return true;
+    }
+
+    // E.g. after "Flytta upp" in the CMS. False, and nothing changed, unless the list has each
+    // of the product's images exactly once.
+    public bool OrderImages(IReadOnlyList<ProductImage> order)
+    {
+        if (order.Count != _images.Count
+            || order.Distinct().Count() != order.Count
+            || !order.All(_images.Contains))
+        {
+            return false;
+        }
+
+        for (var position = 0; position < order.Count; position++)
+        {
+            order[position].SortOrder = position;
+        }
+        MarkAsUpdated();
+        return true;
     }
 
     // The CMS form always sends the whole choice, so the old list is replaced.

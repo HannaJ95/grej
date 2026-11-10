@@ -15,11 +15,10 @@ public class ProductImage
 
     public string AltText { get; private set; } = "";
 
-    // The image with the lowest number is the main image. Always 0 while a
-    // product has one image.
-    public int SortOrder { get; private set; }
+    // The image with the lowest number is the main image. Only Product changes it (OrderImages).
+    public int SortOrder { get; internal set; }
 
-    // Only Product creates images (Product.SetImage), like OrderItem and Order.AddItem.
+    // Only Product creates images (Product.AddImage), like OrderItem and Order.AddItem.
     internal ProductImage(string url, string storagePath, string altText, int sortOrder)
     {
         Url = url;

@@ -44,7 +44,15 @@ describe('ProductList', () => {
     expect(request.request.params.has('search')).toBe(false);
     request.flush({
       items: [
-        { id: 7, title: 'Vas', description: '', price: 300, currency: 'SEK', isSoldOut: false },
+        {
+          id: 7,
+          title: 'Vas',
+          description: '',
+          price: 300,
+          currency: 'SEK',
+          isSoldOut: false,
+          images: [],
+        },
       ],
       page: 2,
       pageSize: 12,
@@ -90,7 +98,7 @@ describe('ProductList', () => {
             currency: 'SEK',
             stock: 1,
             isSoldOut: false,
-            image: { url: 'https://storage.test/vas.png', altText: 'En blå vas' },
+            images: [{ id: 1, url: 'https://storage.test/vas.png', altText: 'En blå vas' }],
           },
         ],
         page: 1,
@@ -159,7 +167,15 @@ describe('ProductList', () => {
       .expectOne((req) => req.url.endsWith('/api/products'))
       .flush({
         items: [
-          { id: 7, title: 'Vas', description: '', price: 300, currency: 'SEK', isSoldOut: false },
+          {
+            id: 7,
+            title: 'Vas',
+            description: '',
+            price: 300,
+            currency: 'SEK',
+            isSoldOut: false,
+            images: [],
+          },
         ],
         page: 1,
         pageSize: 12,

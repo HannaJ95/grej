@@ -23,7 +23,7 @@ describe('AdminProductList', () => {
     categoryId: 1,
     materialIds: [],
     colorIds: [],
-    image: null,
+    images: [],
     parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
   };
 

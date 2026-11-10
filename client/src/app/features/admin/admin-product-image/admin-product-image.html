@@ -1,18 +1,74 @@
-<h2 class="text-display-2xs" id="image-title">Bild</h2>
+<!-- tabindex="-1" lets the card move the focus here without adding it to the Tab order. -->
+<h2 #title class="text-display-2xs" id="images-title" tabindex="-1">Bilder</h2>
 
-@if (image(); as current) {
-  <img class="image" [src]="current.url" [alt]="current.altText" />
-  <!-- Outside the form below, so it never sends it. -->
-  <button class="remove" appLinkButton tone="danger" type="button" (click)="remove()">
-    Ta bort bilden
-  </button>
-  @if (removeError(); as message) {
-    <p class="text-body-s" role="alert">{{ message }}</p>
-  }
-} @else if (isNew()) {
-  <p class="hint text-body-s">Välj en bild nu, så laddas den upp när du sparar produkten.</p>
-} @else {
+@if (isNew()) {
+  <p class="hint text-body-s">
+    Välj produktens första bild nu, så laddas den upp när du sparar. Fler bilder lägger du till
+    efteråt.
+  </p>
+} @else if (images().length === 0) {
   <p class="hint text-body-s">Produkten har ingen bild än.</p>
+} @else {
+  <p class="hint text-body-s">
+    {{ images().length }} av {{ maxImages }} bilder. Den första är huvudbilden, som visas i butikens
+    listor och i varukorgen.
+  </p>
+  <ol class="images" aria-labelledby="images-title">
+    @for (image of images(); track image.id; let position = $index, last = $last) {
+      <li class="image">
+        <!-- The alt text is shown beside it, so the small image has none. -->
+        <img class="thumb" [src]="image.url" alt="" />
+        <div class="about">
+          @if (position === 0) {
+            <app-badge>Huvudbild</app-badge>
+          }
+          <p class="alt-text text-body-s">{{ image.altText }}</p>
+          <!-- The labels say which image, since every row has the same buttons. The ids let
+               move() put the focus back on the arrow after the row has moved. -->
+          <div class="actions">
+            @if (images().length > 1) {
+              <span class="arrows">
+                <button
+                  appIconButton
+                  icon="arrow-up"
+                  type="button"
+                  [id]="'move-up-' + image.id"
+                  [attr.aria-label]="'Flytta upp bild ' + (position + 1)"
+                  [disabled]="position === 0"
+                  (click)="move(position, -1)"
+                ></button>
+                <button
+                  appIconButton
+                  icon="arrow-down"
+                  type="button"
+                  [id]="'move-down-' + image.id"
+                  [attr.aria-label]="'Flytta ner bild ' + (position + 1)"
+                  [disabled]="last"
+                  (click)="move(position, 1)"
+                ></button>
+              </span>
+            }
+            <button
+              appLinkButton
+              tone="danger"
+              type="button"
+              [attr.aria-label]="'Ta bort bild ' + (position + 1)"
+              (click)="remove(image, position)"
+            >
+              Ta bort
+            </button>
+          </div>
+        </div>
+      </li>
+    }
+  </ol>
+}
+
+<!-- Always in the page, so screen readers notice when its text changes. -->
+<p class="visually-hidden" role="status">{{ moveStatus() }}</p>
+
+@if (listError(); as message) {
+  <p class="text-body-s" role="alert">{{ message }}</p>
 }
 
 @if (showUploadFailed()) {
@@ -21,54 +77,79 @@
   </p>
 }
 
-<form class="fields" aria-labelledby="image-title" [formRoot]="imageForm">
-  <div class="field">
-    <label class="text-label-xs" for="image-file">{{ image() ? 'Byt bild' : 'Välj bild' }}</label>
-    <!-- accept only filters the file picker; the rules in admin-product-image.ts still apply. -->
-    <input
-      #fileInput
-      id="image-file"
-      class="text-body-s"
-      type="file"
-      accept="image/jpeg,image/png,image/webp"
-      (change)="chooseFile($event)"
-      [attr.aria-invalid]="fileError() ? true : null"
-      [attr.aria-describedby]="fileError() ? 'image-file-hint image-file-error' : 'image-file-hint'"
-    />
-    <span class="hint text-body-xs" id="image-file-hint">jpg, png eller webp, högst 5 MB.</span>
-    @if (fileError(); as message) {
-      <span class="error text-body-xs" id="image-file-error">{{ message }}</span>
-    }
-  </div>
+@if (isFull()) {
+  <p class="hint text-body-s">
+    Produkten har {{ maxImages }} bilder, som är det högsta antalet. Ta bort en bild för att lägga
+    till en ny.
+  </p>
+} @else {
+  <form class="fields" aria-labelledby="add-image-title" [formRoot]="imageForm">
+    <h3 class="text-heading-xs" id="add-image-title">Lägg till en bild</h3>
 
-  <div class="field">
-    <label class="text-label-xs" for="alt-text">Beskrivning av bilden (alt-text)</label>
-    <input
-      id="alt-text"
-      class="text-body-m-compact"
-      type="text"
-      [formField]="imageForm.altText"
-      [attr.aria-invalid]="altTextError() ? true : null"
-      [attr.aria-describedby]="altTextError() ? 'alt-text-error' : null"
-    />
-    @if (altTextError(); as message) {
-      <span class="error text-body-xs" id="alt-text-error">{{ message }}</span>
-    }
-  </div>
+    <div class="field">
+      <label class="text-label-xs" for="image-file">Välj bild</label>
+      <!-- accept only filters the file picker; the rules in admin-product-image.ts still apply. -->
+      <input
+        #fileInput
+        id="image-file"
+        class="text-body-s"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        (change)="chooseFile($event)"
+        [attr.aria-invalid]="fileError() ? true : null"
+        [attr.aria-describedby]="
+          fileError() ? 'image-file-hint image-file-error' : 'image-file-hint'
+        "
+      />
+      <span class="hint text-body-xs" id="image-file-hint">jpg, png eller webp, högst 5 MB.</span>
+      @if (fileError(); as message) {
+        <span class="error text-body-xs" id="image-file-error">{{ message }}</span>
+      }
+    </div>
 
-  <!-- On "Ny produkt" Spara uploads the image with the product. -->
-  @if (!isNew()) {
-    <button
-      appButton
-      variant="secondary"
-      size="large"
-      type="submit"
-      [disabled]="imageForm().submitting()"
-    >
-      Ladda upp bilden
-    </button>
-    @if (uploadError(); as message) {
-      <p class="text-body-s" role="alert">{{ message }}</p>
+    <div class="field">
+      <!-- The button is beside the label, not in it, so a click on it never reaches the field. -->
+      <div class="label-row">
+        <label class="text-label-xs" for="alt-text">Beskrivning av bilden (alt-text)</label>
+        <app-info-tip label="Vad är alt-text?">
+          <p class="text-label-s">Vad är alt-text?</p>
+          <p class="text-body-s">
+            En kort beskrivning av bilden. Den läses upp för den som inte kan se bilden, till
+            exempel med en skärmläsare, och visas om bilden inte kan laddas.
+          </p>
+          <p class="text-body-s">
+            Beskriv det köparen behöver veta, som form, färg och material: ”Blå skål i stengods,
+            sedd uppifrån”. Börja inte med ”Bild av”, det säger skärmläsaren redan.
+          </p>
+        </app-info-tip>
+      </div>
+      <input
+        id="alt-text"
+        class="text-body-m-compact"
+        type="text"
+        [formField]="imageForm.altText"
+        [attr.aria-invalid]="altTextError() ? true : null"
+        [attr.aria-describedby]="altTextError() ? 'alt-text-error' : null"
+      />
+      @if (altTextError(); as message) {
+        <span class="error text-body-xs" id="alt-text-error">{{ message }}</span>
+      }
+    </div>
+
+    <!-- On "Ny produkt" Spara uploads the image with the product. -->
+    @if (!isNew()) {
+      <button
+        appButton
+        variant="secondary"
+        size="large"
+        type="submit"
+        [disabled]="imageForm().submitting()"
+      >
+        Ladda upp bilden
+      </button>
+      @if (uploadError(); as message) {
+        <p class="text-body-s" role="alert">{{ message }}</p>
+      }
     }
-  }
-</form>
+  </form>
+}

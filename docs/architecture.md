@@ -186,7 +186,7 @@ erDiagram
 | Url | string | Public URL in Supabase Storage |
 | StoragePath | string | Path in Supabase Storage, used to delete the image |
 | AltText | string | Required, at most 200 characters |
-| SortOrder | int | First image is the main image |
+| SortOrder | int | The lowest is the main image. Set by `Product.AddImage` (last) and `Product.OrderImages` |
 
 **Category**
 
@@ -263,10 +263,10 @@ In Angular, `authInterceptor` adds `Authorization: Bearer <token>` to requests t
 
 ### Demo data
 
-`dotnet run --project Grej.Api -- reset-demo` empties the shop and fills it with the content in `Grej.Infrastructure/DemoData/`: `demo-catalog.json` (categories, materials, colors, products and orders) and one placeholder image per category. It asks the developer to type `RESET` first, since the database is shared with the deployed shop.
+`dotnet run --project Grej.Api -- reset-demo` empties the shop and fills it with the content in `Grej.Infrastructure/DemoData/`: `demo-catalog.json` (categories, materials, colors, products and orders) and the image files in `Images/`. It asks the developer to type `RESET` first, since the database is shared with the deployed shop.
 
 - The shop's tables are emptied with `TRUNCATE … RESTART IDENTITY` in the same transaction as the seed, so the ids start at 1 and a failure leaves the old content. Identity's tables are not in the list, so the admin account is kept, and it owns every product.
-- Every product gets its own copy of its category's image under `products/{id}/`, like an upload in the CMS. The old files are deleted after the commit.
+- A product can list its own `images` (a file and an alt text each, the main image first). Without them it gets its category's placeholder image. Every product gets its own copy of each image under `products/{id}/`, like an upload in the CMS, and every file is read before anything is uploaded. The old files are deleted after the commit.
 - The products are saved in turns across the categories, so the shop's first page (newest first) shows every category.
 - A category can list `subcategories` (Keramik and Konst do), and a product can name one of them in `subcategory`; without it the product is in the main category. The seed saves the subcategories with `Parent` set to their main category, so EF Core fills in `ParentId`.
 - Every product has a packed parcel (`parcel`). The demo orders are built with the same `Order` methods as real ones: shipping from the same rule as the checkout, paid, and then shipped or cancelled as the file says. Their `CreatedAt` is set to a number of days ago, so the list shows different dates. The stock in the file is what is left after the orders, so the seed does not change it.
@@ -282,21 +282,38 @@ The CMS has its own endpoints under `/api/admin/` (e.g. `/api/admin/products`), 
 
 - A product that is on an order cannot be deleted. The Catalog module asks the Orders module through `OrderService`, and the API answers 409; the admin hides the product instead. The foreign key from order rows to products also stops the delete.
 - When the admin saves a product, the form sends the stock the product had when it was last fetched. The page fetches it again after every save. If a customer has bought the product since then, the API answers 409 and saves nothing, so a sale is never overwritten.
-- On "Ny produkt" the image is chosen in the same form, but it is uploaded right after the product is created, since the upload needs the product's id. If the upload fails, the product still exists, and its page says that the image has to be uploaded again.
+- On "Ny produkt" the first image is chosen in the same form, but it is uploaded right after the product is created, since the upload needs the product's id. If the upload fails, the product still exists, and its page says that the image has to be uploaded again. More images are added on the product's page (ambiguity.md).
 - The product form has the packed parcel's weight and size, sent and returned as one object `parcel` (`ParcelRequest`, `ParcelDto`), with the rules in constraints.md.
 
 Known limitation: the stock must be 0 or more when the admin saves. A product with stock below 0 (the last item sold twice) therefore gets at least 0 if the admin edits it before the order is handled.
 
 ### Product images
 
-The admin uploads one image per product with `PUT /api/admin/products/{id}/image` (a form with `file` and `altText`) and removes it with `DELETE /api/admin/products/{id}/image`. The file goes through the API, so the Supabase secret key (`Supabase:SecretKey`) stays on the server. Each file gets a new random name under `products/{id}/` in the public bucket `product-images`, and the browser loads it straight from its public URL.
+A product has up to 10 images, and the first one is the main image (ambiguity.md). The admin changes them with three endpoints:
 
+| Endpoint | Does |
+|---|---|
+| `POST /api/admin/products/{id}/images` | Adds an image last, from a form with `file` and `altText` |
+| `DELETE /api/admin/products/{id}/images/{imageId}` | Removes one image |
+| `PUT /api/admin/products/{id}/images/order` | Moves the images, with every image id in the new order: `{ "imageIds": [12, 10, 11] }` |
+
+All three answer with the product's images in order, so the CMS shows what was saved. They answer 404 if the product or the image does not exist, 409 if the product already has 10 images, and 400 if the order is not exactly the product's images, each once.
+
+The file goes through the API, so the Supabase secret key (`Supabase:SecretKey`) stays on the server. Each file gets a new random name under `products/{id}/` in the public bucket `product-images`, and the browser loads it straight from its public URL.
+
+- The rules are in `Product`:
+  - `Images` is sorted by `SortOrder`, so the main image is always first, also in `ProductDto` and `AdminProductDto`, which send `images`.
+  - `AddImage` puts an image last, with the highest `SortOrder` + 1, since a removed image leaves a gap.
+  - `RemoveImage` makes the next image the main image when the main one is removed.
+  - `OrderImages` refuses a list that is not exactly the product's images.
+  - They take image objects. `AdminProductService` finds them by id and returns an `ImageChangeResult`, which the controller turns into the answer, like `UpdateProductResult`.
 - The API reads the file type from the file's first bytes, not its name. Only jpg, png and webp of at most 5 MB are accepted (400), and a larger request gets 413. The bucket has the same rules in Supabase.
-- A new image is uploaded first, then the row is saved, and only then is the old file deleted. The database never points to a missing file; at worst an unused file is left in Storage (the same idea as in the checkout). Deleting a product deletes its file the same way, after the delete is saved.
+- `AddImageAsync` checks that the product has room before it uploads, so a full product never leaves an unused file. A new image is uploaded first and then saved, and a removed image's row is deleted first and then its file. The database never points to a missing file; at worst an unused file is left in Storage (the same idea as in the checkout). Deleting a product deletes its files the same way, after the delete is saved.
 - The images are always loaded with their product (`AutoInclude` in `ProductConfiguration`), so no query can forget them.
 - The shop uses a plain `<img>`, not `NgOptimizedImage`, since the image sizes are not stored and Supabase's free tier cannot resize images.
+- The cart saves only the main image's address and alt text, so carts saved before several images were built still work.
 
-Known limitation: the alt text can only be changed by uploading the image again.
+Known limitations: the alt text can only be changed by uploading the image again. Two uploads to the same product at the same time can give it 11 images, since both check for room before either is saved.
 
 ### Categories
 

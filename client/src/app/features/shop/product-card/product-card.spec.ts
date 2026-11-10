@@ -13,7 +13,7 @@ describe('ProductCard', () => {
     currency: 'SEK',
     stock: 3,
     isSoldOut: false,
-    image: { url: 'https://example.com/vas.jpg', altText: 'En blå vas' },
+    images: [{ id: 1, url: 'https://example.com/vas.jpg', altText: 'En blå vas' }],
     materials: [],
     colors: [],
     parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },

@@ -14,5 +14,6 @@ public record AdminProductDto(
     // The ids the form ticks in its checkboxes.
     IReadOnlyList<int> MaterialIds,
     IReadOnlyList<int> ColorIds,
-    ProductImageDto? Image,
+    // In order, the main image first, as in ProductDto.
+    IReadOnlyList<ProductImageDto> Images,
     ParcelDto Parcel);

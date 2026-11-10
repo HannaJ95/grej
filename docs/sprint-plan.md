@@ -99,7 +99,7 @@ In priority order. Responsive design and accessibility are checked on every page
 - [x] Style the remaining admin pages: products, orders, the start page and the login page
 - [x] Search products by name
 - [x] Shipping cost from the products' packed weight and size, in the cart and in Stripe Checkout, stored on the order (changed on 9 Nov from one fixed price)
-- [ ] Several images per product
+- [x] Several images per product
 
 Dropped on 8 Nov, when the deadline moved:
 

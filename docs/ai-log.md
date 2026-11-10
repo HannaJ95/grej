@@ -188,3 +188,8 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - **Design:** I changed the scope after Claude looked up how carriers price parcels, since a big painting costs far more to send than a ring. The cart uses a copy of the rule to avoid an extra request, but the amount from the API is the one that is paid and shown in checkout.
 - **Verification:** The same examples are tested in C# and TypeScript, so the two copies of the rule cannot drift apart. Claude's check in Chrome found a double line above the order's sums on phones.
 
+## 2026-11-10
+
+- **Building:** Finished sprint 4 item 5, the last one before the feature freeze: up to 10 images per product. The admin adds, removes and moves them up and down in the CMS, the first one is the main image in the lists and the cart, the gallery's thumbnails scroll, and the demo data can give a product several images. Verified locally.
+- **Design:** I chose up/down buttons over dragging, and asked for an info button that explains alt text. Claude suggested a box that opens on click instead of hover, since phones and keyboards have no hover.
+- **Verification:** Claude's check in Chrome at 320–1440 px and 200 % text found that the thumbnail row made the phone page 930 px wide, that the "Huvudbild" label overflowed and that the help box went outside the window, all fixed.

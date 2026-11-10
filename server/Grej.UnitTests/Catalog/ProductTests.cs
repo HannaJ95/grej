@@ -72,42 +72,98 @@ public class ProductTests
     }
 
     [Fact]
-    public void SetImage_ProductWithoutImage_MakesItTheMainImage()
+    public void AddImage_ProductWithoutImage_MakesItTheMainImage()
     {
         var product = new Product { Title = "Skål" };
 
-        var old = product.SetImage("https://example.com/a.png", "products/1/a.png", "En blå skål");
+        var image = product.AddImage("https://example.com/a.png", "products/1/a.png", "En blå skål");
 
-        Assert.Null(old);
-        var image = Assert.Single(product.Images);
+        Assert.Same(image, Assert.Single(product.Images));
         Assert.Same(image, product.MainImage);
         Assert.Equal("En blå skål", image.AltText);
     }
 
     [Fact]
-    public void SetImage_ProductWithImage_ReplacesItAndReturnsTheOldOne()
+    public void AddImage_ProductWithImages_PutsTheNewOneLast()
     {
-        var product = new Product { Title = "Skål" };
-        product.SetImage("https://example.com/a.png", "products/1/a.png", "Gammal bild");
+        var product = ProductWithImages("a", "b");
 
-        var old = product.SetImage("https://example.com/b.png", "products/1/b.png", "Ny bild");
+        product.AddImage("https://example.com/c.png", "c", "C");
 
-        // The old image is returned, so its file can be deleted.
-        Assert.Equal("products/1/a.png", old?.StoragePath);
-        Assert.Equal("products/1/b.png", Assert.Single(product.Images).StoragePath);
+        Assert.Equal(["a", "b", "c"], Paths(product));
+        Assert.Equal("a", product.MainImage?.StoragePath);
     }
 
     [Fact]
-    public void RemoveImage_ReturnsTheRemovedImage()
+    public void AddImage_ProductWithTenImages_Throws()
     {
-        var product = new Product { Title = "Skål" };
-        product.SetImage("https://example.com/a.png", "products/1/a.png", "En blå skål");
+        var product = ProductWithImages("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
 
-        var removed = product.RemoveImage();
+        Assert.False(product.HasRoomForImage);
+        Assert.Throws<InvalidOperationException>(() => product.AddImage("https://example.com/11.png", "11", "Elva"));
+        Assert.Equal(Product.MaxImages, product.Images.Count);
+    }
 
-        Assert.Equal("products/1/a.png", removed?.StoragePath);
-        Assert.Empty(product.Images);
-        Assert.Null(product.MainImage);
+    [Fact]
+    public void RemoveImage_TheMainImage_MakesTheNextOneTheMainImage()
+    {
+        var product = ProductWithImages("a", "b", "c");
+
+        var removed = product.RemoveImage(product.Images[0]);
+
+        Assert.True(removed);
+        Assert.Equal(["b", "c"], Paths(product));
+        Assert.Equal("b", product.MainImage?.StoragePath);
+    }
+
+    [Fact]
+    public void AddImage_AfterARemovedImage_StillPutsTheNewOneLast()
+    {
+        var product = ProductWithImages("a", "b", "c");
+        product.RemoveImage(product.Images[1]);
+
+        product.AddImage("https://example.com/d.png", "d", "D");
+
+        Assert.Equal(["a", "c", "d"], Paths(product));
+    }
+
+    [Fact]
+    public void RemoveImage_AnotherProductsImage_ReturnsFalse()
+    {
+        var product = ProductWithImages("a");
+        var other = ProductWithImages("b");
+
+        var removed = product.RemoveImage(other.Images[0]);
+
+        Assert.False(removed);
+        Assert.Equal(["a"], Paths(product));
+    }
+
+    [Fact]
+    public void OrderImages_NewOrder_IsKeptAndChangesTheMainImage()
+    {
+        var product = ProductWithImages("a", "b", "c");
+        var images = product.Images;
+
+        var ordered = product.OrderImages([images[2], images[0], images[1]]);
+
+        Assert.True(ordered);
+        Assert.Equal(["c", "a", "b"], Paths(product));
+        Assert.Equal("c", product.MainImage?.StoragePath);
+    }
+
+    [Fact]
+    public void OrderImages_ListThatIsNotExactlyTheImages_ReturnsFalseAndChangesNothing()
+    {
+        var product = ProductWithImages("a", "b", "c");
+        var images = product.Images;
+        var other = ProductWithImages("d").Images[0];
+
+        // One missing, one twice, and one from another product.
+        Assert.False(product.OrderImages([images[1], images[0]]));
+        Assert.False(product.OrderImages([images[1], images[1], images[0]]));
+        Assert.False(product.OrderImages([images[2], images[1], other]));
+        Assert.Equal(["a", "b", "c"], Paths(product));
     }
 
     [Fact]
@@ -133,4 +189,18 @@ public class ProductTests
 
         Assert.Empty(product.Colors);
     }
+
+    // The storage path is enough to tell the images apart.
+    private static Product ProductWithImages(params string[] paths)
+    {
+        var product = new Product { Title = "Skål" };
+        foreach (var path in paths)
+        {
+            product.AddImage($"https://example.com/{path}.png", path, $"Bild {path}");
+        }
+        return product;
+    }
+
+    private static List<string> Paths(Product product) =>
+        product.Images.Select(image => image.StoragePath).ToList();
 }

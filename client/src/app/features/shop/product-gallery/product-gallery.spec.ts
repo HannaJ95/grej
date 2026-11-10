@@ -2,8 +2,16 @@ import { TestBed } from '@angular/core/testing';
 import { ProductImage } from '../../../core/product-image';
 import { ProductGallery } from './product-gallery';
 
-const front: ProductImage = { url: 'https://example.com/front.jpg', altText: 'Vasen framifrån' };
-const side: ProductImage = { url: 'https://example.com/side.jpg', altText: 'Vasen från sidan' };
+const front: ProductImage = {
+  id: 1,
+  url: 'https://example.com/front.jpg',
+  altText: 'Vasen framifrån',
+};
+const side: ProductImage = {
+  id: 2,
+  url: 'https://example.com/side.jpg',
+  altText: 'Vasen från sidan',
+};
 
 describe('ProductGallery', () => {
   async function show(images: ProductImage[]) {

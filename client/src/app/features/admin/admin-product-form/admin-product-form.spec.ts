@@ -22,7 +22,7 @@ describe('AdminProductForm', () => {
     // Lera and Blå in answerChoices().
     materialIds: [3],
     colorIds: [2],
-    image: null,
+    images: [],
     parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
   };
 
@@ -113,17 +113,17 @@ describe('AdminProductForm', () => {
     // The image is uploaded once the product exists, since it needs the product's id.
     const upload = await vi.waitFor(() =>
       httpTesting.expectOne(
-        (req) => req.method === 'PUT' && req.url.endsWith('/api/admin/products/5/image'),
+        (req) => req.method === 'POST' && req.url.endsWith('/api/admin/products/5/images'),
       ),
     );
     expect(upload.request.body.get('altText')).toBe('En blå vas');
-    const image = { url: 'https://storage.test/vas.png', altText: 'En blå vas' };
-    upload.flush(image);
+    const images = [{ id: 1, url: 'https://storage.test/vas.png', altText: 'En blå vas' }];
+    upload.flush(images);
 
     const opened = await vi.waitFor(() =>
       httpTesting.expectOne((req) => req.method === 'GET' && req.url.endsWith('/api/admin/products/5')),
     );
-    opened.flush({ ...vase, image });
+    opened.flush({ ...vase, images });
     await answerChoices();
     expect(TestBed.inject(Router).url).toBe('/admin/produkter/5');
     expect(toastText()).toBe('Produkten är skapad.');

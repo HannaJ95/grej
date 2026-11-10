@@ -18,6 +18,7 @@ describe('AdminProductService', () => {
     colorIds: [],
     parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
   };
+  const image = { id: 12, url: 'https://storage.test/vas.png', altText: 'En blå vas' };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -61,19 +62,56 @@ describe('AdminProductService', () => {
     expect(await result).toBe('onOrder');
   });
 
-  it('sends the image and its alt text as a form', async () => {
+  it('sends a new image and its alt text as a form, and resolves with the images', async () => {
     const file = new File(['png'], 'vas.png', { type: 'image/png' });
-    const result = products.uploadImage(5, file, 'En blå vas');
+    const result = products.addImage(5, file, 'En blå vas');
 
-    const request = httpTesting.expectOne((req) => req.url.endsWith('/api/admin/products/5/image'));
-    expect(request.request.method).toBe('PUT');
-    // The same names as the parameters in AdminProductsController.SetImage.
+    const request = httpTesting.expectOne((req) =>
+      req.url.endsWith('/api/admin/products/5/images'),
+    );
+    expect(request.request.method).toBe('POST');
+    // The same names as the parameters in AdminProductsController.AddImage.
     const form = request.request.body as FormData;
     expect(form.get('file')).toBe(file);
     expect(form.get('altText')).toBe('En blå vas');
-    request.flush({ url: 'https://storage.test/vas.png', altText: 'En blå vas' });
+    request.flush([image]);
 
-    expect(await result).toEqual({ url: 'https://storage.test/vas.png', altText: 'En blå vas' });
+    expect(await result).toEqual([image]);
+  });
+
+  it("says 'full' when the product already has every image it can have (409)", async () => {
+    const result = products.addImage(5, new File(['png'], 'vas.png'), 'En blå vas');
+
+    httpTesting
+      .expectOne((req) => req.url.endsWith('/api/admin/products/5/images'))
+      .flush(null, { status: 409, statusText: 'Conflict' });
+
+    expect(await result).toBe('full');
+  });
+
+  it('removes one image by its id', async () => {
+    const result = products.removeImage(5, 12);
+
+    httpTesting
+      .expectOne(
+        (req) => req.method === 'DELETE' && req.url.endsWith('/api/admin/products/5/images/12'),
+      )
+      .flush([]);
+
+    expect(await result).toEqual([]);
+  });
+
+  it('sends every image id in the new order', async () => {
+    const result = products.orderImages(5, [12, 10]);
+
+    const request = httpTesting.expectOne((req) =>
+      req.url.endsWith('/api/admin/products/5/images/order'),
+    );
+    expect(request.request.method).toBe('PUT');
+    expect(request.request.body).toEqual({ imageIds: [12, 10] });
+    request.flush([image]);
+
+    expect(await result).toEqual([image]);
   });
 
   it('throws on other errors, e.g. when the API is down', async () => {

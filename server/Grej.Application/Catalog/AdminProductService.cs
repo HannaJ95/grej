@@ -113,13 +113,19 @@ public class AdminProductService(
         return DeleteProductResult.Deleted;
     }
 
-    // Replaces the product's image. Null if no product has this id.
-    public async Task<ProductImageDto?> SetImageAsync(int id, ImageFile file, string altText, CancellationToken cancellationToken)
+    // The new image goes last.
+    public async Task<ImageChangeResult> AddImageAsync(int id, ImageFile file, string altText, CancellationToken cancellationToken)
     {
         var product = await products.GetByIdAsync(id, cancellationToken);
         if (product is null)
         {
-            return null;
+            return ImageChangeResult.Failed(ImageChangeStatus.NotFound);
+        }
+
+        // Before the upload, so a full product never leaves an unused file.
+        if (!product.HasRoomForImage)
+        {
+            return ImageChangeResult.Failed(ImageChangeStatus.Full);
         }
 
         // A new name for every upload, so a browser or Supabase's cache never shows an old
@@ -129,36 +135,49 @@ public class AdminProductService(
         // Upload first, save after. If the save fails, the new file is only unused, but the
         // database never points to a file that does not exist (like the checkout in architecture.md).
         var url = await images.UploadAsync(path, file, cancellationToken);
-        var old = product.SetImage(url, path, altText.Trim());
+        product.AddImage(url, path, altText.Trim());
         await products.SaveChangesAsync(cancellationToken);
 
-        // Last, when nothing points to the old file any more.
-        if (old is not null)
-        {
-            await images.DeleteAsync(old.StoragePath, cancellationToken);
-        }
-
-        return ProductImageDto.From(product.MainImage);
+        return ImageChangeResult.Changed(product);
     }
 
-    // False if no product has this id. A product without an image is fine: nothing to remove.
-    public async Task<bool> RemoveImageAsync(int id, CancellationToken cancellationToken)
+    public async Task<ImageChangeResult> RemoveImageAsync(int id, int imageId, CancellationToken cancellationToken)
+    {
+        var product = await products.GetByIdAsync(id, cancellationToken);
+        var image = product?.Images.FirstOrDefault(i => i.Id == imageId);
+        if (product is null || image is null)
+        {
+            return ImageChangeResult.Failed(ImageChangeStatus.NotFound);
+        }
+
+        // The row first, then the file, the other way round from AddImageAsync.
+        product.RemoveImage(image);
+        await products.SaveChangesAsync(cancellationToken);
+        await images.DeleteAsync(image.StoragePath, cancellationToken);
+
+        return ImageChangeResult.Changed(product);
+    }
+
+    // imageIds is every image id of the product, in the new order.
+    public async Task<ImageChangeResult> OrderImagesAsync(int id, IReadOnlyList<int> imageIds, CancellationToken cancellationToken)
     {
         var product = await products.GetByIdAsync(id, cancellationToken);
         if (product is null)
         {
-            return false;
+            return ImageChangeResult.Failed(ImageChangeStatus.NotFound);
         }
 
-        var removed = product.RemoveImage();
-        if (removed is not null)
+        // The domain orders image objects, so the ids are looked up first. An id that is not
+        // the product's image makes the order wrong, like a missing or repeated one does.
+        var imagesById = product.Images.ToDictionary(image => image.Id);
+        if (!imageIds.All(imagesById.ContainsKey)
+            || !product.OrderImages(imageIds.Select(imageId => imagesById[imageId]).ToList()))
         {
-            // The row first, then the file, as in SetImageAsync.
-            await products.SaveChangesAsync(cancellationToken);
-            await images.DeleteAsync(removed.StoragePath, cancellationToken);
+            return ImageChangeResult.Failed(ImageChangeStatus.WrongImages);
         }
 
-        return true;
+        await products.SaveChangesAsync(cancellationToken);
+        return ImageChangeResult.Changed(product);
     }
 
     // Copies the form's fields to the product. Used by both create and update. False if the
@@ -207,6 +226,6 @@ public class AdminProductService(
         product.CategoryId,
         product.Materials.Select(material => material.Id).ToList(),
         product.Colors.Select(color => color.Id).ToList(),
-        ProductImageDto.From(product.MainImage),
+        ProductImageDto.ListFrom(product),
         ParcelDto.From(product));
 }

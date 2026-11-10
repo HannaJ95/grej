@@ -30,7 +30,7 @@ describe('LandingPage', () => {
       price: 300,
       currency: 'SEK',
       isSoldOut: false,
-      image: null,
+      images: [],
     };
   }
 
