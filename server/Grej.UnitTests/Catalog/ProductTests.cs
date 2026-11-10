@@ -15,6 +15,16 @@ public class ProductTests
         Assert.Equal(expected, product.IsSoldOut);
     }
 
+    [Theory]
+    [InlineData(0, false)]
+    [InlineData(-1, true)]
+    public void IsOversold_DependsOnStock(int stock, bool expected)
+    {
+        var product = new Product { Title = "Skål", Stock = stock };
+
+        Assert.Equal(expected, product.IsOversold);
+    }
+
     [Fact]
     public void DecreaseStock_DecreasesByQuantity()
     {

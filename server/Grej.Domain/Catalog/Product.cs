@@ -50,8 +50,10 @@ public class Product
     public IReadOnlyList<Color> Colors => _colors;
 
     // Sold-out products are still shown, but cannot be bought (ambiguity.md).
-    // Below 0 means the last item was sold twice (constraints.md).
     public bool IsSoldOut => Stock <= 0;
+
+    // The last item was sold twice (constraints.md).
+    public bool IsOversold => Stock < 0;
 
     // Called when an order with this product is paid (the webhook).
     public void DecreaseStock(int quantity)

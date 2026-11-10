@@ -13,6 +13,10 @@ public class Order
     public string OrderNumber { get; private set; } = NewOrderNumber();
     public OrderStatus Status { get; private set; } = OrderStatus.Pending;
 
+    // Set by the webhook when this order's payment took a product's stock below 0, since
+    // another customer paid for the last item first (ambiguity.md).
+    public bool IsOversold { get; private set; }
+
     // Collected by the payment provider, so null until the order is paid.
     // Stripe Checkout only accepts Swedish addresses in this version (constraints.md).
     public string? CustomerName { get; private set; }
@@ -55,6 +59,10 @@ public class Order
     // The opposite of NeedsRefund: refunded in Stripe but not cancelled here, so its products
     // are not back in stock yet (constraints.md). False again when the admin cancels it.
     public bool NeedsCancelling => Status == OrderStatus.Pending && Payment?.Status == PaymentStatus.Refunded;
+
+    // Only until the admin ships, cancels or refunds it. After that, NeedsRefund or
+    // NeedsCancelling says what is left to do.
+    public bool NeedsAttention => IsOversold && CanBeShipped;
 
     public void AddItem(int productId, string title, decimal unitPrice, int quantity)
     {
@@ -109,6 +117,12 @@ public class Order
         PostalCode = customer.PostalCode;
         City = customer.City;
         Country = customer.Country;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void MarkAsOversold()
+    {
+        IsOversold = true;
         UpdatedAt = DateTime.UtcNow;
     }
 

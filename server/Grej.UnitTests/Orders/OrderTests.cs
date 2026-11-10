@@ -239,6 +239,55 @@ public class OrderTests
         Assert.False(order.NeedsCancelling);
     }
 
+    [Fact]
+    public void MarkAsOversold_Paid_NeedsAttentionAndCanStillBeShipped()
+    {
+        var order = PaidOrder();
+        Assert.False(order.NeedsAttention);
+
+        order.MarkAsOversold();
+
+        Assert.True(order.IsOversold);
+        Assert.True(order.NeedsAttention);
+        // Only a warning: the admin may make one more and ship it (ambiguity.md).
+        Assert.True(order.CanBeShipped);
+    }
+
+    [Fact]
+    public void NeedsAttention_OversoldAndShipped_IsFalse()
+    {
+        var order = PaidOrder();
+        order.MarkAsOversold();
+
+        order.MarkAsShipped();
+
+        Assert.False(order.NeedsAttention);
+    }
+
+    [Fact]
+    public void NeedsAttention_OversoldAndCancelled_IsFalse()
+    {
+        var order = PaidOrder();
+        order.MarkAsOversold();
+
+        order.CancelByAdmin();
+
+        Assert.False(order.NeedsAttention);
+        Assert.True(order.NeedsRefund);
+    }
+
+    [Fact]
+    public void NeedsAttention_OversoldAndRefunded_IsFalse()
+    {
+        var order = PaidOrder();
+        order.MarkAsOversold();
+
+        order.Payment!.MarkAsRefunded();
+
+        Assert.False(order.NeedsAttention);
+        Assert.True(order.NeedsCancelling);
+    }
+
     // An order with one row and a payment that is not paid yet, as the checkout saves it.
     private static Order UnpaidOrder()
     {
