@@ -58,7 +58,8 @@
 }
 
 // Below 1024 px the row holds the filter button, so it sticks below the shop's header and has
-// less padding. z-index 2 puts it above the product cards' layers and below the header.
+// less padding. z-index 2 puts it above the product cards' layers and below the header. Its
+// height is also in _base.scss.
 .toolbar {
   position: sticky;
   top: var(--shop-sticky-top);
@@ -75,25 +76,24 @@
     padding-block: var(--space-16);
   }
 
-  // The count keeps its one line when the chips need room.
+  // The count keeps its one line when the chips need room. Below 1024 px it may wrap when the text
+  // is enlarged.
   p {
-    flex-shrink: 0;
     margin: 0;
+
+    @media (width >= 64rem) {
+      flex-shrink: 0;
+    }
   }
 }
 
-// display: flex wins over .page-width's display: block, like .page-title.
+// display: flex wins over .page-width's display: block, like .page-title. The sort box is taller
+// than a row of chips, so the toolbar doesn't grow when the first choice is made.
 .toolbar-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-16);
-
-  // Room for one row of chips, so the toolbar doesn't grow when the first choice is made.
-  @media (width >= 64rem) {
-    min-height: calc(
-      var(--font-size-label-xs) + 2 * var(--space-4) + 2 * var(--border-width-default)
-    );
-  }
+  gap: var(--space-8) var(--space-16);
 }
 
 // Only from 1024 px, where the toolbar doesn't stick and has room. On a phone and a tablet the
@@ -107,8 +107,25 @@
   }
 }
 
-// Stays to the right, also before the count has come.
-.filter-drawer {
+// Filter and the sort. A row of their own below the count on a phone, and to the right from a
+// tablet, also before the count has come. They wrap when the text is enlarged, and min-width: 0
+// lets the sort shrink to the row's width.
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  flex-basis: 100%;
+  min-width: 0;
+  align-items: center;
+  gap: var(--space-8) var(--space-16);
+
+  @media (width >= 48rem) {
+    flex-basis: auto;
+    margin-left: auto;
+  }
+}
+
+// To the right on a phone too, also when there is no Filter.
+.sort {
   margin-left: auto;
 }
 

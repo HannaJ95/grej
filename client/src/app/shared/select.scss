@@ -1,0 +1,25 @@
+// A <select> with the chevron icon instead of the browser's own arrow, shared by the CMS forms and
+// the shop's sort:
+// <span class="select"><select>…</select><app-icon name="chevron-down" /></span>
+// Put it after a stylesheet that sets the select's padding, so the room for the chevron wins.
+.select {
+  position: relative;
+  display: block;
+
+  select {
+    padding-right: var(--space-48);
+    appearance: none;
+    cursor: pointer;
+  }
+
+  // Lets a click on the chevron reach the select under it.
+  app-icon {
+    --icon-size: 1rem;
+
+    position: absolute;
+    top: 50%;
+    right: var(--space-16);
+    translate: 0 -50%;
+    pointer-events: none;
+  }
+}

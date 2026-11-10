@@ -25,6 +25,7 @@ import { FilterDrawer } from '../filter-drawer/filter-drawer';
 import { NoResults } from '../no-results/no-results';
 import { ProductCard } from '../product-card/product-card';
 import { ProductFilters } from '../product-filters/product-filters';
+import { SortSelect } from '../sort-select/sort-select';
 
 // /produkter?sida=2&kategori=1&kategori=3&material=4&farg=2&minpris=200&maxpris=800&sok=skål
 // &sortera=lagst-pris
@@ -40,6 +41,7 @@ import { ProductFilters } from '../product-filters/product-filters';
     Pagination,
     ProductCard,
     ProductFilters,
+    SortSelect,
   ],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss',

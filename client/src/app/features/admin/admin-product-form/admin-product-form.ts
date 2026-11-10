@@ -84,6 +84,7 @@ const NEW_PRODUCT: ProductFormModel = {
   styleUrls: [
     '../admin-page.scss',
     '../admin-form.scss',
+    '../../../shared/select.scss',
     '../../../shared/checkbox.scss',
     './admin-product-form.scss',
   ],
