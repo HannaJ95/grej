@@ -193,3 +193,12 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - **Building:** Finished sprint 4 item 5, the last one before the feature freeze: up to 10 images per product. The admin adds, removes and moves them up and down in the CMS, the first one is the main image in the lists and the cart, the gallery's thumbnails scroll, and the demo data can give a product several images. Verified locally.
 - **Design:** I chose up/down buttons over dragging, and asked for an info button that explains alt text. Claude suggested a box that opens on click instead of hover, since phones and keyboards have no hover.
 - **Verification:** Claude's check in Chrome at 320–1440 px and 200 % text found that the thumbnail row made the phone page 930 px wide, that the "Huvudbild" label overflowed and that the help box went outside the window, all fixed.
+
+- **Building:** Built the item dropped from sprint 4: an order paid after another customer had bought the last item is flagged "Dubbelsåld" in the CMS, with a note on what to do. Verified locally with two Stripe Checkout tabs for the same last item.
+- **Design:** The order paid last is flagged, since the first customer should get the item. The flag is only a warning, since a maker may be able to make one more. I dropped Claude's habit of building everything in a copy first, since it doubled the work now that Claude writes the code.
+- **Verification:** Tests cover the flag from the webhook to the CMS. Claude's own check missed old comments, which I had to ask it to clean up.
+
+- **Building:** Added a link from the order page in the CMS to the payment in the Stripe dashboard, and sent the order number to the payment itself, so it shows in Stripe's payment list. Verified locally with a test purchase.
+- **Design:** The API builds the link behind an interface, so only Infrastructure knows about Stripe and the tests run without a Stripe key. I asked Claude to clean the comments in every file from the first part of every plan, after reminding it again.
+- **Verification:** Claude's check in Chrome found that the link stuck out of its card at 200 % text, which we fixed.
+

@@ -131,6 +131,8 @@ The other webhook events update the payment the same way:
 
 A refund event carries the charge, which knows its PaymentIntent (`pi_…`) but not the Checkout session. So `checkout.session.completed` stores the session's PaymentIntent id on the payment (`ProviderPaymentId`), and `PaymentRepository.GetByReferenceAsync` finds a payment by either id.
 
+The Stripe dashboard's payment list shows PaymentIntents, not sessions. So `StripePaymentProvider` sends the order number both in the session's metadata and to the PaymentIntent (`PaymentIntentData`: description and metadata), and the list shows "GREJ-…" for each payment.
+
 Known limitations: payments that were paid before the migration `AddProviderPaymentId` have no PaymentIntent id, so their refunds are ignored (`reset-demo` removes them). A refund that arrives before its payment's `checkout.session.completed` has been handled is ignored too; in practice the admin refunds much later.
 
 ### Shipping
@@ -240,7 +242,7 @@ erDiagram
 | OrderId | → Order | One payment per order in this version; a new checkout creates a new order |
 | Provider | string | `Stripe` |
 | ProviderReference | string | Stripe Checkout session id |
-| ProviderPaymentId | string, nullable | Stripe PaymentIntent id, stored when paid; refund events find the payment by it |
+| ProviderPaymentId | string, nullable | Stripe PaymentIntent id, stored when paid; refund events find the payment by it, and the CMS links to it in Stripe |
 | Status | enum | `Pending`, `Paid`, `Expired`, `Refunded` |
 | Amount | decimal | |
 | Currency | string | `SEK` |
@@ -371,6 +373,7 @@ The admin reads orders with `/api/admin/orders` and `/api/admin/orders/{id}`, at
 
 - By default the list ("Att göra") shows what the admin has to do: paid orders that are not shipped, oldest first, so the order that has waited longest is at the top. These are the orders to ship and the cancelled ones that need a refund, and also the refunded ones that are not cancelled yet. `?all=true` (`?visa=alla` in the CMS) shows every order, also unpaid and cancelled ones, newest first (ambiguity.md).
 - The order page shows the customer, the address and each row with its title and price from the time of purchase, and the shipping when the order has one. The customer details are empty until the webhook has stored them from Stripe.
+- The order page links to the payment in the Stripe dashboard (`paymentDashboardUrl`, `https://dashboard.stripe.com/test/payments/pi_…`), where the admin refunds. `IPaymentDashboard` (Application) builds the address and `StripeDashboard` (Infrastructure) implements it, apart from `StripePaymentProvider` so it needs no Stripe key in tests and CI. It is null when the payment has no PaymentIntent id: unpaid orders, the demo orders and payments from before `AddProviderPaymentId`.
 - The rules are in `Order`. `CanBeShipped` is true for a pending, paid order, and `CanBeCancelledByAdmin` for a pending order that is paid or refunded. `NeedsRefund` is true for a cancelled, paid order, and `NeedsCancelling` for a pending, refunded one (the admin refunded in Stripe before cancelling). `NeedsAttention` is true for an oversold order that can still be shipped, so after a cancel or a refund `NeedsRefund` or `NeedsCancelling` takes over. `MarkAsShipped` and `CancelByAdmin` refuse when a rule is broken. `AdminOrderService` checks first, so a refused change becomes 409 and not an exception.
 - The API sends these answers to the CMS (`canBeShipped`, `canBeCancelled`, `needsRefund`, `needsCancelling`, `needsAttention`). The CMS shows only the buttons the order allows and has no rules of its own.
 - Cancelling puts the order's products back in stock through `ProductService`, and the order and the stock are saved in one transaction. The admin refunds the customer in the Stripe dashboard, and the webhook then marks the payment as `Refunded` (ambiguity.md).
