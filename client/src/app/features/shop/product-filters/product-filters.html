@@ -9,7 +9,12 @@
   </div>
 </div>
 
-<app-filter-search class="search" [value]="filter().search" (searched)="showSearch($event)" />
+<app-search-field
+  class="search"
+  label="Sök bland grejerna"
+  [value]="filter().search"
+  (searched)="showSearch($event)"
+/>
 
 <div class="groups">
   @if (categories().length > 0) {

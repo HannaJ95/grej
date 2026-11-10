@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { FilterSearch } from './filter-search';
+import { SearchField } from './search-field';
 
-describe('FilterSearch', () => {
+describe('SearchField', () => {
   async function render(value = '') {
-    const fixture = TestBed.createComponent(FilterSearch);
+    const fixture = TestBed.createComponent(SearchField);
+    fixture.componentRef.setInput('label', 'Sök bland grejerna');
     fixture.componentRef.setInput('value', value);
     const searches: string[] = [];
     fixture.componentInstance.searched.subscribe((search) => searches.push(search));
@@ -13,7 +14,7 @@ describe('FilterSearch', () => {
     return { element, field, searches };
   }
 
-  it('shows the search from the URL in a search landmark', async () => {
+  it('shows the search from the URL in a search landmark, named by its label', async () => {
     const { element, field } = await render('vas');
 
     expect(field.value).toBe('vas');

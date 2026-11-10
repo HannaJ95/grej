@@ -1,11 +1,10 @@
 import { Component, input, output } from '@angular/core';
-import { Icon } from '../../../shared/icons/icon';
+import { Icon } from '../icons/icon';
 
-// The search at the top of the product filter. Like the price fields it searches on Enter or when
-// the customer leaves the field, so the list doesn't reload for every letter.
-// <app-filter-search [value]="filter().search" (searched)="…" />
+// Searches on Enter or when the field is left, so a list doesn't reload for every letter.
+// <app-search-field label="Sök bland grejerna" [value]="filter().search" (searched)="…" />
 @Component({
-  selector: 'app-filter-search',
+  selector: 'app-search-field',
   imports: [Icon],
   template: `
     <!-- Enter fires change before the form is sent, so the form only has to stay on the page. -->
@@ -17,7 +16,7 @@ import { Icon } from '../../../shared/icons/icon';
           class="text-body-m"
           type="search"
           placeholder="Sök…"
-          aria-label="Sök bland grejerna"
+          [attr.aria-label]="label()"
           maxlength="100"
           enterkeyhint="search"
           autocomplete="off"
@@ -27,7 +26,7 @@ import { Icon } from '../../../shared/icons/icon';
       </label>
     </form>
   `,
-  styleUrl: '../../../shared/field-box.scss',
+  styleUrl: '../field-box.scss',
   styles: `
     :host {
       display: block;
@@ -39,8 +38,8 @@ import { Icon } from '../../../shared/icons/icon';
       gap: var(--space-12);
     }
 
-    // Without the browser's own search look and its clear button, which Firefox doesn't have.
-    // "Rensa" clears the search.
+    // Without the browser's own search look and clear button, which Firefox doesn't have, so it
+    // looks the same everywhere. Each page has its own way to clear the search.
     input {
       appearance: none;
 
@@ -56,7 +55,9 @@ import { Icon } from '../../../shared/icons/icon';
     }
   `,
 })
-export class FilterSearch {
+export class SearchField {
+  // The field's name for screen readers, since it has no visible label.
+  readonly label = input.required<string>();
   // The search in the URL, '' when there is none.
   readonly value = input.required<string>();
   // Not "search": a search field's own DOM event has that name and would reach the parent's
