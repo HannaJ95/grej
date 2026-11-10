@@ -23,6 +23,8 @@ public record OrderDetailsDto(
     string Currency,
     string Status,
     string PaymentStatus,
+    // Null when the payment has no page at its provider (IPaymentDashboard).
+    string? PaymentDashboardUrl,
     // Order's own answers to its rules, so the CMS shows the right buttons without
     // knowing the rules itself.
     bool NeedsRefund,

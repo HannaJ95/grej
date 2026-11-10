@@ -1,11 +1,12 @@
 using Grej.Application.Catalog;
 using Grej.Application.Common;
+using Grej.Application.Payments;
 using Grej.Domain.Orders;
 
 namespace Grej.Application.Orders;
 
 // What the admin may do with an order is decided by Order itself.
-public class AdminOrderService(IOrderRepository orders, ProductService products)
+public class AdminOrderService(IOrderRepository orders, ProductService products, IPaymentDashboard dashboard)
 {
     public async Task<PagedResult<OrderSummaryDto>> GetOrdersAsync(OrderListQuery query, CancellationToken cancellationToken)
     {
@@ -83,7 +84,7 @@ public class AdminOrderService(IOrderRepository orders, ProductService products)
         order.NeedsCancelling,
         order.NeedsAttention);
 
-    private static OrderDetailsDto ToDetailsDto(Order order) => new(
+    private OrderDetailsDto ToDetailsDto(Order order) => new(
         order.Id,
         order.OrderNumber,
         order.CreatedAt,
@@ -91,6 +92,8 @@ public class AdminOrderService(IOrderRepository orders, ProductService products)
         order.Currency,
         order.Status.ToString(),
         PaymentStatusOf(order),
+        // PaymentStatusOf has already checked that the payment was read.
+        dashboard.UrlFor(order.Payment!),
         order.NeedsRefund,
         order.NeedsCancelling,
         order.NeedsAttention,

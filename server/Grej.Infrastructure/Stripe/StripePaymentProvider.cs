@@ -10,7 +10,10 @@ namespace Grej.Infrastructure.Stripe;
 // so no card data ever passes through our API (architecture.md).
 public class StripePaymentProvider(StripeClient stripe, IConfiguration configuration) : IPaymentProvider
 {
-    public string Name => "Stripe";
+    // Also read by StripeDashboard, so both agree on which payments are Stripe's.
+    internal const string ProviderName = "Stripe";
+
+    public string Name => ProviderName;
 
     public async Task<CheckoutSession> CreateCheckoutSessionAsync(Order order, CancellationToken cancellationToken)
     {

@@ -51,6 +51,7 @@ public static class DependencyInjection
             configuration["Stripe:SecretKey"] ?? throw new InvalidOperationException("Stripe:SecretKey is not configured.")));
         services.AddScoped<IPaymentProvider, StripePaymentProvider>();
         services.AddScoped<IPaymentWebhookReader, StripeWebhookReader>();
+        services.AddSingleton<IPaymentDashboard, StripeDashboard>();
 
         // A typed HttpClient: IHttpClientFactory gives SupabaseImageStorage an HttpClient
         // and reuses its connections, instead of opening new ones for every request.
