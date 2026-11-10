@@ -63,6 +63,9 @@
   --border-width-default: 2px;
   --border-width-strong: 3px;
   --size-control-height: 3.125rem;
+  // Every product image in the shop has this shape, so the shop looks the same whatever is
+  // uploaded. A number instead of "318 / 380", so calc() can use it too.
+  --ratio-product-image: calc(318 / 380);
 
   --shadow-popover: 0 0.5rem 1.5rem rgb(43 42 39 / 18%);
 
