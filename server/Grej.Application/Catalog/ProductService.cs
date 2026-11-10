@@ -35,7 +35,7 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
             SearchWords = query.Search?.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [],
         };
 
-        var page = await products.GetActivePageAsync(query.Page, query.PageSize, filter, cancellationToken);
+        var page = await products.GetActivePageAsync(query.Page, query.PageSize, filter, query.Sort, cancellationToken);
         var highestPrice = await products.GetHighestActivePriceAsync(
             filter with { MinPrice = null, MaxPrice = null }, cancellationToken);
 

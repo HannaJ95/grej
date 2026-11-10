@@ -15,15 +15,15 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
         await db.Products.Where(p => ids.Contains(p.Id)).ToListAsync(cancellationToken);
 
     public Task<PagedResult<Product>> GetActivePageAsync(
-        int page, int pageSize, ProductFilter filter, CancellationToken cancellationToken) =>
-        ToPageAsync(ActiveMatching(filter), page, pageSize, cancellationToken);
+        int page, int pageSize, ProductFilter filter, ProductSort sort, CancellationToken cancellationToken) =>
+        ToPageAsync(Sorted(ActiveMatching(filter), sort), page, pageSize, cancellationToken);
 
     // decimal? makes MAX return null instead of throwing when no product matches.
     public Task<decimal?> GetHighestActivePriceAsync(ProductFilter filter, CancellationToken cancellationToken) =>
         ActiveMatching(filter).MaxAsync(p => (decimal?)p.Price, cancellationToken);
 
     public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
-        ToPageAsync(db.Products, page, pageSize, cancellationToken);
+        ToPageAsync(Sorted(db.Products, ProductSort.Newest), page, pageSize, cancellationToken);
 
     // EXISTS in SQL: PostgreSQL stops at the first product it finds.
     public Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken cancellationToken) =>
@@ -92,14 +92,21 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
             .Select(group => new { CategoryId = group.Key, Count = group.Count() })
             .ToDictionaryAsync(row => row.CategoryId, row => row.Count, cancellationToken);
 
+    // Without a fixed order PostgreSQL may return the rows in any order, and a product could show up
+    // on two pages. So the id decides between equal prices. Highest id = newest.
+    private static IOrderedQueryable<Product> Sorted(IQueryable<Product> query, ProductSort sort) => sort switch
+    {
+        ProductSort.PriceAscending => query.OrderBy(p => p.Price).ThenByDescending(p => p.Id),
+        ProductSort.PriceDescending => query.OrderByDescending(p => p.Price).ThenByDescending(p => p.Id),
+        _ => query.OrderByDescending(p => p.Id),
+    };
+
+    // Takes an ordered query, so the paging is always stable.
     private static async Task<PagedResult<Product>> ToPageAsync(
-        IQueryable<Product> query, int page, int pageSize, CancellationToken cancellationToken)
+        IOrderedQueryable<Product> query, int page, int pageSize, CancellationToken cancellationToken)
     {
         var totalCount = await query.CountAsync(cancellationToken);
         var items = await query
-            // Without a fixed order PostgreSQL may return the rows in any order, and a product
-            // could show up on two pages. Highest id = newest.
-            .OrderByDescending(p => p.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);

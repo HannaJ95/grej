@@ -101,7 +101,7 @@ public class DemoSeederTests
 
         await using var db = new GrejDbContext(options);
         // The same query and page size as the shop's product list.
-        var firstPage = await new ProductRepository(db).GetActivePageAsync(1, 12, new ProductFilter(), CancellationToken.None);
+        var firstPage = await new ProductRepository(db).GetActivePageAsync(1, 12, new ProductFilter(), ProductSort.Newest, CancellationToken.None);
 
         // A product in a subcategory counts for its main category, like in the shop's filter.
         var categories = await db.Categories.ToDictionaryAsync(c => c.Id);
