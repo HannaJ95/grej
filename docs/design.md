@@ -15,7 +15,7 @@ The design lives in the code. `client/src/styles/` has the tokens, the text styl
 - Every text color has at least 4.5:1 contrast against its background, and field borders and the focus ring at least 3:1 (WCAG AA).
 - Hover: dark buttons get `--color-bg-inverse-hover` and light ones `--color-bg-hover`. Links are underlined.
 - The focus ring is 2 px in `--color-border-default`, and `--color-border-inverse` on the dark bands.
-- `_base.scss` styles plain HTML elements with the tokens: links, form fields, tables and the focus ring.
+- `_base.scss` styles plain HTML elements with the tokens: links, form fields, tables and the focus ring. It also has `.visually-hidden`, for text that only screen readers get.
 - Sizes: a phone up to 767 px, a tablet from 768 px and a computer from 1024 px. The font sizes change through the tokens. Changes to spacing and layout (columns, the menu, the add button) use media queries at 48rem and 64rem in the components, written phone first. The admin pages follow the room beside the menu with container queries instead.
 
 ## Shared components
@@ -25,6 +25,10 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
 - `Button` is an attribute on a real `<button>` or `<a>` (`<button appButton variant="danger">`). That way the element keeps the browser's keyboard handling, form submit, `disabled` and `routerLink`. It has three variants (primary, secondary with a 2 px frame, danger) and two sizes (normal for forms and the CMS, `size="large"` for the shop's big buttons). The frame is taken from the padding, so all variants are equally tall.
 - `LinkButton` (`button[appLinkButton]`) is a button that looks like a link, for actions on the same page, such as "Redigera" and "Ta bort" in a CMS list. It has `tone` default or danger.
 - `Icon` shows one of the icons in `public/icons/` as a CSS mask, so it takes the text color around it. `IconButton` is a square button with only an icon (e.g. close), and always needs an `aria-label`.
+- `InfoTip` is a small (i) button beside a label that opens a box of help text (`<app-info-tip label="Vad är alt-text?">`). It opens on click, tap or Enter, not on hover, which touch screens and keyboards lack.
+  - The box is a native popover, so the browser closes it on Escape or a click outside.
+  - From a tablet it sits by the button with CSS anchor positioning: below and to the right, or flipped to where it fits.
+  - On a phone, and when nothing beside the button fits (e.g. with large text), it is in the middle of the window, and it scrolls inside when it is taller than the window.
 - `Badge` is a small label on a product image, e.g. "Slutsåld" and "Få kvar".
 - `ButtonCount` is a number in a small square on a button: dark on the light "Filter" button, light (`tone="light"`) on the dark cart button.
   - The button's `aria-label` says what the number is, e.g. "Varukorg, 2 grejer".
@@ -94,7 +98,9 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
     - with more than one choice, light chips to remove one at a time
 - The product page (`/produkter/:id`) has:
   - a breadcrumb
-  - `ProductGallery`: a big image and thumbnails to choose from. It is built for several images, although the API has one.
+  - `ProductGallery`: a big image and a thumbnail for each of the product's images (up to 10), the main image first.
+    - Below 1024 px the thumbnails are a row that scrolls sideways, like `CategoryTabs`. From 1024 px they are a column beside the big image, as tall as it, which scrolls up and down.
+    - The scrolling box has room around the thumbnails, so it never cuts the focus ring.
   - the title, price and `StockStatus`
   - the first 150 characters of the description, with "Mer information", which opens "Beskrivning" (a `<details>`) and scrolls to it
   - the material and color rows
@@ -104,7 +110,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - The row itself sticks, instead of a separate buy bar, so the page never shows two buy buttons.
   - `scroll-padding-bottom` keeps the keyboard focus above it.
   - It does not stick on screens lower than 480 px (e.g. when zoomed in), where it would cover too much.
-- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's image when it is added) and a `QuantityStepper`, plus the products, the shipping and the total, and an empty state. Its button in the header shows the number of products in a `ButtonCount`, also when the cart is empty.
+- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's main image when it is added) and a `QuantityStepper`, plus the products, the shipping and the total, and an empty state. Its button in the header shows the number of products in a `ButtonCount`, also when the cart is empty.
   - The shipping is a copy of the API's rule (`core/shipping.ts`), only for showing. A row saved before shipping was built has no parcel, and then the cart shows the sum and "Frakten läggs till i kassan."
 - When something is added, `AddedToCart` shows a small popup under the cart button.
   - It closes itself after 5 seconds, which pause on hover or focus. It also closes with the cross or with Escape.
@@ -148,7 +154,12 @@ The CMS uses the same tokens, text styles and shared components as the shop.
   - The form card is on the left, and the image card beside it when the page is at least 56rem wide. Price and stock are side by side when the card is at least 28rem wide.
   - Under them, the group "Paketets vikt och mått" (a `<fieldset>` with a hint) has the packed weight and the three sides, which the checkout calculates the shipping from: two per row from 28rem, all four from 36rem. A new product starts with them empty.
   - Saving keeps the admin on the page, with a toast, and fetches the product again. A product that does not exist (404) says so.
-  - On "Ny produkt" the image card collects the image without uploading it: a file needs its description, and both are shown with the form's errors. Spara creates the product, uploads the image and opens the product's own page.
+  - The image card "Bilder" lists the images in order (`<ol>`): a square thumbnail, the alt text as text, "Huvudbild" (`Badge`) on the first, and per row "Flytta upp", "Flytta ner" (`IconButton`) and "Ta bort".
+    - The first image's up arrow and the last one's down arrow are disabled, so the row never jumps. After a move the focus stays on the arrow (or the other one at the end of the list), and screen readers hear where the image went from a `.visually-hidden` `role="status"`.
+    - In a narrow card, e.g. with large text, the thumbnail is above the text instead of beside it.
+    - "Lägg till en bild" adds an image last. `InfoTip` beside the alt text field explains what an alt text is and what to write. At 10 images the form is replaced by a text that says so.
+    - When a removed image's button disappears, or the form at 10 images, the focus moves to the heading "Bilder", like on the order page.
+  - On "Ny produkt" the image card collects the first image without uploading it: a file needs its description, and both are shown with the form's errors. Spara creates the product, uploads the image and opens the product's own page, where more images are added.
 - The order list (`/admin/ordrar`) has the tabs "Att göra" and "Alla beställningar" and a table. "Behöver återbetalas" and "Behöver avbrytas" are bold, red words under the status.
 - The order page (`/admin/ordrar/7`) has the cards Status (facts, warning, buttons) and Kund side by side, and Produkter with the shipping (when the order has one) and the total below them. After shipping or cancelling the button is gone, so the focus moves to the Status heading.
 - The login page is a card in the middle of the window, with "GREJ." and the Admin badge above it and a link back to the shop below.

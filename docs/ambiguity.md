@@ -64,7 +64,11 @@ Decision (Should): Only the product's title. Every word must be somewhere in the
 Why: The scope says "by name", and a description often mentions other things, like "passar som vas" on a mug. Each new word narrows the result, which is what a customer who adds a word expects.
 
 **Can a product have several images?**
-Decision (Should): Yes, up to 10. The MVP has one image per product.
+Decision (Should): Yes, up to 10. The MVP had one image per product.
+
+**Which image is shown in the lists, and who decides the order?**
+Decision (Should): The first image is the main image, which the product list, the start page, the cart and the CMS's list show. The product page shows all of them, in order. A new image goes last, and the admin moves the images up and down in the CMS. On "Ny produkt" the admin chooses one image, which becomes the main image, and adds the others on the product's page after saving.
+Why: The main image is what most customers see, so the admin must be able to choose it. Moving up and down also sets the order of the gallery, and works with the keyboard and on a phone, unlike dragging.
 
 ## Categories
 
