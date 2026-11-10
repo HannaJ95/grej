@@ -30,7 +30,7 @@ I am still learning frontend, so act as an expert frontend developer and designe
   - `LinkButton` (`appLinkButton`): an action on the same page that looks like a link, e.g. "Redigera"; `tone` default or danger
   - `IconButton`: a square button with only an icon; `tone` dark or light; always an `aria-label` in Swedish
   - `Icon`: the icons in `IconName` (`shared/icons/icon.ts`). A new icon is a 24×24 SVG with a 2 px line in `client/public/icons/` plus its name in `IconName`
-  - `Badge`, `Breadcrumb`, `Pagination`, `QuantityStepper`, `StockStatus`
+  - `Badge`, `Breadcrumb`, `Pagination`, `QuantityStepper`, `SearchField`, `StockStatus`
   - The feature components (`ProductCard`, `AdminPageHeader`, the CMS cards …) are in `docs/design.md`.
 - A look that is needed in two places becomes a shared component or a shared scss file, like `admin-page.scss`. It is never copied.
 - **New admin pages** reuse the existing admin pattern: `AdminPageHeader` at the top, and the list with a card beside it where the page edits rows.

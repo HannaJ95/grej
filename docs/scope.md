@@ -48,6 +48,7 @@ The MVP is a single-seller webshop with an admin CMS = all **Must** items below.
 - Shipping cost from the products' packed weight and size, with one method ("Paket till ombud"), shown in the cart and as its own row in Stripe Checkout. Changed on 9 Nov from one fixed price (ambiguity.md)
 - Flag an order when the last item was sold twice at the same time
 - A link from an order in the CMS to its payment in Stripe, and the order number on the payment in Stripe (added 10 Nov)
+- Search orders in the CMS by order number, customer and product (added 10 Nov)
 
 ### Could
 
