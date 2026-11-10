@@ -33,8 +33,10 @@ import { Icon } from '../../../shared/icons/icon';
       min-width: 0;
     }
 
-    // A field box like the search, as tall as the Filter button beside it.
+    // A field box like the search, as tall as the Filter button beside it. The anchor lets the
+    // list line up with the whole box, not only the select after "Sortera:".
     .box {
+      anchor-name: --sort-box;
       display: flex;
       align-items: center;
       border: var(--border-width-default) solid var(--color-border-default);
@@ -69,21 +71,36 @@ import { Icon } from '../../../shared/icons/icon';
       min-width: 0;
     }
 
-    // Longhand paddings, so the room for the chevron in shared/select.scss stays.
+    // Longhand paddings, so the room for the chevron in shared/select.scss stays. Chrome's
+    // customizable select is only as wide as the chosen text, so min-inline-size keeps room for
+    // "Nyast först", the longest choice (5.375em), and the box doesn't jump when the choice
+    // changes. Never wider than the page's content, so it still shrinks when the text is enlarged.
     .box select {
+      --padding-left: var(--space-16);
+
+      min-inline-size: min(
+        calc(var(--padding-left) + 5.375em + var(--space-48)),
+        calc(100vw - 2 * var(--layout-margin) - 2 * var(--border-width-default))
+      );
       padding-block: calc(var(--space-8) - var(--border-width-default));
-      padding-left: var(--space-16);
+      padding-left: var(--padding-left);
       border: none;
       background: none;
       color: inherit;
 
       @media (width >= 48rem) {
-        padding-left: var(--space-4);
+        --padding-left: var(--space-4);
       }
 
       // The box has the ring instead.
       &:focus-visible {
         outline: none;
+      }
+
+      // anchor-size() makes the list at least as wide as the box.
+      &::picker(select) {
+        position-anchor: --sort-box;
+        min-inline-size: anchor-size(width);
       }
     }
   `,
