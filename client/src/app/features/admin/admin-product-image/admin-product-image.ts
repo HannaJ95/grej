@@ -19,7 +19,9 @@ import {
 } from '@angular/forms/signals';
 import { AdminProduct, AdminProductService } from '../../../core/admin-product.service';
 import { ConfirmService } from '../../../core/confirm.service';
+import { MAX_IMAGES, ProductImage } from '../../../core/product-image';
 import { ToastService } from '../../../core/toast.service';
+import { Badge } from '../../../shared/badge/badge';
 import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
 import { LinkButton } from '../../../shared/link-button/link-button';
@@ -37,15 +39,15 @@ interface ImageFormModel {
 
 const EMPTY: ImageFormModel = { file: null, altText: '' };
 
-// The product's image card: shows, uploads and removes the image. On "Ny produkt" there is no
-// product yet, so the card only collects the image, and the product form uploads it after
-// creating the product (pendingImage).
-
 // What pendingImage() gives the product form.
 export type PendingImage = { file: File; altText: string } | null | 'invalid';
+
+// The product's image card: lists, adds and removes the images. On "Ny produkt" there is no
+// product yet, so the card only collects the first image, and the product form uploads it after
+// creating the product (pendingImage).
 @Component({
   selector: 'app-admin-product-image',
-  imports: [FormRoot, FormField, Button, LinkButton],
+  imports: [FormRoot, FormField, Badge, Button, LinkButton],
   templateUrl: './admin-product-image.html',
   styleUrls: ['../admin-form.scss', './admin-product-image.scss'],
 })
@@ -63,8 +65,10 @@ export class AdminProductImage {
   // Hidden again once an upload has worked.
   protected readonly showUploadFailed = linkedSignal(() => this.uploadFailed());
 
-  // Changed here after an upload or removal, so the product form is not fetched again.
-  protected readonly image = linkedSignal(() => this.product()?.image ?? null);
+  // Set to the API's answer after every change, so the product form is not fetched again.
+  protected readonly images = linkedSignal(() => this.product()?.images ?? []);
+  protected readonly isFull = computed(() => this.images().length >= MAX_IMAGES);
+  protected readonly maxImages = MAX_IMAGES;
 
   private readonly model = signal<ImageFormModel>(EMPTY);
 
@@ -100,8 +104,9 @@ export class AdminProductImage {
   protected readonly fileError = computed(() => firstError(this.imageForm.file));
   protected readonly altTextError = computed(() => firstError(this.imageForm.altText));
   protected readonly uploadError = computed(() => this.imageForm().errors()[0]?.message);
-  protected readonly removeError = signal<string | undefined>(undefined);
+  protected readonly listError = signal<string | undefined>(undefined);
 
+  private readonly title = viewChild.required<ElementRef<HTMLElement>>('title');
   // Emptied after an upload.
   private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
 
@@ -137,11 +142,24 @@ export class AdminProductImage {
     }
     const { file, altText } = this.model();
     try {
-      this.image.set(await this.products.uploadImage(product.id, file!, altText));
-      // reset also forgets "touched", so the empty fields show no errors.
+      const images = await this.products.addImage(product.id, file!, altText);
+      if (images === 'full') {
+        // E.g. images added in another tab.
+        return {
+          kind: 'full',
+          message: `Produkten har redan ${MAX_IMAGES} bilder. Ladda om sidan för att se alla.`,
+        };
+      }
+      // Before images.set, while the form is still there. reset also forgets "touched", so the
+      // empty fields show no errors.
       this.imageForm().reset(EMPTY);
       this.fileInput().nativeElement.value = '';
+      this.images.set(images);
       this.showUploadFailed.set(false);
+      // At the limit the form is replaced by a text, so the focus would be lost with it.
+      if (this.isFull()) {
+        this.title().nativeElement.focus();
+      }
       this.toast.show('Bilden är uppladdad.');
       return undefined;
     } catch {
@@ -152,27 +170,40 @@ export class AdminProductImage {
     }
   }
 
-  protected async remove(): Promise<void> {
+  protected async remove(image: ProductImage, position: number): Promise<void> {
     const product = this.product();
     if (!product) {
       return;
     }
     const yes = await this.confirm.ask({
       title: 'Ta bort bilden?',
-      message: 'Produkten visas utan bild tills du laddar upp en ny.',
+      message: removeMessage(position, this.images().length),
       confirmLabel: 'Ta bort',
     });
     if (!yes) {
       return;
     }
 
-    this.removeError.set(undefined);
+    this.listError.set(undefined);
+    // The clicked button disappears with its image, so the focus is moved to the heading, as on
+    // the order page.
+    this.title().nativeElement.focus();
     try {
-      await this.products.removeImage(product.id);
-      this.image.set(null);
+      this.images.set(await this.products.removeImage(product.id, image.id));
       this.toast.show('Bilden är borttagen.');
     } catch {
-      this.removeError.set('Bilden kunde inte tas bort just nu. Försök igen om en stund.');
+      this.listError.set('Bilden kunde inte tas bort just nu. Försök igen om en stund.');
     }
   }
+}
+
+// What the shop shows instead, since that is what the admin needs to know.
+function removeMessage(position: number, count: number): string {
+  if (count === 1) {
+    return 'Produkten visas utan bild tills du laddar upp en ny.';
+  }
+  if (position === 0) {
+    return 'Nästa bild blir huvudbild och visas i butikens listor.';
+  }
+  return 'Den tas bort från produktens bilder i butiken.';
 }

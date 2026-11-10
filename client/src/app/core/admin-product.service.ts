@@ -20,7 +20,8 @@ export interface AdminProduct {
   // The ids of the product's materials and colors. Empty if it has none.
   materialIds: number[];
   colorIds: number[];
-  image: ProductImage | null;
+  // In order, the main image first. Empty if the product has none.
+  images: ProductImage[];
   parcel: Parcel;
 }
 
@@ -100,19 +101,36 @@ export class AdminProductService {
     }
   }
 
-  // Replaces the product's image and resolves with the new one. Sent as a form with a
-  // file (multipart/form-data), like a <form> with <input type="file">, since JSON cannot
-  // carry a file. Throws on errors, e.g. when the API says the file is not an image.
-  uploadImage(id: number, file: File, altText: string): Promise<ProductImage> {
+  // The image methods resolve with the product's images afterwards, in order, and throw on
+  // other errors, e.g. when the API says the file is not an image.
+
+  // Adds the image last, or says 'full' when the product already has MAX_IMAGES (409). Sent as
+  // a form with a file (multipart/form-data), like a <form> with <input type="file">, since JSON
+  // cannot carry a file.
+  async addImage(id: number, file: File, altText: string): Promise<ProductImage[] | 'full'> {
     const form = new FormData();
     form.append('file', file);
     form.append('altText', altText);
-    // No Content-Type here: the browser sets it, together with the separator between the parts.
-    return firstValueFrom(this.http.put<ProductImage>(`${this.url}/${id}/image`, form));
+    try {
+      // No Content-Type here: the browser sets it, together with the separator between the parts.
+      return await firstValueFrom(this.http.post<ProductImage[]>(`${this.url}/${id}/images`, form));
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.status === 409) {
+        return 'full';
+      }
+      throw error;
+    }
   }
 
   // Removes the image from the product, and its file from Supabase Storage.
-  async removeImage(id: number): Promise<void> {
-    await firstValueFrom(this.http.delete(`${this.url}/${id}/image`));
+  removeImage(id: number, imageId: number): Promise<ProductImage[]> {
+    return firstValueFrom(this.http.delete<ProductImage[]>(`${this.url}/${id}/images/${imageId}`));
+  }
+
+  // imageIds is every image id of the product, in the new order.
+  orderImages(id: number, imageIds: number[]): Promise<ProductImage[]> {
+    return firstValueFrom(
+      this.http.put<ProductImage[]>(`${this.url}/${id}/images/order`, { imageIds }),
+    );
   }
 }

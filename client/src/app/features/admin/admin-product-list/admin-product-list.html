@@ -32,7 +32,7 @@
               <td>
                 <span class="product">
                   <!-- The title next to it already names the product. -->
-                  @if (p.image; as image) {
+                  @if (p.images[0]; as image) {
                     <img class="thumb" [src]="image.url" alt="" loading="lazy" />
                   } @else {
                     <span class="thumb empty"></span>

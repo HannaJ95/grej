@@ -9,7 +9,7 @@ const vase: Product = {
   currency: 'SEK',
   stock: 3,
   isSoldOut: false,
-  image: null,
+  images: [],
   materials: [],
   colors: [],
   parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
@@ -22,7 +22,7 @@ const plate: Product = {
   currency: 'SEK',
   stock: 1,
   isSoldOut: false,
-  image: null,
+  images: [],
   materials: [],
   colors: [],
   parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
@@ -152,13 +152,14 @@ describe('CartService', () => {
     expect(cart.lastAdded()).toBeNull();
   });
 
-  it("keeps the product's image for the cart's picture", () => {
-    const image = { url: 'https://storage.test/vas.png', altText: 'En blå vas' };
+  it("keeps the product's main image for the cart's picture", () => {
+    const main = { id: 1, url: 'https://storage.test/vas.png', altText: 'En blå vas' };
+    const side = { id: 2, url: 'https://storage.test/sida.png', altText: 'Vasen från sidan' };
     const cart = new CartService();
 
-    cart.add({ ...vase, image });
+    cart.add({ ...vase, images: [main, side] });
 
-    expect(cart.items()[0].image).toEqual(image);
+    expect(cart.items()[0].image).toEqual(main);
   });
 
   it('gives a cart saved without maxQuantity the largest one, and no image', () => {

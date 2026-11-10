@@ -44,9 +44,9 @@ public class CategoriesEndpointTests : IClassFixture<WebApplicationFactory<Progr
             // Glas only has a hidden product, so it is left out.
             NewProduct(empty, isActive: false));
 
-        var categories = await app.CreateClient().GetFromJsonAsync<List<ShopCategoryDto>>("/api/categories");
+        var categories = (await app.CreateClient().GetFromJsonAsync<List<ShopCategoryDto>>("/api/categories"))!;
 
-        Assert.Equal([keramik, textil], categories!.Select(c => c.Id));
+        Assert.Equal([keramik, textil], categories.Select(c => c.Id));
         Assert.Equal(["Keramik 2", "Textil 1"], categories.Select(Describe));
     }
 

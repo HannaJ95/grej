@@ -12,8 +12,9 @@ export interface CartItem {
   title: string;
   price: number;
   currency: string;
-  // For the small picture in the cart. Null if the product has no image.
-  image: ProductImage | null;
+  // The main image, for the small picture in the cart. Null if the product has no image. Without
+  // the id, which the cart does not need and carts saved before several images do not have.
+  image: Pick<ProductImage, 'url' | 'altText'> | null;
   quantity: number;
   // The stock when the product was added, at most MAX_QUANTITY. The API checks
   // the stock again in the checkout, since it may have changed since then.
@@ -99,7 +100,7 @@ export class CartService {
         title: product.title,
         price: product.price,
         currency: product.currency,
-        image: product.image,
+        image: product.images[0] ?? null,
         quantity: amount,
         maxQuantity,
         parcel: product.parcel,
