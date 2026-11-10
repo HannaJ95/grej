@@ -11,6 +11,7 @@ export type IconName =
   | 'arrow-left'
   | 'arrow-up'
   | 'arrow-down'
+  | 'arrow-up-right'
   | 'search'
   | 'info';
 

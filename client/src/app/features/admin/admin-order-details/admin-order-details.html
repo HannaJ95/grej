@@ -27,6 +27,13 @@
         </div>
       </dl>
 
+      @if (o.paymentDashboardUrl; as url) {
+        <a class="icon-link text-link-s" [href]="url" target="_blank" rel="noopener">
+          Visa betalningen i Stripe<span class="visually-hidden"> (öppnas i en ny flik)</span>
+          <app-icon name="arrow-up-right" />
+        </a>
+      }
+
       @if (o.needsRefund) {
         <p class="notice text-body-s">
           <strong>Behöver återbetalas.</strong> Ordern är avbruten men betald. Återbetala kunden i

@@ -6,7 +6,7 @@ export type PaymentStatus = 'Pending' | 'Paid' | 'Expired' | 'Refunded';
 export interface OrderSummary {
   id: number;
   orderNumber: string;
-  // In UTC. The date pipe shows it in the browser's time zone.
+  // UTC; the date pipe shows it in the browser's time zone.
   createdAt: string;
   // Null until the order is paid.
   customerName: string | null;
@@ -16,13 +16,15 @@ export interface OrderSummary {
   paymentStatus: PaymentStatus;
   needsRefund: boolean;
   needsCancelling: boolean;
-  // Paid after another customer had bought the last item, and not shipped or cancelled yet.
+  // Sold twice, and not shipped or cancelled yet.
   needsAttention: boolean;
 }
 
 // OrderDetailsDto in the API.
 export interface OrderDetails extends OrderSummary {
-  // The API's answers to the order's rules, so the CMS needs no rules of its own.
+  // Null for unpaid and demo orders.
+  paymentDashboardUrl: string | null;
+  // From the order's rules in the API, so the CMS needs none of its own.
   canBeShipped: boolean;
   canBeCancelled: boolean;
   // Null until the order is paid.
