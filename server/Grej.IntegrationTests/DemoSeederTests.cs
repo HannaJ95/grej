@@ -48,20 +48,50 @@ public class DemoSeederTests
     }
 
     [Fact]
-    public async Task SeedAsync_UploadsAnOwnImageForEachProduct()
+    public async Task SeedAsync_UploadsAnOwnCopyOfEachImage()
     {
         await SeedAsync();
 
         await using var db = new GrejDbContext(options);
         var products = await db.Products.ToListAsync();
+        var expected = catalog.Categories
+            .SelectMany(c => c.Products.Select(p => (p.Title, Count: c.ImagesOf(p).Count)))
+            .ToDictionary(entry => entry.Title, entry => entry.Count);
         Assert.All(products, product =>
         {
-            var image = Assert.Single(product.Images);
-            Assert.StartsWith($"products/{product.Id}/", image.StoragePath);
-            Assert.Equal($"https://storage.test/{image.StoragePath}", image.Url);
+            Assert.Equal(expected[product.Title], product.Images.Count);
+            Assert.All(product.Images, image =>
+            {
+                Assert.StartsWith($"products/{product.Id}/", image.StoragePath);
+                Assert.Equal($"https://storage.test/{image.StoragePath}", image.Url);
+            });
         });
-        // One upload per product, each to a path of its own.
-        Assert.Equal(products.Count, storage.Uploaded.Distinct().Count());
+        // One upload per image, each to a path of its own.
+        Assert.Equal(expected.Values.Sum(), storage.Uploaded.Distinct().Count());
+    }
+
+    [Fact]
+    public async Task SeedAsync_ProductWithImagesOfItsOwn_GetsThemInOrder()
+    {
+        // The file has no such product yet, so the first product gets two of the files.
+        var category = catalog.Categories[0];
+        var product = category.Products[0] with
+        {
+            Images = [new DemoImage("konst.jpg", "Första"), new DemoImage(category.Image, "Andra")],
+        };
+        var changed = catalog with
+        {
+            Categories = [category with { Products = [product, .. category.Products.Skip(1)] }, .. catalog.Categories.Skip(1)],
+        };
+
+        await SeedAsync(changed);
+
+        await using var db = new GrejDbContext(options);
+        var saved = await db.Products.SingleAsync(p => p.Title == product.Title);
+        Assert.Equal(["Första", "Andra"], saved.Images.Select(image => image.AltText));
+        // The other products still get their category's image.
+        var other = await db.Products.FirstAsync(p => p.Title == category.Products[1].Title);
+        Assert.Equal(category.ImageAltText, Assert.Single(other.Images).AltText);
     }
 
     [Fact]
@@ -102,10 +132,11 @@ public class DemoSeederTests
         });
     }
 
-    private async Task SeedAsync()
+    // The real file, unless a test changes it.
+    private async Task SeedAsync(DemoCatalog? changed = null)
     {
         await using var db = new GrejDbContext(options);
-        await DemoSeeder.SeedAsync(db, storage, catalog, "admin-id");
+        await DemoSeeder.SeedAsync(db, storage, changed ?? catalog, "admin-id");
     }
 
     // One line per product, e.g. "Keramik: Skål i blå glasyr, 349, 6, True, Stengods, Blå".

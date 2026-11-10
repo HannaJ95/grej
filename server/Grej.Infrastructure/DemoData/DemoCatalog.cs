@@ -42,14 +42,19 @@ public record DemoCatalog(
     }
 }
 
-// A main category and its products. For now, every product in it gets a copy of the same image.
+// A main category and its products. Image is for the products without images of their own.
 // Subcategories is optional: the names of its subcategories, which the products can choose.
 public record DemoCategory(
     string Name,
     string Image,
     string ImageAltText,
     IReadOnlyList<DemoProduct> Products,
-    IReadOnlyList<string>? Subcategories = null);
+    IReadOnlyList<string>? Subcategories = null)
+{
+    // The product's own images, or else a copy of this category's image.
+    public IReadOnlyList<DemoImage> ImagesOf(DemoProduct product) =>
+        product.Images ?? [new DemoImage(Image, ImageAltText)];
+}
 
 // The same fields as the CMS form (ProductRequest), but the subcategory, the materials and the
 // colors are given by name, since their ids are not known until the seed has saved them.
@@ -63,7 +68,12 @@ public record DemoProduct(
     IReadOnlyList<string> Colors,
     ParcelRequest Parcel,
     // One of its category's Subcategories, or null when the product is in the main category.
-    string? Subcategory = null);
+    string? Subcategory = null,
+    // Its own images, the main image first. Left out: a copy of its category's image.
+    IReadOnlyList<DemoImage>? Images = null);
+
+// A file in DemoData/Images and its alt text, e.g. { "file": "skal-1.jpg", "altText": "…" }.
+public record DemoImage(string File, string AltText);
 
 // An order in the demo shop, paid DaysAgo days ago and then handled as Status says. The stock
 // in the file is what is left after these orders, so the seed does not change it. The customer

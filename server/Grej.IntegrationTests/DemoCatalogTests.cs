@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Grej.Application.Catalog;
+using Grej.Domain.Catalog;
 using Grej.Infrastructure.DemoData;
 
 namespace Grej.IntegrationTests;
@@ -94,15 +95,27 @@ public class DemoCatalogTests
     }
 
     [Fact]
-    public void CategoryImages_AreImagesTheCmsAccepts()
+    public void Images_AreImagesTheCmsAccepts()
     {
-        Assert.All(catalog.Categories, category =>
+        var categoryImages = catalog.Categories.Select(c => new DemoImage(c.Image, c.ImageAltText));
+        var productImages = catalog.Categories.SelectMany(c => c.Products).SelectMany(p => p.Images ?? []);
+
+        Assert.All(categoryImages.Concat(productImages), image =>
         {
             // Throws if the file is missing or is not a jpg, png or webp image of at most 5 MB.
-            DemoCatalog.ReadImage(category.Image);
-            // The same limit as the alt text in AdminProductsController.AddImage.
-            Assert.InRange(category.ImageAltText.Length, 1, 200);
+            DemoCatalog.ReadImage(image.File);
+            // The same rules as the alt text in AdminProductsController.AddImage, which trims it.
+            Assert.InRange(image.AltText.Trim().Length, 1, 200);
         });
+    }
+
+    [Fact]
+    public void Products_HaveAtMostTenImages()
+    {
+        Assert.All(catalog.Categories.SelectMany(c => c.Products), product =>
+            Assert.True(
+                (product.Images?.Count ?? 1) <= Product.MaxImages,
+                $"{product.Title}: at most {Product.MaxImages} images."));
     }
 
     // The seed finds materials, colors and categories by name, so a name may only be used once.

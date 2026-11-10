@@ -60,8 +60,13 @@ public static class DemoSeeder
     // Fills an empty database. Kept apart from ResetAsync, so it can be tested without PostgreSQL.
     public static async Task SeedAsync(GrejDbContext db, IImageStorage storage, DemoCatalog catalog, string sellerId)
     {
-        // Read first, so a broken image stops the seed before anything is uploaded.
-        var images = catalog.Categories.ToDictionary(c => c.Name, c => DemoCatalog.ReadImage(c.Image));
+        // Read first, so a broken image stops the seed before anything is uploaded. Once per file,
+        // since many products share their category's image.
+        var files = catalog.Categories
+            .SelectMany(c => c.Products.SelectMany(c.ImagesOf))
+            .Select(image => image.File)
+            .Distinct()
+            .ToDictionary(file => file, DemoCatalog.ReadImage);
 
         // Saved before the products, which need their ids. The dictionaries find them by name.
         var materials = catalog.Materials.ToDictionary(name => name, name => new Material { Name = name });
@@ -85,7 +90,7 @@ public static class DemoSeeder
             .SelectMany(category => category.Products.Select((product, index) => (category, product, index)))
             .OrderBy(entry => entry.index);
 
-        var products = new List<(Product Product, DemoCategory Category)>();
+        var products = new List<(Product Product, IReadOnlyList<DemoImage> Images)>();
         foreach (var (demoCategory, demoProduct, _) in mixed)
         {
             var product = new Product
@@ -106,19 +111,22 @@ public static class DemoSeeder
             };
             product.SetMaterials(demoProduct.Materials.Select(name => materials[name]));
             product.SetColors(demoProduct.Colors.Select(name => colors[name]));
-            products.Add((product, demoCategory));
+            products.Add((product, demoCategory.ImagesOf(demoProduct)));
         }
         db.Products.AddRange(products.Select(entry => entry.Product));
         await db.SaveChangesAsync();
 
-        // Every product gets its own copy of its category's image, at the same kind of path as
-        // an upload in the CMS, since deleting a product in the CMS deletes its file.
-        foreach (var (product, demoCategory) in products)
+        // Every product gets its own copy of each of its images, in order, at the same kind of path
+        // as an upload in the CMS, since deleting a product in the CMS deletes its files.
+        foreach (var (product, demoImages) in products)
         {
-            var image = images[demoCategory.Name];
-            var path = $"products/{product.Id}/{Guid.NewGuid():N}{image.Extension}";
-            var url = await storage.UploadAsync(path, image, CancellationToken.None);
-            product.AddImage(url, path, demoCategory.ImageAltText);
+            foreach (var demoImage in demoImages)
+            {
+                var file = files[demoImage.File];
+                var path = $"products/{product.Id}/{Guid.NewGuid():N}{file.Extension}";
+                var url = await storage.UploadAsync(path, file, CancellationToken.None);
+                product.AddImage(url, path, demoImage.AltText);
+            }
         }
         await db.SaveChangesAsync();
 
