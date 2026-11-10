@@ -3,8 +3,6 @@ using Grej.Domain.Orders;
 
 namespace Grej.Application.Orders;
 
-// What the application needs from the database to work with orders.
-// Implemented in Infrastructure with EF Core (OrderRepository).
 public interface IOrderRepository
 {
     // Saves a new order together with its rows and payment, in one transaction.
@@ -13,10 +11,11 @@ public interface IOrderRepository
     // Null if no order has this id. The order's rows and payment are included.
     Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken);
 
-    // One page of orders with their payments, for the CMS. all = false gives only paid
-    // orders that are not shipped yet (to ship or to refund), oldest first; all = true gives
-    // every order, newest first.
-    Task<PagedResult<Order>> GetPageAsync(bool all, int page, int pageSize, CancellationToken cancellationToken);
+    // One page of orders with their payments, for the CMS. all = false gives only what the admin
+    // has to do, oldest first; all = true every order, newest first. Every search word must be
+    // in the order number, the customer's name or email, or a row's title, in any case.
+    Task<PagedResult<Order>> GetPageAsync(
+        bool all, IReadOnlyCollection<string> searchWords, int page, int pageSize, CancellationToken cancellationToken);
 
     // True if any order, whatever its status, has a row with this product.
     Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken);

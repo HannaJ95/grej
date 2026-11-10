@@ -102,6 +102,7 @@ In priority order. Responsive design and accessibility are checked on every page
 - [x] Several images per product
 - [x] Flag double sale of the last item: the order is shown as "Dubbelsåld" in the CMS (dropped on 8 Nov, built on 10 Nov after the other items)
 - [x] Link from the order page to the payment in Stripe, and the order number on the payment in Stripe (added 10 Nov)
+- [x] Search orders in the CMS by order number, customer and product, with the number of hits (added 10 Nov)
 
 Dropped on 8 Nov, when the deadline moved:
 

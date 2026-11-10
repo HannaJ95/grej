@@ -1,31 +1,69 @@
 <app-admin-page-header eyebrow="Butik" title="Beställningar" />
 
-<p class="intro text-body-m">Att göra visar det som väntar på dig, äldst först.</p>
+<p class="intro text-body-m">
+  Att göra visar det som väntar på dig, äldst först. Sök på ordernummer, kund eller produkt.
+</p>
 
-<nav aria-label="Visa beställningar">
-  <ul class="tabs">
-    <li>
-      <a class="tab text-label-m" routerLink="/admin/ordrar" [attr.aria-current]="all() ? null : 'page'"
-        >Att göra</a
-      >
-    </li>
-    <li>
-      <a
-        class="tab text-label-m"
-        routerLink="/admin/ordrar"
-        [queryParams]="{ visa: 'alla' }"
-        [attr.aria-current]="all() ? 'page' : null"
-        >Alla beställningar</a
-      >
-    </li>
-  </ul>
-</nav>
+<div class="toolbar">
+  <!-- The tabs keep the search, and start on page 1. -->
+  <nav aria-label="Visa beställningar">
+    <ul class="tabs">
+      <li>
+        <a
+          class="tab text-label-m"
+          routerLink="/admin/ordrar"
+          [queryParams]="{ sok: search() || null }"
+          [attr.aria-current]="all() ? null : 'page'"
+          >Att göra</a
+        >
+      </li>
+      <li>
+        <a
+          class="tab text-label-m"
+          routerLink="/admin/ordrar"
+          [queryParams]="{ visa: 'alla', sok: search() || null }"
+          [attr.aria-current]="all() ? 'page' : null"
+          >Alla beställningar</a
+        >
+      </li>
+    </ul>
+  </nav>
+
+  <div class="search">
+    <app-search-field
+      class="search-field"
+      label="Sök bland beställningarna"
+      [value]="search()"
+      (searched)="showSearch($event)"
+    />
+    @if (search()) {
+      <div class="search-info">
+        <p class="text-label-s" aria-live="polite">{{ hits() }}</p>
+        <button appLinkButton type="button" (click)="showSearch('')">Rensa sökningen</button>
+      </div>
+    }
+  </div>
+</div>
 
 <div class="card list">
   @if (result.hasValue()) {
     @let r = result.value();
     @if (r.items.length === 0) {
-      <p class="state">{{ all() ? 'Det finns inga beställningar än.' : 'Det finns inget att göra just nu.' }}</p>
+      @if (search()) {
+        <p class="state">
+          {{ all() ? 'Inga beställningar' : 'Inget att göra' }} matchar ”{{ search() }}”.
+          @if (!all()) {
+            <span> </span>
+            <a routerLink="/admin/ordrar" [queryParams]="{ visa: 'alla', sok: search() }"
+              >Sök bland alla beställningar</a
+            >
+          }
+        </p>
+      } @else {
+        <p class="state">
+          {{ all() ? 'Det finns inga beställningar än.' : 'Det finns inget att göra just nu.' }}
+        </p>
+      }
     } @else {
       <table class="table wide">
         <thead>
@@ -70,7 +108,7 @@
         </tbody>
       </table>
     }
-    <!-- The links keep ?visa=alla. -->
+    <!-- The links keep ?visa= and ?sok=. -->
     <app-pagination path="/admin/ordrar" [page]="r.page" [totalPages]="r.totalPages" />
   } @else if (result.error()) {
     <p class="state" role="alert">Beställningarna kunde inte visas.</p>

@@ -101,6 +101,10 @@ Decision: Only changing the order status (`Pending` → `Shipped` or `Cancelled`
 Decision: By default the list shows orders that are paid but not shipped, i.e. what needs to be done: orders to ship, and cancelled orders that need a refund. Refunded orders that are not cancelled yet are shown too. All orders can be shown with a filter.
 Why: Cancelled and expired orders are never deleted, so the list grows over time. A cancelled order that is still paid also needs the admin, until the refund is done.
 
+**What does the order search in the CMS look in?**
+Decision (Should): The order number, also a part of it, the customer's name and email, and the titles of the order's rows. Every word must be in one of them, in upper or lower case: "anna kruka" finds Anna's order with a pot. The search stays within the chosen tab ("Att göra" or "Alla beställningar"), and the tabs keep it. When nothing is found under "Att göra", a link searches every order.
+Why: A customer who writes about an order gives their name, email or order number, or only remembers what they bought. Searching within the tab works like the shop's category tabs, and the link covers an order that is already shipped.
+
 **Can the admin cancel an order that is not paid yet?**
 Decision: No. The admin can only cancel a paid order that is not shipped (or a refunded one, see below). An unpaid order is cancelled automatically when its payment expires.
 Why: While the payment is pending, the customer can still pay in Stripe Checkout. If the admin could cancel the order, the customer could pay for an order that will never be shipped. This way, every cancel in the CMS puts the products back in stock.

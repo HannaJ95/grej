@@ -18,8 +18,7 @@ namespace Grej.IntegrationTests;
 public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
     : IClassFixture<WebApplicationFactory<Program>>
 {
-    // xUnit creates a new instance of the class for each test, so each test
-    // starts with an empty list of saved orders.
+    // New per test, since xUnit creates the class for each test.
     private readonly FakeOrderRepository orders = new();
 
     [Fact]
@@ -153,7 +152,7 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
     {
         var client = CreateClient();
 
-        // Sends {"items":[null]}. The ! tells the compiler that the null is on purpose.
+        // Sends {"items":[null]}.
         var response = await client.PostAsJsonAsync("/api/checkout", new CheckoutRequest([null!]));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -162,7 +161,6 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
     private static CheckoutRequest Request(int productId, int quantity) =>
         new([new CheckoutItemRequest(productId, quantity)]);
 
-    // Starts the API with fakes instead of the database and Stripe.
     private HttpClient CreateClient(params Product[] products) =>
         factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
             {
@@ -172,7 +170,6 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
             }))
             .CreateClient();
 
-    // Reads the list of rows from a 409 answer.
     private static async Task<List<UnavailableItem>?> UnavailableItemsAsync(HttpResponseMessage response) =>
         (await response.Content.ReadFromJsonAsync<ConflictResponse>())?.UnavailableItems;
 
@@ -232,7 +229,8 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
             throw new NotImplementedException();
 
         // Only the CMS uses these.
-        public Task<PagedResult<Order>> GetPageAsync(bool all, int page, int pageSize, CancellationToken cancellationToken) =>
+        public Task<PagedResult<Order>> GetPageAsync(
+            bool all, IReadOnlyCollection<string> searchWords, int page, int pageSize, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
         public Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken) =>
             throw new NotImplementedException();

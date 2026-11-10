@@ -202,3 +202,6 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - **Design:** The API builds the link behind an interface, so only Infrastructure knows about Stripe and the tests run without a Stripe key. I asked Claude to clean the comments in every file from the first part of every plan, after reminding it again.
 - **Verification:** Claude's check in Chrome found that the link stuck out of its card at 200 % text, which we fixed.
 
+- **Building:** Added an order search to the CMS: the admin finds an order by its number, the customer's name or email, or a product on it, within the chosen tab, and sees the number of hits. The shop's search field became a shared component. Verified locally against the database.
+- **Design:** I asked for the search to the right of the tabs on a computer, at full width on its own row when it wraps, and for the number of hits. Claude placed "Rensa sökningen" below the field so the row doesn't jump.
+- **Verification:** Claude's check in Chrome at 320–1440 px and 200 % text found that the search field widened the page with large text, which we fixed.

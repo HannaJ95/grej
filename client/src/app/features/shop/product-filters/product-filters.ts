@@ -8,9 +8,9 @@ import {
 } from '../../../core/product-filter';
 import { ShopProperty } from '../../../core/product-property';
 import { LinkButton } from '../../../shared/link-button/link-button';
+import { SearchField } from '../../../shared/search-field/search-field';
 import { FilterGroup } from '../filter-group/filter-group';
 import { FilterOption } from '../filter-option/filter-option';
-import { FilterSearch } from '../filter-search/filter-search';
 import { PriceLimits, PriceRange } from '../price-range/price-range';
 import { injectShowFilter } from '../show-filter';
 
@@ -20,7 +20,7 @@ type IdList = 'categoryIds' | 'materialIds' | 'colorIds';
 // without choices is left out.
 @Component({
   selector: 'app-product-filters',
-  imports: [FilterGroup, FilterOption, FilterSearch, LinkButton, PriceRange],
+  imports: [FilterGroup, FilterOption, LinkButton, PriceRange, SearchField],
   templateUrl: './product-filters.html',
   styleUrl: './product-filters.scss',
 })

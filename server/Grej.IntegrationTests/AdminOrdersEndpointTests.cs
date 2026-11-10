@@ -97,6 +97,58 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
     }
 
     [Fact]
+    public async Task GetPage_Search_FindsNumberNameEmailOrProduct_IgnoringCase()
+    {
+        var anna = await AddOrderAsync(PaidBy("Anna Svensson", "anna@example.com"));
+        var erik = await AddOrderAsync(PaidBy("Erik Berg", "erik@grej.se"));
+        var pot = await AddOrderAsync(Pay, title: "Kruka i lera");
+        var client = await CreateAdminClientAsync();
+
+        // The number without "GREJ-", in lower case.
+        Assert.Equal([erik.Id], await SearchAsync(client, erik.OrderNumber[5..].ToLowerInvariant()));
+        Assert.Equal([anna.Id], await SearchAsync(client, "ANNA"));
+        Assert.Equal([erik.Id], await SearchAsync(client, "grej.se"));
+        Assert.Equal([pot.Id], await SearchAsync(client, "kruka"));
+    }
+
+    [Fact]
+    public async Task GetPage_Search_EveryWordMustMatch()
+    {
+        var annasPot = await AddOrderAsync(PaidBy("Anna Svensson", "anna@example.com"), title: "Kruka");
+        await AddOrderAsync(PaidBy("Anna Svensson", "anna@example.com"));
+        await AddOrderAsync(Pay, title: "Kruka");
+        var client = await CreateAdminClientAsync();
+
+        // One word in the name and one in a row.
+        Assert.Equal([annasPot.Id], await SearchAsync(client, "  anna   kruka "));
+    }
+
+    [Fact]
+    public async Task GetPage_Search_StaysWithinTheDefaultList()
+    {
+        var paid = await AddOrderAsync(Pay, title: "Kruka");
+        var shipped = await AddOrderAsync(Ship, title: "Kruka");
+        await AddOrderAsync(Pay);
+        var client = await CreateAdminClientAsync();
+
+        var page = await client.GetFromJsonAsync<PagedResult<OrderSummaryDto>>("/api/admin/orders?search=kruka");
+
+        Assert.Equal(paid.Id, Assert.Single(page!.Items).Id);
+        Assert.Equal(1, page.TotalCount);
+        Assert.Equal([shipped.Id, paid.Id], await SearchAsync(client, "kruka", all: true));
+    }
+
+    [Fact]
+    public async Task GetPage_TooLongSearch_ReturnsBadRequest()
+    {
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.GetAsync($"/api/admin/orders?search={new string('a', 101)}");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
     public async Task GetById_ReturnsCustomerRowsAndPaymentStatus()
     {
         var order = await AddOrderAsync(o =>
@@ -336,6 +388,21 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
         order.Payment!.MarkAsRefunded();
     }
 
+    // Paid, with the customer details Stripe sends.
+    private static Action<Order> PaidBy(string name, string email) => order =>
+    {
+        Pay(order);
+        order.SetCustomerDetails(new CustomerDetails(name, email, "Storgatan 1", null, "123 45", "Stockholm", "SE"));
+    };
+
+    // The ids of the orders the search finds, in the list's order.
+    private static async Task<IEnumerable<int>> SearchAsync(HttpClient client, string search, bool all = false)
+    {
+        var url = $"/api/admin/orders?search={Uri.EscapeDataString(search)}" + (all ? "&all=true" : "");
+        var page = await client.GetFromJsonAsync<PagedResult<OrderSummaryDto>>(url);
+        return page!.Items.Select(o => o.Id);
+    }
+
     // The product of AddOrderAsync's row. Only the tests that change the stock need it, since
     // the in-memory database does not check foreign keys.
     private async Task AddProductAsync(int stock)
@@ -355,10 +422,10 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
     }
 
     // Its own scope = its own DbContext, like a separate request.
-    private async Task<Order> AddOrderAsync(Action<Order>? handle = null)
+    private async Task<Order> AddOrderAsync(Action<Order>? handle = null, string title = "Skål")
     {
         var order = new Order();
-        order.AddItem(productId: 1, title: "Skål", unitPrice: 450m, quantity: 2);
+        order.AddItem(productId: 1, title: title, unitPrice: 450m, quantity: 2);
         order.SetShipping("Paket till ombud", 79m);
         order.AddPayment("Stripe", $"cs_test_{Guid.NewGuid():N}");
         handle?.Invoke(order);

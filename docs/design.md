@@ -33,6 +33,10 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
 - `ButtonCount` is a number in a small square on a button: dark on the light "Filter" button, light (`tone="light"`) on the dark cart button.
   - The button's `aria-label` says what the number is, e.g. "Varukorg, 2 grejer".
   - It takes no more height than its own text, so the button keeps its height.
+- `SearchField` is a `<form role="search">` with the search icon in a field box (`<app-search-field label="Sök bland grejerna">`), used by the shop's filter and the CMS's order list.
+  - It has no visible label, so `label` becomes the field's `aria-label`.
+  - Like the price fields, it searches on Enter or when the field is left, so a list doesn't reload for every letter.
+  - It has no clear button of its own; each page clears the search its own way.
 - `Pagination` shows the links to the page before and after, and the page numbers (`?sida=`), e.g. 1 2 3 … 8. A phone gets a shorter list. It shows nothing when the list fits on one page.
 - `Breadcrumb` shows e.g. "Hem / Shop / Vas" above a page's title. The current page comes last and is not a link.
 - `QuantityStepper` is the − 1 + control in the cart and on the product page (`[(quantity)]` with `min` and `max`). Its buttons are squares of `--stepper-button-size`, which the product page sets so the stepper is as tall as the large button.
@@ -80,7 +84,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - From 1024 px the toolbar also shows the chosen filters as chips (`ActiveFilters`). × removes one and moves the focus to the chip beside it, and "Rensa alla" removes them all. The toolbar has room for one row of chips, so it doesn't grow with the first choice.
   - `CategoryTabs` is a row of links: "Alla" plus one per category with its number. It scrolls sideways below 1024 px and wraps on a computer. A tab keeps the other filters.
   - `ProductFilters` has "Filter" with "Rensa", which removes every choice, the search field, and the groups Kategori, Pris, Material and Färg. A group without choices is left out.
-  - The search (`FilterSearch`) is a `<form role="search">` with the search icon in a field box. Like the price fields, it searches on Enter or when the customer leaves the field.
+  - The search is a `SearchField`, "Sök bland grejerna".
   - Each group is a `FilterGroup`. The minus/plus button in its heading (`aria-expanded`) folds it with a short height animation, and the folded content is `inert`. Material and Färg start folded, unless something in them is already chosen.
   - The rows are `FilterOption`s: real checkboxes, styled with `appearance: none` and the check icon on top, with the number of products.
   - Kategori shows a main category's subcategories under it once the main category is ticked: indented, one text size smaller, and unfolding with the same height animation (`animate.enter` and `animate.leave`). Ticking one shows only the chosen subcategories.
@@ -160,6 +164,10 @@ The CMS uses the same tokens, text styles and shared components as the shop.
     - "Lägg till en bild" adds an image last. `InfoTip` beside the alt text field explains what an alt text is and what to write. At 10 images the form is replaced by a text that says so.
     - When a removed image's button disappears, or the form at 10 images, the focus moves to the heading "Bilder", like on the order page.
   - On "Ny produkt" the image card collects the first image without uploading it: a file needs its description, and both are shown with the form's errors. Spara creates the product, uploads the image and opens the product's own page, where more images are added.
-- The order list (`/admin/ordrar`) has the tabs "Att göra" and "Alla beställningar" and a table. "Behöver återbetalas", "Behöver avbrytas" and "Dubbelsåld" are bold, red words under the status.
+- The order list (`/admin/ordrar`) has the tabs "Att göra" and "Alla beställningar", the search and a table. "Behöver återbetalas", "Behöver avbrytas" and "Dubbelsåld" are bold, red words under the status.
+  - The search (`SearchField`, `?sok=`) is to the right of the tabs when both fit (from 40rem), and otherwise on a row of its own at full width. So it moves down before "Alla beställningar" does.
+  - It looks in the order number, the customer's name and email, and the products' titles, within the chosen tab. The tabs and the pages keep it.
+  - Below the field are the number of hits ("3 träffar", `aria-live`) and "Rensa sökningen", so the field keeps its width when they appear.
+  - When nothing matches, the list says so, and under "Att göra" it links to the same search among every order.
 - The order page (`/admin/ordrar/7`) has the cards Status (facts, link to Stripe, warning, buttons) and Kund side by side. "Visa betalningen i Stripe" opens the payment in the Stripe dashboard in a new tab, which the arrow up-right and a hidden "(öppnas i en ny flik)" tell; it is only there when the payment has a Stripe id, so not on unpaid or demo orders. The warning says what the admin has to do; for "Dubbelsåld" it is to cancel and refund the order, or ship it if they can make one more. Below them is Produkter, with the shipping (when the order has one) and the total at the bottom. After shipping or cancelling the button is gone, so the focus moves to the Status heading.
 - The login page is a card in the middle of the window, with "GREJ." and the Admin badge above it and a link back to the shop below.
