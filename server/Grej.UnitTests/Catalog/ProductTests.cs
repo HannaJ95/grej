@@ -61,7 +61,7 @@ public class ProductTests
     [Fact]
     public void IncreaseStock_IncreasesByQuantity()
     {
-        // Below 0 after the last item was sold twice. Cancelling one of the orders fixes it.
+        // The last item was sold twice, and one of the orders is cancelled.
         var product = new Product { Title = "Skål", Stock = -1 };
 
         product.IncreaseStock(2);

@@ -140,7 +140,6 @@ public class OrderTests
         order.MarkAsShipped();
 
         Assert.Equal(OrderStatus.Shipped, order.Status);
-        // A shipped order can be neither shipped nor cancelled again.
         Assert.False(order.CanBeShipped);
         Assert.False(order.CanBeCancelledByAdmin);
     }
@@ -201,8 +200,7 @@ public class OrderTests
     [Fact]
     public void CancelByAdmin_Twice_Throws()
     {
-        // Unlike Cancel, which the webhook may call twice. Here a second cancel would put
-        // the products back in stock twice, so it is refused.
+        // Unlike Cancel: a second cancel would put the products back in stock twice.
         var order = PaidOrder();
         order.CancelByAdmin();
 
@@ -212,7 +210,7 @@ public class OrderTests
     [Fact]
     public void CancelByAdmin_Refunded_BecomesCancelled()
     {
-        // The admin refunded in Stripe before cancelling the order in the CMS.
+        // Refunded in Stripe before it was cancelled in the CMS.
         var order = PaidOrder();
         order.Payment!.MarkAsRefunded();
         Assert.True(order.NeedsCancelling);
@@ -288,7 +286,7 @@ public class OrderTests
         Assert.True(order.NeedsCancelling);
     }
 
-    // An order with one row and a payment that is not paid yet, as the checkout saves it.
+    // As the checkout saves it.
     private static Order UnpaidOrder()
     {
         var order = new Order();
@@ -297,7 +295,7 @@ public class OrderTests
         return order;
     }
 
-    // What the webhook does when the payment provider confirms the payment.
+    // As the webhook leaves it.
     private static Order PaidOrder()
     {
         var order = UnpaidOrder();
