@@ -15,6 +15,16 @@ public class ProductTests
         Assert.Equal(expected, product.IsSoldOut);
     }
 
+    [Theory]
+    [InlineData(0, false)]
+    [InlineData(-1, true)]
+    public void IsOversold_DependsOnStock(int stock, bool expected)
+    {
+        var product = new Product { Title = "Skål", Stock = stock };
+
+        Assert.Equal(expected, product.IsOversold);
+    }
+
     [Fact]
     public void DecreaseStock_DecreasesByQuantity()
     {
@@ -51,7 +61,7 @@ public class ProductTests
     [Fact]
     public void IncreaseStock_IncreasesByQuantity()
     {
-        // Below 0 after the last item was sold twice. Cancelling one of the orders fixes it.
+        // The last item was sold twice, and one of the orders is cancelled.
         var product = new Product { Title = "Skål", Stock = -1 };
 
         product.IncreaseStock(2);

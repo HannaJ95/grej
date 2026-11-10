@@ -4,8 +4,7 @@ namespace Grej.Application.Catalog;
 
 public class ProductService(IProductRepository products, ICategoryRepository categories)
 {
-    // Returns null if the product does not exist or is hidden (IsActive = false),
-    // so a customer cannot tell a draft from a product that does not exist.
+    // Null for a hidden product too, so a customer cannot tell a draft from a missing product.
     public async Task<ProductDto?> GetProductAsync(int id, CancellationToken cancellationToken)
     {
         var product = await products.GetByIdAsync(id, cancellationToken);
@@ -17,15 +16,13 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
         return ToDto(product);
     }
 
-    // The products in the shop with these ids. Missing and hidden products are
-    // left out, so the caller can see which ids it did not get back.
+    // Missing and hidden products are left out, so the caller sees which ids it did not get.
     public async Task<IReadOnlyList<ProductDto>> GetProductsByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken)
     {
         var found = await products.GetByIdsAsync(ids, cancellationToken);
         return found.Where(product => product.IsActive).Select(ToDto).ToList();
     }
 
-    // Hidden products are never included.
     public async Task<ProductPageDto> GetProductsAsync(ProductListQuery query, CancellationToken cancellationToken)
     {
         var filter = new ProductFilter
@@ -50,12 +47,13 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
             highestPrice);
     }
 
-    // Called when an order is paid. Hidden products are included, since a product
-    // can be hidden after it was ordered. Nothing is saved here; the caller saves.
-    public Task DecreaseStockAsync(IReadOnlyCollection<ProductQuantity> items, CancellationToken cancellationToken) =>
-        ChangeStockAsync(items, (product, quantity) => product.DecreaseStock(quantity), cancellationToken);
+    // True if the last item of one of the products was sold twice (constraints.md).
+    public async Task<bool> DecreaseStockAsync(IReadOnlyCollection<ProductQuantity> items, CancellationToken cancellationToken)
+    {
+        var changed = await ChangeStockAsync(items, (product, quantity) => product.DecreaseStock(quantity), cancellationToken);
+        return changed.Any(product => product.IsOversold);
+    }
 
-    // Called when the admin cancels a paid order. Like DecreaseStockAsync, nothing is saved here.
     public Task IncreaseStockAsync(IReadOnlyCollection<ProductQuantity> items, CancellationToken cancellationToken) =>
         ChangeStockAsync(items, (product, quantity) => product.IncreaseStock(quantity), cancellationToken);
 
@@ -84,7 +82,9 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
         ];
     }
 
-    private async Task ChangeStockAsync(
+    // Hidden products are included, since a product can be hidden after it was ordered. Nothing
+    // is saved here, so the caller saves the stock together with the order.
+    private async Task<IReadOnlyList<Product>> ChangeStockAsync(
         IReadOnlyCollection<ProductQuantity> items,
         Action<Product, int> change,
         CancellationToken cancellationToken)
@@ -95,9 +95,11 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
 
         foreach (var item in items)
         {
-            // An ordered product is never hard deleted (constraints.md), so it is always found.
+            // An ordered product is never hard deleted (constraints.md).
             change(productsById[item.ProductId], item.Quantity);
         }
+
+        return found;
     }
 
     private static ProductDto ToDto(Product product) => new(
@@ -106,12 +108,11 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
         product.Description,
         product.Price,
         product.Currency,
-        // Below 0 means the last item was sold twice (constraints.md). That is for
-        // the admin; the customer only needs to know that none are left.
+        // Only the admin sees a stock below 0. The customer only needs to know that none are left.
         Math.Max(product.Stock, 0),
         product.IsSoldOut,
         ProductImageDto.ListFrom(product),
-        // Sorted here, since the database returns them in no fixed order.
+        // The database returns them in no fixed order.
         product.Materials.Select(material => material.Name).Order().ToList(),
         product.Colors.Select(color => color.Name).Order().ToList(),
         ParcelDto.From(product));

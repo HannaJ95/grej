@@ -217,6 +217,9 @@ namespace Grej.Infrastructure.Persistence.Migrations
                     b.Property<string>("CustomerName")
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsOversold")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("OrderNumber")
                         .IsRequired()
                         .HasMaxLength(20)

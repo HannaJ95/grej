@@ -1,23 +1,20 @@
 namespace Grej.Application.Orders;
 
-// One row in the CMS's order list. The statuses are sent as text ("Paid"), since the API
-// would otherwise send the enums as numbers, which the frontend would have to know.
+// The statuses are sent as text ("Paid"), so the frontend does not need to know the enums' numbers.
 public record OrderSummaryDto(
     int Id,
     string OrderNumber,
     DateTime CreatedAt,
-    // Null until the order is paid, since Stripe Checkout collects it (Order.SetCustomerDetails).
+    // Null until the order is paid.
     string? CustomerName,
     decimal Total,
     string Currency,
     string Status,
     string PaymentStatus,
-    // Cancelled but still paid, shown as "needs refund" (Order.NeedsRefund).
     bool NeedsRefund,
-    // Refunded but not cancelled, shown as "needs cancelling" (Order.NeedsCancelling).
-    bool NeedsCancelling);
+    bool NeedsCancelling,
+    bool NeedsAttention);
 
-// One order with everything the admin needs to pack and send it.
 public record OrderDetailsDto(
     int Id,
     string OrderNumber,
@@ -30,9 +27,10 @@ public record OrderDetailsDto(
     // knowing the rules itself.
     bool NeedsRefund,
     bool NeedsCancelling,
+    bool NeedsAttention,
     bool CanBeShipped,
     bool CanBeCancelled,
-    // All null until the order is paid, like CustomerName above.
+    // Null until the order is paid.
     string? CustomerName,
     string? CustomerEmail,
     string? AddressLine1,
@@ -45,6 +43,5 @@ public record OrderDetailsDto(
     decimal? ShippingCost,
     IReadOnlyList<OrderItemDto> Items);
 
-// One row on the order, with the title and price from the time of purchase. LineTotal is
-// calculated here, so all money is calculated in the API (architecture.md).
+// LineTotal is calculated here, so all money is calculated in the API (architecture.md).
 public record OrderItemDto(string Title, decimal UnitPrice, int Quantity, decimal LineTotal);
