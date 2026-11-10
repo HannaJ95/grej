@@ -1,7 +1,4 @@
 :host {
-  // The big image's height, which the thumbnail column beside it also keeps to.
-  --main-height: 23.75rem;
-
   display: flex;
   flex-direction: column;
   gap: var(--space-10);
@@ -16,12 +13,13 @@
   }
 }
 
-// The whole image is shown, on white.
+// Fills the frame like the product cards, so an image of another shape is cropped instead of
+// getting bars. The background only shows while it loads, or as the empty box.
 .main {
   display: block;
   width: 100%;
-  height: var(--main-height);
-  object-fit: contain;
+  aspect-ratio: var(--ratio-product-image);
+  object-fit: cover;
   background: var(--color-bg-image);
 
   @media (width >= 64rem) {
@@ -51,7 +49,9 @@
     grid-column: 1;
     grid-row: 1;
     gap: var(--space-12);
-    max-height: calc(var(--main-height) + 2 * var(--space-4));
+    // The grid row ignores the list's content, so the row is as tall as the big image and the
+    // list is stretched to it and scrolls.
+    contain: size;
     overflow: hidden auto;
   }
 
@@ -64,7 +64,7 @@
 .thumbnail {
   display: block;
   width: 5rem;
-  height: 6rem;
+  aspect-ratio: var(--ratio-product-image);
   padding: 0;
   border: var(--border-width-default) solid var(--color-border-default);
   background: var(--color-bg-image);
@@ -83,13 +83,10 @@
 
   @media (width >= 48rem) {
     width: 5.25rem;
-    height: 6.25rem;
   }
 
   // The column's width, so a scrollbar that takes room makes them narrower instead of cutting them.
   @media (width >= 64rem) {
     width: 100%;
-    height: auto;
-    aspect-ratio: 5.5 / 6.5625;
   }
 }

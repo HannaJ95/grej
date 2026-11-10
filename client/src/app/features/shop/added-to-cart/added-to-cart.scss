@@ -60,7 +60,7 @@
 .thumbnail {
   flex-shrink: 0;
   width: 4rem;
-  height: 4.75rem;
+  aspect-ratio: var(--ratio-product-image);
   object-fit: cover;
   background: var(--color-bg-image);
 }

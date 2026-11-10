@@ -7,7 +7,7 @@ The design lives in the code. `client/src/styles/` has the tokens, the text styl
 - `_tokens.scss` has every design value as a CSS custom property:
   - the palette (`--color-sand`, `--color-charcoal` …), which only the color tokens use
   - the color tokens, which point at the palette with `var()` (`--color-bg-page`, `--color-text-primary` …)
-  - spacing named after its size in px (`--space-2` … `--space-160`), border widths, `--size-control-height` and the popover shadow
+  - spacing named after its size in px (`--space-2` … `--space-160`), border widths, `--size-control-height`, `--ratio-product-image` and the popover shadow
   - the responsive font sizes and layout values (`--layout-margin`, `--layout-gutter`, `--layout-admin-gutter`, `--layout-viewport-width`)
 - The responsive values are mobile first. The phone's values are in `:root`, and new values come in media queries from 768 px (tablet) and from 1024 px (computer).
 - `_typography.scss` has one class per text style (e.g. `.text-display-l`, `.text-label-s`), built by a Sass mixin. The templates put the class on the element, and `<body class="text-body-m">` gives the body text. The fonts (Anton for the Display styles, Inter for text, Space Mono for small print) are loaded from Google Fonts in `index.html`. The Display styles have line height 1.16 (except Wordmark), so the dots on Å, Ä and Ö don't reach the line above.
@@ -15,6 +15,7 @@ The design lives in the code. `client/src/styles/` has the tokens, the text styl
 - Every text color has at least 4.5:1 contrast against its background, and field borders and the focus ring at least 3:1 (WCAG AA).
 - Hover: dark buttons get `--color-bg-inverse-hover` and light ones `--color-bg-hover`. Links are underlined.
 - The focus ring is 2 px in `--color-border-default`, and `--color-border-inverse` on the dark bands.
+- Every product image in the shop (cards, gallery, cart) has the same portrait shape, `--ratio-product-image` (318 / 380, about 5:6), and fills it with `object-fit: cover`. An image of another shape is cropped from the middle instead of getting bars, so the shop looks the same whatever is uploaded. The main image looks best with the product on white; the other images can show it in use or up close.
 - `_base.scss` styles plain HTML elements with the tokens: links, form fields, tables and the focus ring. It also has `.visually-hidden`, for text that only screen readers get.
 - Sizes: a phone up to 767 px, a tablet from 768 px and a computer from 1024 px. The font sizes change through the tokens. Changes to spacing and layout (columns, the menu, the add button) use media queries at 48rem and 64rem in the components, written phone first. The admin pages follow the room beside the menu with container queries instead.
 
@@ -76,6 +77,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
 - `ProductCard` is used by both the start page and the product list. It has an image, title and price, a "Slutsåld" or "Få kvar" (1–2 left) badge, and an add button.
   - On a computer the add button is a bar over the image, shown on hover or keyboard focus. On a tablet and a phone, where there is no hover, it is a "+" square.
   - The sold-out layer over the image is 70 %, so the image can still be seen.
+  - With a mouse, the product's second image fades in over the first on hover or keyboard focus. Touch screens never show or download it; the product page's gallery has it.
 - The start page (`/`, `LandingPage`) has:
   - a big title
   - a moving band of words, which pauses on hover and stands still for people who have turned on "reduce motion"
@@ -168,7 +170,7 @@ The CMS uses the same tokens, text styles and shared components as the shop.
   - The image card "Bilder" lists the images in order (`<ol>`): a square thumbnail, the alt text as text, "Huvudbild" (`Badge`) on the first, and per row "Flytta upp", "Flytta ner" (`IconButton`) and "Ta bort".
     - The first image's up arrow and the last one's down arrow are disabled, so the row never jumps. After a move the focus stays on the arrow (or the other one at the end of the list), and screen readers hear where the image went from a `.visually-hidden` `role="status"`.
     - In a narrow card, e.g. with large text, the thumbnail is above the text instead of beside it.
-    - "Lägg till en bild" adds an image last. `InfoTip` beside the alt text field explains what an alt text is and what to write. At 10 images the form is replaced by a text that says so.
+    - "Lägg till en bild" adds an image last. The file field's hint gives the file types, the size limit, the 5:6 shape and that the main image looks best on white. `InfoTip` beside the alt text field explains what an alt text is and what to write. At 10 images the form is replaced by a text that says so.
     - When a removed image's button disappears, or the form at 10 images, the focus moves to the heading "Bilder", like on the order page.
   - On "Ny produkt" the image card collects the first image without uploading it: a file needs its description, and both are shown with the form's errors. Spara creates the product, uploads the image and opens the product's own page, where more images are added.
 - The order list (`/admin/ordrar`) has the tabs "Att göra" and "Alla beställningar", the search and a table. "Behöver återbetalas", "Behöver avbrytas" and "Dubbelsåld" are bold, red words under the status.

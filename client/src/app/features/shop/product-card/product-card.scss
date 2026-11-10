@@ -17,9 +17,34 @@
 .image {
   display: block;
   width: 100%;
-  aspect-ratio: 318 / 380;
+  aspect-ratio: var(--ratio-product-image);
   object-fit: cover;
   background: var(--color-bg-image);
+}
+
+// The second image, over the first on hover or keyboard focus. Not shown on touch screens, so
+// they never download it; there the product page's gallery shows it.
+.preview {
+  display: none;
+}
+
+@media (hover: hover) {
+  .preview {
+    display: block;
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  :host(:hover) .preview,
+  :host(:has(.title:focus-visible)) .preview {
+    opacity: 1;
+  }
 }
 
 .badge {
@@ -111,8 +136,8 @@
 }
 
 // On a computer with a mouse: a bar along the image's bottom edge, shown on hover or keyboard
-// focus. The image is 380/318 times as tall as the card is wide (100cqw), so the bar starts
-// there minus its own height.
+// focus. The image's height is the card's width (100cqw) divided by the image's ratio, so the
+// bar starts there minus its own height.
 @media (width >= 64rem) and (hover: hover) {
   .meta {
     padding-right: 0;
@@ -120,7 +145,7 @@
 
   .add {
     left: 0;
-    top: calc(100cqw * 380 / 318 - 3.375rem);
+    top: calc(100cqw / var(--ratio-product-image) - 3.375rem);
     bottom: auto;
     width: auto;
     height: 3.375rem;

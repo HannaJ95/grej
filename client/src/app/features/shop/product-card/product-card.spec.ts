@@ -40,6 +40,21 @@ describe('ProductCard', () => {
     expect(card.querySelector('app-badge')).toBeNull();
   });
 
+  it('adds the second image as a preview without alt text', async () => {
+    const side = { id: 2, url: 'https://example.com/vas-sida.jpg', altText: 'Vasen från sidan' };
+    const card = await show({ ...vase, images: [...vase.images, side] });
+
+    const preview = card.querySelector('img.preview')!;
+    expect(preview.getAttribute('src')).toBe(side.url);
+    expect(preview.getAttribute('alt')).toBe('');
+  });
+
+  it('has no preview when there is only one image', async () => {
+    const card = await show(vase);
+
+    expect(card.querySelector('img.preview')).toBeNull();
+  });
+
   it('marks a sold-out product and cannot add it', async () => {
     const card = await show({ ...vase, stock: 0, isSoldOut: true });
 

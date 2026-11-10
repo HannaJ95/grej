@@ -33,7 +33,7 @@ public record DemoCatalog(
             ?? throw new InvalidOperationException("demo-catalog.json is empty.");
     }
 
-    // Reads e.g. "keramik.jpg" from DemoData/Images, with the same check as an upload in the CMS.
+    // Reads e.g. "cirkle.png" from DemoData/Images, with the same check as an upload in the CMS.
     public static ImageFile ReadImage(string fileName)
     {
         var content = File.ReadAllBytes(Path.Combine(Folder, "Images", fileName));
@@ -72,7 +72,7 @@ public record DemoProduct(
     // Its own images, the main image first. Left out: a copy of its category's image.
     IReadOnlyList<DemoImage>? Images = null);
 
-// A file in DemoData/Images and its alt text, e.g. { "file": "skal-1.jpg", "altText": "…" }.
+// A file in DemoData/Images and its alt text, e.g. { "file": "square.png", "altText": "…" }.
 public record DemoImage(string File, string AltText);
 
 // An order in the demo shop, paid DaysAgo days ago and then handled as Status says. The stock

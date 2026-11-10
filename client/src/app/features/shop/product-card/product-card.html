@@ -6,6 +6,10 @@
   } @else {
     <span class="image"></span>
   }
+  <!-- Only a preview of what the product page shows with its alt text, so screen readers skip it. -->
+  @if (p.images[1]; as preview) {
+    <img class="image preview" [src]="preview.url" alt="" loading="lazy" />
+  }
   @if (p.isSoldOut) {
     <app-badge class="badge" tone="light">Slutsåld</app-badge>
   } @else if (fewLeft()) {

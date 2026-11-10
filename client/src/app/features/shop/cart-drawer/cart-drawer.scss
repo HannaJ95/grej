@@ -92,10 +92,12 @@ dialog {
   border-bottom: var(--border-width-default) solid var(--color-border-subtle);
 }
 
+// flex-start, since a stretched image would lose its shape when the row's text is taller.
 .thumbnail {
   flex-shrink: 0;
+  align-self: flex-start;
   width: 5rem;
-  height: 6rem;
+  aspect-ratio: var(--ratio-product-image);
   object-fit: cover;
   background: var(--color-bg-image);
 }
