@@ -37,7 +37,10 @@
       (searched)="showSearch($event)"
     />
     @if (search()) {
-      <button appLinkButton type="button" (click)="showSearch('')">Rensa sökningen</button>
+      <div class="search-info">
+        <p class="text-label-s" aria-live="polite">{{ hits() }}</p>
+        <button appLinkButton type="button" (click)="showSearch('')">Rensa sökningen</button>
+      </div>
     }
   </div>
 </div>
@@ -47,7 +50,7 @@
     @let r = result.value();
     @if (r.items.length === 0) {
       @if (search()) {
-        <p class="state" role="status">
+        <p class="state">
           {{ all() ? 'Inga beställningar' : 'Inget att göra' }} matchar ”{{ search() }}”.
           @if (!all()) {
             <span> </span>
@@ -57,7 +60,9 @@
           }
         </p>
       } @else {
-        <p class="state">{{ all() ? 'Det finns inga beställningar än.' : 'Det finns inget att göra just nu.' }}</p>
+        <p class="state">
+          {{ all() ? 'Det finns inga beställningar än.' : 'Det finns inget att göra just nu.' }}
+        </p>
       }
     } @else {
       <table class="table wide">

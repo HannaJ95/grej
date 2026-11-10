@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AdminOrderService } from '../../../core/admin-order.service';
 import { toSearch } from '../../../core/product-filter';
@@ -43,6 +43,16 @@ export class AdminOrderList {
   readonly search = input('', { alias: 'sok', transform: toSearch });
 
   protected readonly result = this.orders.getOrders(this.page, this.all, this.search);
+
+  // Empty while a new answer loads, so an old count is never shown.
+  protected readonly hits = computed(() => {
+    if (!this.search() || !this.result.hasValue() || this.result.isLoading()) {
+      return '';
+    }
+    const count = this.result.value().totalCount;
+    return `${count} ${count === 1 ? 'träff' : 'träffar'}`;
+  });
+
   protected readonly orderStatusTexts = ORDER_STATUS_TEXTS;
   protected readonly paymentStatusTexts = PAYMENT_STATUS_TEXTS;
 

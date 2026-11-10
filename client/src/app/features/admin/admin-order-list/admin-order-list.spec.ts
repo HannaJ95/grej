@@ -128,11 +128,15 @@ describe('AdminOrderList', () => {
     expect(status).toMatch(/Ej skickad\s+Dubbelsåld/);
   });
 
-  it('sends the search to the API and keeps it in the tabs', async () => {
-    const { page, search } = await show('/admin/ordrar?sok=anna', [paidOrder]);
+  it('sends the search to the API, counts the hits and keeps the search in the tabs', async () => {
+    const { page, search } = await show('/admin/ordrar?sok=anna', [
+      paidOrder,
+      { ...paidOrder, id: 8 },
+    ]);
 
     expect(search).toBe('anna');
     expect(page.querySelector<HTMLInputElement>('input[type="search"]')!.value).toBe('anna');
+    expect(page.querySelector('.search-info p')?.textContent?.trim()).toBe('2 träffar');
     const tabs = [...page.querySelectorAll('.tab')].map((tab) => tab.getAttribute('href'));
     expect(tabs).toEqual(['/admin/ordrar?sok=anna', '/admin/ordrar?visa=alla&sok=anna']);
   });
@@ -150,22 +154,26 @@ describe('AdminOrderList', () => {
   });
 
   it('clears the search and keeps the tab', async () => {
-    const { page } = await show('/admin/ordrar?visa=alla&sok=anna', [paidOrder]);
+    const { harness, page } = await show('/admin/ordrar?visa=alla&sok=anna', [paidOrder]);
+    expect(page.querySelector('.search-info p')?.textContent?.trim()).toBe('1 träff');
     const clear = [...page.querySelectorAll('button')].find(
       (button) => button.textContent?.trim() === 'Rensa sökningen',
     )!;
 
     clear.click();
     const params = await answer([paidOrder]);
+    await harness.fixture.whenStable();
 
     expect(TestBed.inject(Router).url).toBe('/admin/ordrar?visa=alla');
     expect(params.get('search')).toBeNull();
+    expect(page.querySelector('.search-info')).toBeNull();
   });
 
   it('says when a search finds nothing to do and links to every order', async () => {
     const { page } = await show('/admin/ordrar?sok=anna', []);
 
-    expect(page.querySelector('.state[role="status"]')?.textContent).toMatch(
+    expect(page.querySelector('.search-info p')?.textContent?.trim()).toBe('0 träffar');
+    expect(page.querySelector('.state')?.textContent).toMatch(
       /Inget att göra matchar ”anna”\.\s+Sök bland alla beställningar/,
     );
     expect(page.querySelector('.state a')?.getAttribute('href')).toBe(
@@ -176,7 +184,7 @@ describe('AdminOrderList', () => {
   it('says when a search finds no order at all', async () => {
     const { page } = await show('/admin/ordrar?visa=alla&sok=anna', []);
 
-    expect(page.querySelector('.state[role="status"]')?.textContent?.trim()).toBe(
+    expect(page.querySelector('.state')?.textContent?.trim()).toBe(
       'Inga beställningar matchar ”anna”.',
     );
   });
