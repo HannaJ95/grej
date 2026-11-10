@@ -24,6 +24,7 @@ describe('AdminOrderDetails', () => {
     currency: 'SEK',
     status: 'Pending',
     paymentStatus: 'Paid',
+    paymentDashboardUrl: 'https://dashboard.stripe.com/test/payments/pi_test_123',
     needsRefund: false,
     needsCancelling: false,
     needsAttention: false,
@@ -100,7 +101,6 @@ describe('AdminOrderDetails', () => {
       ),
     );
     post.flush(null, { status, statusText: status === 204 ? 'No Content' : 'Conflict' });
-    // Then the page asks for the order again.
     const reload = await vi.waitFor(() =>
       httpTesting.expectOne(
         (req) => req.method === 'GET' && req.url.endsWith('/api/admin/orders/7'),
@@ -131,6 +131,14 @@ describe('AdminOrderDetails', () => {
     expect(buttonTexts(page)).toEqual(['Markera som skickad', 'Avbryt ordern']);
   });
 
+  it('links to the payment in Stripe in a new tab', async () => {
+    const page = await show((request) => request.flush(paidOrder));
+
+    const link = page.querySelector<HTMLAnchorElement>('a[target="_blank"]');
+    expect(link?.href).toBe('https://dashboard.stripe.com/test/payments/pi_test_123');
+    expect(link?.textContent).toMatch(/Visa betalningen i Stripe\s*\(öppnas i en ny flik\)/);
+  });
+
   it('has no shipping row on an order from before shipping was built', async () => {
     const page = await show((request) =>
       request.flush({ ...paidOrder, total: 1100, shippingMethod: null, shippingCost: null }),
@@ -143,6 +151,7 @@ describe('AdminOrderDetails', () => {
     const unpaidOrder: OrderDetails = {
       ...paidOrder,
       paymentStatus: 'Pending',
+      paymentDashboardUrl: null,
       canBeShipped: false,
       canBeCancelled: false,
       customerName: null,
@@ -157,6 +166,7 @@ describe('AdminOrderDetails', () => {
     expect(page.textContent).toContain('Väntar på betalning');
     expect(page.textContent).toContain('Inga kunduppgifter.');
     expect(buttonTexts(page)).toEqual([]);
+    expect(page.querySelector('a[target="_blank"]')).toBeNull();
   });
 
   it('marks the order as shipped and shows it again', async () => {

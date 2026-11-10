@@ -1,11 +1,12 @@
 using Grej.Application.Catalog;
 using Grej.Application.Common;
+using Grej.Application.Payments;
 using Grej.Domain.Orders;
 
 namespace Grej.Application.Orders;
 
 // What the admin may do with an order is decided by Order itself.
-public class AdminOrderService(IOrderRepository orders, ProductService products)
+public class AdminOrderService(IOrderRepository orders, ProductService products, IPaymentDashboard dashboard)
 {
     public async Task<PagedResult<OrderSummaryDto>> GetOrdersAsync(OrderListQuery query, CancellationToken cancellationToken)
     {
@@ -59,13 +60,12 @@ public class AdminOrderService(IOrderRepository orders, ProductService products)
 
         order.CancelByAdmin();
 
-        // The stock comes back here, since a refund never changes it (constraints.md). Through
-        // ProductService, since the stock belongs to the Catalog module.
+        // Here, since a refund never changes the stock (constraints.md). Through ProductService,
+        // since the stock belongs to Catalog.
         var items = order.Items.Select(item => new ProductQuantity(item.ProductId, item.Quantity)).ToList();
         await products.IncreaseStockAsync(items, cancellationToken);
 
-        // One transaction. If a webhook changed the stock since it was read, nothing is saved
-        // and this throws (ProductConfiguration).
+        // One transaction. Throws if a webhook changed the stock meanwhile (ProductConfiguration).
         await orders.SaveChangesAsync(cancellationToken);
         return ChangeOrderStatusResult.Changed;
     }
@@ -83,7 +83,7 @@ public class AdminOrderService(IOrderRepository orders, ProductService products)
         order.NeedsCancelling,
         order.NeedsAttention);
 
-    private static OrderDetailsDto ToDetailsDto(Order order) => new(
+    private OrderDetailsDto ToDetailsDto(Order order) => new(
         order.Id,
         order.OrderNumber,
         order.CreatedAt,
@@ -91,6 +91,8 @@ public class AdminOrderService(IOrderRepository orders, ProductService products)
         order.Currency,
         order.Status.ToString(),
         PaymentStatusOf(order),
+        // PaymentStatusOf has already checked that the payment was read.
+        dashboard.UrlFor(order.Payment!),
         order.NeedsRefund,
         order.NeedsCancelling,
         order.NeedsAttention,
@@ -109,7 +111,7 @@ public class AdminOrderService(IOrderRepository orders, ProductService products)
             .Select(item => new OrderItemDto(item.TitleAtPurchase, item.UnitPrice, item.Quantity, item.UnitPrice * item.Quantity))
             .ToList());
 
-    // Every saved order has a payment, so it is only null if a query forgot Include(o => o.Payment).
+    // Only null if a query forgot Include(o => o.Payment).
     private static string PaymentStatusOf(Order order) =>
         order.Payment?.Status.ToString()
             ?? throw new InvalidOperationException($"Order {order.Id} was read without its payment.");

@@ -1,6 +1,6 @@
 namespace Grej.Application.Orders;
 
-// The statuses are sent as text ("Paid"), so the frontend does not need to know the enums' numbers.
+// Statuses as text ("Paid"), so the frontend needs no enum numbers.
 public record OrderSummaryDto(
     int Id,
     string OrderNumber,
@@ -23,8 +23,9 @@ public record OrderDetailsDto(
     string Currency,
     string Status,
     string PaymentStatus,
-    // Order's own answers to its rules, so the CMS shows the right buttons without
-    // knowing the rules itself.
+    // Null for unpaid and demo orders.
+    string? PaymentDashboardUrl,
+    // From Order's rules, so the CMS needs none of its own.
     bool NeedsRefund,
     bool NeedsCancelling,
     bool NeedsAttention,
@@ -43,5 +44,5 @@ public record OrderDetailsDto(
     decimal? ShippingCost,
     IReadOnlyList<OrderItemDto> Items);
 
-// LineTotal is calculated here, so all money is calculated in the API (architecture.md).
+// All money is calculated in the API (architecture.md).
 public record OrderItemDto(string Title, decimal UnitPrice, int Quantity, decimal LineTotal);

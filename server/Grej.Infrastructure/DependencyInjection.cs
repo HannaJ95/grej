@@ -17,21 +17,15 @@ namespace Grej.Infrastructure;
 
 public static class DependencyInjection
 {
-    // Called once from Program.cs. Infrastructure decides how its own
-    // services are set up, so the Api project only needs this one line.
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // "ConnectionStrings:Grej" comes from User Secrets locally and from an
-        // environment variable (ConnectionStrings__Grej) in hosting.
         services.AddDbContext<GrejDbContext>(options => options.UseNpgsql(
             configuration.GetConnectionString("Grej"),
-            // A product is read with three lists (images, materials and colors). One SQL query with
-            // joins is fine for a small shop, and faster than one trip to Supabase per list. Set
-            // explicitly, since EF Core otherwise logs a warning for every such query.
+            // One query with joins for a product's lists, faster than one trip to Supabase per list.
+            // Set explicitly, or EF Core logs a warning for every such query.
             npgsql => npgsql.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
-        // ASP.NET Core Identity: users, roles and password hashing, stored with EF Core.
-        // AddIdentityCore skips the cookie login that AddIdentity adds, since the API uses JWT.
+        // Core only, without the cookie login, since the API uses JWT.
         services.AddIdentityCore<IdentityUser>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<GrejDbContext>();
@@ -39,21 +33,17 @@ public static class DependencyInjection
 
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
-        // IPropertyRepository<Material> gets a PropertyRepository<Material>, and the same for Color.
         services.AddScoped(typeof(IPropertyRepository<>), typeof(PropertyRepository<>));
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
 
-        // One StripeClient for the whole API, as Stripe recommends. The factory only runs
-        // the first time the client is needed, so tests and CI work without a Stripe key.
-        // "Stripe:SecretKey" comes from User Secrets locally and Stripe__SecretKey in hosting.
+        // One client, as Stripe recommends. A factory, so tests and CI run without a key.
         services.AddSingleton(_ => new StripeClient(
             configuration["Stripe:SecretKey"] ?? throw new InvalidOperationException("Stripe:SecretKey is not configured.")));
         services.AddScoped<IPaymentProvider, StripePaymentProvider>();
         services.AddScoped<IPaymentWebhookReader, StripeWebhookReader>();
+        services.AddSingleton<IPaymentDashboard, StripeDashboard>();
 
-        // A typed HttpClient: IHttpClientFactory gives SupabaseImageStorage an HttpClient
-        // and reuses its connections, instead of opening new ones for every request.
         services.AddHttpClient<IImageStorage, SupabaseImageStorage>();
 
         return services;

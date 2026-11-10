@@ -6,26 +6,25 @@ using Stripe.Checkout;
 
 namespace Grej.Infrastructure.Stripe;
 
-// Creates Stripe Checkout sessions, Stripe's hosted payment page,
-// so no card data ever passes through our API (architecture.md).
+// Stripe's hosted payment page, so no card data passes through the API.
 public class StripePaymentProvider(StripeClient stripe, IConfiguration configuration) : IPaymentProvider
 {
-    public string Name => "Stripe";
+    internal const string ProviderName = "Stripe";
+
+    public string Name => ProviderName;
 
     public async Task<CheckoutSession> CreateCheckoutSessionAsync(Order order, CancellationToken cancellationToken)
     {
-        // Where Stripe sends the customer afterwards: localhost locally, Vercel in production.
         var frontendUrl = configuration["Frontend:Url"]
             ?? throw new InvalidOperationException("Frontend:Url is not configured.");
 
-        // CheckoutService always sets it, and the payment's amount already includes it.
+        // Always set by CheckoutService, and already included in the payment's amount.
         var shippingCost = order.ShippingCost
             ?? throw new InvalidOperationException("The order has no shipping.");
 
         var options = new SessionCreateOptions
         {
             Mode = "payment",
-            // One line per order row, with the price we took from the database.
             LineItems = order.Items.Select(item => new SessionLineItemOptions
             {
                 Quantity = item.Quantity,
@@ -39,14 +38,14 @@ public class StripePaymentProvider(StripeClient stripe, IConfiguration configura
                     },
                 },
             }).ToList(),
-            // Checkout asks for a shipping address and only accepts Swedish ones (constraints.md).
-            // The email is always asked for, and the name is part of the shipping address.
+            // Swedish addresses only (constraints.md). Checkout always asks for the email,
+            // and the name is part of the address.
             ShippingAddressCollection = new SessionShippingAddressCollectionOptions
             {
                 AllowedCountries = ["SE"],
             },
-            // Our own cost as the only choice, instead of a rate saved in the Stripe dashboard,
-            // so the API decides the shipping the same way as the prices. Shown as its own row.
+            // Our own cost instead of a rate saved in the dashboard, so the API decides the
+            // shipping like the prices.
             ShippingOptions =
             [
                 new SessionShippingOptionOptions
@@ -65,15 +64,19 @@ public class StripePaymentProvider(StripeClient stripe, IConfiguration configura
             ],
             SuccessUrl = $"{frontendUrl}/kassa/tack?order={order.OrderNumber}",
             CancelUrl = $"{frontendUrl}/",
-            // Makes the order easy to find in the Stripe dashboard.
             Metadata = new Dictionary<string, string> { ["orderNumber"] = order.OrderNumber },
+            // The dashboard's payment list shows the PaymentIntent, not the session.
+            PaymentIntentData = new SessionPaymentIntentDataOptions
+            {
+                Description = order.OrderNumber,
+                Metadata = new Dictionary<string, string> { ["orderNumber"] = order.OrderNumber },
+            },
         };
 
         var session = await stripe.V1.Checkout.Sessions.CreateAsync(options, cancellationToken: cancellationToken);
         return new CheckoutSession(session.Id, session.Url);
     }
 
-    // Stripe wants amounts as whole numbers in the smallest unit: 450.00 kr is 45000 öre.
-    // Prices have at most two decimals (numeric(10,2)), so nothing is lost.
+    // Stripe wants öre. Prices have at most two decimals (numeric(10,2)), so nothing is lost.
     private static long ToMinorUnits(decimal amount) => (long)(amount * 100);
 }

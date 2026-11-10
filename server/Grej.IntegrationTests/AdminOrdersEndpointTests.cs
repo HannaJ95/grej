@@ -121,6 +121,32 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
     }
 
     [Fact]
+    public async Task GetById_PaidStripeOrder_LinksToThePaymentInStripe()
+    {
+        var order = await AddOrderAsync(o => o.Payment!.MarkAsPaid("pi_test_123"));
+        var client = await CreateAdminClientAsync();
+
+        var details = await client.GetFromJsonAsync<OrderDetailsDto>($"/api/admin/orders/{order.Id}");
+
+        Assert.Equal("https://dashboard.stripe.com/test/payments/pi_test_123", details!.PaymentDashboardUrl);
+    }
+
+    [Fact]
+    public async Task GetById_PaymentWithoutId_HasNoLink()
+    {
+        var unpaid = await AddOrderAsync();
+        // Like the demo orders and those paid before AddProviderPaymentId.
+        var paidWithoutId = await AddOrderAsync(Pay);
+        var client = await CreateAdminClientAsync();
+
+        var unpaidDetails = await client.GetFromJsonAsync<OrderDetailsDto>($"/api/admin/orders/{unpaid.Id}");
+        var paidDetails = await client.GetFromJsonAsync<OrderDetailsDto>($"/api/admin/orders/{paidWithoutId.Id}");
+
+        Assert.Null(unpaidDetails!.PaymentDashboardUrl);
+        Assert.Null(paidDetails!.PaymentDashboardUrl);
+    }
+
+    [Fact]
     public async Task Get_OversoldOrder_NeedsAttention()
     {
         var oversold = await AddOrderAsync(PayOversold);
