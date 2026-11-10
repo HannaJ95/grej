@@ -101,7 +101,11 @@
           fileError() ? 'image-file-hint image-file-error' : 'image-file-hint'
         "
       />
-      <span class="hint text-body-xs" id="image-file-hint">jpg, png eller webp, högst 5 MB.</span>
+      <span class="hint text-body-xs" id="image-file-hint">
+        jpg, png eller webp, högst 5 MB. Bilderna visas i stående format 5:6, till exempel 1000 ×
+        1200 px. Huvudbilden blir snyggast med produkten på vit bakgrund, de andra kan visa den i
+        miljö eller på nära håll.
+      </span>
       @if (fileError(); as message) {
         <span class="error text-body-xs" id="image-file-error">{{ message }}</span>
       }
