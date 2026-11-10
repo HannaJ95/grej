@@ -14,7 +14,7 @@
     listor och i varukorgen.
   </p>
   <ol class="images" aria-labelledby="images-title">
-    @for (image of images(); track image.id; let position = $index) {
+    @for (image of images(); track image.id; let position = $index, last = $last) {
       <li class="image">
         <!-- The alt text is shown beside it, so the small image has none. -->
         <img class="thumb" [src]="image.url" alt="" />
@@ -23,21 +23,49 @@
             <app-badge>Huvudbild</app-badge>
           }
           <p class="alt-text text-body-s">{{ image.altText }}</p>
-          <!-- The label says which image, since every row has the same button. -->
-          <button
-            appLinkButton
-            tone="danger"
-            type="button"
-            [attr.aria-label]="'Ta bort bild ' + (position + 1)"
-            (click)="remove(image, position)"
-          >
-            Ta bort
-          </button>
+          <!-- The labels say which image, since every row has the same buttons. The ids let
+               move() put the focus back on the arrow after the row has moved. -->
+          <div class="actions">
+            @if (images().length > 1) {
+              <span class="arrows">
+                <button
+                  appIconButton
+                  icon="arrow-up"
+                  type="button"
+                  [id]="'move-up-' + image.id"
+                  [attr.aria-label]="'Flytta upp bild ' + (position + 1)"
+                  [disabled]="position === 0"
+                  (click)="move(position, -1)"
+                ></button>
+                <button
+                  appIconButton
+                  icon="arrow-down"
+                  type="button"
+                  [id]="'move-down-' + image.id"
+                  [attr.aria-label]="'Flytta ner bild ' + (position + 1)"
+                  [disabled]="last"
+                  (click)="move(position, 1)"
+                ></button>
+              </span>
+            }
+            <button
+              appLinkButton
+              tone="danger"
+              type="button"
+              [attr.aria-label]="'Ta bort bild ' + (position + 1)"
+              (click)="remove(image, position)"
+            >
+              Ta bort
+            </button>
+          </div>
         </div>
       </li>
     }
   </ol>
 }
+
+<!-- Always in the page, so screen readers notice when its text changes. -->
+<p class="visually-hidden" role="status">{{ moveStatus() }}</p>
 
 @if (listError(); as message) {
   <p class="text-body-s" role="alert">{{ message }}</p>

@@ -9,6 +9,8 @@ export type IconName =
   | 'chevron-down'
   | 'arrow-right'
   | 'arrow-left'
+  | 'arrow-up'
+  | 'arrow-down'
   | 'search'
   | 'info';
 

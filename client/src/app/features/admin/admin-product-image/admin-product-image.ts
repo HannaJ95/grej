@@ -1,8 +1,10 @@
 import {
+  afterNextRender,
   Component,
   computed,
   ElementRef,
   inject,
+  Injector,
   input,
   linkedSignal,
   signal,
@@ -24,6 +26,7 @@ import { ToastService } from '../../../core/toast.service';
 import { Badge } from '../../../shared/badge/badge';
 import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
+import { IconButton } from '../../../shared/icon-button/icon-button';
 import { InfoTip } from '../../../shared/info-tip/info-tip';
 import { LinkButton } from '../../../shared/link-button/link-button';
 
@@ -48,7 +51,7 @@ export type PendingImage = { file: File; altText: string } | null | 'invalid';
 // creating the product (pendingImage).
 @Component({
   selector: 'app-admin-product-image',
-  imports: [FormRoot, FormField, Badge, Button, InfoTip, LinkButton],
+  imports: [FormRoot, FormField, Badge, Button, IconButton, InfoTip, LinkButton],
   templateUrl: './admin-product-image.html',
   styleUrls: ['../admin-form.scss', './admin-product-image.scss'],
 })
@@ -56,6 +59,8 @@ export class AdminProductImage {
   private readonly products = inject(AdminProductService);
   private readonly confirm = inject(ConfirmService);
   private readonly toast = inject(ToastService);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly injector = inject(Injector);
 
   // Undefined on "Ny produkt".
   readonly product = input<AdminProduct>();
@@ -106,6 +111,9 @@ export class AdminProductImage {
   protected readonly altTextError = computed(() => firstError(this.imageForm.altText));
   protected readonly uploadError = computed(() => this.imageForm().errors()[0]?.message);
   protected readonly listError = signal<string | undefined>(undefined);
+  // Read by screen readers after a move, since the page itself only changes order.
+  protected readonly moveStatus = signal('');
+  private readonly moving = signal(false);
 
   private readonly title = viewChild.required<ElementRef<HTMLElement>>('title');
   // Emptied after an upload.
@@ -169,6 +177,48 @@ export class AdminProductImage {
         message: 'Bilden kunde inte laddas upp just nu. Försök igen om en stund.',
       };
     }
+  }
+
+  // One step up (-1) or down (1). The API gets every image id in the new order.
+  protected async move(position: number, step: -1 | 1): Promise<void> {
+    const product = this.product();
+    // A second click before the answer would send an order built from the old list.
+    if (!product || this.moving()) {
+      return;
+    }
+    const ids = this.images().map((image) => image.id);
+    const movedId = ids[position];
+    [ids[position], ids[position + step]] = [ids[position + step], ids[position]];
+
+    this.moving.set(true);
+    this.listError.set(undefined);
+    try {
+      this.images.set(await this.products.orderImages(product.id, ids));
+    } catch {
+      this.listError.set('Ordningen kunde inte ändras just nu. Försök igen om en stund.');
+      return;
+    } finally {
+      this.moving.set(false);
+    }
+
+    const place = this.images().findIndex((image) => image.id === movedId);
+    this.moveStatus.set(
+      place === 0
+        ? 'Bilden är flyttad först och är nu huvudbild.'
+        : `Bilden är flyttad till plats ${place + 1} av ${this.images().length}.`,
+    );
+    // Moving the row in the page can take the focus away from its button, so it is put back once
+    // the row is in its new place.
+    afterNextRender(() => this.focusArrow(movedId, step), { injector: this.injector });
+  }
+
+  // The same arrow as was clicked, or the other one at the end of the list, where it is disabled.
+  private focusArrow(imageId: number, step: -1 | 1): void {
+    const arrow = (direction: string) =>
+      this.host.nativeElement.querySelector<HTMLButtonElement>(`#move-${direction}-${imageId}`);
+    const same = arrow(step < 0 ? 'up' : 'down');
+    const other = arrow(step < 0 ? 'down' : 'up');
+    (same && !same.disabled ? same : other)?.focus();
   }
 
   protected async remove(image: ProductImage, position: number): Promise<void> {

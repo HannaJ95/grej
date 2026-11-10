@@ -152,6 +152,70 @@ describe('AdminProductImage', () => {
     expect(document.activeElement).toBe(page().querySelector('h2'));
   });
 
+  it('moves an image up, says where it went and keeps the focus on its arrow', async () => {
+    await showProduct(image(1), image(2), image(3));
+
+    arrow('Flytta upp bild 3').click();
+    const request = httpTesting.expectOne((req) =>
+      req.url.endsWith('/api/admin/products/5/images/order'),
+    );
+    expect(request.request.body).toEqual({ imageIds: [1, 3, 2] });
+    request.flush([image(1), image(3), image(2)]);
+    await settle();
+
+    expect(altTexts()).toEqual(['Bild 1', 'Bild 3', 'Bild 2']);
+    expect(page().querySelector('[role="status"]')!.textContent).toBe(
+      'Bilden är flyttad till plats 2 av 3.',
+    );
+    expect(document.activeElement).toBe(page().querySelector('#move-up-3'));
+  });
+
+  it('makes an image moved first the main image, with the focus on its other arrow', async () => {
+    await showProduct(image(1), image(2));
+
+    arrow('Flytta upp bild 2').click();
+    httpTesting
+      .expectOne((req) => req.url.endsWith('/api/admin/products/5/images/order'))
+      .flush([image(2), image(1)]);
+    await settle();
+
+    expect(page().querySelector('li')!.textContent).toContain('Huvudbild');
+    expect(altTexts()).toEqual(['Bild 2', 'Bild 1']);
+    expect(page().querySelector('[role="status"]')!.textContent).toContain('nu huvudbild');
+    // Its up arrow is disabled at the top, so the focus goes to the down arrow.
+    expect(document.activeElement).toBe(page().querySelector('#move-down-2'));
+  });
+
+  it("disables the first image's up arrow and the last one's down arrow", async () => {
+    await showProduct(image(1), image(2));
+
+    expect(arrow('Flytta upp bild 1').disabled).toBe(true);
+    expect(arrow('Flytta ner bild 1').disabled).toBe(false);
+    expect(arrow('Flytta upp bild 2').disabled).toBe(false);
+    expect(arrow('Flytta ner bild 2').disabled).toBe(true);
+  });
+
+  it('has no arrows for a single image', async () => {
+    await showProduct(image(1));
+
+    expect(page().querySelector('[appIconButton]')).toBeNull();
+  });
+
+  it('keeps the order and says so when the move fails', async () => {
+    await showProduct(image(1), image(2));
+
+    arrow('Flytta ner bild 1').click();
+    httpTesting
+      .expectOne((req) => req.url.endsWith('/api/admin/products/5/images/order'))
+      .flush(null, { status: 500, statusText: 'Server Error' });
+    await settle();
+
+    expect(altTexts()).toEqual(['Bild 1', 'Bild 2']);
+    expect(page().querySelector('[role="alert"]')!.textContent).toContain(
+      'Ordningen kunde inte ändras just nu.',
+    );
+  });
+
   it('on "Ny produkt", has no upload button and lets the image be left out', async () => {
     fixture.componentRef.setInput('product', undefined);
     await fixture.whenStable();
@@ -181,6 +245,14 @@ describe('AdminProductImage', () => {
 
   function page(): HTMLElement {
     return fixture.nativeElement;
+  }
+
+  function arrow(label: string): HTMLButtonElement {
+    return page().querySelector<HTMLButtonElement>(`[aria-label="${label}"]`)!;
+  }
+
+  function altTexts(): string[] {
+    return [...page().querySelectorAll('.alt-text')].map((p) => p.textContent!.trim());
   }
 
   function button(text: string): HTMLButtonElement {

@@ -42,6 +42,19 @@ h3 {
   min-width: 0;
 }
 
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8) var(--space-16);
+}
+
+// Closer together than to "Ta bort", as one pair.
+.arrows {
+  display: flex;
+  gap: var(--space-8);
+}
+
 .label-row {
   display: flex;
   align-items: center;
