@@ -78,6 +78,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - On screens wider than 1440 px the bands (header, start page, moving band, footer) still reach the edges while the content stays centered, so the page keeps one pattern instead of a box in the middle.
 - `ProductCard` is used by both the start page and the product list. It has an image, title and price, a "Slutsåld" or "Få kvar" (1–2 left) badge, and an add button.
   - On a computer the add button is a bar over the image, shown on hover or keyboard focus. On a tablet and a phone, where there is no hover, it is a "+" square.
+  - The card fills its grid row, and the price sits at its bottom. A long title therefore never moves the price or the add button out of line with the rest of the row.
   - The sold-out layer over the image is 70 %, so the image can still be seen.
   - With a mouse, the product's second image fades in over the first on hover or keyboard focus. Touch screens never show or download it; the product page's gallery has it.
 - The start page (`/`, `LandingPage`) has:
