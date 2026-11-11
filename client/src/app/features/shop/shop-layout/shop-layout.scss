@@ -122,12 +122,14 @@ main {
 
 // 42vw keeps the wordmark inside the window just above 1024 px. No letter spacing, since the
 // browser also adds it after a lone letter in a span, which made the row too wide.
+// The glyphs reach above the line height and caught the clicks meant for the links above.
 .footer-logo {
   display: flex;
   justify-content: space-between;
   margin: var(--space-32) 0 var(--space-20);
   font-size: min(var(--font-size-display-wordmark), 42vw);
   letter-spacing: 0;
+  pointer-events: none;
 
   @media (width >= 48rem) {
     margin: var(--space-48) 0 var(--space-32);
