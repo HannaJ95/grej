@@ -53,4 +53,29 @@ describe('SortSelect', () => {
 
     expect(router.url).toBe('/produkter?kategori=1');
   });
+
+  describe('a click on "Sortera:"', () => {
+    // jsdom has no picker, so showPicker is a spy and :open is set by hand.
+    function clickPrefix(element: HTMLElement, select: HTMLSelectElement, open: boolean) {
+      vi.spyOn(select, 'matches').mockReturnValue(open);
+      const showPicker = vi.fn();
+      select.showPicker = showPicker;
+      const prefix = element.querySelector('.prefix')!;
+      prefix.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+      prefix.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      return showPicker;
+    }
+
+    it('opens the list', async () => {
+      const { element, select } = await render('nyast');
+
+      expect(clickPrefix(element, select, false)).toHaveBeenCalledOnce();
+    });
+
+    it('only closes the list when it was open', async () => {
+      const { element, select } = await render('nyast');
+
+      expect(clickPrefix(element, select, true)).not.toHaveBeenCalled();
+    });
+  });
 });
