@@ -55,34 +55,22 @@
   }
 }
 
+// wrap-reverse puts Filter and the sort above the count when they don't fit beside it. The count
+// isn't in the Tab order, so the focus still follows the HTML.
 .toolbar {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  align-items: center;
+  gap: var(--space-8) var(--space-16);
   padding-block: var(--space-8);
-  border-block: var(--border-width-default) solid var(--color-border-default);
 
   @media (width >= 64rem) {
     padding-block: var(--space-16);
   }
 
-  // Below 1024 px it grows, so Filter and the sort sit at the right edge. From 1024 px it keeps
-  // its one line beside the chips.
   p {
-    flex: auto;
     margin: 0;
-
-    @media (width >= 64rem) {
-      flex: none;
-    }
   }
-}
-
-// flex-end keeps Filter and the sort to the right, also on a row of their own and before the count
-// has come.
-.toolbar-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-items: center;
-  gap: var(--space-8) var(--space-16);
 }
 
 // Below 1024 px Filter's number and the panel show the choices.
@@ -95,18 +83,16 @@
   }
 }
 
-// Below 1024 px Filter and the sort are items of the row, so only the sort wraps when there is no
-// room.
+// One item, so Filter and the sort move together. The auto margin keeps them to the right, also on
+// a row of their own and before the count has come.
 .actions {
-  display: contents;
-
-  @media (width >= 64rem) {
-    display: flex;
-    min-width: 0;
-    align-items: center;
-    gap: var(--space-16);
-    margin-left: auto;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-8) var(--space-16);
+  min-width: 0;
+  margin-left: auto;
 }
 
 // minmax(0, 1fr), so a long word can't widen the products' column.

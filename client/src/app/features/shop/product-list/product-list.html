@@ -18,47 +18,44 @@
   <app-category-tabs [categories]="options().categories" [selected]="categoryIds()" />
 }
 
-<!-- Lines across the whole screen, the content within the page width. -->
-<div class="toolbar">
-  <div class="page-width toolbar-row">
-    @if (shown(); as s) {
-      <!-- aria-live reads out the new number after each choice. tabindex="-1" lets focusCount()
-           move the focus here without adding it to the Tab order. -->
-      <p #count class="text-label-s" tabindex="-1" aria-live="polite">
-        @if (s.total === 0) {
-          0 grejer hittades
-        } @else {
-          Visar {{ s.from }}–{{ s.to }} av {{ s.total }} grejer
-        }
-      </p>
-    }
-    @if (chips().length > 0) {
-      <app-active-filters class="active-filters" [chips]="chips()" />
-    }
-    <div class="actions">
-      @if (hasOptions()) {
-        <app-filter-drawer #drawer [choices]="choiceCount()" [resultCount]="totalCount()">
-          <app-product-filters
-            [categories]="options().categories"
-            [materials]="options().materials"
-            [colors]="options().colors"
-            [filter]="filter()"
-            [highestPrice]="highestPrice()"
-          >
-            <!-- autofocus: the dialog puts the focus here when it opens. -->
-            <button
-              appIconButton
-              icon="close"
-              type="button"
-              aria-label="Stäng"
-              autofocus
-              (click)="drawer.close()"
-            ></button>
-          </app-product-filters>
-        </app-filter-drawer>
+<div class="page-width toolbar">
+  @if (shown(); as s) {
+    <!-- aria-live reads out the new number after each choice. tabindex="-1" lets focusCount()
+         move the focus here without adding it to the Tab order. -->
+    <p #count class="text-label-s" tabindex="-1" aria-live="polite">
+      @if (s.total === 0) {
+        0 grejer hittades
+      } @else {
+        Visar {{ s.from }}–{{ s.to }} av {{ s.total }} grejer
       }
-      <app-sort-select [sort]="sort()" />
-    </div>
+    </p>
+  }
+  @if (chips().length > 0) {
+    <app-active-filters class="active-filters" [chips]="chips()" />
+  }
+  <div class="actions">
+    @if (hasOptions()) {
+      <app-filter-drawer #drawer [choices]="choiceCount()" [resultCount]="totalCount()">
+        <app-product-filters
+          [categories]="options().categories"
+          [materials]="options().materials"
+          [colors]="options().colors"
+          [filter]="filter()"
+          [highestPrice]="highestPrice()"
+        >
+          <!-- autofocus: the dialog puts the focus here when it opens. -->
+          <button
+            appIconButton
+            icon="close"
+            type="button"
+            aria-label="Stäng"
+            autofocus
+            (click)="drawer.close()"
+          ></button>
+        </app-product-filters>
+      </app-filter-drawer>
+    }
+    <app-sort-select [sort]="sort()" />
   </div>
 </div>
 
