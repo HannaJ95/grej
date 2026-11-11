@@ -221,3 +221,8 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - **Verification:** Claude checked 320–1440 px, 200 % zoom and text, and the keyboard in Chrome. The check found that the zoom shrank on tablets and that the dialog got too wide with large text; both are fixed.
 
 - **Building:** Six UI fixes: the page stays still behind dialogs, product cards line up per row, the next page starts at the toolbar, sharp arrow tips, arrow icons instead of the "→" character (missing in Inter's web font) and no underline on "Shop".
+
+## 2026-11-12
+
+- **Building:** Search and filters in the CMS. The product list got a search, a menu each for category, material, color, visibility and sort (also "Äldst först") and a "Tillagd" column; materials and colors got a search. The product counts on the category, material and color pages link to the filtered list. The add cards now wait with "Fyll i ett namn." until the admin tries to save. I chose one choice per menu over checkboxes because of the feature freeze.
+- **Verification:** dotnet test + affected specs. Claude checked 320–1440 px and 200 % text in Chrome and fixed category options that looked like headings, a select that wrapped to two lines, "st" alone on a line and a date that broke at its hyphen. Pagination and the admin app bar still overflow at 200 % text (wrap-up).

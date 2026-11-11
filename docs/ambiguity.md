@@ -67,6 +67,10 @@ Why: The scope says "by name", and a description often mentions other things, li
 Decision (Should): Newest first (the default), lowest price first or highest price first. Products with the same price come newest first, and sold-out products are sorted like the others. The sort is not a filter: it does not count as a choice, and "Rensa", the chips and the tabs keep it. A new sort starts on page 1.
 Why: Date and price are what the shop has data for. There are no ratings or sales numbers to sort on by popularity. A fixed order for equal prices keeps a product from showing up on two pages.
 
+**How does the admin find products in the CMS?**
+Decision (Should): A search in the title, like the shop's, and one menu each for category, material, color, visibility (all, shown or hidden) and sort (newest, oldest, lowest or highest price). One choice per menu; a main category includes its subcategories' products. The list shows the day each product was added. The product counts on the category, material and color pages open the list with that choice made.
+Why: In the CMS the admin usually looks for one thing at a time, e.g. the hidden products or everything in Keramik, as in Shopify's and WooCommerce's product lists. A native select per filter was faster to build and accessible from the start; several choices at once, like the shop's checkboxes, would need its own popup and is left as an improvement.
+
 **Can a product have several images?**
 Decision (Should): Yes, up to 10. The MVP had one image per product.
 

@@ -32,10 +32,10 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - From a tablet it sits by the button with CSS anchor positioning: below and to the right, or flipped to where it fits.
   - On a phone, and when nothing beside the button fits (e.g. with large text), it is in the middle of the window, and it scrolls inside when it is taller than the window.
 - `Badge` is a small label on a product image, e.g. "Slutsåld" and "Få kvar".
-- `SearchField` is a `<form role="search">` with the search icon in a field box (`<app-search-field label="Sök bland grejerna">`), used by the shop's filter and the CMS's order list.
+- `SearchField` is a `<form role="search">` with the search icon in a field box (`<app-search-field label="Sök bland grejerna">`), used by the shop's filter and the CMS's lists of orders, products, materials and colors.
   - It has no visible label, so `label` becomes the field's `aria-label`.
   - Like the price fields, it searches on Enter or when the field is left, so a list doesn't reload for every letter.
-  - It has no clear button of its own; each page clears the search its own way.
+  - It has no clear button of its own; each page clears the search its own way. `focus()` moves the focus to the field when the page's clear button disappears.
 - `Pagination` shows the links to the page before and after, and the page numbers (`?sida=`), e.g. 1 2 3 … 8. A phone gets a shorter list. It shows nothing when the list fits on one page. With `fragment`, its links lead to that id on the page instead of the top; the router's offset is `scroll-padding-top` (`app.config.ts`), so the id lands just below the sticky header.
 - `Breadcrumb` shows e.g. "Hem / Shop / Vas" above a page's title. The current page comes last and is not a link.
 - `QuantityStepper` is the − 1 + control in the cart and on the product page (`[(quantity)]` with `min` and `max`). Its buttons are squares of `--stepper-button-size`, which the product page sets so the stepper is as tall as the large button.
@@ -44,13 +44,14 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - "Få kvar – 2 st" (red, 1–2 left)
   - "I lager – 4 st" (yellow, 3–5 left; `--color-feedback-warning`)
   - "I lager – 12 st" (green, 6 or more)
+  - The number and "st" are joined by a no-break space, so "st" never ends a line alone.
 - `shared/drawer.scss` is shared by the side panels, which are `<dialog>`s: the cart, the filter panel, the phone menu and the admin menu.
   - Each panel slides in from its side (`--drawer-from`) while the backdrop fades in, and back out when it closes.
   - Firefox and Safari close the panel at once, without the slide.
   - "Reduce motion" turns the slide off.
 - While any modal `<dialog>` is open (the side panels, `ImageViewer`, `ConfirmDialog`), the page behind it does not scroll, also when the dialog's own list reaches its end (`html:has(dialog:modal)` in `_base.scss`).
 - `shared/field-box.scss` is a text field in a framed box, used by the price fields and the search. The box is the label, so a click anywhere in it reaches the field, and the focus ring goes around the whole box.
-- `shared/select.scss` is a `<select>` with the chevron icon instead of the browser's own arrow, used by the CMS forms and the shop's sort.
+- `shared/select.scss` is a `<select>` with the chevron icon instead of the browser's own arrow, used by the CMS forms and the shop's sort. In Chrome's list an `<optgroup>`'s name is a small grey heading (`text-badge` on the optgroup) and its options are indented below it.
   - In Chrome it is a customizable select (`appearance: base-select`), still a real `<select>`. Its list looks like the other popovers: a 2 px frame, the surface color and `--shadow-popover`, the hover color on the row under the mouse or the keyboard, and the check icon on the chosen one. It opens below the field when it fits, and the chevron turns while it is open.
   - Other browsers show their own list.
 - `shared/checkbox.scss` is the square checkbox (a real checkbox with `appearance: none` and the check icon on top), used by the shop's filter and the CMS's product form.
@@ -164,18 +165,25 @@ The CMS uses the same tokens, text styles and shared components as the shop.
   - From 1024 px, when the window is at least 30rem high, it sticks at the top.
   - It measures its own height with a `ResizeObserver` and writes it to `--admin-page-header-height` on `<html>`, since the row wraps when there is no room.
   - `_base.scss` turns that height into `--admin-sticky-top` (the app bar's 4rem below 1024 px). That value sets `scroll-padding-top`, so a focused field is never hidden under the header.
-- The admin pages share three style files in `features/admin/`:
+- The admin pages share four style files in `features/admin/`:
   - `admin-page.scss`: the page and every `.card` are CSS containers (`container-type: inline-size`), plus the columns, the list rows and the text links with an icon (`.back` to a list, `.icon-link`).
   - `admin-form.scss`: the form fields, hints and error texts. The selects also use `shared/select.scss`.
-  - `admin-table.scss`: a table in a card. When the card is narrower than 36rem (44rem for the six columns of `.table.wide`), each row becomes a small block with two columns, and the column headings are kept for screen readers only. Each cell's own text says what it is ("2 st", "349 kr/st").
+  - `admin-table.scss`: a table in a card. When the card is narrower than 36rem (44rem for the six columns of `.table.wide`), each row becomes a small block with two columns, and the column headings are kept for screen readers only. Each cell's own text says what it is ("2 st", "349 kr/st"); words only a stacked row needs are in `.stacked-only`, and `.nowrap-in-table` keeps a text on one line only while the table has columns.
+  - `search-info.scss`: the number of hits and the clear button below a search.
 - So the layout follows the room the page has beside the menu, not the screen's width. On the category pages the card goes to the right of the list when the page is at least 56rem wide, and each row fits on one line when the list is at least 36rem wide.
   - The card comes first in the HTML, so it is on top on a narrow screen and the keyboard order matches what is seen.
   - Beside the list, in a window at least 30rem high, the card sticks 24 px below `--admin-sticky-top`, so "Redigera" on the last row still shows it.
-- Materials and colors share one page, `AdminPropertyList`, with `AdminPropertyCard` (`?redigera=`) and `LinkButton` in the rows.
-  - The rows have no product count yet, since `PropertyDto` has none.
-  - "Ta bort" therefore fetches the material first, so the warning can say how many products have it.
+  - The card's errors wait until the admin presses "Lägg till …" or "Spara ändringar" (Signal Forms' `onInvalid`), not when a field is left. After that they follow the typing. Another category in the card starts without them.
+  - A row's product count links to the product list with that category chosen (`/admin/produkter?kategori=3`). A main category's count and list include its subcategories' products. 0 is plain text.
+- Materials and colors share one page, `AdminPropertyList`, with `AdminPropertyCard` (`?redigera=`) and `LinkButton` in the rows. The card's errors work like the category card's.
+  - The list card has a `SearchField` ("Sök bland materialen", `?sok=`) with the number of hits and "Rensa sökningen" below it. The pages keep the search.
+  - Each row's product count links to the product list with that material or color chosen (`?material=` or `?farg=`); 0 is plain text. "Ta bort" uses the same count in its warning.
 - The overview (`/admin`, `AdminHome`) has three cards with numbers from lists the API already has: orders to handle, products (hidden ones too) and main categories, each with a link to its list. Each card shows its own loading and error state.
-- The product list (`/admin/produkter`) is a table: a small image and the title as a link, the price, `StockStatus` (or the number sold too many in red), Synlig/Dold, and "Redigera" and "Ta bort".
+- The product list (`/admin/produkter`) is a table: a small image and the title as a link, the price, `StockStatus` (or the number sold too many in red), Synlig/Dold, the day it was added ("Tillagd 2026-10-02" in a stacked row), and "Redigera" and "Ta bort". It has six columns, so it is a `.table.wide`.
+  - Above it, `AdminProductFilters` has a `SearchField` and a menu each for Kategori, Material, Färg, I butiken (Alla, Synliga, Dolda) and Sortera (Nyast först, Äldst först, Lägst pris, Högst pris). The menus are as many in a row as fit (`auto-fit`), one per row on a phone or with large text, and a long choice stays on one line.
+  - Kategori has "Alla" and an `<optgroup>` per main category with "Alla i Keramik" and its subcategories. One choice per menu (ambiguity.md).
+  - Every choice is in the URL (`?sok=`, `?kategori=`, `?material=`, `?farg=`, `?visa=`, `?sortera=`), starts on page 1 and keeps the others, so the counts on the category, material and color pages can link to a filtered list.
+  - With a filter or a search, the number of hits and "Rensa filtren" are shown below the menus. "Rensa filtren" keeps the sort and moves the focus to the search field. When nothing matches, the list says "Inga produkter matchar filtren."
 - The product page (`/admin/produkter/ny` and `/admin/produkter/7`):
   - "Spara" and "Ta bort produkten" are large buttons in the top bar, like "Ny produkt" on the list. Spara sits outside the `<form>` and is connected to it with `form="product-form"`. Errors from them are shown under the top bar.
   - The form card is on the left, and the image card beside it when the page is at least 56rem wide. Price and stock are side by side when the card is at least 28rem wide.
