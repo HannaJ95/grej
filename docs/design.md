@@ -165,7 +165,10 @@ The CMS uses the same tokens, text styles and shared components as the shop.
 - The product page (`/admin/produkter/ny` and `/admin/produkter/7`):
   - "Spara" and "Ta bort produkten" are large buttons in the top bar, like "Ny produkt" on the list. Spara sits outside the `<form>` and is connected to it with `form="product-form"`. Errors from them are shown under the top bar.
   - The form card is on the left, and the image card beside it when the page is at least 56rem wide. Price and stock are side by side when the card is at least 28rem wide.
-  - Under them, the group "Paketets vikt och mått" (a `<fieldset>` with a hint) has the packed weight and the three sides, which the checkout calculates the shipping from: two per row from 28rem, all four from 36rem. A new product starts with them empty.
+  - Under them come two groups, each a `<fieldset>` with a hint, two fields per row from 28rem and four from 36rem:
+    - "Produktens mått och vikt (valfria)": length, width, height, diameter (cm, one decimal) and weight (g), which the product page shows. The admin fills in only what fits.
+    - "Paketets vikt och mått": the packed weight and the three sides, which the checkout calculates the shipping from. They are not shown in the shop.
+    - A new product starts with both groups empty.
   - Saving keeps the admin on the page, with a toast, and fetches the product again. A product that does not exist (404) says so.
   - The image card "Bilder" lists the images in order (`<ol>`): a square thumbnail, the alt text as text, "Huvudbild" (`Badge`) on the first, and per row "Flytta upp", "Flytta ner" (`IconButton`) and "Ta bort".
     - The first image's up arrow and the last one's down arrow are disabled, so the row never jumps. After a move the focus stays on the arrow (or the other one at the end of the list), and screen readers hear where the image went from a `.visually-hidden` `role="status"`.

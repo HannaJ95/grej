@@ -24,6 +24,7 @@ describe('AdminProductForm', () => {
     colorIds: [2],
     images: [],
     parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
+    size: { lengthCm: null, widthCm: null, heightCm: 30, diameterCm: 12, weightGrams: 800 },
   };
 
   beforeEach(async () => {
@@ -83,6 +84,7 @@ describe('AdminProductForm', () => {
       materialIds: [],
       colorIds: [],
       parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
+      size: { lengthCm: null, widthCm: null, heightCm: null, diameterCm: null, weightGrams: null },
     });
     request.flush({ ...vase, categoryId: 2, price: 250, stock: 1, isActive: false });
 
@@ -237,6 +239,30 @@ describe('AdminProductForm', () => {
     });
   });
 
+  it("shows the product's own size, stops one that breaks the API's rules, and sends an emptied field as null", async () => {
+    await openVase();
+    expect(page().querySelector<HTMLInputElement>('#size-height')?.value).toBe('30');
+
+    type('#size-diameter', '12.25');
+    type('#size-weight', '0');
+    await send();
+    expect(page().textContent).toContain('Diametern får ha högst en decimal.');
+    expect(page().textContent).toContain('Vikten måste vara minst 1 g.');
+
+    // 1.1 is 11.000000000000002 tenths in floating point, and must still pass.
+    type('#size-diameter', '1.1');
+    type('#size-weight', '');
+    await send();
+    const request = httpTesting.expectOne((req) => req.url.endsWith('/api/admin/products/5'));
+    expect(request.request.body.size).toEqual({
+      lengthCm: null,
+      widthCm: null,
+      heightCm: 30,
+      diameterCm: 1.1,
+      weightGrams: null,
+    });
+  });
+
   it('saves nothing and says so when the stock has changed (409)', async () => {
     await openVase();
 
@@ -282,8 +308,7 @@ describe('AdminProductForm', () => {
     return page().querySelector('app-toast .text')?.textContent ?? undefined;
   }
 
-  // Chooses a file the way a user does. A test cannot set input.files directly, so the file
-  // list is replaced on this one input, as in AdminProductImage's spec.
+  // A test cannot set input.files, so the file list is replaced on this one input.
   async function chooseFile(file: File): Promise<void> {
     const input = page().querySelector<HTMLInputElement>('#image-file')!;
     Object.defineProperty(input, 'files', { value: [file] });
@@ -295,7 +320,6 @@ describe('AdminProductForm', () => {
     return [...page().querySelectorAll('button')].find((b) => b.textContent?.trim() === text)!;
   }
 
-  // Opens the edit page for the vase and answers the API's GET with it.
   async function openVase(): Promise<void> {
     await harness.navigateByUrl('/admin/produkter/5');
     httpTesting.expectOne((req) => req.url.endsWith('/api/admin/products/5')).flush(vase);
@@ -326,7 +350,6 @@ describe('AdminProductForm', () => {
     request.flush({ items, page: 1, pageSize: 100, totalCount: items.length, totalPages: 1 });
   }
 
-  // The checkbox whose label has this text.
   function checkbox(label: string): HTMLInputElement {
     const found = [...page().querySelectorAll('label')].find(
       (l) => l.textContent?.trim() === label,
@@ -362,7 +385,6 @@ describe('AdminProductForm', () => {
     harness.fixture.detectChanges();
   }
 
-  // Clicks "Spara" and waits until the page has updated.
   async function send(): Promise<void> {
     button('Spara').click();
     await harness.fixture.whenStable();
