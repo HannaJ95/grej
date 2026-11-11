@@ -91,7 +91,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - While a new choice loads, the old products and the count stay, so the page doesn't jump. The products fade only if the answer takes more than 0.3 s.
   - From 1024 px the toolbar also shows the chosen filters as chips (`ActiveFilters`). × removes one and moves the focus to the chip beside it, and "Rensa alla" removes them all. The sort box is taller than a row of chips, so the toolbar doesn't grow with the first choice.
   - `SortSelect` at the end of the toolbar sorts the list: "Nyast först", "Lägst pris" or "Högst pris" (`?sortera=`).
-    - It is a field box, "Sortera: Nyast först", with a `shared/select.scss` select. On a phone only the choice shows; "Sortera" is the select's `aria-label` everywhere. A click anywhere in the box, "Sortera:" too, opens the list, and a click while it is open closes it.
+    - It is a field box, "Sortera: Nyast först", with a `shared/select.scss` select. On a phone only the choice shows; "Sortera" is the select's `aria-label` everywhere. A click anywhere in the box, "Sortera:" too, opens the list, and a click while it is open closes it. Enter, Space and the arrows open it from the keyboard; in the list the arrows move between the choices and Enter chooses one.
     - It keeps the width of the longest choice, so it doesn't jump when the choice changes, but shrinks with large text on a narrow screen.
     - A new sort starts on page 1. "Rensa", the chips and the tabs keep it.
   - `CategoryTabs` is a row of links: "Alla" plus one per category with its number. It scrolls sideways below 1024 px and wraps on a computer. A tab keeps the other filters.

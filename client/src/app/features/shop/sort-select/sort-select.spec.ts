@@ -78,4 +78,16 @@ describe('SortSelect', () => {
       expect(clickPrefix(element, select, true)).not.toHaveBeenCalled();
     });
   });
+
+  it('opens the list with Enter, but leaves Enter on an option to choose it', async () => {
+    const { select } = await render('nyast');
+    const showPicker = vi.fn();
+    select.showPicker = showPicker;
+
+    select.options[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(showPicker).not.toHaveBeenCalled();
+
+    select.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(showPicker).toHaveBeenCalledOnce();
+  });
 });

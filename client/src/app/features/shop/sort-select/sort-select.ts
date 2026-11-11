@@ -16,7 +16,12 @@ import { Icon } from '../../../shared/icons/icon';
     >
       <span class="prefix" aria-hidden="true">Sortera:</span>
       <span class="select">
-        <select #select aria-label="Sortera" (change)="choose(select.value)">
+        <select
+          #select
+          aria-label="Sortera"
+          (change)="choose(select.value)"
+          (keydown.enter)="openOnEnter($event, select)"
+        >
           @for (option of options; track option.value) {
             <option [value]="option.value" [selected]="option.value === sort()">
               {{ option.label }}
@@ -121,6 +126,16 @@ export class SortSelect {
     if (this.wasOpen || select.contains(event.target as Node)) {
       return;
     }
+    select.showPicker?.();
+  }
+
+  // Space and the arrows open a select, but Enter, which many try first, doesn't. Enter on an
+  // option is left alone, since it chooses that option.
+  protected openOnEnter(event: Event, select: HTMLSelectElement): void {
+    if (event.target !== select) {
+      return;
+    }
+    event.preventDefault();
     select.showPicker?.();
   }
 
