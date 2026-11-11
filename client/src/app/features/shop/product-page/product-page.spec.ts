@@ -46,30 +46,42 @@ describe('ProductPage', () => {
   it('shows the materials and colors', async () => {
     await openVase({ materials: ['Glasyr', 'Lera'], colors: ['Blå'] });
 
-    expect(texts('dt')).toEqual(['Material', 'Färg']);
-    expect(texts('dd')).toEqual(['Glasyr, Lera', 'Blå']);
+    expect(texts('.product-details dt')).toEqual(['Material', 'Färg']);
+    expect(texts('.product-details dd')).toEqual(['Glasyr, Lera', 'Blå']);
   });
 
   it('leaves out what the product has none of', async () => {
     await openVase({ materials: [], colors: ['Blå'] });
 
-    expect(texts('dt')).toEqual(['Färg']);
+    expect(texts('.product-details dt')).toEqual(['Färg']);
   });
 
   it('shows the size for the eye and for screen readers, and the weight', async () => {
     await openVase({ size: { ...vase.size, heightCm: 30, diameterCm: 12, weightGrams: 1200 } });
 
-    expect(texts('dt')).toEqual(['Mått', 'Vikt']);
-    const size = page().querySelector('dd')!;
+    expect(texts('.product-details dt')).toEqual(['Mått', 'Vikt']);
+    const size = page().querySelector('.product-details dd')!;
     expect(size.querySelector('[aria-hidden="true"]')!.textContent).toBe('Ø 12 × H 30 cm');
     expect(size.querySelector('.visually-hidden')!.textContent).toBe('diameter 12 cm, höjd 30 cm');
-    expect(texts('dd')[1]).toBe('1,2 kg');
+    expect(texts('.product-details dd')[1]).toBe('1,2 kg');
   });
 
   it('leaves out "Detaljer" when the product has nothing to show there', async () => {
     await openVase({ description: 'En liten vas.', materials: [], colors: [] });
 
-    expect(texts('summary')).toEqual(['Beskrivning']);
+    expect(texts('summary')).toEqual(['Beskrivning', 'Frakt och retur']);
+  });
+
+  it('shows the shipping for this product alone and the right of withdrawal', async () => {
+    // 25 × 25 × 15 cm weighs more in volume weight than its 900 g, which costs 79 kr.
+    await openVase({});
+
+    expect(texts('.shipping dt')).toEqual(['Leverans', 'Frakt', 'Ångerrätt']);
+    const [delivery, shipping, withdrawal] = texts('.shipping dd');
+    expect(delivery).toBe('Paket till ombud');
+    // Only the amount: the tests run without the app's Swedish locale.
+    expect(shipping).toContain('79');
+    expect(withdrawal).toBe('14 dagar');
   });
 
   it('shortens a long description, and "Mer information" opens the whole one', async () => {
@@ -134,6 +146,8 @@ describe('ProductPage', () => {
   // Answers the GET with the vase, changed as given.
   async function openVase(changes: Partial<Product>): Promise<void> {
     await harness.navigateByUrl('/produkter/1');
+    // The shop's footer asks for the categories on every page.
+    httpTesting.expectOne((req) => req.url.endsWith('/api/categories')).flush([]);
     httpTesting
       .expectOne((req) => req.url.endsWith('/api/products/1'))
       .flush({ ...vase, ...changes });

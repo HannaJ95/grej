@@ -1,25 +1,29 @@
 import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { ShopLayout } from './shop-layout';
 
 describe('ShopLayout', () => {
-  async function show(): Promise<HTMLElement> {
+  async function show(categories: object[] = []): Promise<HTMLElement> {
     // The cart is saved in localStorage, which other spec files can leave things in. An empty
     // cart every time, so the test does not depend on which files ran before.
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [
-        provideRouter([]),
-        // The cart's checkout service needs HttpClient, even though nothing is sent here.
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
     });
     const fixture = TestBed.createComponent(ShopLayout);
+    // Sends the footer's request; whenStable() would wait for an answer that is never sent.
+    TestBed.tick();
+    TestBed.inject(HttpTestingController)
+      .expectOne((req) => req.url.endsWith('/api/categories'))
+      .flush(categories);
     await fixture.whenStable();
     return fixture.nativeElement;
+  }
+
+  function category(id: number, name: string, productCount: number) {
+    return { id, name, productCount, subcategories: [] };
   }
 
   it('links to the start page and the products', async () => {
@@ -37,6 +41,31 @@ describe('ShopLayout', () => {
       ['Utforska shoppen', '/produkter'],
       ['Shop', '/produkter'],
       ['Alla produkter', '/produkter'],
+    ]);
+  });
+
+  it('shows the five biggest categories in the footer, in name order', async () => {
+    const element = await show([
+      category(1, 'Glas', 2),
+      category(2, 'Keramik', 9),
+      category(3, 'Konst', 8),
+      category(4, 'Papper', 1),
+      category(5, 'Smycken', 8),
+      category(6, 'Textil', 8),
+      category(7, 'Trä', 7),
+    ]);
+
+    const links = [...element.querySelectorAll('.footer-links a')].map((a) => [
+      a.textContent!.trim(),
+      a.getAttribute('href'),
+    ]);
+    expect(links).toEqual([
+      ['Alla produkter', '/produkter'],
+      ['Keramik', '/produkter?kategori=2'],
+      ['Konst', '/produkter?kategori=3'],
+      ['Smycken', '/produkter?kategori=5'],
+      ['Textil', '/produkter?kategori=6'],
+      ['Trä', '/produkter?kategori=7'],
     ]);
   });
 

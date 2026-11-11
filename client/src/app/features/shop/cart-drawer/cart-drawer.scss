@@ -1,6 +1,6 @@
+// As tall as the phone menu's button beside it.
 .cart-button {
   padding: var(--space-8) var(--space-14);
-  font-size: var(--font-size-label-xs);
 
   @media (width >= 48rem) {
     padding: var(--space-10) var(--space-16);

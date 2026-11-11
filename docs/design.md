@@ -73,7 +73,9 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - The header's height is `--shop-sticky-top` in `_base.scss`. `scroll-padding-top` uses it, so a focused element is never hidden under the header, and the product list's toolbar sticks below it.
   - Its bands reach the screen's edges. The content inside them uses `.page-width`: centered, at most `--layout-viewport-width` (1440 px), with `--layout-margin` on the sides (20 px on a phone, 32 px on a tablet, 48 px on a computer).
   - On a phone the menu links are in `MobileMenu`, a `<dialog>` like the cart.
+  - The footer's "Shop" lists "Alla produkter" and the five categories with the most products, in name order, each linking to the product list with that category chosen.
   - The footer's big "GREJ." is at most 42 % of the screen width, so it fits between 1024 and 1190 px.
+  - On screens wider than 1440 px the bands (header, start page, moving band, footer) still reach the edges while the content stays centered, so the page keeps one pattern instead of a box in the middle.
 - `ProductCard` is used by both the start page and the product list. It has an image, title and price, a "Slutsåld" or "Få kvar" (1–2 left) badge, and an add button.
   - On a computer the add button is a bar over the image, shown on hover or keyboard focus. On a tablet and a phone, where there is no hover, it is a "+" square.
   - The sold-out layer over the image is 70 %, so the image can still be seen.
@@ -117,15 +119,16 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - the title, price and `StockStatus`
   - the first 150 characters of the description, with "Mer information", which opens "Beskrivning" and scrolls to it
   - the buy row: `QuantityStepper` and "Lägg i varukorg"
-  - two folds (`<details>`), closed at first, which open and close with the same short height animation as `FilterGroup`. Reduced motion turns it off, and browsers without `::details-content` open them at once.
+  - three folds (`<details>`), closed at first, which open and close with the same short height animation as `FilterGroup`. Reduced motion turns it off, and browsers without `::details-content` open them at once.
     - "Beskrivning": the whole description.
     - "Detaljer": only the rows the product has, i.e. Material, Färg, Mått and Vikt. Mått is e.g. "Ø 8 × H 9 cm", with the height last, and screen readers hear "diameter 8 cm, höjd 9 cm" instead. Vikt is in kg from 1 000 g. The fold is left out when the product has none of them.
+    - "Frakt och retur": Leverans (Paket till ombud), Frakt (this product alone, from its packed size with the cart's copy of the shipping rule) and Ångerrätt (14 dagar), with a sentence that several products are counted as one parcel in the cart.
 - The buy row on a phone:
   - It sticks at the bottom of the screen until the page is scrolled down to its place, where it stays.
   - The row itself sticks, instead of a separate buy bar, so the page never shows two buy buttons.
   - `scroll-padding-bottom` keeps the keyboard focus above it.
   - It does not stick on screens lower than 480 px (e.g. when zoomed in), where it would cover too much.
-- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's main image when it is added) and a `QuantityStepper`, plus the products, the shipping and the total, and an empty state. Its button in the header shows the number of products in a `ButtonCount`, also when the cart is empty.
+- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's main image when it is added) and a `QuantityStepper`, plus the products, the shipping and the total, and an empty state. Its button in the header is a bag icon with the number of products in a `ButtonCount`, also when the cart is empty, and its `aria-label` says "Varukorg, 2 grejer". On a phone it is as tall as the menu button beside it.
   - The shipping is a copy of the API's rule (`core/shipping.ts`), only for showing. A row saved before shipping was built has no parcel, and then the cart shows the sum and "Frakten läggs till i kassan."
 - When something is added, `AddedToCart` shows a small popup under the cart button.
   - It closes itself after 5 seconds, which pause on hover or focus. It also closes with the cross or with Escape.

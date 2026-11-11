@@ -12,6 +12,7 @@ import {
 import { CartService } from '../../../core/cart.service';
 import { Product, ProductService } from '../../../core/product.service';
 import { sizeText, weightText } from '../../../core/product-size';
+import { shippingCost } from '../../../core/shipping';
 import { Breadcrumb } from '../../../shared/breadcrumb/breadcrumb';
 import { Button } from '../../../shared/button/button';
 import { Icon } from '../../../shared/icons/icon';
@@ -48,6 +49,12 @@ export class ProductPage {
   );
   protected readonly weight = computed(() =>
     this.product.hasValue() ? weightText(this.product.value().size.weightGrams) : null,
+  );
+  // For this product alone; the cart counts the whole parcel.
+  protected readonly shipping = computed(() =>
+    this.product.hasValue()
+      ? shippingCost([{ parcel: this.product.value().parcel, quantity: 1 }])
+      : null,
   );
 
   // Back to 1 for each product, since the router reuses this page.

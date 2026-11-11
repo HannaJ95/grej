@@ -104,6 +104,7 @@ In priority order. Responsive design and accessibility are checked on every page
 - [x] Link from the order page to the payment in Stripe, and the order number on the payment in Stripe (added 10 Nov)
 - [x] Search orders in the CMS by order number, customer and product, with the number of hits (added 10 Nov)
 - [x] Sort the product list by newest or price, from the toolbar (added 10 Nov)
+- [x] Polish: categories in the footer, a bag icon on the cart button, and "Frakt och retur" on the product page (added 11 Nov)
 
 Dropped on 8 Nov, when the deadline moved:
 

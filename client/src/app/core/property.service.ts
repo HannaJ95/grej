@@ -7,7 +7,7 @@ import { PropertyKind, ShopProperty } from './product-property';
 // AdminPropertyService.
 @Service()
 export class PropertyService {
-  // Sorted by name. Must be called in a field, like CategoryService.getCategories.
+  // Sorted by name. Must be called in a component's field, where httpResource can be created.
   getProperties(kind: PropertyKind) {
     return httpResource<ShopProperty[]>(() => `${environment.apiUrl}/api/${kind}`);
   }
