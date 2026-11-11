@@ -55,14 +55,12 @@ dialog[open] {
   background: var(--color-bg-surface);
 }
 
-// overflow also keeps the zoomed image from widening the grid, and overscroll-behavior keeps the
-// page behind still.
+// overflow also keeps the zoomed image from widening the grid.
 .stage {
   display: flex;
   position: relative;
   padding: 0 var(--layout-margin);
   overflow: auto;
-  overscroll-behavior: contain;
 }
 
 // margin: auto, unlike justify-content, keeps a zoomed image scrollable to its first edge.

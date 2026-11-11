@@ -48,6 +48,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - Each panel slides in from its side (`--drawer-from`) while the backdrop fades in, and back out when it closes.
   - Firefox and Safari close the panel at once, without the slide.
   - "Reduce motion" turns the slide off.
+- While any modal `<dialog>` is open (the side panels, `ImageViewer`, `ConfirmDialog`), the page behind it does not scroll, also when the dialog's own list reaches its end (`html:has(dialog:modal)` in `_base.scss`).
 - `shared/field-box.scss` is a text field in a framed box, used by the price fields and the search. The box is the label, so a click anywhere in it reaches the field, and the focus ring goes around the whole box.
 - `shared/select.scss` is a `<select>` with the chevron icon instead of the browser's own arrow, used by the CMS forms and the shop's sort.
   - In Chrome it is a customizable select (`appearance: base-select`), still a real `<select>`. Its list looks like the other popovers: a 2 px frame, the surface color and `--shadow-popover`, the hover color on the row under the mouse or the keyboard, and the check icon on the chosen one. It opens below the field when it fits, and the chevron turns while it is open.
