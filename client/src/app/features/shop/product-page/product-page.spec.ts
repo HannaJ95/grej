@@ -19,6 +19,7 @@ const vase: Product = {
   materials: [],
   colors: [],
   parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
+  size: { lengthCm: null, widthCm: null, heightCm: null, diameterCm: null, weightGrams: null },
 };
 
 describe('ProductPage', () => {
@@ -55,10 +56,20 @@ describe('ProductPage', () => {
     expect(texts('dt')).toEqual(['Färg']);
   });
 
-  it('shows no list when the product has no materials or colors', async () => {
-    await openVase({ materials: [], colors: [] });
+  it('shows the size for the eye and for screen readers, and the weight', async () => {
+    await openVase({ size: { ...vase.size, heightCm: 30, diameterCm: 12, weightGrams: 1200 } });
 
-    expect(page().querySelector('dl')).toBeNull();
+    expect(texts('dt')).toEqual(['Mått', 'Vikt']);
+    const size = page().querySelector('dd')!;
+    expect(size.querySelector('[aria-hidden="true"]')!.textContent).toBe('Ø 12 × H 30 cm');
+    expect(size.querySelector('.visually-hidden')!.textContent).toBe('diameter 12 cm, höjd 30 cm');
+    expect(texts('dd')[1]).toBe('1,2 kg');
+  });
+
+  it('leaves out "Detaljer" when the product has nothing to show there', async () => {
+    await openVase({ description: 'En liten vas.', materials: [], colors: [] });
+
+    expect(texts('summary')).toEqual(['Beskrivning']);
   });
 
   it('shortens a long description, and "Mer information" opens the whole one', async () => {
@@ -116,12 +127,11 @@ describe('ProductPage', () => {
     return [...page().querySelectorAll('button')].find((b) => b.textContent!.trim() === text)!;
   }
 
-  // The text of every element that matches, e.g. every <dt>.
   function texts(selector: string): string[] {
     return [...page().querySelectorAll(selector)].map((element) => element.textContent!.trim());
   }
 
-  // Opens /produkter/1 and answers the API's GET with the vase, changed as given.
+  // Answers the GET with the vase, changed as given.
   async function openVase(changes: Partial<Product>): Promise<void> {
     await harness.navigateByUrl('/produkter/1');
     httpTesting

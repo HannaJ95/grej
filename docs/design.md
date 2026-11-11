@@ -115,9 +115,11 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
     - Below 1024 px the thumbnails are a row that scrolls sideways, like `CategoryTabs`. From 1024 px they are a column beside the big image, as tall as it, which scrolls up and down.
     - The scrolling box has room around the thumbnails, so it never cuts the focus ring.
   - the title, price and `StockStatus`
-  - the first 150 characters of the description, with "Mer information", which opens "Beskrivning" (a `<details>`) and scrolls to it
-  - the material and color rows
+  - the first 150 characters of the description, with "Mer information", which opens "Beskrivning" and scrolls to it
   - the buy row: `QuantityStepper` and "Lägg i varukorg"
+  - two folds (`<details>`), closed at first, which open and close with the same short height animation as `FilterGroup`. Reduced motion turns it off, and browsers without `::details-content` open them at once.
+    - "Beskrivning": the whole description.
+    - "Detaljer": only the rows the product has, i.e. Material, Färg, Mått and Vikt. Mått is e.g. "Ø 8 × H 9 cm", with the height last, and screen readers hear "diameter 8 cm, höjd 9 cm" instead. Vikt is in kg from 1 000 g. The fold is left out when the product has none of them.
 - The buy row on a phone:
   - It sticks at the bottom of the screen until the page is scrolled down to its place, where it stays.
   - The row itself sticks, instead of a separate buy bar, so the page never shows two buy buttons.

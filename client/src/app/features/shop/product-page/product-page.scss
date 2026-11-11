@@ -60,25 +60,6 @@ h1 {
   cursor: pointer;
 }
 
-.properties {
-  margin: 0;
-}
-
-.property {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-16);
-  padding-block: var(--space-12);
-  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
-
-  dd {
-    margin: 0;
-    color: var(--color-text-secondary);
-    text-align: right;
-  }
-}
-
 // Phone: sticky at the bottom until it reaches its place. The margins undo the padding.
 .buy {
   position: sticky;
@@ -117,8 +98,35 @@ h1 {
   display: none;
 }
 
-.details {
-  border-block: var(--border-width-default) solid var(--color-border-default);
+// One line between the folds instead of two.
+.folds {
+  border-top: var(--border-width-default) solid var(--color-border-default);
+}
+
+// The same height animation as FilterGroup. allow-discrete keeps the content visible while it
+// closes. Browsers without ::details-content open and close at once.
+.fold {
+  display: grid;
+  grid-template-rows: auto 0fr;
+  border-bottom: var(--border-width-default) solid var(--color-border-default);
+  transition: grid-template-rows 0.2s ease;
+
+  &[open] {
+    grid-template-rows: auto 1fr;
+  }
+
+  &::details-content {
+    min-height: 0;
+    overflow: hidden;
+    transition: content-visibility 0.2s allow-discrete;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &,
+    &::details-content {
+      transition: none;
+    }
+  }
 }
 
 summary {
@@ -139,11 +147,11 @@ summary {
 }
 
 .icon-minus,
-.details[open] .icon-plus {
+.fold[open] .icon-plus {
   display: none;
 }
 
-.details[open] .icon-minus {
+.fold[open] .icon-minus {
   display: inline-block;
 }
 
@@ -151,4 +159,32 @@ summary {
 .description {
   padding-bottom: var(--space-24);
   white-space: pre-line;
+}
+
+.properties {
+  margin: 0;
+  padding-bottom: var(--space-12);
+}
+
+.property {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding-block: var(--space-12);
+
+  // Level with the description's first line under its heading.
+  &:first-child {
+    padding-top: 0;
+  }
+
+  & + & {
+    border-top: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--color-text-secondary);
+    text-align: right;
+  }
 }
