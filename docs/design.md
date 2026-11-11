@@ -71,7 +71,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
 The shop has neutral colors. The CMS uses the same tokens, so it gets the same colors and fonts.
 
 - `ShopLayout` (`features/shop/shop-layout/`) has the shop's header (logo, menu, cart) and footer, and the header sticks at the top. The shop's routes are its children in `app.routes.ts`, so the admin pages have no shop header.
-  - The header's height is `--shop-sticky-top` in `_base.scss`. `scroll-padding-top` uses it, so a focused element is never hidden under the header, and the product list's toolbar sticks below it.
+  - The header is the same low height on every screen size: the logo is smaller on a phone, and from a tablet it is as tall as the cart button. That height is `--shop-sticky-top` in `_base.scss`. `scroll-padding-top` uses it, so a focused element is never hidden under the header, and the product list's toolbar sticks below it.
   - Its bands reach the screen's edges. The content inside them uses `.page-width`: centered, at most `--layout-viewport-width` (1440 px), with `--layout-margin` on the sides (20 px on a phone, 32 px on a tablet, 48 px on a computer).
   - On a phone the menu links are in `MobileMenu`, a `<dialog>` like the cart.
   - The footer's "Shop" lists "Alla produkter" and the five categories with the most products, in name order, each linking to the product list with that category chosen.

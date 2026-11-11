@@ -13,7 +13,7 @@
       </a>
     </nav>
     <div class="actions">
-      <!-- #cart is the CartDrawer itself, so the menu's cart button can open it. -->
+      <!-- #cart lets the menu's cart button open the drawer. -->
       <app-cart-drawer #cart />
       <app-mobile-menu class="mobile-menu" (openCart)="cart.open()" />
     </div>

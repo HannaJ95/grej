@@ -26,7 +26,6 @@
   letter-spacing: var(--space-2);
 }
 
-// The links are in the menu on a phone, and in the header from a tablet up.
 .nav {
   display: none;
 
@@ -56,8 +55,9 @@
   gap: var(--space-10);
 }
 
+// flex, not block, so no line box adds space below the button.
 .mobile-menu {
-  display: block;
+  display: flex;
 
   @media (width >= 48rem) {
     display: none;
@@ -111,15 +111,12 @@
   }
 }
 
-// An h2, so the footer has a heading for screen readers.
 .footer-heading {
   margin: 0;
 }
 
-// Each letter is a span, spread out by space-between. 42vw keeps the computer size from
-// overflowing between 1024 and about 1190 px. The text style's letter spacing is turned off,
-// since the browser adds it after every letter, also a lone one in a span, and the row got too
-// wide.
+// 42vw keeps the wordmark inside the window just above 1024 px. No letter spacing, since the
+// browser also adds it after a lone letter in a span, which made the row too wide.
 .footer-logo {
   display: flex;
   justify-content: space-between;

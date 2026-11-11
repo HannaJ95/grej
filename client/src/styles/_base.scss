@@ -25,16 +25,11 @@ body:has(app-admin-layout) {
   padding: 0;
 }
 
-// The height of the shop's sticky header. Focused elements are kept below it, and the product
-// list's toolbar sticks below it.
+// The shop header's height, so focused elements and the product list's toolbar stay below it.
 html:has(app-shop-layout) {
-  --shop-sticky-top: 4.375rem;
+  --shop-sticky-top: 4rem;
 
   scroll-padding-top: var(--shop-sticky-top);
-
-  @media (width >= 48rem) {
-    --shop-sticky-top: 4.875rem;
-  }
 }
 
 // Below 1024 px the product list's toolbar sticks below the header too, so the focus is kept
@@ -51,9 +46,8 @@ html:has(app-product-list) {
   }
 }
 
-// The height of what sticks at the top of an admin page: the app bar below 1024 px, and the
-// page's top bar from 1024 px (measured by AdminPageHeader). The card in
-// admin-page.scss sticks below it. The extra space-8 keeps the focus ring visible.
+// What sticks at the top of an admin page: the app bar below 1024 px, AdminPageHeader from
+// 1024 px. The extra space-8 keeps the focus ring visible.
 html:has(app-admin-layout) {
   --admin-sticky-top: 4rem;
 
@@ -97,7 +91,6 @@ a {
   color: var(--color-text-primary);
 }
 
-// The dark bands change outline-color to --color-border-inverse.
 :focus-visible {
   outline: var(--border-width-default) solid var(--color-border-default);
   outline-offset: var(--space-2);
@@ -152,8 +145,7 @@ img {
   height: auto;
 }
 
-// Only for screen readers, e.g. a message that says what a click changed. The same technique as
-// the stacked table's headings in admin-table.scss.
+// Only for screen readers.
 .visually-hidden {
   position: absolute;
   width: 1px;
