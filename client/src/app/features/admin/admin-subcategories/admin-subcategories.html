@@ -10,11 +10,11 @@
     Underkategorierna i {{ m.name }} visas som filter när kunden väljer {{ m.name }} i shoppen.
   } @else {
     En underkategori hör alltid till en huvudkategori och visas som filter inne i den, till exempel
-    Keramik → Vaser.
+    Keramik › Vaser.
   }
 </p>
 
-<!-- The card first, like on the main category page. -->
+<!-- The card first, so it is on top on a narrow screen and the Tab order matches. -->
 <div class="columns">
   <app-admin-category-card
     class="card form-card"

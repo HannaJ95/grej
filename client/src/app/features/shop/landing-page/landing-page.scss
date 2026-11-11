@@ -164,7 +164,13 @@
 }
 
 // The template has text-link-s; from a tablet up it gets text-link-l's size and line height.
+// The icon follows the text's size, and only the text is underlined.
 .show-all {
+  --icon-size: 1.25em;
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
   color: var(--color-text-primary);
 
   @media (width >= 48rem) {

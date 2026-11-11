@@ -133,7 +133,8 @@
           @if (isBuying()) {
             Skickar dig till betalningen…
           } @else {
-            Till kassan <span aria-hidden="true">→</span>
+            Till kassan
+            <app-icon name="arrow-right" />
           }
         </button>
         @if (buyFailed()) {

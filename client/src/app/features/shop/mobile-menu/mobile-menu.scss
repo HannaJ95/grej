@@ -106,6 +106,14 @@ dialog {
   }
 }
 
+.cart-count {
+  --icon-size: 1.25em;
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
 .legal {
   margin: 0;
   color: var(--color-text-on-inverse-secondary);
