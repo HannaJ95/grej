@@ -2,8 +2,7 @@
   display: block;
 }
 
-// display: flex wins over .page-width's display: block, since Angular's style scoping makes
-// this selector more specific than the global class.
+// Style scoping makes this more specific than .page-width, so display: flex wins.
 .page-title {
   display: flex;
   flex-direction: column;
@@ -42,8 +41,7 @@
   margin: 0;
 }
 
-// The body styles only differ in size, so the template has text-body-m and the media query
-// changes the size.
+// body-m grows to body-l here; the two styles only differ in size.
 .intro {
   margin: 0;
 
@@ -57,9 +55,8 @@
   }
 }
 
-// Below 1024 px the row holds the filter button, so it sticks below the shop's header and has
-// less padding. z-index 2 puts it above the product cards' layers and below the header. Its
-// height is also in _base.scss.
+// Below 1024 px it holds Filter, so it sticks below the header. z-index 2: above the product
+// cards' layers, below the header. Its height is also in _base.scss.
 .toolbar {
   position: sticky;
   top: var(--shop-sticky-top);
@@ -76,28 +73,29 @@
     padding-block: var(--space-16);
   }
 
-  // The count keeps its one line when the chips need room. Below 1024 px it may wrap when the text
-  // is enlarged.
+  // Below 1024 px it grows, so Filter and the sort sit at the right edge. From 1024 px it keeps
+  // its one line beside the chips.
   p {
+    flex: auto;
     margin: 0;
 
     @media (width >= 64rem) {
-      flex-shrink: 0;
+      flex: none;
     }
   }
 }
 
-// display: flex wins over .page-width's display: block, like .page-title. The sort box is taller
-// than a row of chips, so the toolbar doesn't grow when the first choice is made.
+// flex-end keeps Filter and the sort to the right, also on a row of their own and before the count
+// has come.
 .toolbar-row {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: center;
   gap: var(--space-8) var(--space-16);
 }
 
-// Only from 1024 px, where the toolbar doesn't stick and has room. On a phone and a tablet the
-// filter button's number and the panel show the choices.
+// Below 1024 px Filter's number and the panel show the choices.
 .active-filters {
   display: none;
 
@@ -107,30 +105,21 @@
   }
 }
 
-// Filter and the sort. A row of their own below the count on a phone, and to the right from a
-// tablet, also before the count has come. They wrap when the text is enlarged, and min-width: 0
-// lets the sort shrink to the row's width.
+// Below 1024 px Filter and the sort are items of the row, so only the sort wraps when there is no
+// room.
 .actions {
-  display: flex;
-  flex-wrap: wrap;
-  flex-basis: 100%;
-  min-width: 0;
-  align-items: center;
-  gap: var(--space-8) var(--space-16);
+  display: contents;
 
-  @media (width >= 48rem) {
-    flex-basis: auto;
+  @media (width >= 64rem) {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--space-16);
     margin-left: auto;
   }
 }
 
-// To the right on a phone too, also when there is no Filter.
-.sort {
-  margin-left: auto;
-}
-
-// minmax(0, 1fr) lets the products' column shrink below its content, so a long word cannot
-// widen it.
+// minmax(0, 1fr), so a long word can't widen the products' column.
 .shop-body {
   padding-block: var(--space-28) var(--space-64);
 
@@ -156,8 +145,7 @@
   }
 }
 
-// Always the second column, also when the filter column is missing because the categories
-// could not be fetched.
+// Also when the filter column is missing because the categories could not be fetched.
 .results {
   @media (width >= 64rem) {
     grid-column: 2;

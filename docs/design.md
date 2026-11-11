@@ -105,7 +105,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
     - A thumb is applied when it is let go, and a field on Enter or when the customer leaves it.
     - A thumb stops at the other one. Typing moves the thumb at once but never changes the text being typed.
   - From 1024 px, `ProductFilters` is a 288 px column to the left.
-  - Below 1024 px the toolbar has "Filter" with the number of choices in a `ButtonCount`, and sticks below the header (not in a window lower than 30rem). On a phone the count has a row of its own, with Filter and the sort below it; from 768 px they are on one row.
+  - Below 1024 px the toolbar has "Filter" with the number of choices in a `ButtonCount`, and sticks below the header (not in a window lower than 30rem). The count, Filter and the sort share one row, Filter and the sort to the right. When there is no room, only the sort wraps to a row of its own, still to the right.
     - The button opens `FilterDrawer`, a `<dialog>` from the left with the same `ProductFilters`. It covers the whole screen on a phone and is a 26rem panel on a tablet.
     - Every choice updates the list behind the panel at once. The heading and the close button stick while the filter scrolls, and "Visa 24 grejer" at the bottom closes the panel.
   - When no product matches the filter, `NoResults` shows a framed box:
