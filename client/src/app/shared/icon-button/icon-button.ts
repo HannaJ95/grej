@@ -1,13 +1,14 @@
-import { Component, input } from '@angular/core';
+import { booleanAttribute, Component, input } from '@angular/core';
 import { Icon, IconName } from '../icons/icon';
 
-// A square button with only an icon. It has no text, so it always needs an aria-label:
-// <button appIconButton icon="close" aria-label="Stäng">. tone="light" is for dark backgrounds.
+// Always needs an aria-label, since it has no text. tone="light" is for dark backgrounds, and
+// filled for a button on an image or the dimmed page, where anything can be behind it.
 @Component({
   selector: 'button[appIconButton]',
   imports: [Icon],
   host: {
     '[class.light]': "tone() === 'light'",
+    '[class.filled]': 'filled()',
   },
   template: '<app-icon [name]="icon()" />',
   styles: `
@@ -26,6 +27,10 @@ import { Icon, IconName } from '../icons/icon';
       // The icon is painted in the text color (see Icon).
       color: var(--color-icon-default);
       cursor: pointer;
+    }
+
+    :host(.filled) {
+      background: var(--color-bg-surface);
     }
 
     :host(:hover:not(:disabled)) {
@@ -50,4 +55,5 @@ import { Icon, IconName } from '../icons/icon';
 export class IconButton {
   readonly icon = input.required<IconName>();
   readonly tone = input<'dark' | 'light'>('dark');
+  readonly filled = input(false, { transform: booleanAttribute });
 }

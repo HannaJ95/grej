@@ -2,8 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-10);
-  // As an item in the product page's grid it would otherwise be at least as wide as the whole
-  // row of thumbnails, and make the page scroll sideways instead of the row.
+  // Lets the thumbnail row scroll instead of widening the product page's grid.
   min-width: 0;
 
   @media (width >= 64rem) {
@@ -13,14 +12,15 @@
   }
 }
 
-// Fills the frame like the product cards, so an image of another shape is cropped instead of
-// getting bars. The background only shows while it loads, or as the empty box.
+// One grid cell for the image and the button, so the button needs no position of its own and its
+// ::after can cover the whole frame.
 .main {
-  display: block;
-  width: 100%;
-  aspect-ratio: var(--ratio-product-image);
-  object-fit: cover;
-  background: var(--color-bg-image);
+  display: grid;
+  position: relative;
+
+  > * {
+    grid-area: 1 / 1;
+  }
 
   @media (width >= 64rem) {
     grid-column: 2;
@@ -28,13 +28,33 @@
   }
 }
 
-// Up to 10 thumbnails: one row that scrolls sideways below 1024 px, like CategoryTabs, and from
-// 1024 px a column beside the big image that scrolls up and down.
+// Cropped like the product cards instead of getting bars. The background shows while it loads.
+.image {
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--ratio-product-image);
+  object-fit: cover;
+  background: var(--color-bg-image);
+}
+
+.zoom {
+  align-self: end;
+  justify-self: end;
+  margin: var(--space-12);
+  cursor: zoom-in;
+
+  // The whole image opens the viewer, and it keeps its alt text.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+}
+
 .thumbnails {
   display: flex;
   gap: var(--space-10);
-  // A scrolling box clips the focus ring, so the thumbnails get room around them, and the
-  // negative margin cancels that room.
+  // Room for the focus ring, which a scrolling box would clip.
   margin: calc(-1 * var(--space-4));
   padding: var(--space-4);
   list-style: none;
@@ -49,13 +69,11 @@
     grid-column: 1;
     grid-row: 1;
     gap: var(--space-12);
-    // The grid row ignores the list's content, so the row is as tall as the big image and the
-    // list is stretched to it and scrolls.
+    // The row follows the big image's height instead of the list's, so the list scrolls.
     contain: size;
     overflow: hidden auto;
   }
 
-  // The thumbnails keep their size instead of shrinking to fit the row.
   > li {
     flex-shrink: 0;
   }
@@ -85,7 +103,7 @@
     width: 5.25rem;
   }
 
-  // The column's width, so a scrollbar that takes room makes them narrower instead of cutting them.
+  // A scrollbar makes them narrower instead of cutting them.
   @media (width >= 64rem) {
     width: 100%;
   }

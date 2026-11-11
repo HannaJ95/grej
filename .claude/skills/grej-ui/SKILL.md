@@ -28,7 +28,7 @@ I am still learning frontend, so act as an expert frontend developer and designe
 - **Shared components** in `client/src/app/shared/`:
   - `Button`, an attribute on a real `<button>` or `<a>`: `variant` primary, secondary, danger; `size` normal (forms, CMS) or large (the shop's big buttons)
   - `LinkButton` (`appLinkButton`): an action on the same page that looks like a link, e.g. "Redigera"; `tone` default or danger
-  - `IconButton`: a square button with only an icon; `tone` dark or light; always an `aria-label` in Swedish
+  - `IconButton`: a square button with only an icon; `tone` dark or light; `filled` on an image or the dimmed page; always an `aria-label` in Swedish
   - `Icon`: the icons in `IconName` (`shared/icons/icon.ts`). A new icon is a 24×24 SVG with a 2 px line in `client/public/icons/` plus its name in `IconName`
   - `Badge`, `Breadcrumb`, `Pagination`, `QuantityStepper`, `SearchField`, `StockStatus`
   - The feature components (`ProductCard`, `AdminPageHeader`, the CMS cards …) are in `docs/design.md`.

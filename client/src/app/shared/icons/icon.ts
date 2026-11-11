@@ -13,6 +13,8 @@ export type IconName =
   | 'arrow-down'
   | 'arrow-up-right'
   | 'search'
+  | 'zoom-in'
+  | 'zoom-out'
   | 'info'
   | 'bag';
 

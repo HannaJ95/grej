@@ -1,0 +1,83 @@
+// Takes no room or gap in the gallery's layout.
+:host {
+  display: contents;
+}
+
+// No color of its own, so the dimmed page shows around the image.
+dialog {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+}
+
+dialog::backdrop {
+  background: var(--color-overlay-scrim);
+}
+
+// minmax(0, …) shrinks the image to fit instead of pushing the buttons off the screen, and keeps
+// the controls from widening the dialog past it.
+dialog[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.top,
+.bottom {
+  display: flex;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--layout-margin);
+}
+
+.top {
+  justify-content: flex-end;
+}
+
+// Wraps with large text on the narrowest phones instead of scrolling sideways.
+.bottom {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+// Readable on whatever the dimmed page shows, like the filled buttons.
+.counter {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0 var(--space-12);
+  border: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-bg-surface);
+}
+
+// overflow also keeps the zoomed image from widening the grid, and overscroll-behavior keeps the
+// page behind still.
+.stage {
+  display: flex;
+  position: relative;
+  padding: 0 var(--layout-margin);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+// margin: auto, unlike justify-content, keeps a zoomed image scrollable to its first edge.
+.stage img {
+  display: block;
+  max-height: 100%;
+  margin: auto;
+  background: var(--color-bg-image);
+  cursor: zoom-in;
+
+  // flex-shrink: 0, or the flex row shrinks it towards the file's own width.
+  &.zoomed {
+    flex-shrink: 0;
+    max-width: none;
+    max-height: none;
+    cursor: zoom-out;
+  }
+}

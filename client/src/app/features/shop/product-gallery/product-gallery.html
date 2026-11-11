@@ -1,14 +1,27 @@
 @if (images()[selected()]; as image) {
-  <img class="main" [src]="image.url" [alt]="image.altText" />
+  <div class="main">
+    <img class="image" [src]="image.url" [alt]="image.altText" />
+    <button
+      appIconButton
+      filled
+      icon="zoom-in"
+      class="zoom"
+      type="button"
+      aria-label="Förstora bilden"
+      aria-haspopup="dialog"
+      (click)="viewer.open()"
+    ></button>
+  </div>
+  <app-image-viewer #viewer [images]="images()" [(index)]="selected" />
 } @else {
-  <span class="main"></span>
+  <span class="main image"></span>
 }
 
 @if (images().length > 0) {
   <ul class="thumbnails">
     @for (image of images(); track image.id) {
       <li>
-        <!-- The button says which image it shows, so the small image has no alt text. -->
+        <!-- The button has the label, so the small image is decoration. -->
         <button
           type="button"
           class="thumbnail"
