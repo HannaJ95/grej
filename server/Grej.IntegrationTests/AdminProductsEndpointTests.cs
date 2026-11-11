@@ -19,8 +19,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Grej.IntegrationTests;
 
-// Tests the CMS's product endpoints through the real API, the real repositories and a
-// real admin login, with EF Core's in-memory database instead of PostgreSQL (like AdminLoginTests).
+// The real API, repositories and admin login, with EF Core's in-memory database.
 public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private const string Email = "admin@example.com";
@@ -394,8 +393,7 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         return (await users.FindByEmailAsync(Email))!.Id;
     }
 
-    // Each helper uses its own scope = its own DbContext, like a separate request,
-    // so the tests read what is really saved, not what one DbContext remembers.
+    // A scope of its own, like a separate request, so the tests read what is really saved.
     private async Task<int> AddCategoryAsync(string name = "Keramik")
     {
         using var scope = app.Services.CreateScope();

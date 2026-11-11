@@ -2,8 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Grej.Application.Catalog;
 
-// What the CMS form sends to create a product. The form checks the same rules, but the
-// API never trusts the browser: invalid data gives 400 and nothing is saved (constraints.md).
+// The CMS form checks the same rules, but the API never trusts the browser (constraints.md).
 public record ProductRequest
 {
     // [Required] also stops a title with only spaces.
@@ -14,7 +13,7 @@ public record ProductRequest
     [MaxLength(4000)]
     public string? Description { get; init; }
 
-    // Greater than 0 (constraints.md). Stripe cannot take more than 999 999,99 kr in one payment.
+    // Stripe takes at most 999 999,99 kr in one payment.
     [Range(0.01, 999_999.99)]
     public decimal Price { get; init; }
 
@@ -24,18 +23,15 @@ public record ProductRequest
     // False = a draft or a hidden product (ambiguity.md).
     public bool IsActive { get; init; }
 
-    // Exactly one category (constraints.md). A missing id is 0, which gives 400 here.
-    // An id that no category has gives 400 from AdminProductsController.
+    // A missing id is 0. An unknown id gives 400 from AdminProductsController.
     [Range(1, int.MaxValue)]
     public int CategoryId { get; init; }
 
-    // Several of each, or none (ambiguity.md). Left out of the JSON = none. An id that does
-    // not exist gives 400 from AdminProductsController, like CategoryId.
+    // Left out of the JSON = none. An unknown id gives 400, like CategoryId.
     public IReadOnlyList<int> MaterialIds { get; init; } = [];
     public IReadOnlyList<int> ColorIds { get; init; } = [];
 
-    // Every product needs one, or the checkout cannot calculate the shipping. [ApiController]
-    // also checks the rules inside it.
+    // The checkout calculates the shipping from it.
     [Required]
     public required ParcelRequest Parcel { get; init; }
 
@@ -43,11 +39,9 @@ public record ProductRequest
     public ProductSizeRequest Size { get; init; } = new();
 }
 
-// What the CMS form sends to save changes: the same fields and rules, plus the
-// stock the form showed when it was opened.
+// Saving changes also sends the stock the form showed when it was opened.
 public record UpdateProductRequest : ProductRequest
 {
-    // If a customer has bought the product since then, the stock in the database is
-    // different, and saving would undo the sale. The API then answers 409 instead.
+    // A sale since then would be undone, so the API answers 409 instead.
     public int OriginalStock { get; init; }
 }

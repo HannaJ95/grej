@@ -2,7 +2,7 @@ using Grej.Domain.Catalog;
 
 namespace Grej.Application.Catalog;
 
-// The item's own size and weight, which the product page shows. Null = not given.
+// Null = not given.
 public record ProductSizeDto(
     decimal? LengthCm,
     decimal? WidthCm,

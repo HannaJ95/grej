@@ -4,8 +4,7 @@ using Grej.Domain.Catalog;
 
 namespace Grej.Application.Catalog;
 
-// Use cases for products in the CMS. Unlike ProductService, which is for the shop,
-// the admin sees every product, hidden ones too. Only admin endpoints use it.
+// The CMS's product use cases. Unlike ProductService, they include hidden products.
 public class AdminProductService(
     IProductRepository products,
     ICategoryRepository categories,
@@ -14,7 +13,6 @@ public class AdminProductService(
     OrderService orders,
     IImageStorage images)
 {
-    // One page of all products, newest first.
     public async Task<PagedResult<AdminProductDto>> GetProductsAsync(ProductListQuery query, CancellationToken cancellationToken)
     {
         var page = await products.GetPageAsync(query.Page, query.PageSize, cancellationToken);
@@ -26,18 +24,15 @@ public class AdminProductService(
             page.TotalCount);
     }
 
-    // Null if no product has this id. Hidden products are included.
     public async Task<AdminProductDto?> GetProductAsync(int id, CancellationToken cancellationToken)
     {
         var product = await products.GetByIdAsync(id, cancellationToken);
         return product is null ? null : ToDto(product);
     }
 
-    // sellerId is the logged-in admin, who becomes the product's owner. Null if the category,
-    // a material or a color in the request does not exist; nothing is saved then.
+    // Null, and nothing saved, if the category, a material or a color does not exist.
     public async Task<AdminProductDto?> CreateAsync(ProductRequest request, string sellerId, CancellationToken cancellationToken)
     {
-        // Title is required when a Product is created. TryApplyAsync then sets every other field.
         // The owner is only set here, so editing a product never changes it.
         var product = new Product { Title = request.Title, SellerId = sellerId };
         if (!await TryApplyAsync(request, product, cancellationToken))
@@ -48,7 +43,6 @@ public class AdminProductService(
         products.Add(product);
         await products.SaveChangesAsync(cancellationToken);
 
-        // The database has given the product its id now.
         return ToDto(product);
     }
 
@@ -129,8 +123,7 @@ public class AdminProductService(
         // image at the same address. The extension comes from the file's content, not its name.
         var path = $"products/{product.Id}/{Guid.NewGuid():N}{file.Extension}";
 
-        // Upload first, save after. If the save fails, the new file is only unused, but the
-        // database never points to a file that does not exist (like the checkout in architecture.md).
+        // Upload first, save after: a failed save leaves an unused file, never a row without one.
         var url = await images.UploadAsync(path, file, cancellationToken);
         product.AddImage(url, path, altText.Trim());
         await products.SaveChangesAsync(cancellationToken);

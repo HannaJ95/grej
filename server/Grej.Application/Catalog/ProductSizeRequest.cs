@@ -2,8 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Grej.Application.Catalog;
 
-// The item's own size and weight in the CMS form, shown in the shop. Every value is optional:
-// the admin fills in what fits, e.g. diameter and height for a cup. [Range] lets null through.
+// Every value is optional, e.g. only diameter and height for a cup. [Range] lets null through.
 public record ProductSizeRequest : IValidatableObject
 {
     [Range(0.1, 999.9)]

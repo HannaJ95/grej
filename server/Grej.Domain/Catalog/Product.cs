@@ -5,7 +5,7 @@ public class Product
     // constraints.md
     public const int MaxImages = 10;
 
-    // EF Core fills these backing fields by their names, like Order._items.
+    // EF Core fills these by their names.
     private readonly List<ProductImage> _images = [];
     private readonly List<Material> _materials = [];
     private readonly List<Color> _colors = [];
@@ -24,7 +24,7 @@ public class Product
     public int WidthCm { get; set; }
     public int HeightCm { get; set; }
 
-    // The item itself, shown in the shop. Null = not given, e.g. no width on a round cup.
+    // The item itself, shown in the shop. Null = not given.
     public decimal? ItemLengthCm { get; set; }
     public decimal? ItemWidthCm { get; set; }
     public decimal? ItemHeightCm { get; set; }
@@ -46,13 +46,11 @@ public class Product
 
     public bool HasRoomForImage => _images.Count < MaxImages;
 
-    // In the join tables ProductMaterials and ProductColors (ProductConfiguration).
     public IReadOnlyList<Material> Materials => _materials;
     public IReadOnlyList<Color> Colors => _colors;
 
     public bool IsSoldOut => Stock <= 0;
 
-    // The last item was sold twice (constraints.md).
     public bool IsOversold => Stock < 0;
 
     public void DecreaseStock(int quantity)

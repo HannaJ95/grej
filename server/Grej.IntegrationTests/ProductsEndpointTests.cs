@@ -9,8 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Grej.IntegrationTests;
 
-// Tests GET /api/products and GET /api/products/{id} through the real API, but with
-// a fake repository instead of the database, so the tests need no database.
+// The real API with a fake repository, so the tests need no database.
 public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
     : IClassFixture<WebApplicationFactory<Program>>
 {
