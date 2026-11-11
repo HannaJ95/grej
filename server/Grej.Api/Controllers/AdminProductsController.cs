@@ -8,16 +8,15 @@ using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Grej.Api.Controllers;
 
-// Products in the CMS. [Authorize] on the class protects every endpoint here:
-// 401 without a valid token, 403 without the Admin role (constraints.md).
+// Products in the CMS: 401 without a valid token, 403 without the Admin role (constraints.md).
 [ApiController]
 [Route("api/admin/products")]
 [Authorize(Roles = Roles.Admin)]
 public class AdminProductsController(AdminProductService products) : ControllerBase
 {
-    // E.g. GET /api/admin/products?page=2. Hidden products are included.
+    // E.g. GET /api/admin/products?categoryId=3&isActive=false&search=vas&sort=priceAscending.
     [HttpGet]
-    public async Task<IActionResult> GetPage([FromQuery] ProductListQuery query, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetPage([FromQuery] AdminProductListQuery query, CancellationToken cancellationToken)
     {
         var page = await products.GetProductsAsync(query, cancellationToken);
 
@@ -36,13 +35,10 @@ public class AdminProductsController(AdminProductService products) : ControllerB
         return Ok(product);
     }
 
-    // [ApiController] answers 400 by itself if the request breaks a rule in
-    // ProductRequest, so the methods below only run with valid data.
     [HttpPost]
     public async Task<IActionResult> Create(ProductRequest request, CancellationToken cancellationToken)
     {
-        // The logged-in admin's user id, from the token's "sub" claim (IdentityLoginService).
-        // [Authorize] has already checked the token, so the claim is always there.
+        // [Authorize] has checked the token, so its "sub" claim is always there.
         var sellerId = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
 
         var product = await products.CreateAsync(request, sellerId, cancellationToken);
@@ -51,7 +47,6 @@ public class AdminProductsController(AdminProductService products) : ControllerB
             return ChoiceNotFound();
         }
 
-        // 201 Created, with the new product's URL in the Location header.
         return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
     }
 
@@ -60,8 +55,7 @@ public class AdminProductsController(AdminProductService products) : ControllerB
     {
         var result = await products.UpdateAsync(id, request, cancellationToken);
 
-        // Each result becomes an HTTP status. 409: the request was fine, but the
-        // stock has changed since the form was opened.
+        // 409: the stock has changed since the form was opened.
         return result switch
         {
             UpdateProductResult.NotFound => NotFound(),
@@ -85,8 +79,7 @@ public class AdminProductsController(AdminProductService products) : ControllerB
         };
     }
 
-    // E.g. POST /api/admin/products/7/images. Sent as a form with a file (multipart/form-data),
-    // since JSON cannot carry a file.
+    // Multipart, since JSON cannot carry a file.
     [HttpPost("{id}/images")]
     // Larger requests are refused (413) before they are read. A bit more than ImageFile.MaxBytes,
     // since the request also holds the alt text and the form's separators.
@@ -97,8 +90,6 @@ public class AdminProductsController(AdminProductService products) : ControllerB
         [FromForm, MaxLength(200)] string altText,
         CancellationToken cancellationToken)
     {
-        // [ApiController] has already answered 400 if the file or the alt text is missing,
-        // since neither is nullable.
         using var memory = new MemoryStream();
         await file.CopyToAsync(memory, cancellationToken);
         var image = ImageFile.FromBytes(memory.ToArray());
@@ -141,9 +132,8 @@ public class AdminProductsController(AdminProductService products) : ControllerB
         return ValidationProblem(ModelState);
     }
 
-    // The same kind of 400 answer as when a rule in ProductRequest is broken, so the
-    // frontend handles both the same way. The key "" means the error is about the request
-    // as a whole, not one field.
+    // The same 400 as a broken rule in ProductRequest, so the frontend handles both alike. The
+    // key "" means the whole request, not one field.
     private IActionResult ChoiceNotFound()
     {
         ModelState.AddModelError(string.Empty, "The category, a material or a color does not exist.");

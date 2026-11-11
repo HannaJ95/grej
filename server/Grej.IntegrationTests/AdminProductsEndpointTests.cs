@@ -74,6 +74,54 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
     }
 
     [Fact]
+    public async Task GetPage_MainCategory_IncludesItsSubcategoriesProducts()
+    {
+        var keramik = await AddCategoryAsync("Keramik");
+        var vaser = await AddCategoryAsync("Vaser", parentId: keramik);
+        var textil = await AddCategoryAsync("Textil");
+        var client = await CreateAdminClientAsync();
+        await CreateProductAsync(client, "Skål", keramik);
+        await CreateProductAsync(client, "Vas", vaser);
+        await CreateProductAsync(client, "Kudde", textil);
+
+        Assert.Equal(["Vas", "Skål"], await GetTitlesAsync(client, $"categoryId={keramik}"));
+        Assert.Equal(["Vas"], await GetTitlesAsync(client, $"categoryId={vaser}"));
+    }
+
+    [Fact]
+    public async Task GetPage_FiltersOnMaterialColorVisibilityAndSearch()
+    {
+        var categoryId = await AddCategoryAsync();
+        var clay = await AddMaterialAsync("Lera");
+        var glass = await AddMaterialAsync("Glas");
+        var blue = await AddColorAsync("Blå");
+        var client = await CreateAdminClientAsync();
+        await CreateProductAsync(client, "Blå vas", categoryId, materialIds: [clay], colorIds: [blue]);
+        await CreateProductAsync(client, "Utkast vas", categoryId, isActive: false, materialIds: [clay]);
+        await CreateProductAsync(client, "Blå skål", categoryId, materialIds: [glass], colorIds: [blue]);
+
+        Assert.Equal(["Utkast vas", "Blå vas"], await GetTitlesAsync(client, $"materialId={clay}"));
+        Assert.Equal(["Blå skål", "Blå vas"], await GetTitlesAsync(client, $"colorId={blue}"));
+        Assert.Equal(["Utkast vas"], await GetTitlesAsync(client, "isActive=false"));
+        Assert.Equal(["Blå skål", "Blå vas"], await GetTitlesAsync(client, "isActive=true"));
+        // Every word, in any case.
+        Assert.Equal(["Blå vas"], await GetTitlesAsync(client, "search=VAS%20bl"));
+    }
+
+    [Fact]
+    public async Task GetPage_SortsByPrice()
+    {
+        var categoryId = await AddCategoryAsync();
+        var client = await CreateAdminClientAsync();
+        await CreateProductAsync(client, "Fat", categoryId, price: 500m);
+        await CreateProductAsync(client, "Skål", categoryId, price: 200m);
+        await CreateProductAsync(client, "Vas", categoryId, price: 300m);
+
+        Assert.Equal(["Skål", "Vas", "Fat"], await GetTitlesAsync(client, "sort=priceAscending"));
+        Assert.Equal(["Fat", "Vas", "Skål"], await GetTitlesAsync(client, "sort=priceDescending"));
+    }
+
+    [Fact]
     public async Task Create_ValidProduct_SavesItAndReturnsCreated()
     {
         var categoryId = await AddCategoryAsync();
@@ -393,12 +441,34 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         return (await users.FindByEmailAsync(Email))!.Id;
     }
 
+    // Through the API, the way the form does it.
+    private static async Task<int> CreateProductAsync(
+        HttpClient client,
+        string title,
+        int categoryId,
+        decimal price = 300m,
+        bool isActive = true,
+        int[]? materialIds = null,
+        int[]? colorIds = null)
+    {
+        var response = await client.PostAsJsonAsync("/api/admin/products",
+            new { title, price, stock = 1, isActive, categoryId, materialIds = materialIds ?? [], colorIds = colorIds ?? [], parcel = Parcel });
+        return (await response.Content.ReadFromJsonAsync<AdminProductDto>())!.Id;
+    }
+
+    // In the list's order.
+    private static async Task<IEnumerable<string>> GetTitlesAsync(HttpClient client, string query)
+    {
+        var page = await client.GetFromJsonAsync<PagedResult<AdminProductDto>>($"/api/admin/products?{query}");
+        return page!.Items.Select(p => p.Title);
+    }
+
     // A scope of its own, like a separate request, so the tests read what is really saved.
-    private async Task<int> AddCategoryAsync(string name = "Keramik")
+    private async Task<int> AddCategoryAsync(string name = "Keramik", int? parentId = null)
     {
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<GrejDbContext>();
-        var category = new Category { Name = name };
+        var category = new Category { Name = name, ParentId = parentId };
         db.Categories.Add(category);
         await db.SaveChangesAsync();
         return category.Id;

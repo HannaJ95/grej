@@ -11,15 +11,16 @@ public interface IProductRepository
     // Hidden products are included. Ids that do not exist are skipped, and the order is not fixed.
     Task<IReadOnlyList<Product>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken);
 
-    // Only active products that match the filter, in the sort's order.
+    // Only active products that match the filter, whatever its IsActive, in the sort's order.
     Task<PagedResult<Product>> GetActivePageAsync(
         int page, int pageSize, ProductFilter filter, ProductSort sort, CancellationToken cancellationToken);
 
     // The highest price among the active products that match the filter. Null if none match.
     Task<decimal?> GetHighestActivePriceAsync(ProductFilter filter, CancellationToken cancellationToken);
 
-    // All products, hidden ones too, newest first. For the CMS.
-    Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken);
+    // For the CMS: hidden products too, unless the filter's IsActive says otherwise.
+    Task<PagedResult<Product>> GetPageAsync(
+        int page, int pageSize, ProductFilter filter, ProductSort sort, CancellationToken cancellationToken);
 
     // True if any product, hidden or not, is in the category.
     Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken cancellationToken);

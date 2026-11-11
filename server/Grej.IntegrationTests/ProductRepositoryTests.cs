@@ -167,10 +167,37 @@ public class ProductRepositoryTests
         db.Products.AddRange(NewProduct(1, "Skål"), NewProduct(2, "Utkast", isActive: false), NewProduct(3, "Vas"));
         await db.SaveChangesAsync();
 
-        var page = await new ProductRepository(db).GetPageAsync(1, 12, CancellationToken.None);
+        var page = await new ProductRepository(db).GetPageAsync(
+            1, 12, new ProductFilter(), ProductSort.Newest, CancellationToken.None);
 
         Assert.Equal(["Vas", "Utkast", "Skål"], page.Items.Select(p => p.Title));
         Assert.Equal(3, page.TotalCount);
+    }
+
+    [Theory]
+    [InlineData(true, new[] { "Vas", "Skål" })]
+    [InlineData(false, new[] { "Utkast" })]
+    public async Task GetPage_WithIsActive_OnlyReturnsThoseProducts(bool isActive, string[] titles)
+    {
+        db.Products.AddRange(NewProduct(1, "Skål"), NewProduct(2, "Utkast", isActive: false), NewProduct(3, "Vas"));
+        await db.SaveChangesAsync();
+
+        var page = await new ProductRepository(db).GetPageAsync(
+            1, 12, new ProductFilter { IsActive = isActive }, ProductSort.Newest, CancellationToken.None);
+
+        Assert.Equal(titles, page.Items.Select(p => p.Title));
+    }
+
+    [Fact]
+    public async Task GetActivePage_IgnoresTheFiltersIsActive()
+    {
+        db.Products.AddRange(NewProduct(1, "Skål"), NewProduct(2, "Utkast", isActive: false));
+        await db.SaveChangesAsync();
+
+        var page = await new ProductRepository(db).GetActivePageAsync(
+            1, 12, new ProductFilter { IsActive = false }, ProductSort.Newest, CancellationToken.None);
+
+        Assert.Equal(["Skål"], page.Items.Select(p => p.Title));
     }
 
     [Fact]

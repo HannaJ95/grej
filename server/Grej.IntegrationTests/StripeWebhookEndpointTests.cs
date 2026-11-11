@@ -340,7 +340,8 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         public Task<IReadOnlyDictionary<int, int>> CountByCategoryAsync(CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
-        public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
+        public Task<PagedResult<Product>> GetPageAsync(
+            int page, int pageSize, ProductFilter filter, ProductSort sort, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
         public Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
