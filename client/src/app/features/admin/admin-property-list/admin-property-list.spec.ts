@@ -77,6 +77,17 @@ describe('AdminPropertyList', () => {
     expect(texts('main .row .name')).toEqual(['Bomull', 'Lera', 'Trä']);
   });
 
+  it('shows "Fyll i ett namn." only when the admin tries to save', async () => {
+    await open('/admin/material', 'materials', [lera, tra]);
+
+    nameInput().dispatchEvent(new Event('blur'));
+    await harness.fixture.whenStable();
+    expect(page().textContent).not.toContain('Fyll i ett namn.');
+
+    await click('Lägg till material');
+    expect(texts('main .error')).toEqual(['Fyll i ett namn.']);
+  });
+
   it('opens a material in the card with Redigera, and saves the new name', async () => {
     await open('/admin/material', 'materials', [lera, tra]);
 

@@ -44,6 +44,9 @@ export class AdminPropertyCard {
     name: this.editing()?.name ?? '',
   }));
 
+  // Like AdminCategoryCard: errors wait until the admin tries to save.
+  private readonly showErrors = linkedSignal({ source: this.editing, computation: () => false });
+
   // The same rules as PropertyRequest in the API.
   protected readonly propertyForm = form(
     this.model,
@@ -53,10 +56,12 @@ export class AdminPropertyCard {
       pattern(field.name, /\S/, { message: 'Fyll i ett namn.' });
       maxLength(field.name, 100, { message: 'Namnet får vara högst 100 tecken.' });
     },
-    { submission: { action: () => this.save() } },
+    { submission: { action: () => this.save(), onInvalid: () => this.showErrors.set(true) } },
   );
 
-  protected readonly nameError = computed(() => firstError(this.propertyForm.name));
+  protected readonly nameError = computed(() =>
+    this.showErrors() ? firstError(this.propertyForm.name) : undefined,
+  );
   protected readonly saveError = computed(() => this.propertyForm().errors()[0]?.message);
 
   focusName(): void {
@@ -75,8 +80,8 @@ export class AdminPropertyCard {
         await this.properties.create(this.kind(), name);
         this.toast.show(`${name} har lagts till.`);
       }
-      // Untouched again, so the empty field shows no error.
       this.propertyForm().reset({ name: '' });
+      this.showErrors.set(false);
       this.saved.emit();
       return undefined;
     } catch {

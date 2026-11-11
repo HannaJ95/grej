@@ -80,6 +80,17 @@ describe('AdminSubcategories', () => {
     expect(page().textContent).toContain('Välj en huvudkategori.');
   });
 
+  it('shows the errors only when the admin tries to save', async () => {
+    await open('/admin/underkategorier');
+
+    await leave('#category-parent');
+    await leave('#category-name');
+    expect(texts('main .error')).toEqual([]);
+
+    await click('Lägg till underkategori');
+    expect(texts('main .error')).toEqual(['Välj en huvudkategori.', 'Fyll i ett namn.']);
+  });
+
   it('moves a subcategory to another main category', async () => {
     await open('/admin/underkategorier?redigera=5');
     expect(select().value).toBe('3');
@@ -153,6 +164,12 @@ describe('AdminSubcategories', () => {
   function choose(value: string): void {
     select().value = value;
     select().dispatchEvent(new Event('input'));
+  }
+
+  // Leaves a field, which marks it as touched.
+  async function leave(selector: string): Promise<void> {
+    page().querySelector(selector)!.dispatchEvent(new Event('blur'));
+    await harness.fixture.whenStable();
   }
 
   // Clicks the button in the page (not the menu) with this text, and waits.
