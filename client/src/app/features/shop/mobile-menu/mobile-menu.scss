@@ -76,11 +76,9 @@ dialog {
   border-bottom: var(--border-width-default) solid var(--color-border-inverse);
   color: var(--color-text-on-inverse);
 
-  &:hover,
-  &.active {
-    text-decoration: underline;
-    text-decoration-thickness: var(--border-width-strong);
-    text-underline-offset: 0.12em;
+  // No underline, like the header's link.
+  &:hover {
+    color: var(--color-text-on-inverse-secondary);
   }
 }
 

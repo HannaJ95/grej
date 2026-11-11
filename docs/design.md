@@ -73,6 +73,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - `<main>` is one layer below the header (`isolation: isolate`), so nothing on a page, such as the product page's sticky buy row, can scroll over it.
   - Its bands reach the screen's edges. The content inside them uses `.page-width`: centered, at most `--layout-viewport-width` (1440 px), with `--layout-margin` on the sides (20 px on a phone, 32 px on a tablet, 48 px on a computer).
   - On a phone the menu links are in `MobileMenu`, a `<dialog>` like the cart.
+  - "Shop" in the menu is never underlined, also on its own page; `aria-current="page"` tells screen readers. On hover it gets the secondary text color, like the cart button.
   - The footer's "Shop" lists "Alla produkter" and the five categories with the most products, in name order, each linking to the product list with that category chosen.
   - The footer's big "GREJ." is at most 42 % of the screen width, so it fits between 1024 and 1190 px. It is decoration and takes no clicks, since its letters reach up over the links above.
   - On screens wider than 1440 px the bands (header, start page, moving band, footer) still reach the edges while the content stays centered, so the page keeps one pattern instead of a box in the middle.

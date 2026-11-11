@@ -219,3 +219,5 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 
 - **Building:** Zoom on the product images. "Förstora bilden" opens ImageViewer, a dialog over the dimmed page. It shows the whole image, the arrows step through the images, and a click zooms 2× at the clicked point. A click around the image closes it. IconButton got a filled option.
 - **Verification:** Claude checked 320–1440 px, 200 % zoom and text, and the keyboard in Chrome. The check found that the zoom shrank on tablets and that the dialog got too wide with large text; both are fixed.
+
+- **Building:** Six UI fixes: the page stays still behind dialogs, product cards line up per row, the next page starts at the toolbar, sharp arrow tips, arrow icons instead of the "→" character (missing in Inter's web font) and no underline on "Shop".
