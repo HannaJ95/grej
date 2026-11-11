@@ -5,13 +5,14 @@ The design lives in the code. `client/src/styles/` has the tokens, the text styl
 ## Tokens and text styles
 
 - `_tokens.scss` has every design value as a CSS custom property:
-  - the palette (`--color-sand`, `--color-charcoal` …), which only the color tokens use
+  - the palette (`--color-linen`, `--color-charcoal` …), which only the color tokens use
   - the color tokens, which point at the palette with `var()` (`--color-bg-page`, `--color-text-primary` …)
   - spacing named after its size in px (`--space-2` … `--space-160`), border widths, `--size-control-height`, `--ratio-product-image` and the popover shadow
   - the responsive font sizes and layout values (`--layout-margin`, `--layout-gutter`, `--layout-admin-gutter`, `--layout-viewport-width`)
 - The responsive values are mobile first. The phone's values are in `:root`, and new values come in media queries from 768 px (tablet) and from 1024 px (computer).
 - `_typography.scss` has one class per text style (e.g. `.text-display-l`, `.text-label-s`), built by a Sass mixin. The templates put the class on the element, and `<body class="text-body-m">` gives the body text. The fonts (Anton for the Display styles, Inter for text, Space Mono for small print) are loaded from Google Fonts in `index.html`. The Display styles have line height 1.16 (except Wordmark), so the dots on Å, Ä and Ö don't reach the line above.
 - Components only use `var(--…)` and the classes, so a change of a value is a change in one place, and dark mode (Could) only needs new values.
+- The page and the surfaces (header, cards, fields) share one background, linen, so cards and fields stand out by their borders.
 - Every text color has at least 4.5:1 contrast against its background, and field borders and the focus ring at least 3:1 (WCAG AA).
 - Hover: dark buttons get `--color-bg-inverse-hover` and light ones `--color-bg-hover`. Links are underlined.
 - The focus ring is 2 px in `--color-border-default`, and `--color-border-inverse` on the dark bands.
