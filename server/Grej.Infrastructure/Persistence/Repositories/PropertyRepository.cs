@@ -18,10 +18,25 @@ public class PropertyRepository<T>(GrejDbContext db) : IPropertyRepository<T> wh
     public Task<int> CountProductsAsync(int id, CancellationToken cancellationToken) =>
         db.Set<T>().Where(p => p.Id == id).Select(p => p.Products.Count).SingleOrDefaultAsync(cancellationToken);
 
-    public async Task<PagedResult<T>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken)
+    public async Task<IReadOnlyDictionary<int, int>> CountProductsByIdAsync(
+        IReadOnlyCollection<int> ids, CancellationToken cancellationToken) =>
+        await db.Set<T>()
+            .Where(p => ids.Contains(p.Id))
+            .Select(p => new { p.Id, Count = p.Products.Count })
+            .ToDictionaryAsync(row => row.Id, row => row.Count, cancellationToken);
+
+    public async Task<PagedResult<T>> GetPageAsync(
+        int page, int pageSize, IReadOnlyCollection<string> searchWords, CancellationToken cancellationToken)
     {
-        var totalCount = await db.Set<T>().CountAsync(cancellationToken);
-        var items = await SortedByName()
+        var query = db.Set<T>().AsQueryable();
+        // Not EF.Functions.ILike, which the in-memory test database doesn't have.
+        foreach (var word in searchWords)
+        {
+            query = query.Where(p => p.Name.ToLower().Contains(word.ToLower()));
+        }
+
+        var totalCount = await query.CountAsync(cancellationToken);
+        var items = await SortedByName(query)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
@@ -30,7 +45,7 @@ public class PropertyRepository<T>(GrejDbContext db) : IPropertyRepository<T> wh
     }
 
     public async Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken) =>
-        await SortedByName().ToListAsync(cancellationToken);
+        await SortedByName(db.Set<T>()).ToListAsync(cancellationToken);
 
     // One SQL query with a COUNT per row, like CountProductsAsync.
     public async Task<IReadOnlyDictionary<int, int>> CountActiveProductsAsync(CancellationToken cancellationToken) =>
@@ -49,5 +64,5 @@ public class PropertyRepository<T>(GrejDbContext db) : IPropertyRepository<T> wh
     }
 
     // Then by id, so two with the same name keep a fixed order.
-    private IQueryable<T> SortedByName() => db.Set<T>().OrderBy(p => p.Name).ThenBy(p => p.Id);
+    private static IQueryable<T> SortedByName(IQueryable<T> query) => query.OrderBy(p => p.Name).ThenBy(p => p.Id);
 }

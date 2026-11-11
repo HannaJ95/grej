@@ -15,8 +15,12 @@ public interface IPropertyRepository<T> where T : ProductProperty
     // How many products, hidden or not, have it. 0 if no row has this id.
     Task<int> CountProductsAsync(int id, CancellationToken cancellationToken);
 
-    // Sorted by name.
-    Task<PagedResult<T>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken);
+    // The same for several: id → count.
+    Task<IReadOnlyDictionary<int, int>> CountProductsByIdAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken);
+
+    // Sorted by name. Every search word must be in the name, in any case, like the product search.
+    Task<PagedResult<T>> GetPageAsync(
+        int page, int pageSize, IReadOnlyCollection<string> searchWords, CancellationToken cancellationToken);
 
     // Sorted by name. Not paged, since the shop's filter shows them all at once.
     Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken);

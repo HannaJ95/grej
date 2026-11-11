@@ -7,8 +7,7 @@ export interface ProductProperty {
   name: string;
 }
 
-// PropertyDetailsDto in the API. productCount includes hidden products, so the CMS can warn
-// before deleting.
+// PropertyDetailsDto in the API, in the CMS's lists. productCount includes hidden products.
 export interface ProductPropertyDetails extends ProductProperty {
   productCount: number;
 }

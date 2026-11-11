@@ -3,18 +3,20 @@ using Grej.Domain.Catalog;
 
 namespace Grej.Application.Catalog;
 
-// Use cases for materials and colors in the CMS, written once for both: T is Material or Color.
-// Built like AdminCategoryService. "new()" means T must be a class that can be created with
-// new T(), which CreateAsync does. Only admin endpoints use it.
+// The CMS's use cases for materials and colors, written once for both: T is Material or Color.
+// new() lets CreateAsync create a T.
 public class AdminPropertyService<T>(IPropertyRepository<T> properties) where T : ProductProperty, new()
 {
-    // One page, sorted by name.
-    public async Task<PagedResult<PropertyDto>> GetPropertiesAsync(PropertyListQuery query, CancellationToken cancellationToken)
+    // One page, sorted by name. The counts take one query for the whole page, not one per row.
+    public async Task<PagedResult<PropertyDetailsDto>> GetPropertiesAsync(PropertyListQuery query, CancellationToken cancellationToken)
     {
-        var page = await properties.GetPageAsync(query.Page, query.PageSize, cancellationToken);
+        var searchWords = query.Search?.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+        var page = await properties.GetPageAsync(query.Page, query.PageSize, searchWords, cancellationToken);
+        var counts = await properties.CountProductsByIdAsync(
+            page.Items.Select(p => p.Id).ToList(), cancellationToken);
 
-        return new PagedResult<PropertyDto>(
-            page.Items.Select(ToDto).ToList(),
+        return new PagedResult<PropertyDetailsDto>(
+            page.Items.Select(p => new PropertyDetailsDto(p.Id, p.Name, counts.GetValueOrDefault(p.Id))).ToList(),
             page.Page,
             page.PageSize,
             page.TotalCount);

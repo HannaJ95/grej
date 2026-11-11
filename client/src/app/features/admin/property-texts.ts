@@ -16,6 +16,8 @@ export interface PropertyTexts {
   // The name field's placeholder.
   example: string;
   path: string;
+  // The product list's filter: ?material= or ?farg=.
+  productParam: string;
 }
 
 export const PROPERTY_TEXTS: Record<PropertyKind, PropertyTexts> = {
@@ -27,6 +29,7 @@ export const PROPERTY_TEXTS: Record<PropertyKind, PropertyTexts> = {
     newOne: 'Nytt material',
     example: 'T.ex. Trä',
     path: '/admin/material',
+    productParam: 'material',
   },
   colors: {
     singular: 'färg',
@@ -36,5 +39,6 @@ export const PROPERTY_TEXTS: Record<PropertyKind, PropertyTexts> = {
     newOne: 'Ny färg',
     example: 'T.ex. Grön',
     path: '/admin/farger',
+    productParam: 'farg',
   },
 };
