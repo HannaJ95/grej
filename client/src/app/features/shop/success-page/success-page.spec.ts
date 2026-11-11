@@ -1,3 +1,5 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -25,8 +27,13 @@ describe('SuccessPage', () => {
     // Every test starts as a new visitor with nothing saved.
     localStorage.clear();
     TestBed.configureTestingModule({
-      // The app's real routes, so ?order= reaches the page the same way as from Stripe.
-      providers: [provideRouter(routes, withComponentInputBinding())],
+      // The app's real routes, so ?order= reaches the page the same way as from Stripe. The
+      // testing HttpClient keeps the footer's request for the categories from reaching the API.
+      providers: [
+        provideRouter(routes, withComponentInputBinding()),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     });
   });
 

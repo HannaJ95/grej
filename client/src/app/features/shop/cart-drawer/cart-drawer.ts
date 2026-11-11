@@ -12,14 +12,14 @@ import { RouterLink } from '@angular/router';
 import { CartService } from '../../../core/cart.service';
 import { CheckoutService } from '../../../core/checkout.service';
 import { Button } from '../../../shared/button/button';
-import { ButtonCount } from '../../../shared/button-count/button-count';
 import { IconButton } from '../../../shared/icon-button/icon-button';
+import { Icon } from '../../../shared/icons/icon';
 import { QuantityStepper } from '../../../shared/quantity-stepper/quantity-stepper';
 
 // The cart button and its panel, a native <dialog>, so the browser handles Escape, the focus
 // and the backdrop.
 @Component({
-  imports: [CurrencyPipe, RouterLink, Button, ButtonCount, IconButton, QuantityStepper],
+  imports: [CurrencyPipe, RouterLink, Button, Icon, IconButton, QuantityStepper],
   selector: 'app-cart-drawer',
   styleUrls: ['./cart-drawer.scss', '../../../shared/drawer.scss'],
   templateUrl: './cart-drawer.html',

@@ -53,4 +53,41 @@ describe('SortSelect', () => {
 
     expect(router.url).toBe('/produkter?kategori=1');
   });
+
+  describe('a click on "Sortera:"', () => {
+    // jsdom has no picker, so showPicker is a spy and :open is set by hand.
+    function clickPrefix(element: HTMLElement, select: HTMLSelectElement, open: boolean) {
+      vi.spyOn(select, 'matches').mockReturnValue(open);
+      const showPicker = vi.fn();
+      select.showPicker = showPicker;
+      const prefix = element.querySelector('.prefix')!;
+      prefix.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+      prefix.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      return showPicker;
+    }
+
+    it('opens the list', async () => {
+      const { element, select } = await render('nyast');
+
+      expect(clickPrefix(element, select, false)).toHaveBeenCalledOnce();
+    });
+
+    it('only closes the list when it was open', async () => {
+      const { element, select } = await render('nyast');
+
+      expect(clickPrefix(element, select, true)).not.toHaveBeenCalled();
+    });
+  });
+
+  it('opens the list with Enter, but leaves Enter on an option to choose it', async () => {
+    const { select } = await render('nyast');
+    const showPicker = vi.fn();
+    select.showPicker = showPicker;
+
+    select.options[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(showPicker).not.toHaveBeenCalled();
+
+    select.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(showPicker).toHaveBeenCalledOnce();
+  });
 });

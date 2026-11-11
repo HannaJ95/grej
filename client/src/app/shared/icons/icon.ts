@@ -13,7 +13,8 @@ export type IconName =
   | 'arrow-down'
   | 'arrow-up-right'
   | 'search'
-  | 'info';
+  | 'info'
+  | 'bag';
 
 // The svg is a mask over currentColor, so one file works in every text color. Always
 // decoration: the button or link around it has the text.

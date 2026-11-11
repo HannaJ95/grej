@@ -8,13 +8,20 @@ import { Icon } from '../../../shared/icons/icon';
   selector: 'app-sort-select',
   imports: [Icon],
   template: `
-    <!-- The box is the label, so a click anywhere in it reaches the select. aria-label names the
-         select the same way in every browser, since the label also holds the options, and also on
-         a phone, where "Sortera:" is hidden. -->
-    <label class="box text-label-m">
+    <!-- aria-label, since the label also holds the options, and "Sortera:" is hidden on a phone. -->
+    <label
+      class="box text-label-m"
+      (pointerdown)="rememberOpen(select)"
+      (click)="openFromBox($event, select)"
+    >
       <span class="prefix" aria-hidden="true">Sortera:</span>
       <span class="select">
-        <select #select aria-label="Sortera" (change)="choose(select.value)">
+        <select
+          #select
+          aria-label="Sortera"
+          (change)="choose(select.value)"
+          (keydown.enter)="openOnEnter($event, select)"
+        >
           @for (option of options; track option.value) {
             <option [value]="option.value" [selected]="option.value === sort()">
               {{ option.label }}
@@ -27,14 +34,13 @@ import { Icon } from '../../../shared/icons/icon';
   `,
   styleUrl: '../../../shared/select.scss',
   styles: `
-    // min-width: 0 lets the box shrink to the toolbar's width when the text is enlarged.
+    // min-width: 0, so the box can shrink when the text is enlarged.
     :host {
       display: block;
       min-width: 0;
     }
 
-    // A field box like the search, as tall as the Filter button beside it. The anchor lets the
-    // list line up with the whole box, not only the select after "Sortera:".
+    // The anchor lines the list up with the whole box, not only the select.
     .box {
       anchor-name: --sort-box;
       display: flex;
@@ -48,7 +54,6 @@ import { Icon } from '../../../shared/icons/icon';
         background: var(--color-bg-hover);
       }
 
-      // focus-visible, so a click with the mouse shows no ring.
       &:has(select:focus-visible) {
         outline: var(--border-width-default) solid var(--color-border-default);
         outline-offset: var(--space-2);
@@ -66,15 +71,12 @@ import { Icon } from '../../../shared/icons/icon';
       }
     }
 
-    // Lets the select shrink below its longest option too. The browser then clips its text.
     .select {
       min-width: 0;
     }
 
-    // Longhand paddings, so the room for the chevron in shared/select.scss stays. Chrome's
-    // customizable select is only as wide as the chosen text, so min-inline-size keeps room for
-    // "Nyast först", the longest choice (5.375em), and the box doesn't jump when the choice
-    // changes. Never wider than the page's content, so it still shrinks when the text is enlarged.
+    // Longhand paddings, so the room for the chevron in shared/select.scss stays. The min width
+    // fits "Nyast först", the longest choice, so the box doesn't jump when the choice changes.
     .box select {
       --padding-left: var(--space-16);
 
@@ -97,7 +99,6 @@ import { Icon } from '../../../shared/icons/icon';
         outline: none;
       }
 
-      // anchor-size() makes the list at least as wide as the box.
       &::picker(select) {
         position-anchor: --sort-box;
         min-inline-size: anchor-size(width);
@@ -112,8 +113,33 @@ export class SortSelect {
 
   protected readonly options = Object.entries(SORTS).map(([value, { label }]) => ({ value, label }));
 
-  // A new order starts on page 1, and the default is left out of the URL. scroll: 'manual' keeps
-  // the page still, like the filter.
+  // Read on pointerdown, since the browser closes an open list before the click.
+  private wasOpen = false;
+
+  protected rememberOpen(select: HTMLSelectElement): void {
+    this.wasOpen = isOpen(select);
+  }
+
+  // A label only focuses its select, so a click on "Sortera:" opens the list here. A click on the
+  // select itself is left to the browser, and a click that closed the list doesn't open it again.
+  protected openFromBox(event: MouseEvent, select: HTMLSelectElement): void {
+    if (this.wasOpen || select.contains(event.target as Node)) {
+      return;
+    }
+    select.showPicker?.();
+  }
+
+  // Space and the arrows open a select, but Enter, which many try first, doesn't. Enter on an
+  // option is left alone, since it chooses that option.
+  protected openOnEnter(event: Event, select: HTMLSelectElement): void {
+    if (event.target !== select) {
+      return;
+    }
+    event.preventDefault();
+    select.showPicker?.();
+  }
+
+  // A new order starts on page 1, the default stays out of the URL, and the page doesn't scroll.
   protected choose(value: string): void {
     const sort = toSort(value);
     this.router.navigate(['/produkter'], {
@@ -121,5 +147,14 @@ export class SortSelect {
       queryParamsHandling: 'merge',
       scroll: 'manual',
     });
+  }
+}
+
+// Browsers without :open throw on the selector.
+function isOpen(select: HTMLSelectElement): boolean {
+  try {
+    return select.matches(':open');
+  } catch {
+    return false;
   }
 }

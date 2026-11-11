@@ -13,7 +13,7 @@
       </a>
     </nav>
     <div class="actions">
-      <!-- #cart is the CartDrawer itself, so the menu's cart button can open it. -->
+      <!-- #cart lets the menu's cart button open the drawer. -->
       <app-cart-drawer #cart />
       <app-mobile-menu class="mobile-menu" (openCart)="cart.open()" />
     </div>
@@ -28,9 +28,18 @@
 
 <footer class="footer">
   <div class="page-width">
-    <nav class="footer-links text-body-s" aria-label="Sidfot">
+    <nav class="footer-nav" aria-label="Sidfot">
       <h2 class="footer-heading text-heading-xs">Shop</h2>
-      <a routerLink="/produkter">Alla produkter</a>
+      <ul class="footer-links text-body-s">
+        <li><a routerLink="/produkter">Alla produkter</a></li>
+        @for (category of footerCategories(); track category.id) {
+          <li>
+            <a routerLink="/produkter" [queryParams]="{ kategori: category.id }">
+              {{ category.name }}
+            </a>
+          </li>
+        }
+      </ul>
     </nav>
 
     <!-- The big logo is decoration; the header's logo already has the name. -->

@@ -2,7 +2,6 @@
   color-scheme: light;
 
   // Primitives: only the color tokens below may use these.
-  --color-sand: #efe7da;
   --color-linen: #f8f3ea;
   --color-stone: #cfc4b2;
   --color-oat: #e3d6c0;
@@ -16,7 +15,7 @@
   --color-charcoal-a20: #2b2a2733;
   --color-charcoal-a55: #2b2a278c;
 
-  --color-bg-page: var(--color-sand);
+  --color-bg-page: var(--color-linen);
   --color-bg-surface: var(--color-linen);
   --color-bg-muted: var(--color-stone);
   --color-bg-inverse: var(--color-charcoal);
@@ -63,13 +62,12 @@
   --border-width-default: 2px;
   --border-width-strong: 3px;
   --size-control-height: 3.125rem;
-  // Every product image in the shop has this shape, so the shop looks the same whatever is
-  // uploaded. A number instead of "318 / 380", so calc() can use it too.
+  // A number, not "318 / 380", so calc() can use it.
   --ratio-product-image: calc(318 / 380);
 
   --shadow-popover: 0 0.5rem 1.5rem rgb(43 42 39 / 18%);
 
-  // Responsive values, mobile first. The media queries below override them.
+  // Mobile first: the media queries below override these.
   --font-size-display-hero: 6.875rem;
   --font-size-display-xl: 4.5rem;
   --font-size-display-l: 3rem;
@@ -77,7 +75,7 @@
   --font-size-display-s: 2.5rem;
   --font-size-display-xs: 1.875rem;
   --font-size-display-2xs: 1.75rem;
-  --font-size-display-logo: 2.5rem;
+  --font-size-display-logo: 2rem;
   --font-size-display-wordmark: 9.375rem;
   --font-size-body-l: 1.125rem;
   --font-size-body-m: 1rem;
@@ -100,8 +98,7 @@
   --layout-viewport-width: 24.375rem;
 }
 
-// Media queries cannot read custom properties, so the breakpoints are written out:
-// 48rem = 768 px and 64rem = 1024 px.
+// Media queries cannot read custom properties, so the breakpoints are written out.
 @media (width >= 48rem) {
   :root {
     --font-size-display-hero: 9.375rem;
@@ -110,7 +107,7 @@
     --font-size-display-m: 4.5rem;
     --font-size-display-s: 3.5rem;
     --font-size-display-xs: 2.25rem;
-    --font-size-display-logo: 3.125rem;
+    --font-size-display-logo: 2.375rem;
     --font-size-display-wordmark: 18.75rem;
     --font-size-body-l: 1.25rem;
     --font-size-heading-s: 1.0625rem;

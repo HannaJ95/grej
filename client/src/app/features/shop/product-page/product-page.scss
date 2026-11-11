@@ -46,7 +46,7 @@
   gap: var(--space-12);
 }
 
-// Long words, e.g. "Manschettknappar", break instead of making the page scroll sideways.
+// Long words break instead of widening the page.
 h1 {
   overflow-wrap: anywhere;
 }
@@ -64,7 +64,7 @@ h1 {
 .buy {
   position: sticky;
   bottom: 0;
-  z-index: 10;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -166,6 +166,11 @@ summary {
 .properties {
   margin: 0;
   padding-bottom: var(--space-12);
+}
+
+.note {
+  padding-bottom: var(--space-24);
+  color: var(--color-text-secondary);
 }
 
 .property {

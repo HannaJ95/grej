@@ -5,13 +5,14 @@ The design lives in the code. `client/src/styles/` has the tokens, the text styl
 ## Tokens and text styles
 
 - `_tokens.scss` has every design value as a CSS custom property:
-  - the palette (`--color-sand`, `--color-charcoal` …), which only the color tokens use
+  - the palette (`--color-linen`, `--color-charcoal` …), which only the color tokens use
   - the color tokens, which point at the palette with `var()` (`--color-bg-page`, `--color-text-primary` …)
   - spacing named after its size in px (`--space-2` … `--space-160`), border widths, `--size-control-height`, `--ratio-product-image` and the popover shadow
   - the responsive font sizes and layout values (`--layout-margin`, `--layout-gutter`, `--layout-admin-gutter`, `--layout-viewport-width`)
 - The responsive values are mobile first. The phone's values are in `:root`, and new values come in media queries from 768 px (tablet) and from 1024 px (computer).
 - `_typography.scss` has one class per text style (e.g. `.text-display-l`, `.text-label-s`), built by a Sass mixin. The templates put the class on the element, and `<body class="text-body-m">` gives the body text. The fonts (Anton for the Display styles, Inter for text, Space Mono for small print) are loaded from Google Fonts in `index.html`. The Display styles have line height 1.16 (except Wordmark), so the dots on Å, Ä and Ö don't reach the line above.
 - Components only use `var(--…)` and the classes, so a change of a value is a change in one place, and dark mode (Could) only needs new values.
+- The page and the surfaces (header, cards, fields) share one background, linen, so cards and fields stand out by their borders.
 - Every text color has at least 4.5:1 contrast against its background, and field borders and the focus ring at least 3:1 (WCAG AA).
 - Hover: dark buttons get `--color-bg-inverse-hover` and light ones `--color-bg-hover`. Links are underlined.
 - The focus ring is 2 px in `--color-border-default`, and `--color-border-inverse` on the dark bands.
@@ -31,9 +32,6 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - From a tablet it sits by the button with CSS anchor positioning: below and to the right, or flipped to where it fits.
   - On a phone, and when nothing beside the button fits (e.g. with large text), it is in the middle of the window, and it scrolls inside when it is taller than the window.
 - `Badge` is a small label on a product image, e.g. "Slutsåld" and "Få kvar".
-- `ButtonCount` is a number in a small square on a button: dark on the light "Filter" button, light (`tone="light"`) on the dark cart button.
-  - The button's `aria-label` says what the number is, e.g. "Varukorg, 2 grejer".
-  - It takes no more height than its own text, so the button keeps its height.
 - `SearchField` is a `<form role="search">` with the search icon in a field box (`<app-search-field label="Sök bland grejerna">`), used by the shop's filter and the CMS's order list.
   - It has no visible label, so `label` becomes the field's `aria-label`.
   - Like the price fields, it searches on Enter or when the field is left, so a list doesn't reload for every letter.
@@ -70,10 +68,13 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
 The shop has neutral colors. The CMS uses the same tokens, so it gets the same colors and fonts.
 
 - `ShopLayout` (`features/shop/shop-layout/`) has the shop's header (logo, menu, cart) and footer, and the header sticks at the top. The shop's routes are its children in `app.routes.ts`, so the admin pages have no shop header.
-  - The header's height is `--shop-sticky-top` in `_base.scss`. `scroll-padding-top` uses it, so a focused element is never hidden under the header, and the product list's toolbar sticks below it.
+  - The header is the same low height on every screen size: the logo is smaller on a phone, and from a tablet it is as tall as the cart button. That height is `--shop-sticky-top` in `_base.scss`. `scroll-padding-top` uses it, so a focused element is never hidden under the header.
+  - `<main>` is one layer below the header (`isolation: isolate`), so nothing on a page, such as the product page's sticky buy row, can scroll over it.
   - Its bands reach the screen's edges. The content inside them uses `.page-width`: centered, at most `--layout-viewport-width` (1440 px), with `--layout-margin` on the sides (20 px on a phone, 32 px on a tablet, 48 px on a computer).
   - On a phone the menu links are in `MobileMenu`, a `<dialog>` like the cart.
-  - The footer's big "GREJ." is at most 42 % of the screen width, so it fits between 1024 and 1190 px.
+  - The footer's "Shop" lists "Alla produkter" and the five categories with the most products, in name order, each linking to the product list with that category chosen.
+  - The footer's big "GREJ." is at most 42 % of the screen width, so it fits between 1024 and 1190 px. It is decoration and takes no clicks, since its letters reach up over the links above.
+  - On screens wider than 1440 px the bands (header, start page, moving band, footer) still reach the edges while the content stays centered, so the page keeps one pattern instead of a box in the middle.
 - `ProductCard` is used by both the start page and the product list. It has an image, title and price, a "Slutsåld" or "Få kvar" (1–2 left) badge, and an add button.
   - On a computer the add button is a bar over the image, shown on hover or keyboard focus. On a tablet and a phone, where there is no hover, it is a "+" square.
   - The sold-out layer over the image is 70 %, so the image can still be seen.
@@ -88,7 +89,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - While a new choice loads, the old products and the count stay, so the page doesn't jump. The products fade only if the answer takes more than 0.3 s.
   - From 1024 px the toolbar also shows the chosen filters as chips (`ActiveFilters`). × removes one and moves the focus to the chip beside it, and "Rensa alla" removes them all. The sort box is taller than a row of chips, so the toolbar doesn't grow with the first choice.
   - `SortSelect` at the end of the toolbar sorts the list: "Nyast först", "Lägst pris" or "Högst pris" (`?sortera=`).
-    - It is a field box, "Sortera: Nyast först", with a `shared/select.scss` select. On a phone only the choice shows; "Sortera" is the select's `aria-label` everywhere.
+    - It is a field box, "Sortera: Nyast först", with a `shared/select.scss` select. On a phone only the choice shows; "Sortera" is the select's `aria-label` everywhere. A click anywhere in the box, "Sortera:" too, opens the list, and a click while it is open closes it. Enter, Space and the arrows open it from the keyboard; in the list the arrows move between the choices and Enter chooses one.
     - It keeps the width of the longest choice, so it doesn't jump when the choice changes, but shrinks with large text on a narrow screen.
     - A new sort starts on page 1. "Rensa", the chips and the tabs keep it.
   - `CategoryTabs` is a row of links: "Alla" plus one per category with its number. It scrolls sideways below 1024 px and wraps on a computer. A tab keeps the other filters.
@@ -102,7 +103,8 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
     - A thumb is applied when it is let go, and a field on Enter or when the customer leaves it.
     - A thumb stops at the other one. Typing moves the thumb at once but never changes the text being typed.
   - From 1024 px, `ProductFilters` is a 288 px column to the left.
-  - Below 1024 px the toolbar has "Filter" with the number of choices in a `ButtonCount`, and sticks below the header (not in a window lower than 30rem). On a phone the count has a row of its own, with Filter and the sort below it; from 768 px they are on one row.
+  - The toolbar has no lines and scrolls away with the page on every screen size. The count, Filter and the sort share one row, Filter and the sort to the right. When there is no room, Filter and the sort move together to a row above the count, still to the right.
+  - Below 1024 px the toolbar has "Filter", with the number of choices beside the word once something is chosen ("Filter 3"). The button's `aria-label` says what the number is: "Filter, 3 valda".
     - The button opens `FilterDrawer`, a `<dialog>` from the left with the same `ProductFilters`. It covers the whole screen on a phone and is a 26rem panel on a tablet.
     - Every choice updates the list behind the panel at once. The heading and the close button stick while the filter scrolls, and "Visa 24 grejer" at the bottom closes the panel.
   - When no product matches the filter, `NoResults` shows a framed box:
@@ -117,15 +119,16 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - the title, price and `StockStatus`
   - the first 150 characters of the description, with "Mer information", which opens "Beskrivning" and scrolls to it
   - the buy row: `QuantityStepper` and "Lägg i varukorg"
-  - two folds (`<details>`), closed at first, which open and close with the same short height animation as `FilterGroup`. Reduced motion turns it off, and browsers without `::details-content` open them at once.
+  - three folds (`<details>`), closed at first, which open and close with the same short height animation as `FilterGroup`. Reduced motion turns it off, and browsers without `::details-content` open them at once.
     - "Beskrivning": the whole description.
     - "Detaljer": only the rows the product has, i.e. Material, Färg, Mått and Vikt. Mått is e.g. "Ø 8 × H 9 cm", with the height last, and screen readers hear "diameter 8 cm, höjd 9 cm" instead. Vikt is in kg from 1 000 g. The fold is left out when the product has none of them.
+    - "Frakt och retur": Leverans (Paket till ombud), Frakt (this product alone, from its packed size with the cart's copy of the shipping rule) and Ångerrätt (14 dagar), with a sentence that several products are counted as one parcel in the cart.
 - The buy row on a phone:
   - It sticks at the bottom of the screen until the page is scrolled down to its place, where it stays.
   - The row itself sticks, instead of a separate buy bar, so the page never shows two buy buttons.
   - `scroll-padding-bottom` keeps the keyboard focus above it.
   - It does not stick on screens lower than 480 px (e.g. when zoomed in), where it would cover too much.
-- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's main image when it is added) and a `QuantityStepper`, plus the products, the shipping and the total, and an empty state. Its button in the header shows the number of products in a `ButtonCount`, also when the cart is empty.
+- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's main image when it is added) and a `QuantityStepper`, plus the products, the shipping and the total, and an empty state. Its button in the header is only a bag icon with the number of products beside it, also when the cart is empty, with no box or background. Both get the secondary text color on hover, and the whole button is the click area. Its `aria-label` says "Varukorg, 2 grejer". On a phone it is as tall as the menu button beside it, and from a tablet the number lines up with the page's edge.
   - The shipping is a copy of the API's rule (`core/shipping.ts`), only for showing. A row saved before shipping was built has no parcel, and then the cart shows the sum and "Frakten läggs till i kassan."
 - When something is added, `AddedToCart` shows a small popup under the cart button.
   - It closes itself after 5 seconds, which pause on hover or focus. It also closes with the cross or with Escape.
