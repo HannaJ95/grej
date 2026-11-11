@@ -9,6 +9,11 @@
   background: var(--color-bg-surface);
 }
 
+// One layer below the header, so nothing on a page can cover it, whatever its z-index.
+main {
+  isolation: isolate;
+}
+
 .header-content {
   display: flex;
   align-items: center;
