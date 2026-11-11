@@ -108,6 +108,8 @@ h1 {
 .fold {
   display: grid;
   grid-template-rows: auto 0fr;
+  // Otherwise the grid's spare space during the animation stretches the summary row.
+  align-content: start;
   border-bottom: var(--border-width-default) solid var(--color-border-default);
   transition: grid-template-rows 0.2s ease;
 
