@@ -86,7 +86,7 @@ describe('ShopLayout', () => {
     const element = await show();
     const button = element.querySelector('header button')!;
 
-    expect(button.querySelector('app-button-count')!.textContent).toBe('0');
+    expect(button.textContent!.trim()).toBe('0');
     expect(button.getAttribute('aria-label')).toBe('Varukorg, 0 grejer');
   });
 });

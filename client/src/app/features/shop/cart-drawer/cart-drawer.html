@@ -1,5 +1,4 @@
 <button
-  appButton
   class="cart-button"
   type="button"
   aria-haspopup="dialog"
@@ -7,7 +6,7 @@
   (click)="open()"
 >
   <app-icon name="bag" />
-  <app-button-count tone="light" [count]="cart.count()" />
+  <span class="text-label-m">{{ cart.count() }}</span>
 </button>
 
 <dialog #dialog aria-labelledby="cart-title" (click)="closeOnBackdrop($event)">

@@ -31,7 +31,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - From a tablet it sits by the button with CSS anchor positioning: below and to the right, or flipped to where it fits.
   - On a phone, and when nothing beside the button fits (e.g. with large text), it is in the middle of the window, and it scrolls inside when it is taller than the window.
 - `Badge` is a small label on a product image, e.g. "Slutsåld" and "Få kvar".
-- `ButtonCount` is a number in a small square on a button: dark on the light "Filter" button, light (`tone="light"`) on the dark cart button.
+- `ButtonCount` is a number in a small dark square on a button, used by the light "Filter" button.
   - The button's `aria-label` says what the number is, e.g. "Varukorg, 2 grejer".
   - It takes no more height than its own text, so the button keeps its height.
 - `SearchField` is a `<form role="search">` with the search icon in a field box (`<app-search-field label="Sök bland grejerna">`), used by the shop's filter and the CMS's order list.
@@ -128,7 +128,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - The row itself sticks, instead of a separate buy bar, so the page never shows two buy buttons.
   - `scroll-padding-bottom` keeps the keyboard focus above it.
   - It does not stick on screens lower than 480 px (e.g. when zoomed in), where it would cover too much.
-- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's main image when it is added) and a `QuantityStepper`, plus the products, the shipping and the total, and an empty state. Its button in the header is a bag icon with the number of products in a `ButtonCount`, also when the cart is empty, and its `aria-label` says "Varukorg, 2 grejer". On a phone it is as tall as the menu button beside it.
+- The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's main image when it is added) and a `QuantityStepper`, plus the products, the shipping and the total, and an empty state. Its button in the header is only a bag icon with the number of products beside it, also when the cart is empty, with no box or background. Both get the secondary text color on hover, and the whole button is the click area. Its `aria-label` says "Varukorg, 2 grejer". On a phone it is as tall as the menu button beside it, and from a tablet the number lines up with the page's edge.
   - The shipping is a copy of the API's rule (`core/shipping.ts`), only for showing. A row saved before shipping was built has no parcel, and then the cart shows the sum and "Frakten läggs till i kassan."
 - When something is added, `AddedToCart` shows a small popup under the cart button.
   - It closes itself after 5 seconds, which pause on hover or focus. It also closes with the cross or with Escape.

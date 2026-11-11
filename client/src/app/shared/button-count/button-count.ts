@@ -1,14 +1,11 @@
 import { Component, input } from '@angular/core';
 
-// A number in a small square on a button, e.g. "Filter 3" and "Varukorg 2". The button's
-// aria-label says what the number is.
-// <app-button-count [count]="3" tone="light" />
+// A number in a small square on a button, e.g. "Filter 3". The button's aria-label says what
+// the number is.
+// <app-button-count [count]="3" />
 @Component({
   selector: 'app-button-count',
-  host: {
-    class: 'text-label-xs',
-    '[class.light]': "tone() === 'light'",
-  },
+  host: { class: 'text-label-xs' },
   template: '{{ count() }}',
   styles: `
     // min-width and min-height let the square grow with the text. The negative margin makes it
@@ -23,15 +20,8 @@ import { Component, input } from '@angular/core';
       background: var(--color-bg-inverse);
       color: var(--color-text-on-inverse);
     }
-
-    :host(.light) {
-      background: var(--color-bg-surface);
-      color: var(--color-text-primary);
-    }
   `,
 })
 export class ButtonCount {
   readonly count = input.required<number>();
-  // Dark on a light button, light on a dark one.
-  readonly tone = input<'dark' | 'light'>('dark');
 }

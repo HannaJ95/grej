@@ -123,16 +123,16 @@
 .footer-logo {
   display: flex;
   justify-content: space-between;
-  margin: var(--space-48) 0 var(--space-20);
+  margin: var(--space-32) 0 var(--space-20);
   font-size: min(var(--font-size-display-wordmark), 42vw);
   letter-spacing: 0;
 
   @media (width >= 48rem) {
-    margin: var(--space-72) 0 var(--space-32);
+    margin: var(--space-48) 0 var(--space-32);
   }
 
   @media (width >= 64rem) {
-    margin-top: var(--space-112);
+    margin-top: var(--space-64);
   }
 }
 
