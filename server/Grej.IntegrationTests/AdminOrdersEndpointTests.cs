@@ -100,14 +100,14 @@ public class AdminOrdersEndpointTests : IClassFixture<WebApplicationFactory<Prog
     public async Task GetPage_Search_FindsNumberNameEmailOrProduct_IgnoringCase()
     {
         var anna = await AddOrderAsync(PaidBy("Anna Svensson", "anna@example.com"));
-        var erik = await AddOrderAsync(PaidBy("Erik Berg", "erik@grej.se"));
+        var erik = await AddOrderAsync(PaidBy("Erik Berg", "erik.berg@example.com"));
         var pot = await AddOrderAsync(Pay, title: "Kruka i lera");
         var client = await CreateAdminClientAsync();
 
         // The number without "GREJ-", in lower case.
         Assert.Equal([erik.Id], await SearchAsync(client, erik.OrderNumber[5..].ToLowerInvariant()));
         Assert.Equal([anna.Id], await SearchAsync(client, "ANNA"));
-        Assert.Equal([erik.Id], await SearchAsync(client, "grej.se"));
+        Assert.Equal([erik.Id], await SearchAsync(client, "berg@example"));
         Assert.Equal([pot.Id], await SearchAsync(client, "kruka"));
     }
 
