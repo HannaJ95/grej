@@ -33,7 +33,7 @@ describe('AdminMainCategories', () => {
     name: 'Textil',
     parentId: null,
     parentName: null,
-    productCount: 1,
+    productCount: 0,
     subcategoryCount: 0,
   };
 
@@ -64,11 +64,21 @@ describe('AdminMainCategories', () => {
     expect(texts('main .row .name')).toEqual(['Keramik', 'Textil']);
     expect(texts('main .row .meta')).toEqual([
       '1 underkategori · 42 produkter',
-      '0 underkategorier · 1 produkt',
+      '0 underkategorier · 0 produkter',
     ]);
     expect(page().querySelector('.sidebar a[href="/admin/kategorier"]')?.textContent).toContain(
       'Huvudkategorier 2',
     );
+  });
+
+  it('links a product count to the product list with the category chosen, but not 0', async () => {
+    await open('/admin/kategorier');
+
+    expect(hrefs('main .row .meta a')).toEqual([
+      '/admin/underkategorier/3',
+      '/admin/produkter?kategori=3',
+      '/admin/underkategorier/4',
+    ]);
   });
 
   it('creates a main category and fetches the list again', async () => {
@@ -167,6 +177,10 @@ describe('AdminMainCategories', () => {
     return [...page().querySelectorAll(selector)].map((e) =>
       e.textContent!.replace(/\s+/g, ' ').trim(),
     );
+  }
+
+  function hrefs(selector: string): (string | null)[] {
+    return [...page().querySelectorAll(selector)].map((e) => e.getAttribute('href'));
   }
 
   // Types into an input the way a user does, so Signal Forms sees the change.

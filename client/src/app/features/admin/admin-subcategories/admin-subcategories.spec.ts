@@ -42,6 +42,10 @@ describe('AdminSubcategories', () => {
     );
     expect(texts('main .row .name')).toEqual(['Skålar', 'Vaser']);
     expect(texts('main .row .meta')).toEqual(['12 produkter', '1 produkt']);
+    // The product list with only that subcategory chosen.
+    expect(
+      [...page().querySelectorAll('main .row .meta a')].map((a) => a.getAttribute('href')),
+    ).toEqual(['/admin/produkter?kategori=5', '/admin/produkter?kategori=6']);
   });
 
   it("shows a main category's own page, marked in the menu with each main category", async () => {

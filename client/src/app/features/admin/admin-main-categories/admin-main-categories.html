@@ -34,7 +34,15 @@
                   >{{ c.subcategoryCount }}
                   {{ c.subcategoryCount === 1 ? 'underkategori' : 'underkategorier' }}</a
                 >
-                · {{ c.productCount }} {{ c.productCount === 1 ? 'produkt' : 'produkter' }}
+                ·
+                <!-- The list counts the subcategories' products too, like this number. -->
+                @if (c.productCount > 0) {
+                  <a routerLink="/admin/produkter" [queryParams]="{ kategori: c.id }"
+                    >{{ c.productCount }} {{ c.productCount === 1 ? 'produkt' : 'produkter' }}</a
+                  >
+                } @else {
+                  0 produkter
+                }
               </span>
               <span class="actions">
                 <!-- The name in aria-label tells the many "Redigera" buttons apart. -->
