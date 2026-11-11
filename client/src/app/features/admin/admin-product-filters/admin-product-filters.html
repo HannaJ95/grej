@@ -17,12 +17,22 @@
       >
         <option value="" [selected]="query().categoryId === undefined">Alla kategorier</option>
         @for (group of categoryGroups(); track group.main.id) {
-          <optgroup [label]="group.main.name">
-            <option [value]="group.main.id" [selected]="group.main.id === query().categoryId">
+          <optgroup class="text-badge" [label]="group.main.name">
+            <option
+              class="text-body-m-compact"
+              [value]="group.main.id"
+              [selected]="group.main.id === query().categoryId"
+            >
               Alla i {{ group.main.name }}
             </option>
             @for (s of group.subcategories; track s.id) {
-              <option [value]="s.id" [selected]="s.id === query().categoryId">{{ s.name }}</option>
+              <option
+                class="text-body-m-compact"
+                [value]="s.id"
+                [selected]="s.id === query().categoryId"
+              >
+                {{ s.name }}
+              </option>
             }
           </optgroup>
         }

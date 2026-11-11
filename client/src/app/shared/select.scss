@@ -57,11 +57,9 @@
     box-shadow: var(--shadow-popover);
   }
 
-  // The same weight for all, since the check marks the chosen one.
   .select option {
     gap: var(--space-16);
     padding: var(--space-12) var(--space-16);
-    font-weight: inherit;
 
     &:hover,
     &:focus-visible {
@@ -82,6 +80,25 @@
       background: currentColor;
       content: '';
       mask: url('/icons/check.svg') center / contain no-repeat;
+    }
+  }
+
+  // The same weight for all, since the check marks the chosen one. An option in a group gets its
+  // text style from its own class instead of the group's.
+  .select select > option {
+    font-weight: inherit;
+  }
+
+  // The group's name is a small heading with room above, and its options are indented below it.
+  // The negative margin lets their hover reach the list's edges.
+  .select optgroup {
+    padding: var(--space-16) var(--space-16) var(--space-4);
+    color: var(--color-text-secondary);
+
+    option {
+      margin-inline: calc(var(--space-16) * -1);
+      padding-left: var(--space-32);
+      color: var(--color-text-primary);
     }
   }
 }
