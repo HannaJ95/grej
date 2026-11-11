@@ -110,6 +110,25 @@ namespace Grej.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<decimal?>("ItemDiameterCm")
+                        .HasPrecision(4, 1)
+                        .HasColumnType("numeric(4,1)");
+
+                    b.Property<decimal?>("ItemHeightCm")
+                        .HasPrecision(4, 1)
+                        .HasColumnType("numeric(4,1)");
+
+                    b.Property<decimal?>("ItemLengthCm")
+                        .HasPrecision(4, 1)
+                        .HasColumnType("numeric(4,1)");
+
+                    b.Property<int?>("ItemWeightGrams")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("ItemWidthCm")
+                        .HasPrecision(4, 1)
+                        .HasColumnType("numeric(4,1)");
+
                     b.Property<int>("LengthCm")
                         .HasColumnType("integer");
 

@@ -16,9 +16,10 @@ describe('AddedToCart', () => {
     materials: [],
     colors: [],
     parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
+    size: { lengthCm: null, widthCm: null, heightCm: null, diameterCm: null, weightGrams: null },
   };
 
-  // vi.useFakeTimers: the test moves the clock itself, instead of waiting 5 real seconds.
+  // The test moves the clock instead of waiting 5 real seconds.
   beforeEach(() => {
     localStorage.clear();
     vi.useFakeTimers();

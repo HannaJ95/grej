@@ -1,7 +1,6 @@
 namespace Grej.Application.Catalog;
 
-// What the admin sees of a product in the CMS. Unlike ProductDto, it includes
-// IsActive, and Stock is the real value, also below 0 (constraints.md).
+// Unlike ProductDto: IsActive, and the real stock, also below 0 (constraints.md).
 public record AdminProductDto(
     int Id,
     string Title,
@@ -11,9 +10,9 @@ public record AdminProductDto(
     int Stock,
     bool IsActive,
     int CategoryId,
-    // The ids the form ticks in its checkboxes.
+    // Ids for the form's checkboxes, where ProductDto has the names.
     IReadOnlyList<int> MaterialIds,
     IReadOnlyList<int> ColorIds,
-    // In order, the main image first, as in ProductDto.
     IReadOnlyList<ProductImageDto> Images,
-    ParcelDto Parcel);
+    ParcelDto Parcel,
+    ProductSizeDto Size);

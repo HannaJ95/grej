@@ -1,7 +1,6 @@
 namespace Grej.Application.Catalog;
 
-// What a customer sees of a product. IsActive is left out on purpose, and
-// Stock is never below 0 here (see ProductService.ToDto).
+// No IsActive, and Stock is never below 0 (ProductService.ToDto).
 public record ProductDto(
     int Id,
     string Title,
@@ -10,9 +9,10 @@ public record ProductDto(
     string Currency,
     int Stock,
     bool IsSoldOut,
-    // The main image first, which the lists and the cart show. Empty if the product has none.
+    // The main image first.
     IReadOnlyList<ProductImageDto> Images,
-    // Only the names, sorted, e.g. ["Glas", "Keramik"]. Empty if the product has none.
+    // Names, sorted.
     IReadOnlyList<string> Materials,
     IReadOnlyList<string> Colors,
-    ParcelDto Parcel);
+    ParcelDto Parcel,
+    ProductSizeDto Size);

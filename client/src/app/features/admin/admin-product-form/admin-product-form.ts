@@ -16,6 +16,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AdminCategoryService } from '../../../core/admin-category.service';
 import { categoryLabel } from '../../../core/category';
 import { ConfirmService } from '../../../core/confirm.service';
+import { ProductSize } from '../../../core/product-size';
 import { ToastService } from '../../../core/toast.service';
 import {
   AdminProduct,
@@ -51,6 +52,7 @@ interface ProductFormModel {
     widthCm: number | null;
     heightCm: number | null;
   };
+  size: ProductSize;
 }
 
 // A new product starts as a hidden draft with one item, since most art is unique. The parcel
@@ -65,6 +67,7 @@ const NEW_PRODUCT: ProductFormModel = {
   materialIds: [],
   colorIds: [],
   parcel: { weightGrams: null, lengthCm: null, widthCm: null, heightCm: null },
+  size: { lengthCm: null, widthCm: null, heightCm: null, diameterCm: null, weightGrams: null },
 };
 
 // /admin/produkter/ny creates a product, /admin/produkter/7 edits or deletes one.
@@ -100,7 +103,6 @@ export class AdminProductForm {
   readonly id = input<string>();
   protected readonly isNew = computed(() => this.id() === undefined);
 
-  // As the API has it. Nothing is fetched for a new one.
   protected readonly product = this.products.getProduct(this.id);
   protected readonly loadedProduct = computed(() =>
     this.product.hasValue() ? this.product.value() : undefined,
@@ -146,6 +148,13 @@ export class AdminProductForm {
       parcelRules(field.parcel.lengthCm, 'Längden', 'cm', 300);
       parcelRules(field.parcel.widthCm, 'Bredden', 'cm', 300);
       parcelRules(field.parcel.heightCm, 'Höjden', 'cm', 300);
+      // ProductSizeRequest in the API.
+      sizeRules(field.size.lengthCm, 'Längden');
+      sizeRules(field.size.widthCm, 'Bredden');
+      sizeRules(field.size.heightCm, 'Höjden');
+      sizeRules(field.size.diameterCm, 'Diametern');
+      rangeRules(field.size.weightGrams, 'Vikten', 'g', 1, 100_000);
+      wholeNumber(field.size.weightGrams, 'Vikten måste vara ett heltal.');
     },
     { submission: { action: () => this.save() } },
   );
@@ -159,6 +168,11 @@ export class AdminProductForm {
   protected readonly lengthError = computed(() => firstError(this.productForm.parcel.lengthCm));
   protected readonly widthError = computed(() => firstError(this.productForm.parcel.widthCm));
   protected readonly heightError = computed(() => firstError(this.productForm.parcel.heightCm));
+  protected readonly sizeLengthError = computed(() => firstError(this.productForm.size.lengthCm));
+  protected readonly sizeWidthError = computed(() => firstError(this.productForm.size.widthCm));
+  protected readonly sizeHeightError = computed(() => firstError(this.productForm.size.heightCm));
+  protected readonly sizeDiameterError = computed(() => firstError(this.productForm.size.diameterCm));
+  protected readonly sizeWeightError = computed(() => firstError(this.productForm.size.weightGrams));
   protected readonly saveError = computed(() => this.productForm().errors()[0]?.message);
   protected readonly removeError = signal<string | undefined>(undefined);
 
@@ -198,7 +212,6 @@ export class AdminProductForm {
     }
   }
 
-  // Creates the product, uploads the chosen image and opens the product's own page.
   private async create(input: ProductInput) {
     const image = this.imageCard()?.pendingImage() ?? null;
     if (image === 'invalid') {
@@ -254,6 +267,7 @@ function toModel(product: AdminProduct): ProductFormModel {
     materialIds: product.materialIds,
     colorIds: product.colorIds,
     parcel: product.parcel,
+    size: product.size,
   };
 }
 
@@ -286,7 +300,31 @@ function wholeNumber(path: SchemaPath<number | null>, message: string): void {
 // "what" starts the messages, e.g. "Längden får vara högst 300 cm."
 function parcelRules(path: SchemaPath<number | null>, what: string, unit: string, highest: number): void {
   required(path, { message: `Fyll i ${what.toLowerCase()}.` });
-  min(path, 1, { message: `${what} måste vara minst 1 ${unit}.` });
-  max(path, highest, { message: `${what} får vara högst ${highest.toLocaleString('sv-SE')} ${unit}.` });
+  rangeRules(path, what, unit, 1, highest);
   wholeNumber(path, `${what} måste vara ett heltal.`);
+}
+
+// Optional, so an empty field passes, like in min() and max().
+function sizeRules(path: SchemaPath<number | null>, what: string): void {
+  rangeRules(path, what, 'cm', 0.1, 999.9);
+  validate(path, ({ value }) => {
+    const number = value();
+    // Not exact, since e.g. 1.1 * 10 is 11.000000000000002 in floating point.
+    const tenths = number === null ? 0 : number * 10;
+    return Math.abs(tenths - Math.round(tenths)) > 1e-9
+      ? { kind: 'decimals', message: `${what} får ha högst en decimal.` }
+      : undefined;
+  });
+}
+
+function rangeRules(
+  path: SchemaPath<number | null>,
+  what: string,
+  unit: string,
+  lowest: number,
+  highest: number,
+): void {
+  const swedish = (n: number) => n.toLocaleString('sv-SE');
+  min(path, lowest, { message: `${what} måste vara minst ${swedish(lowest)} ${unit}.` });
+  max(path, highest, { message: `${what} får vara högst ${swedish(highest)} ${unit}.` });
 }

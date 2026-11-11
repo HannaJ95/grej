@@ -35,25 +35,6 @@
         </p>
       }
 
-      <!-- Only what the product has. A description list, since each row is a heading and
-           its value, e.g. "Färg: Blå, Vit". -->
-      @if (p.materials.length > 0 || p.colors.length > 0) {
-        <dl class="properties">
-          @if (p.materials.length > 0) {
-            <div class="property">
-              <dt class="text-label-xs">Material</dt>
-              <dd class="text-body-s">{{ p.materials.join(', ') }}</dd>
-            </div>
-          }
-          @if (p.colors.length > 0) {
-            <div class="property">
-              <dt class="text-label-xs">Färg</dt>
-              <dd class="text-body-s">{{ p.colors.join(', ') }}</dd>
-            </div>
-          }
-        </dl>
-      }
-
       @if (!p.isSoldOut) {
         <div class="buy">
           <app-quantity-stepper
@@ -81,16 +62,61 @@
         </p>
       }
 
-      <!-- Closed until it is opened, or "Mer information" opens it. Always the whole text. -->
-      @if (p.description) {
-        <details #details class="details">
-          <summary class="text-heading-xs">
-            Beskrivning
-            <app-icon class="icon-plus" name="plus" />
-            <app-icon class="icon-minus" name="minus" />
-          </summary>
-          <p class="description text-body-m">{{ p.description }}</p>
-        </details>
+      @let hasDetails = p.materials.length > 0 || p.colors.length > 0 || size() || weight();
+      @if (p.description || hasDetails) {
+        <div class="folds">
+          <!-- "Mer information" opens it too. -->
+          @if (p.description) {
+            <details #description class="fold">
+              <summary class="text-heading-xs">
+                Beskrivning
+                <app-icon class="icon-plus" name="plus" />
+                <app-icon class="icon-minus" name="minus" />
+              </summary>
+              <p class="description text-body-m">{{ p.description }}</p>
+            </details>
+          }
+
+          <!-- Only the rows the product has. -->
+          @if (hasDetails) {
+            <details class="fold">
+              <summary class="text-heading-xs">
+                Detaljer
+                <app-icon class="icon-plus" name="plus" />
+                <app-icon class="icon-minus" name="minus" />
+              </summary>
+              <dl class="properties">
+                @if (p.materials.length > 0) {
+                  <div class="property">
+                    <dt class="text-label-xs">Material</dt>
+                    <dd class="text-body-s">{{ p.materials.join(', ') }}</dd>
+                  </div>
+                }
+                @if (p.colors.length > 0) {
+                  <div class="property">
+                    <dt class="text-label-xs">Färg</dt>
+                    <dd class="text-body-s">{{ p.colors.join(', ') }}</dd>
+                  </div>
+                }
+                @if (size(); as s) {
+                  <div class="property">
+                    <dt class="text-label-xs">Mått</dt>
+                    <dd class="text-body-s">
+                      <span aria-hidden="true">{{ s.shown }}</span>
+                      <span class="visually-hidden">{{ s.spoken }}</span>
+                    </dd>
+                  </div>
+                }
+                @if (weight(); as w) {
+                  <div class="property">
+                    <dt class="text-label-xs">Vikt</dt>
+                    <dd class="text-body-s">{{ w }}</dd>
+                  </div>
+                }
+              </dl>
+            </details>
+          }
+        </div>
       }
     </div>
   </article>

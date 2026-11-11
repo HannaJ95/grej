@@ -8,16 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Grej.IntegrationTests;
 
-// Tests DemoSeeder.SeedAsync with the real demo-catalog.json, EF Core's in-memory database
-// and a fake image storage. The TRUNCATE in ResetAsync only works in PostgreSQL, so it is
-// tested by running reset-demo.
+// The TRUNCATE in ResetAsync only works in PostgreSQL, so it is tested by running reset-demo.
 public class DemoSeederTests
 {
     private readonly DemoCatalog catalog = DemoCatalog.Load();
     private readonly FakeImageStorage storage = new();
 
-    // The seed and the checks use one context each on the same in-memory database, so the
-    // checks see what was saved and not what the seed's context remembers.
+    // One context each for the seed and the checks, so the checks see what was really saved.
     private readonly DbContextOptions<GrejDbContext> options = new DbContextOptionsBuilder<GrejDbContext>()
         .UseInMemoryDatabase(Guid.NewGuid().ToString())
         .Options;
@@ -31,9 +28,7 @@ public class DemoSeederTests
         var categories = await db.Categories.ToDictionaryAsync(c => c.Id);
         var products = await db.Products.ToListAsync();
 
-        // The file and the database written as the same kind of lines, which must match. A
-        // product in a subcategory is written "Keramik › Skålar och fat", so the test also checks
-        // that the subcategory is under the right main category.
+        // "Keramik › Skålar och fat" also checks that a subcategory is under the right main category.
         var expected = catalog.Categories.SelectMany(c => c.Products.Select(p => Describe(
             p.Subcategory is null ? c.Name : $"{c.Name} › {p.Subcategory}",
             p.Title, p.Price, p.Stock, p.IsActive, p.Materials, p.Colors)));
@@ -95,6 +90,27 @@ public class DemoSeederTests
     }
 
     [Fact]
+    public async Task SeedAsync_CopiesTheProductsSize()
+    {
+        // Set here, so the test does not depend on the file's sizes.
+        var category = catalog.Categories[0];
+        var product = category.Products[0] with
+        {
+            Size = new ProductSizeRequest { LengthCm = 1m, WidthCm = 2m, HeightCm = 3m, DiameterCm = 4.5m, WeightGrams = 6 },
+        };
+        var changed = catalog with
+        {
+            Categories = [category with { Products = [product, .. category.Products.Skip(1)] }, .. catalog.Categories.Skip(1)],
+        };
+
+        await SeedAsync(changed);
+
+        await using var db = new GrejDbContext(options);
+        var saved = await db.Products.SingleAsync(p => p.Title == product.Title);
+        Assert.Equal((1m, 2m, 3m, 4.5m, 6), (saved.ItemLengthCm, saved.ItemWidthCm, saved.ItemHeightCm, saved.ItemDiameterCm, saved.ItemWeightGrams));
+    }
+
+    [Fact]
     public async Task SeedAsync_MixesTheCategories_SoTheShopsFirstPageHasThemAll()
     {
         await SeedAsync();
@@ -117,7 +133,7 @@ public class DemoSeederTests
         await using var db = new GrejDbContext(options);
         var orders = await db.Orders.Include(o => o.Items).Include(o => o.Payment).OrderBy(o => o.Id).ToListAsync();
 
-        // In the file's order. Zip pairs each demo order with the saved one in the same place.
+        // In the file's order.
         Assert.Equal(catalog.Orders.Count, orders.Count);
         Assert.All(catalog.Orders.Zip(orders), pair =>
         {
@@ -139,8 +155,8 @@ public class DemoSeederTests
         await DemoSeeder.SeedAsync(db, storage, changed ?? catalog, "admin-id");
     }
 
-    // One line per product, e.g. "Keramik: Skål i blå glasyr, 349, 6, True, Stengods, Blå".
-    // E.g. "Keramik" for a main category and "Keramik › Skålar och fat" for a subcategory.
+    // E.g. "Keramik: Skål i blå glasyr, 349, 6, True, Stengods, Blå".
+    // "Keramik" or "Keramik › Skålar och fat".
     private static string CategoryLabel(Dictionary<int, Category> categories, int id)
     {
         var category = categories[id];

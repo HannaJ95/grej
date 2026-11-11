@@ -64,7 +64,8 @@
           "isActive": true,
           "materials": ["Stengods"],
           "colors": ["Vit"],
-          "parcel": { "weightGrams": 600, "lengthCm": 18, "widthCm": 15, "heightCm": 15 }
+          "parcel": { "weightGrams": 600, "lengthCm": 18, "widthCm": 15, "heightCm": 15 },
+          "size": { "weightGrams": 350 }
         },
         {
           "title": "Hög vas i grönt",
@@ -76,6 +77,7 @@
           "materials": ["Stengods"],
           "colors": ["Grön"],
           "parcel": { "weightGrams": 1800, "lengthCm": 40, "widthCm": 20, "heightCm": 20 },
+          "size": { "heightCm": 30, "weightGrams": 1200 },
           "images": [
             { "file": "rectanglerounded.png", "altText": "Platshållarbild: en svart rektangel med rundade hörn på vit bakgrund" },
             { "file": "ellipserotatedunfilled.png", "altText": "Platshållarbild: en lutande svart oval ring på vit bakgrund" }
@@ -106,7 +108,8 @@
           "isActive": true,
           "materials": ["Stengods"],
           "colors": ["Grå", "Beige"],
-          "parcel": { "weightGrams": 2500, "lengthCm": 45, "widthCm": 45, "heightCm": 12 }
+          "parcel": { "weightGrams": 2500, "lengthCm": 45, "widthCm": 45, "heightCm": 12 },
+          "size": { "diameterCm": 34, "weightGrams": 1900 }
         },
         {
           "title": "Ljusstake för kronljus",
@@ -148,6 +151,7 @@
           "materials": ["Lergods"],
           "colors": ["Terrakotta"],
           "parcel": { "weightGrams": 2000, "lengthCm": 30, "widthCm": 30, "heightCm": 28 },
+          "size": { "diameterCm": 14 },
           "images": [
             { "file": "squarecirklerounded.png", "altText": "Platshållarbild: en svart valvform med rundade hörn på vit bakgrund" },
             { "file": "squarecirkle.png", "altText": "Platshållarbild: en svart valvform på vit bakgrund" },
@@ -182,6 +186,7 @@
           "materials": ["Linne"],
           "colors": ["Beige"],
           "parcel": { "weightGrams": 200, "lengthCm": 25, "widthCm": 20, "heightCm": 3 },
+          "size": { "lengthCm": 70, "widthCm": 50 },
           "images": [
             { "file": "square.png", "altText": "Platshållarbild: en svart kvadrat på vit bakgrund" },
             { "file": "squarerounded.png", "altText": "Platshållarbild: en svart kvadrat med rundade hörn på vit bakgrund" }
@@ -195,7 +200,8 @@
           "isActive": true,
           "materials": ["Ull"],
           "colors": ["Grå", "Vit"],
-          "parcel": { "weightGrams": 900, "lengthCm": 45, "widthCm": 35, "heightCm": 12 }
+          "parcel": { "weightGrams": 900, "lengthCm": 45, "widthCm": 35, "heightCm": 12 },
+          "size": { "widthCm": 50, "heightCm": 50 }
         },
         {
           "title": "Handvävd löpare",
@@ -206,6 +212,7 @@
           "materials": ["Bomull", "Linne"],
           "colors": ["Blå", "Vit"],
           "parcel": { "weightGrams": 400, "lengthCm": 35, "widthCm": 25, "heightCm": 5 },
+          "size": { "lengthCm": 140, "widthCm": 35 },
           "images": [
             { "file": "ellipserotatedunfilled.png", "altText": "Platshållarbild: en lutande svart oval ring på vit bakgrund" },
             { "file": "cirkleunfilled.png", "altText": "Platshållarbild: en svart ring på vit bakgrund" },
@@ -231,6 +238,7 @@
           "materials": ["Ull"],
           "colors": ["Röd", "Brun"],
           "parcel": { "weightGrams": 1300, "lengthCm": 45, "widthCm": 35, "heightCm": 12 },
+          "size": { "lengthCm": 180, "widthCm": 130, "weightGrams": 1000 },
           "images": [
             { "file": "twocirkesquare_unfilled.png", "altText": "Platshållarbild: konturen av en svart form med två rundade toppar på vit bakgrund" },
             { "file": "twocirkesquare.png", "altText": "Platshållarbild: en svart form med två rundade toppar på vit bakgrund" }
@@ -258,7 +266,8 @@
           "isActive": true,
           "materials": ["Linne"],
           "colors": ["Vit"],
-          "parcel": { "weightGrams": 700, "lengthCm": 35, "widthCm": 30, "heightCm": 5 }
+          "parcel": { "weightGrams": 700, "lengthCm": 35, "widthCm": 30, "heightCm": 5 },
+          "size": { "lengthCm": 250, "widthCm": 150 }
         },
         {
           "title": "Korg i bomullsrep",
@@ -269,6 +278,7 @@
           "materials": ["Bomull"],
           "colors": ["Vit", "Svart"],
           "parcel": { "weightGrams": 800, "lengthCm": 32, "widthCm": 32, "heightCm": 25 },
+          "size": { "heightCm": 25 },
           "images": [
             { "file": "halfcirkle.png", "altText": "Platshållarbild: en svart halvcirkel på vit bakgrund" },
             { "file": "squarecirklerounded.png", "altText": "Platshållarbild: en svart valvform med rundade hörn på vit bakgrund" },
@@ -294,6 +304,7 @@
           "materials": ["Papper", "Akvarellfärg"],
           "colors": ["Blå", "Rosa"],
           "parcel": { "weightGrams": 800, "lengthCm": 50, "widthCm": 40, "heightCm": 4 },
+          "size": { "widthCm": 30, "heightCm": 40 },
           "images": [
             { "file": "cirkleunfilled.png", "altText": "Platshållarbild: en svart ring på vit bakgrund" },
             { "file": "ellipserotatedunfilled.png", "altText": "Platshållarbild: en lutande svart oval ring på vit bakgrund" },
@@ -310,6 +321,7 @@
           "materials": ["Duk", "Akrylfärg"],
           "colors": ["Röd", "Grön"],
           "parcel": { "weightGrams": 2500, "lengthCm": 80, "widthCm": 65, "heightCm": 8 },
+          "size": { "widthCm": 50, "heightCm": 70 },
           "images": [
             { "file": "squarecirkle.png", "altText": "Platshållarbild: en svart valvform på vit bakgrund" }
           ]
@@ -323,7 +335,8 @@
           "isActive": true,
           "materials": ["Papper"],
           "colors": ["Svart", "Vit"],
-          "parcel": { "weightGrams": 400, "lengthCm": 45, "widthCm": 35, "heightCm": 3 }
+          "parcel": { "weightGrams": 400, "lengthCm": 45, "widthCm": 35, "heightCm": 3 },
+          "size": { "widthCm": 21, "heightCm": 30 }
         },
         {
           "title": "Blommor, konsttryck",
@@ -335,6 +348,7 @@
           "materials": ["Papper"],
           "colors": ["Gul", "Rosa", "Grön"],
           "parcel": { "weightGrams": 300, "lengthCm": 55, "widthCm": 8, "heightCm": 8 },
+          "size": { "widthCm": 30, "heightCm": 40 },
           "images": [
             { "file": "twocirkesquare.png", "altText": "Platshållarbild: en svart form med två rundade toppar på vit bakgrund" },
             { "file": "squarerounded.png", "altText": "Platshållarbild: en svart kvadrat med rundade hörn på vit bakgrund" },
@@ -353,6 +367,7 @@
           "materials": ["Papper", "Akvarellfärg"],
           "colors": ["Röd", "Gul"],
           "parcel": { "weightGrams": 700, "lengthCm": 45, "widthCm": 35, "heightCm": 4 },
+          "size": { "widthCm": 24, "heightCm": 32 },
           "images": [
             { "file": "halfcirkle.png", "altText": "Platshållarbild: en svart halvcirkel på vit bakgrund" },
             { "file": "rectanglerounded.png", "altText": "Platshållarbild: en svart rektangel med rundade hörn på vit bakgrund" }
@@ -368,6 +383,7 @@
           "materials": ["Duk", "Akrylfärg"],
           "colors": ["Blå", "Grå"],
           "parcel": { "weightGrams": 4000, "lengthCm": 120, "widthCm": 100, "heightCm": 8 },
+          "size": { "widthCm": 80, "heightCm": 100 },
           "images": [
             { "file": "ellipserotatedunfilled.png", "altText": "Platshållarbild: en lutande svart oval ring på vit bakgrund" },
             { "file": "rectanglerotated.png", "altText": "Platshållarbild: en lutande svart rektangel på vit bakgrund" }
@@ -383,6 +399,7 @@
           "materials": ["Papper"],
           "colors": ["Grå"],
           "parcel": { "weightGrams": 500, "lengthCm": 40, "widthCm": 30, "heightCm": 4 },
+          "size": { "widthCm": 21, "heightCm": 30 },
           "images": [
             { "file": "square.png", "altText": "Platshållarbild: en svart kvadrat på vit bakgrund" },
             { "file": "cirkleunfilled.png", "altText": "Platshållarbild: en svart ring på vit bakgrund" },
@@ -416,6 +433,7 @@
           "materials": ["Silver"],
           "colors": ["Silver"],
           "parcel": { "weightGrams": 100, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
+          "size": { "lengthCm": 2 },
           "images": [
             { "file": "squarecirklerounded.png", "altText": "Platshållarbild: en svart valvform med rundade hörn på vit bakgrund" },
             { "file": "cirkleunfilled.png", "altText": "Platshållarbild: en svart ring på vit bakgrund" }
@@ -429,7 +447,8 @@
           "isActive": true,
           "materials": ["Mässing"],
           "colors": ["Guld"],
-          "parcel": { "weightGrams": 120, "lengthCm": 15, "widthCm": 10, "heightCm": 5 }
+          "parcel": { "weightGrams": 120, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
+          "size": { "lengthCm": 45 }
         },
         {
           "title": "Hamrad silverring",
@@ -440,6 +459,7 @@
           "materials": ["Silver"],
           "colors": ["Silver"],
           "parcel": { "weightGrams": 80, "lengthCm": 10, "widthCm": 10, "heightCm": 5 },
+          "size": { "diameterCm": 1.7, "weightGrams": 8 },
           "images": [
             { "file": "cirkleunfilled.png", "altText": "Platshållarbild: en svart ring på vit bakgrund" },
             { "file": "ellipserotatedunfilled.png", "altText": "Platshållarbild: en lutande svart oval ring på vit bakgrund" },
@@ -468,7 +488,8 @@
           "isActive": true,
           "materials": ["Mässing"],
           "colors": ["Guld"],
-          "parcel": { "weightGrams": 100, "lengthCm": 15, "widthCm": 10, "heightCm": 5 }
+          "parcel": { "weightGrams": 100, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
+          "size": { "diameterCm": 4 }
         },
         {
           "title": "Brosch i silver",
@@ -494,6 +515,7 @@
           "materials": ["Silver"],
           "colors": ["Silver"],
           "parcel": { "weightGrams": 80, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
+          "size": { "lengthCm": 50 },
           "images": [
             { "file": "rectanglerotated.png", "altText": "Platshållarbild: en lutande svart rektangel på vit bakgrund" },
             { "file": "square.png", "altText": "Platshållarbild: en svart kvadrat på vit bakgrund" }
@@ -530,6 +552,7 @@
           "materials": ["Ek"],
           "colors": ["Brun"],
           "parcel": { "weightGrams": 1500, "lengthCm": 45, "widthCm": 28, "heightCm": 5 },
+          "size": { "lengthCm": 40, "widthCm": 25, "weightGrams": 1100 },
           "images": [
             { "file": "square.png", "altText": "Platshållarbild: en svart kvadrat på vit bakgrund" },
             { "file": "rectanglerounded.png", "altText": "Platshållarbild: en svart rektangel med rundade hörn på vit bakgrund" },
@@ -556,6 +579,7 @@
           "materials": ["Björk"],
           "colors": ["Beige"],
           "parcel": { "weightGrams": 250, "lengthCm": 35, "widthCm": 12, "heightCm": 5 },
+          "size": { "lengthCm": 30 },
           "images": [
             { "file": "rectanglerotated.png", "altText": "Platshållarbild: en lutande svart rektangel på vit bakgrund" },
             { "file": "halfcirkle.png", "altText": "Platshållarbild: en svart halvcirkel på vit bakgrund" }
@@ -570,6 +594,7 @@
           "materials": ["Valnöt"],
           "colors": ["Brun"],
           "parcel": { "weightGrams": 900, "lengthCm": 30, "widthCm": 30, "heightCm": 14 },
+          "size": { "diameterCm": 22 },
           "images": [
             { "file": "cirkle.png", "altText": "Platshållarbild: en svart cirkel på vit bakgrund" },
             { "file": "cirkleunfilled.png", "altText": "Platshållarbild: en svart ring på vit bakgrund" },
@@ -584,7 +609,8 @@
           "isActive": true,
           "materials": ["Ek"],
           "colors": ["Brun"],
-          "parcel": { "weightGrams": 700, "lengthCm": 25, "widthCm": 15, "heightCm": 15 }
+          "parcel": { "weightGrams": 700, "lengthCm": 25, "widthCm": 15, "heightCm": 15 },
+          "size": { "lengthCm": 40 }
         },
         {
           "title": "Glasunderlägg, fyra stycken",
@@ -595,6 +621,7 @@
           "materials": ["Ek"],
           "colors": ["Brun"],
           "parcel": { "weightGrams": 300, "lengthCm": 15, "widthCm": 15, "heightCm": 6 },
+          "size": { "diameterCm": 10 },
           "images": [
             { "file": "squarerounded.png", "altText": "Platshållarbild: en svart kvadrat med rundade hörn på vit bakgrund" },
             { "file": "twocirkesquare_unfilled.png", "altText": "Platshållarbild: konturen av en svart form med två rundade toppar på vit bakgrund" }

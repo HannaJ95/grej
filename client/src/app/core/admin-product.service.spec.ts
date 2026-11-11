@@ -17,6 +17,7 @@ describe('AdminProductService', () => {
     materialIds: [3],
     colorIds: [],
     parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
+    size: { lengthCm: null, widthCm: null, heightCm: null, diameterCm: null, weightGrams: null },
   };
   const image = { id: 12, url: 'https://storage.test/vas.png', altText: 'En blå vas' };
 

@@ -4,8 +4,7 @@ using Grej.Domain.Catalog;
 
 namespace Grej.Application.Catalog;
 
-// Use cases for products in the CMS. Unlike ProductService, which is for the shop,
-// the admin sees every product, hidden ones too. Only admin endpoints use it.
+// The CMS's product use cases. Unlike ProductService, they include hidden products.
 public class AdminProductService(
     IProductRepository products,
     ICategoryRepository categories,
@@ -14,7 +13,6 @@ public class AdminProductService(
     OrderService orders,
     IImageStorage images)
 {
-    // One page of all products, newest first.
     public async Task<PagedResult<AdminProductDto>> GetProductsAsync(ProductListQuery query, CancellationToken cancellationToken)
     {
         var page = await products.GetPageAsync(query.Page, query.PageSize, cancellationToken);
@@ -26,18 +24,15 @@ public class AdminProductService(
             page.TotalCount);
     }
 
-    // Null if no product has this id. Hidden products are included.
     public async Task<AdminProductDto?> GetProductAsync(int id, CancellationToken cancellationToken)
     {
         var product = await products.GetByIdAsync(id, cancellationToken);
         return product is null ? null : ToDto(product);
     }
 
-    // sellerId is the logged-in admin, who becomes the product's owner. Null if the category,
-    // a material or a color in the request does not exist; nothing is saved then.
+    // Null, and nothing saved, if the category, a material or a color does not exist.
     public async Task<AdminProductDto?> CreateAsync(ProductRequest request, string sellerId, CancellationToken cancellationToken)
     {
-        // Title is required when a Product is created. TryApplyAsync then sets every other field.
         // The owner is only set here, so editing a product never changes it.
         var product = new Product { Title = request.Title, SellerId = sellerId };
         if (!await TryApplyAsync(request, product, cancellationToken))
@@ -48,7 +43,6 @@ public class AdminProductService(
         products.Add(product);
         await products.SaveChangesAsync(cancellationToken);
 
-        // The database has given the product its id now.
         return ToDto(product);
     }
 
@@ -60,10 +54,8 @@ public class AdminProductService(
             return UpdateProductResult.NotFound;
         }
 
-        // The stock has changed since the form was opened, e.g. a customer has paid.
-        // Saving the form's stock would undo that sale, so nothing is saved. (A sale in the
-        // milliseconds between here and SaveChangesAsync makes it throw instead, since
-        // Stock is a concurrency token in ProductConfiguration.)
+        // A customer has paid since the form was opened, and saving its stock would undo the
+        // sale. A sale right before SaveChangesAsync throws instead (the concurrency token).
         if (product.Stock != request.OriginalStock)
         {
             return UpdateProductResult.StockChanged;
@@ -89,10 +81,9 @@ public class AdminProductService(
             return DeleteProductResult.NotFound;
         }
 
-        // Old orders point to their products, so an ordered product is never hard
-        // deleted; the admin hides it instead (constraints.md). Asked through the Orders
-        // module's service, not its tables. The foreign key in OrderItemConfiguration
-        // also stops the delete if an order is created right now.
+        // Old orders point to their products, so the admin hides an ordered product instead
+        // (constraints.md). Asked through the Orders module's service, not its tables. The
+        // foreign key in OrderItemConfiguration also stops the delete if an order is created now.
         if (await orders.IsProductOrderedAsync(id, cancellationToken))
         {
             return DeleteProductResult.OnOrder;
@@ -132,8 +123,7 @@ public class AdminProductService(
         // image at the same address. The extension comes from the file's content, not its name.
         var path = $"products/{product.Id}/{Guid.NewGuid():N}{file.Extension}";
 
-        // Upload first, save after. If the save fails, the new file is only unused, but the
-        // database never points to a file that does not exist (like the checkout in architecture.md).
+        // Upload first, save after: a failed save leaves an unused file, never a row without one.
         var url = await images.UploadAsync(path, file, cancellationToken);
         product.AddImage(url, path, altText.Trim());
         await products.SaveChangesAsync(cancellationToken);
@@ -180,9 +170,8 @@ public class AdminProductService(
         return ImageChangeResult.Changed(product);
     }
 
-    // Copies the form's fields to the product. Used by both create and update. False if the
-    // category, a material or a color does not exist; the product is not changed then.
-    // "Try" as in int.TryParse: it answers with true or false instead of throwing.
+    // For both create and update. False, and the product unchanged, if the category, a material
+    // or a color does not exist.
     private async Task<bool> TryApplyAsync(ProductRequest request, Product product, CancellationToken cancellationToken)
     {
         if (!await categories.ExistsAsync(request.CategoryId, cancellationToken))
@@ -210,6 +199,11 @@ public class AdminProductService(
         product.LengthCm = request.Parcel.LengthCm;
         product.WidthCm = request.Parcel.WidthCm;
         product.HeightCm = request.Parcel.HeightCm;
+        product.ItemLengthCm = request.Size.LengthCm;
+        product.ItemWidthCm = request.Size.WidthCm;
+        product.ItemHeightCm = request.Size.HeightCm;
+        product.ItemDiameterCm = request.Size.DiameterCm;
+        product.ItemWeightGrams = request.Size.WeightGrams;
         product.SetMaterials(chosenMaterials);
         product.SetColors(chosenColors);
         return true;
@@ -227,5 +221,6 @@ public class AdminProductService(
         product.Materials.Select(material => material.Id).ToList(),
         product.Colors.Select(color => color.Id).ToList(),
         ProductImageDto.ListFrom(product),
-        ParcelDto.From(product));
+        ParcelDto.From(product),
+        ProductSizeDto.From(product));
 }

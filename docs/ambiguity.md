@@ -137,6 +137,10 @@ Why: Art is often large and light, so one fixed price would be far too low for a
 **Which weight and size does the admin enter?**
 Decision: The packed parcel's, in grams and centimetres, since that is what a shipping company weighs and measures. They are not shown in the shop.
 
+**How does the shop show the item's own size?**
+Decision: In fields of their own, apart from the parcel: length, width, height, diameter and weight, all optional (added 11 Nov). Only the filled-in ones are shown, e.g. "Ø 8 × H 9 cm" for a cup and "B 30 × H 40 cm" for a painting.
+Why: The parcel includes the packaging, so it would show the wrong size. With optional fields the admin decides what is relevant for each product, e.g. a diameter or no weight, without a setting per category.
+
 **How is the parcel worked out when an order has several products?**
 Decision: The weights and the volumes are added together, as if everything is packed in one box.
 Why: It is simple and needs no packing logic. The known limitations are in architecture.md.

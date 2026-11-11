@@ -5,22 +5,20 @@ using Grej.Domain.Orders;
 
 namespace Grej.Infrastructure.DemoData;
 
-// The demo shop's content, which `reset-demo` fills the database with. It is kept in
-// demo-catalog.json, so the texts can be changed without touching the code.
+// reset-demo's content. In a json file, so the texts can change without touching the code.
 public record DemoCatalog(
     IReadOnlyList<string> Materials,
     IReadOnlyList<string> Colors,
     IReadOnlyList<DemoCategory> Categories,
     IReadOnlyList<DemoOrder> Orders)
 {
-    // The csproj copies the DemoData folder next to the built program (bin/...), so the
-    // files are found wherever the program is started from.
+    // The csproj copies DemoData next to the built program, so it is found from any folder.
     private static readonly string Folder = Path.Combine(AppContext.BaseDirectory, "DemoData");
 
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {
-        // A misspelled, missing or null field stops the load, instead of quietly becoming
-        // null or 0. DemoCatalogTests loads the file, so `dotnet test` finds such a typo.
+        // A misspelled, missing or null field stops the load instead of becoming null or 0.
+        // DemoCatalogTests loads the file, so `dotnet test` finds a typo.
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
         RespectRequiredConstructorParameters = true,
         RespectNullableAnnotations = true,
@@ -33,7 +31,7 @@ public record DemoCatalog(
             ?? throw new InvalidOperationException("demo-catalog.json is empty.");
     }
 
-    // Reads e.g. "cirkle.png" from DemoData/Images, with the same check as an upload in the CMS.
+    // The same check as an upload in the CMS.
     public static ImageFile ReadImage(string fileName)
     {
         var content = File.ReadAllBytes(Path.Combine(Folder, "Images", fileName));
@@ -42,8 +40,7 @@ public record DemoCatalog(
     }
 }
 
-// A main category and its products. Image is for the products without images of their own.
-// Subcategories is optional: the names of its subcategories, which the products can choose.
+// Image is for the products without images of their own.
 public record DemoCategory(
     string Name,
     string Image,
@@ -51,13 +48,12 @@ public record DemoCategory(
     IReadOnlyList<DemoProduct> Products,
     IReadOnlyList<string>? Subcategories = null)
 {
-    // The product's own images, or else a copy of this category's image.
     public IReadOnlyList<DemoImage> ImagesOf(DemoProduct product) =>
         product.Images ?? [new DemoImage(Image, ImageAltText)];
 }
 
-// The same fields as the CMS form (ProductRequest), but the subcategory, the materials and the
-// colors are given by name, since their ids are not known until the seed has saved them.
+// Like ProductRequest, but the subcategory, materials and colors by name, since their ids do not
+// exist until the seed has saved them.
 public record DemoProduct(
     string Title,
     string Description,
@@ -67,17 +63,16 @@ public record DemoProduct(
     IReadOnlyList<string> Materials,
     IReadOnlyList<string> Colors,
     ParcelRequest Parcel,
-    // One of its category's Subcategories, or null when the product is in the main category.
+    ProductSizeRequest? Size = null,
+    // Null = in the main category.
     string? Subcategory = null,
-    // Its own images, the main image first. Left out: a copy of its category's image.
+    // The main image first. Null = a copy of the category's image.
     IReadOnlyList<DemoImage>? Images = null);
 
-// A file in DemoData/Images and its alt text, e.g. { "file": "square.png", "altText": "…" }.
+// A file in DemoData/Images.
 public record DemoImage(string File, string AltText);
 
-// An order in the demo shop, paid DaysAgo days ago and then handled as Status says. The stock
-// in the file is what is left after these orders, so the seed does not change it. The customer
-// is the same record the webhook gets from Stripe.
+// The stock in the file is what is left after these orders, so the seed does not change it.
 public record DemoOrder(
     int DaysAgo,
     DemoOrderStatus Status,
@@ -87,12 +82,10 @@ public record DemoOrder(
 // The product is given by its title, since its id is not known until the seed has saved it.
 public record DemoOrderItem(string Product, int Quantity);
 
-// Read from the file as text, e.g. "ToShip", instead of a number. Upper and lower case do not
-// matter, but an unknown value stops the load.
+// Text in the file, e.g. "ToShip". An unknown value stops the load.
 [JsonConverter(typeof(JsonStringEnumConverter<DemoOrderStatus>))]
 public enum DemoOrderStatus
 {
-    // Paid, waiting to be shipped.
     ToShip,
     Shipped,
     // Cancelled by the admin after it was paid (Order.NeedsRefund).

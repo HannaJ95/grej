@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { CartService } from '../../../core/cart.service';
 import { Product, ProductService } from '../../../core/product.service';
+import { sizeText, weightText } from '../../../core/product-size';
 import { Breadcrumb } from '../../../shared/breadcrumb/breadcrumb';
 import { Button } from '../../../shared/button/button';
 import { Icon } from '../../../shared/icons/icon';
@@ -42,20 +43,25 @@ export class ProductPage {
   protected readonly shortDescription = computed(() =>
     this.product.hasValue() ? shorten(this.product.value().description) : null,
   );
+  protected readonly size = computed(() =>
+    this.product.hasValue() ? sizeText(this.product.value().size) : null,
+  );
+  protected readonly weight = computed(() =>
+    this.product.hasValue() ? weightText(this.product.value().size.weightGrams) : null,
+  );
 
   // Back to 1 for each product, since the router reuses this page.
   protected readonly quantity = linkedSignal({ source: this.id, computation: () => 1 });
 
-  private readonly details = viewChild<ElementRef<HTMLDetailsElement>>('details');
+  private readonly description = viewChild<ElementRef<HTMLDetailsElement>>('description');
 
   protected addToCart(product: Product): void {
     this.cart.add(product, this.quantity());
     this.quantity.set(1);
   }
 
-  // "Mer information": opens "Beskrivning" and scrolls to it.
   protected showDescription(): void {
-    const details = this.details()?.nativeElement;
+    const details = this.description()?.nativeElement;
     if (!details) {
       return;
     }

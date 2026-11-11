@@ -47,7 +47,7 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
             highestPrice);
     }
 
-    // True if the last item of one of the products was sold twice (constraints.md).
+    // True if the last item of a product was sold twice (constraints.md).
     public async Task<bool> DecreaseStockAsync(IReadOnlyCollection<ProductQuantity> items, CancellationToken cancellationToken)
     {
         var changed = await ChangeStockAsync(items, (product, quantity) => product.DecreaseStock(quantity), cancellationToken);
@@ -108,12 +108,13 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
         product.Description,
         product.Price,
         product.Currency,
-        // Only the admin sees a stock below 0. The customer only needs to know that none are left.
+        // Only the admin sees a stock below 0.
         Math.Max(product.Stock, 0),
         product.IsSoldOut,
         ProductImageDto.ListFrom(product),
         // The database returns them in no fixed order.
         product.Materials.Select(material => material.Name).Order().ToList(),
         product.Colors.Select(color => color.Name).Order().ToList(),
-        ParcelDto.From(product));
+        ParcelDto.From(product),
+        ProductSizeDto.From(product));
 }

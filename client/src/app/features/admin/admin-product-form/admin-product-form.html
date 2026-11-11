@@ -152,12 +152,102 @@
           </div>
         </div>
 
-        <fieldset class="parcel" aria-describedby="parcel-hint">
+        <fieldset class="measures" aria-describedby="size-hint">
+          <legend class="text-label-xs">Produktens mått och vikt (valfria)</legend>
+          <p class="hint text-body-s" id="size-hint">
+            Visas i butiken. Fyll bara i det som passar, t.ex. diameter och höjd för en kopp eller
+            bredd och höjd för en tavla.
+          </p>
+          <div class="measure-fields">
+            <div class="field">
+              <label class="text-label-xs" for="size-length">Längd (cm)</label>
+              <input
+                id="size-length"
+                class="text-body-m-compact"
+                type="number"
+                step="0.1"
+                [formField]="productForm.size.lengthCm"
+                [attr.aria-invalid]="sizeLengthError() ? true : null"
+                [attr.aria-describedby]="sizeLengthError() ? 'size-length-error' : null"
+              />
+              @if (sizeLengthError(); as message) {
+                <span class="error text-body-xs" id="size-length-error">{{ message }}</span>
+              }
+            </div>
+
+            <div class="field">
+              <label class="text-label-xs" for="size-width">Bredd (cm)</label>
+              <input
+                id="size-width"
+                class="text-body-m-compact"
+                type="number"
+                step="0.1"
+                [formField]="productForm.size.widthCm"
+                [attr.aria-invalid]="sizeWidthError() ? true : null"
+                [attr.aria-describedby]="sizeWidthError() ? 'size-width-error' : null"
+              />
+              @if (sizeWidthError(); as message) {
+                <span class="error text-body-xs" id="size-width-error">{{ message }}</span>
+              }
+            </div>
+
+            <div class="field">
+              <label class="text-label-xs" for="size-height">Höjd (cm)</label>
+              <input
+                id="size-height"
+                class="text-body-m-compact"
+                type="number"
+                step="0.1"
+                [formField]="productForm.size.heightCm"
+                [attr.aria-invalid]="sizeHeightError() ? true : null"
+                [attr.aria-describedby]="sizeHeightError() ? 'size-height-error' : null"
+              />
+              @if (sizeHeightError(); as message) {
+                <span class="error text-body-xs" id="size-height-error">{{ message }}</span>
+              }
+            </div>
+
+            <div class="field">
+              <label class="text-label-xs" for="size-diameter">Diameter (cm)</label>
+              <input
+                id="size-diameter"
+                class="text-body-m-compact"
+                type="number"
+                step="0.1"
+                [formField]="productForm.size.diameterCm"
+                [attr.aria-invalid]="sizeDiameterError() ? true : null"
+                [attr.aria-describedby]="sizeDiameterError() ? 'size-diameter-error' : null"
+              />
+              @if (sizeDiameterError(); as message) {
+                <span class="error text-body-xs" id="size-diameter-error">{{ message }}</span>
+              }
+            </div>
+
+            <div class="field">
+              <label class="text-label-xs" for="size-weight">Vikt (g)</label>
+              <input
+                id="size-weight"
+                class="text-body-m-compact"
+                type="number"
+                step="1"
+                [formField]="productForm.size.weightGrams"
+                [attr.aria-invalid]="sizeWeightError() ? true : null"
+                [attr.aria-describedby]="sizeWeightError() ? 'size-weight-error' : null"
+              />
+              @if (sizeWeightError(); as message) {
+                <span class="error text-body-xs" id="size-weight-error">{{ message }}</span>
+              }
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="measures" aria-describedby="parcel-hint">
           <legend class="text-label-xs">Paketets vikt och mått</legend>
           <p class="hint text-body-s" id="parcel-hint">
-            Som paketet blir när produkten är packad. Kassan räknar ut frakten från dem.
+            Som paketet blir när produkten är packad. Kassan räknar ut frakten från dem. De visas inte
+            i butiken.
           </p>
-          <div class="parcel-fields">
+          <div class="measure-fields">
             <div class="field">
               <label class="text-label-xs" for="weight">Vikt (g)</label>
               <input

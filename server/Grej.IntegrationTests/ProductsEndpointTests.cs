@@ -9,8 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Grej.IntegrationTests;
 
-// Tests GET /api/products and GET /api/products/{id} through the real API, but with
-// a fake repository instead of the database, so the tests need no database.
+// The real API with a fake repository, so the tests need no database.
 public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
     : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -177,6 +176,20 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
 
         Assert.Equal(["Glasyr", "Lera"], found!.Materials);
         Assert.Equal(["Blå", "Vit"], found.Colors);
+    }
+
+    [Fact]
+    public async Task GetById_ReturnsTheItemsOwnSize()
+    {
+        var client = CreateClient(new Product
+        {
+            Id = 1, Title = "Kopp", Price = 300m, Stock = 1, IsActive = true,
+            ItemHeightCm = 9.5m, ItemDiameterCm = 8m, ItemWeightGrams = 350,
+        });
+
+        var found = await client.GetFromJsonAsync<ProductDto>("/api/products/1");
+
+        Assert.Equal(new ProductSizeDto(null, null, 9.5m, 8m, 350), found!.Size);
     }
 
     [Fact]

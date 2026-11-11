@@ -179,6 +179,8 @@ erDiagram
 | CategoryId | → Category | Exactly one |
 | SellerId | → User | Always the admin in this version |
 | WeightGrams, LengthCm, WidthCm, HeightCm | int | The packed parcel, for the shipping cost (see Shipping). Not shown in the shop |
+| ItemLengthCm, ItemWidthCm, ItemHeightCm, ItemDiameterCm | decimal(4,1)? | The item itself, shown on the product page. Null = not given |
+| ItemWeightGrams | int? | The item itself, shown on the product page. Null = not given |
 | CreatedAt, UpdatedAt | datetime | |
 
 **ProductImage**
@@ -273,7 +275,7 @@ In Angular, `authInterceptor` adds `Authorization: Bearer <token>` to requests t
 - A product can list its own `images` (a file and an alt text each, the main image first). Without them it gets its category's placeholder image. Every product gets its own copy of each image under `products/{id}/`, like an upload in the CMS, and every file is read before anything is uploaded. The old files are deleted after the commit.
 - The products are saved in turns across the categories, so the shop's first page (newest first) shows every category.
 - A category can list `subcategories` (Keramik and Konst do), and a product can name one of them in `subcategory`; without it the product is in the main category. The seed saves the subcategories with `Parent` set to their main category, so EF Core fills in `ParentId`.
-- Every product has a packed parcel (`parcel`). The demo orders are built with the same `Order` methods as real ones: shipping from the same rule as the checkout, paid, and then shipped or cancelled as the file says. Their `CreatedAt` is set to a number of days ago, so the list shows different dates. The stock in the file is what is left after the orders, so the seed does not change it.
+- Every product has a packed parcel (`parcel`). Where its description gives a size, it also has its own `size`, and a few have a weight. The demo orders are built with the same `Order` methods as real ones: shipping from the same rule as the checkout, paid, and then shipped or cancelled as the file says. Their `CreatedAt` is set to a number of days ago, so the list shows different dates. The stock in the file is what is left after the orders, so the seed does not change it.
 - `DemoCatalogTests` checks the file against the CMS's rules, so a typo is found by `dotnet test`. The files are copied to the build output but not to the published API.
 
 Known limitation: the demo orders' payments have the provider `Demo` and no Stripe session, so they cannot be refunded in Stripe.
@@ -288,6 +290,7 @@ The CMS has its own endpoints under `/api/admin/` (e.g. `/api/admin/products`), 
 - When the admin saves a product, the form sends the stock the product had when it was last fetched. The page fetches it again after every save. If a customer has bought the product since then, the API answers 409 and saves nothing, so a sale is never overwritten.
 - On "Ny produkt" the first image is chosen in the same form, but it is uploaded right after the product is created, since the upload needs the product's id. If the upload fails, the product still exists, and its page says that the image has to be uploaded again. More images are added on the product's page (ambiguity.md).
 - The product form has the packed parcel's weight and size, sent and returned as one object `parcel` (`ParcelRequest`, `ParcelDto`), with the rules in constraints.md.
+- It also has the item's own size and weight, all optional, as one object `size` (`ProductSizeRequest`, `ProductSizeDto`). The shop's `ProductDto` has `size` for the product page. A request without `size` gives a product without one.
 
 Known limitation: the stock must be 0 or more when the admin saves. A product with stock below 0 (the last item sold twice) therefore gets at least 0 if the admin edits it before the order is handled.
 
