@@ -1,0 +1,8 @@
+// The hit count and the clear button below a CMS search.
+.search-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-16);
+}

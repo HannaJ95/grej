@@ -27,6 +27,7 @@ import { ORDER_STATUS_TEXTS, PAYMENT_STATUS_TEXTS } from '../order-texts';
     '../admin-page.scss',
     '../admin-table.scss',
     '../../../shared/tabs.scss',
+    '../search-info.scss',
     './admin-order-list.scss',
   ],
 })

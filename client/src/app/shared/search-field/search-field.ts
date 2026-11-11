@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, ElementRef, input, output, viewChild } from '@angular/core';
 import { Icon } from '../icons/icon';
 
 // Searches on Enter or when the field is left, so a list doesn't reload for every letter.
@@ -63,4 +63,11 @@ export class SearchField {
   // Not "search": a search field's own DOM event has that name and would reach the parent's
   // listener too.
   readonly searched = output<string>();
+
+  private readonly field = viewChild.required<ElementRef<HTMLInputElement>>('field');
+
+  // E.g. when the button that cleared the search disappears.
+  focus(): void {
+    this.field().nativeElement.focus();
+  }
 }

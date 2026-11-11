@@ -6,6 +6,7 @@ import { PagedResult } from './paged-result';
 import { Parcel } from './parcel';
 import { ProductImage } from './product-image';
 import { ProductSize } from './product-size';
+import { DEFAULT_SORT, ProductSort, SORTS } from './product-sort';
 
 // AdminProductDto in the API. The real stock, below 0 if the last item was sold twice.
 export interface AdminProduct {
@@ -40,17 +41,70 @@ export interface ProductInput {
   size: ProductSize;
 }
 
+// ?visa= in the CMS product list. Undefined shows both.
+export type ProductVisibility = 'synliga' | 'dolda';
+
+export function toVisibility(value: string | undefined): ProductVisibility | undefined {
+  return value === 'synliga' || value === 'dolda' ? value : undefined;
+}
+
+// What the CMS product list shows. One id per filter, unlike the shop's lists.
+export interface AdminProductQuery {
+  page: number;
+  // '' = no search.
+  search: string;
+  categoryId: number | undefined;
+  materialId: number | undefined;
+  colorId: number | undefined;
+  visibility: ProductVisibility | undefined;
+  sort: ProductSort;
+}
+
+export const ALL_PRODUCTS: AdminProductQuery = {
+  page: 1,
+  search: '',
+  categoryId: undefined,
+  materialId: undefined,
+  colorId: undefined,
+  visibility: undefined,
+  sort: DEFAULT_SORT,
+};
+
+// The page and the sort don't count, since they never hide a product.
+export function isFiltered(query: AdminProductQuery): boolean {
+  const { search, categoryId, materialId, colorId, visibility } = query;
+  return (
+    search !== '' ||
+    categoryId !== undefined ||
+    materialId !== undefined ||
+    colorId !== undefined ||
+    visibility !== undefined
+  );
+}
+
 // authInterceptor adds the admin's token, without which the API answers 401 or 403.
 @Service()
 export class AdminProductService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiUrl}/api/admin/products`;
 
-  getProducts(page: Signal<number>) {
-    return httpResource<PagedResult<AdminProduct>>(() => ({
-      url: this.url,
-      params: { page: page() },
-    }));
+  // Only what is set is sent.
+  getProducts(query: Signal<AdminProductQuery>) {
+    return httpResource<PagedResult<AdminProduct>>(() => {
+      const { page, search, categoryId, materialId, colorId, visibility, sort } = query();
+      return {
+        url: this.url,
+        params: {
+          page,
+          ...(search ? { search } : {}),
+          ...(categoryId === undefined ? {} : { categoryId }),
+          ...(materialId === undefined ? {} : { materialId }),
+          ...(colorId === undefined ? {} : { colorId }),
+          ...(visibility === undefined ? {} : { isActive: visibility === 'synliga' }),
+          ...(sort === DEFAULT_SORT ? {} : { sort: SORTS[sort].api }),
+        },
+      };
+    });
   }
 
   // Nothing is fetched for a new product, whose id is undefined.

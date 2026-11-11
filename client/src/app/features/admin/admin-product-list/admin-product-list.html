@@ -4,6 +4,8 @@
 
 <p class="intro text-body-m">Dolda produkter syns bara här, inte i butiken.</p>
 
+<app-admin-product-filters class="filters" [query]="query()" [hits]="hits()" />
+
 <div class="card list">
   @if (removeError(); as message) {
     <p class="text-body-s" role="alert">{{ message }}</p>
@@ -13,7 +15,9 @@
   @if (result.hasValue()) {
     @let r = result.value();
     @if (r.items.length === 0) {
-      <p class="state">Det finns inga produkter än.</p>
+      <p class="state">
+        {{ filtered() ? 'Inga produkter matchar filtren.' : 'Det finns inga produkter än.' }}
+      </p>
     } @else {
       <table class="table">
         <thead>
@@ -55,8 +59,7 @@
                 {{ p.isActive ? 'Synlig' : 'Dold' }}
               </td>
               <td class="manage">
-                <!-- A link, since editing opens the product's own page. The name in aria-label
-                     tells the many "Redigera" apart, like on the category pages. -->
+                <!-- The name in aria-label tells the many "Redigera" apart. -->
                 <span class="links">
                   <a
                     class="edit text-link-s"
@@ -80,6 +83,7 @@
         </tbody>
       </table>
     }
+    <!-- The links keep the filters. -->
     <app-pagination path="/admin/produkter" [page]="r.page" [totalPages]="r.totalPages" />
   } @else if (result.error()) {
     <p class="state" role="alert">Produkterna kunde inte visas.</p>

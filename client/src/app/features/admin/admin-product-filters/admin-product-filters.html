@@ -1,0 +1,112 @@
+<app-search-field
+  label="Sök bland produkterna"
+  [value]="query().search"
+  (searched)="choose('sok', $event)"
+/>
+
+<!-- [selected] on every option, since the lists can arrive after the URL's choice. -->
+<div class="menus">
+  <p class="field">
+    <label class="text-label-xs" for="product-filter-category">Kategori</label>
+    <span class="select">
+      <select
+        #category
+        id="product-filter-category"
+        class="text-body-m-compact"
+        (change)="choose('kategori', category.value)"
+      >
+        <option value="" [selected]="query().categoryId === undefined">Alla kategorier</option>
+        @for (group of categoryGroups(); track group.main.id) {
+          <optgroup [label]="group.main.name">
+            <option [value]="group.main.id" [selected]="group.main.id === query().categoryId">
+              Alla i {{ group.main.name }}
+            </option>
+            @for (s of group.subcategories; track s.id) {
+              <option [value]="s.id" [selected]="s.id === query().categoryId">{{ s.name }}</option>
+            }
+          </optgroup>
+        }
+      </select>
+      <app-icon name="chevron-down" />
+    </span>
+  </p>
+
+  <p class="field">
+    <label class="text-label-xs" for="product-filter-material">Material</label>
+    <span class="select">
+      <select
+        #material
+        id="product-filter-material"
+        class="text-body-m-compact"
+        (change)="choose('material', material.value)"
+      >
+        <option value="" [selected]="query().materialId === undefined">Alla material</option>
+        @for (m of materialChoices(); track m.id) {
+          <option [value]="m.id" [selected]="m.id === query().materialId">{{ m.name }}</option>
+        }
+      </select>
+      <app-icon name="chevron-down" />
+    </span>
+  </p>
+
+  <p class="field">
+    <label class="text-label-xs" for="product-filter-color">Färg</label>
+    <span class="select">
+      <select
+        #color
+        id="product-filter-color"
+        class="text-body-m-compact"
+        (change)="choose('farg', color.value)"
+      >
+        <option value="" [selected]="query().colorId === undefined">Alla färger</option>
+        @for (c of colorChoices(); track c.id) {
+          <option [value]="c.id" [selected]="c.id === query().colorId">{{ c.name }}</option>
+        }
+      </select>
+      <app-icon name="chevron-down" />
+    </span>
+  </p>
+
+  <p class="field">
+    <label class="text-label-xs" for="product-filter-visibility">I butiken</label>
+    <span class="select">
+      <select
+        #visibility
+        id="product-filter-visibility"
+        class="text-body-m-compact"
+        (change)="choose('visa', visibility.value)"
+      >
+        <option value="" [selected]="query().visibility === undefined">Alla</option>
+        <option value="synliga" [selected]="query().visibility === 'synliga'">Synliga</option>
+        <option value="dolda" [selected]="query().visibility === 'dolda'">Dolda</option>
+      </select>
+      <app-icon name="chevron-down" />
+    </span>
+  </p>
+
+  <p class="field">
+    <label class="text-label-xs" for="product-filter-sort">Sortera</label>
+    <span class="select">
+      <select
+        #sort
+        id="product-filter-sort"
+        class="text-body-m-compact"
+        (change)="choose('sortera', sort.value)"
+      >
+        @for (option of sorts; track option.value) {
+          <option [value]="option.value" [selected]="option.value === query().sort">
+            {{ option.label }}
+          </option>
+        }
+      </select>
+      <app-icon name="chevron-down" />
+    </span>
+  </p>
+</div>
+
+@if (filtered()) {
+  <div class="search-info">
+    <p class="text-label-s" aria-live="polite">{{ hits() }}</p>
+    <button appLinkButton type="button" (click)="clear()">Rensa filtren</button>
+  </div>
+}
