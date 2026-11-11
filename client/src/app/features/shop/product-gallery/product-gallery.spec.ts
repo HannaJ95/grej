@@ -24,7 +24,7 @@ describe('ProductGallery', () => {
   it('shows the image whose small image is clicked', async () => {
     const fixture = await show([front, side]);
     const element: HTMLElement = fixture.nativeElement;
-    const main = () => element.querySelector<HTMLImageElement>('img.main')!;
+    const main = () => element.querySelector<HTMLImageElement>('.main img')!;
     const buttons = element.querySelectorAll<HTMLButtonElement>('.thumbnail');
 
     expect(main().alt).toBe('Vasen framifrån');
@@ -37,6 +37,26 @@ describe('ProductGallery', () => {
     expect(buttons[1].getAttribute('aria-label')).toBe('Visa bild 2 av 2');
     expect(buttons[1].getAttribute('aria-pressed')).toBe('true');
     expect(buttons[0].getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('opens the shown image full screen, and keeps the image the viewer moved to', async () => {
+    const fixture = await show([front, side]);
+    const element: HTMLElement = fixture.nativeElement;
+    element.querySelectorAll<HTMLButtonElement>('.thumbnail')[1].click();
+    await fixture.whenStable();
+    // jsdom has no showModal, so it only sets open.
+    const dialog = element.querySelector('dialog')!;
+    dialog.showModal = () => dialog.setAttribute('open', '');
+
+    element.querySelector<HTMLButtonElement>('button[aria-label="Förstora bilden"]')!.click();
+
+    expect(dialog.hasAttribute('open')).toBe(true);
+    expect(dialog.querySelector('img')!.alt).toBe('Vasen från sidan');
+
+    dialog.querySelector<HTMLButtonElement>('button[aria-label="Nästa bild"]')!.click();
+    await fixture.whenStable();
+
+    expect(element.querySelector<HTMLImageElement>('.main img')!.alt).toBe('Vasen framifrån');
   });
 
   it('shows an empty box and no small images when there is no image', async () => {

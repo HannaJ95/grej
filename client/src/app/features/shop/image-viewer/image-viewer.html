@@ -1,0 +1,64 @@
+<dialog
+  #dialog
+  aria-label="Produktbilder"
+  (click)="closeOnBackdrop($event)"
+  (close)="zoomWidth.set(null)"
+>
+  <div class="top">
+    <button
+      appIconButton
+      filled
+      type="button"
+      aria-label="Zooma in"
+      [icon]="zoomed() ? 'zoom-out' : 'zoom-in'"
+      [attr.aria-pressed]="zoomed()"
+      (click)="toggleZoom()"
+    ></button>
+    <button appIconButton filled icon="close" type="button" aria-label="Stäng" (click)="close()"></button>
+  </div>
+
+  <!-- Focusable when zoomed, so the arrow keys can scroll it. -->
+  <div
+    #stage
+    class="stage"
+    [attr.tabindex]="zoomed() ? 0 : null"
+    [attr.role]="zoomed() ? 'group' : null"
+    [attr.aria-label]="zoomed() ? 'Inzoomad bild' : null"
+  >
+    @if (image(); as image) {
+      <!-- The zoom button is the keyboard's way. -->
+      <img
+        #picture
+        [src]="image.url"
+        [alt]="image.altText"
+        [class.zoomed]="zoomed()"
+        [style.width.px]="zoomWidth()"
+        (click)="toggleZoom($event)"
+      />
+    }
+  </div>
+
+  @if (images().length > 1) {
+    <div class="bottom">
+      <button
+        appIconButton
+        filled
+        icon="arrow-left"
+        type="button"
+        aria-label="Föregående bild"
+        (click)="step(-1)"
+      ></button>
+      <p class="counter text-label-m" aria-live="polite">
+        Bild {{ index() + 1 }} av {{ images().length }}
+      </p>
+      <button
+        appIconButton
+        filled
+        icon="arrow-right"
+        type="button"
+        aria-label="Nästa bild"
+        (click)="step(1)"
+      ></button>
+    </div>
+  }
+</dialog>

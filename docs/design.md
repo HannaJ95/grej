@@ -26,7 +26,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
 
 - `Button` is an attribute on a real `<button>` or `<a>` (`<button appButton variant="danger">`). That way the element keeps the browser's keyboard handling, form submit, `disabled` and `routerLink`. It has three variants (primary, secondary with a 2 px frame, danger) and two sizes (normal for forms and the CMS, `size="large"` for the shop's big buttons). The frame is taken from the padding, so all variants are equally tall.
 - `LinkButton` (`button[appLinkButton]`) is a button that looks like a link, for actions on the same page, such as "Redigera" and "Ta bort" in a CMS list. It has `tone` default or danger.
-- `Icon` shows one of the icons in `public/icons/` as a CSS mask, so it takes the text color around it. `IconButton` is a square button with only an icon (e.g. close), and always needs an `aria-label`.
+- `Icon` shows one of the icons in `public/icons/` as a CSS mask, so it takes the text color around it. `IconButton` is a square button with only an icon (e.g. close), and always needs an `aria-label`. `filled` gives it the surface color, for a button on an image or the dimmed page.
 - `InfoTip` is a small (i) button beside a label that opens a box of help text (`<app-info-tip label="Vad är alt-text?">`). It opens on click, tap or Enter, not on hover, which touch screens and keyboards lack.
   - The box is a native popover, so the browser closes it on Escape or a click outside.
   - From a tablet it sits by the button with CSS anchor positioning: below and to the right, or flipped to where it fits.
@@ -116,6 +116,11 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - `ProductGallery`: a big image and a thumbnail for each of the product's images (up to 10), the main image first.
     - Below 1024 px the thumbnails are a row that scrolls sideways, like `CategoryTabs`. From 1024 px they are a column beside the big image, as tall as it, which scrolls up and down.
     - The scrolling box has room around the thumbnails, so it never cuts the focus ring.
+    - "Förstora bilden", a filled `IconButton` in the big image's corner, opens `ImageViewer`. The whole image is its click area, and the image keeps its alt text.
+  - `ImageViewer`, a modal `<dialog>` over the dimmed page with the whole, uncropped image as big as the screen allows.
+    - At the top "Zooma in" (`aria-pressed`) and the cross. Below, with more than one image, the arrows around "Bild 2 av 5". The arrows go round from the last image to the first, so they are never disabled.
+    - A click on the image zooms to twice the size and keeps the clicked point under the pointer. The zoomed image scrolls with the wheel, a finger or the arrow keys, and the page behind stays still. Another image, or closing, fits it again.
+    - A click on the dimmed page around the image, the cross or Escape closes it, and the focus goes back to "Förstora bilden". The gallery then shows the image the viewer closed on.
   - the title, price and `StockStatus`
   - the first 150 characters of the description, with "Mer information", which opens "Beskrivning" and scrolls to it
   - the buy row: `QuantityStepper` and "Lägg i varukorg"

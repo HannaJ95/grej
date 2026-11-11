@@ -211,3 +211,11 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - **Verification:** Claude's check in Chrome at 320–1440 px and 200 % text found that the box went past the screen's edge, which we fixed. axe was not run.
 
 - **Building:** Product images. All product images use one 5:6 shape (`--ratio-product-image`, `object-fit: cover`), so the gallery has no white bars. Product cards show the second image on hover, and the CMS tells the admin which shape to upload. New demo images are spread over the products. I tried a slower fade with a zoom, but it felt laggy, so it went back to a 0.2 s fade.
+
+## 2026-11-11
+
+- **UI polish:** page background = header color, lower header with a smaller logo, the whole sort box opens the list (Enter too), Filter beside the count with only the sort wrapping, the toolbar no longer sticky, and the product page's buy row stays below the header (`main` isolated).
+- **Verification:** build + affected specs, Chrome at 320–1440 px and 200 % text. axe and ESLint not run.
+
+- **Building:** Zoom on the product images. "Förstora bilden" opens ImageViewer, a dialog over the dimmed page. It shows the whole image, the arrows step through the images, and a click zooms 2× at the clicked point. A click around the image closes it. IconButton got a filled option.
+- **Verification:** Claude checked 320–1440 px, 200 % zoom and text, and the keyboard in Chrome. The check found that the zoom shrank on tablets and that the dialog got too wide with large text; both are fixed.
