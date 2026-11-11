@@ -9,10 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Grej.Infrastructure.DemoData;
 
-// Empties the shop and fills it with the content in demo-catalog.json. Started with
-// `dotnet run --project Grej.Api -- reset-demo`. The local API and the deployed one use the
-// same database and image storage, so this resets the deployed shop too. Identity's tables
-// are not touched, so the admin account is kept.
+// The local and the deployed API share the database and image storage, so this resets the
+// deployed shop too. Identity's tables are kept, and with them the admin account.
 public static class DemoSeeder
 {
     public static async Task ResetAsync(IServiceProvider services)
@@ -37,9 +35,8 @@ public static class DemoSeeder
         // is emptied, and the files uploaded so far are only unused.
         await using var transaction = await db.Database.BeginTransactionAsync();
 
-        // TRUNCATE empties whole tables, and RESTART IDENTITY makes the ids start at 1 again.
-        // Without CASCADE, PostgreSQL refuses if a table that is not in the list points to one
-        // of these, so a table added later is never emptied without being added here.
+        // Without CASCADE, PostgreSQL refuses if a table not in the list points to one of these,
+        // so a table added later is never emptied by mistake.
         await db.Database.ExecuteSqlRawAsync("""
             TRUNCATE "OrderItems", "Payments", "Orders", "ProductImages", "ProductMaterials",
                 "ProductColors", "Products", "Materials", "Colors", "Categories",
@@ -72,9 +69,8 @@ public static class DemoSeeder
         var materials = catalog.Materials.ToDictionary(name => name, name => new Material { Name = name });
         var colors = catalog.Colors.ToDictionary(name => name, name => new Color { Name = name });
         var categories = catalog.Categories.ToDictionary(c => c.Name, c => new Category { Name = c.Name });
-        // Found by main category and name, since two main categories may have a subcategory with
-        // the same name. Parent is the main category object: EF Core saves it first and then
-        // fills in ParentId with its new id, like it does for the products' categories below.
+        // By main category and name, since two main categories may have subcategories with the
+        // same name.
         var subcategories = catalog.Categories
             .SelectMany(c => (c.Subcategories ?? []).Select(name => (Main: c.Name, Name: name)))
             .ToDictionary(sub => sub, sub => new Category { Name = sub.Name, Parent = categories[sub.Main] });
@@ -104,6 +100,11 @@ public static class DemoSeeder
                 LengthCm = demoProduct.Parcel.LengthCm,
                 WidthCm = demoProduct.Parcel.WidthCm,
                 HeightCm = demoProduct.Parcel.HeightCm,
+                ItemLengthCm = demoProduct.Size?.LengthCm,
+                ItemWidthCm = demoProduct.Size?.WidthCm,
+                ItemHeightCm = demoProduct.Size?.HeightCm,
+                ItemDiameterCm = demoProduct.Size?.DiameterCm,
+                ItemWeightGrams = demoProduct.Size?.WeightGrams,
                 CategoryId = demoProduct.Subcategory is null
                     ? categories[demoCategory.Name].Id
                     : subcategories[(demoCategory.Name, demoProduct.Subcategory)].Id,
@@ -116,8 +117,8 @@ public static class DemoSeeder
         db.Products.AddRange(products.Select(entry => entry.Product));
         await db.SaveChangesAsync();
 
-        // Every product gets its own copy of each of its images, in order, at the same kind of path
-        // as an upload in the CMS, since deleting a product in the CMS deletes its files.
+        // A copy per product, at the same kind of path as an upload in the CMS, since deleting a
+        // product in the CMS deletes its files.
         foreach (var (product, demoImages) in products)
         {
             foreach (var demoImage in demoImages)
@@ -138,16 +139,14 @@ public static class DemoSeeder
         {
             var order = CreateOrder(demoOrder, productsByTitle);
             var entry = db.Orders.Add(order);
-            // Only Order can set CreatedAt, but EF Core can write any property through its
-            // change tracker. Only the seed does this, so the demo orders get different days.
+            // CreatedAt has a private setter. Only the seed writes it, so the demo orders get
+            // different days.
             entry.Property(o => o.CreatedAt).CurrentValue = now.AddDays(-demoOrder.DaysAgo);
         }
         await db.SaveChangesAsync();
     }
 
-    // Built with the same methods as a real order: the checkout adds the rows, the shipping and
-    // the payment, the webhook marks it as paid and stores the customer, and the admin ships or
-    // cancels it.
+    // The same methods as a real order: the checkout's, the webhook's and the admin's.
     private static Order CreateOrder(DemoOrder demoOrder, Dictionary<string, Product> productsByTitle)
     {
         var order = new Order();

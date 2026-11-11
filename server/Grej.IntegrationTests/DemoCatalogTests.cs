@@ -18,8 +18,7 @@ public class DemoCatalogTests
         var errors = new List<string>();
         foreach (var product in catalog.Categories.SelectMany(c => c.Products))
         {
-            // Runs the same [Required], [MaxLength] and [Range] attributes that [ApiController]
-            // checks when the CMS form sends a product. The category is set by the seed.
+            // The same attributes [ApiController] checks. The seed sets the category.
             var request = new ProductRequest
             {
                 Title = product.Title,
@@ -28,11 +27,13 @@ public class DemoCatalogTests
                 Stock = product.Stock,
                 CategoryId = 1,
                 Parcel = product.Parcel,
+                Size = product.Size ?? new(),
             };
             var results = new List<ValidationResult>();
             Validator.TryValidateObject(request, new ValidationContext(request), results, validateAllProperties: true);
-            // Unlike [ApiController], Validator does not look inside the parcel by itself.
+            // Unlike [ApiController], Validator does not look inside the parcel and the size.
             Validator.TryValidateObject(request.Parcel, new ValidationContext(request.Parcel), results, validateAllProperties: true);
+            Validator.TryValidateObject(request.Size, new ValidationContext(request.Size), results, validateAllProperties: true);
             errors.AddRange(results.Select(result => $"{product.Title}: {result.ErrorMessage}"));
         }
 
