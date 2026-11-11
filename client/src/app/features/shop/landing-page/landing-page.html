@@ -7,7 +7,8 @@
       Handgjorda saker från små skapare. Nya grejer varje vecka, och aldrig två likadana.
     </p>
     <a appButton size="large" class="hero-button" routerLink="/produkter">
-      Se alla grejer <span aria-hidden="true">→</span>
+      Visa alla grejer
+      <app-icon name="arrow-right" />
     </a>
   </div>
 </section>
@@ -39,9 +40,10 @@
   <div class="page-width">
     <div class="newest-header">
       <h2 class="section-title text-display-l" id="newest-title">Nytt just nu</h2>
-      <a class="show-all text-link-s" routerLink="/produkter"
-        >Visa alla <span aria-hidden="true">→</span></a
-      >
+      <a class="show-all text-link-s" routerLink="/produkter">
+        Visa alla
+        <app-icon name="arrow-right" />
+      </a>
     </div>
 
     @if (result.isLoading()) {
@@ -63,7 +65,6 @@
   </div>
 </section>
 
-<!-- Only when the API has answered with categories; the band is left out until then. -->
 @if (categories.hasValue() && categories.value().length > 0) {
   <nav class="categories" aria-label="Kategorier">
     <ul class="page-width category-list">

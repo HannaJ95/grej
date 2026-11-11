@@ -2,9 +2,8 @@ import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../icons/icon';
 
-// Previous, next and numbered page links in ?sida= (read with toPageNumber). The list's other
-// query parameters are kept. A missing previous or next link is a greyed-out <span>, so the
-// layout does not jump and no link goes nowhere.
+// Page links in ?sida= (read with toPageNumber). A missing previous or next link is a greyed-out
+// <span>, so the layout doesn't jump and no link goes nowhere.
 @Component({
   selector: 'app-pagination',
   imports: [RouterLink, Icon],
@@ -17,6 +16,7 @@ import { Icon } from '../icons/icon';
             [routerLink]="path()"
             [queryParams]="{ sida: page() - 1 }"
             queryParamsHandling="merge"
+            [fragment]="fragment()"
           >
             <app-icon name="arrow-left" />
             <span class="step-text">Föregående</span>
@@ -48,6 +48,7 @@ import { Icon } from '../icons/icon';
                     [routerLink]="path()"
                     [queryParams]="{ sida: item }"
                     queryParamsHandling="merge"
+                    [fragment]="fragment()"
                   >
                     <span class="step-text">Sida </span>{{ item }}
                   </a>
@@ -62,6 +63,7 @@ import { Icon } from '../icons/icon';
             [routerLink]="path()"
             [queryParams]="{ sida: page() + 1 }"
             queryParamsHandling="merge"
+            [fragment]="fragment()"
           >
             <span class="step-text">Nästa</span>
             <app-icon name="arrow-right" />
@@ -206,10 +208,11 @@ import { Icon } from '../icons/icon';
   `,
 })
 export class Pagination {
-  // The list's URL, e.g. '/produkter'.
   readonly path = input.required<string>();
   readonly page = input.required<number>();
   readonly totalPages = input.required<number>();
+  // An id on the list's page where a new page starts, instead of at the top.
+  readonly fragment = input<string>();
 
   // The full list (1 … 4 5 6 … 8) and a compact one for phones (1 … 5 … 8). Both are rendered
   // and the styles show one.

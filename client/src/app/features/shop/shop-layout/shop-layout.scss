@@ -44,14 +44,13 @@ main {
   }
 }
 
+// Never underlined, also on its own page. Hover changes the color, like the cart button beside it.
 .nav-link {
   color: var(--color-text-primary);
-}
 
-.nav-link:hover,
-.nav-link.active {
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
+  &:hover {
+    color: var(--color-text-secondary);
+  }
 }
 
 .actions {

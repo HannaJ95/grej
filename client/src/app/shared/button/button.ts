@@ -20,6 +20,8 @@ import { Component, input } from '@angular/core';
       --button-text: var(--color-text-on-inverse);
       // Subtracted from the padding, so every variant is equally tall.
       --button-border: 0px;
+      // An icon beside the label follows the label's size.
+      --icon-size: 1.25em;
 
       display: inline-flex;
       align-items: center;

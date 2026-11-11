@@ -1,7 +1,14 @@
-import { registerLocaleData } from '@angular/common';
+import { registerLocaleData, ViewportScroller } from '@angular/common';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import localeSv from '@angular/common/locales/sv';
-import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  ApplicationConfig,
+  DOCUMENT,
+  inject,
+  LOCALE_ID,
+  provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/auth.interceptor';
@@ -12,15 +19,20 @@ registerLocaleData(localeSv);
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    // withComponentInputBinding passes route parameters such as :id to input() in the page.
-    // withInMemoryScrolling scrolls to the top when a link opens a new page, and back to the
-    // old position with the browser's back button.
     provideRouter(
       routes,
       withComponentInputBinding(),
-      withInMemoryScrolling({ scrollPositionRestoration: 'enabled' }),
+      withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
     ),
-    // authInterceptor adds the admin's token to requests to the API.
+    // A link to a #fragment lands below what sticks at the top, which _base.scss keeps in
+    // scroll-padding-top for each layout.
+    provideAppInitializer(() => {
+      const root = inject(DOCUMENT).documentElement;
+      inject(ViewportScroller).setOffset(() => [
+        0,
+        parseFloat(getComputedStyle(root).scrollPaddingTop) || 0,
+      ]);
+    }),
     provideHttpClient(withInterceptors([authInterceptor])),
     { provide: LOCALE_ID, useValue: 'sv' },
   ]

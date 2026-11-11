@@ -48,6 +48,12 @@ html:has(app-admin-layout) {
   }
 }
 
+// A modal dialog covers the page, so the page behind it stays still, also when the dialog's own
+// scrolling reaches its end.
+html:has(dialog:modal) {
+  overflow: hidden;
+}
+
 // Keeps focused elements above the product page's sticky buy row on a phone.
 html:has(app-product-page) {
   scroll-padding-bottom: 9rem;

@@ -65,16 +65,17 @@ describe('ProductList', () => {
     const page = harness.routeNativeElement!.querySelector('app-product-list')!;
     const links = [...page.querySelectorAll('a')].map((a) => a.getAttribute('href'));
     // The breadcrumb's "Hem" first, then the product, then the page links (the page
-    // numbers twice: the list for a computer and the shorter one for a phone).
+    // numbers twice: the list for a computer and the shorter one for a phone), which lead to
+    // the toolbar.
     expect(links).toEqual([
       '/',
       '/produkter/7',
-      '/produkter?sida=1',
-      '/produkter?sida=1',
-      '/produkter?sida=3',
-      '/produkter?sida=1',
-      '/produkter?sida=3',
-      '/produkter?sida=3',
+      '/produkter?sida=1#grejer',
+      '/produkter?sida=1#grejer',
+      '/produkter?sida=3#grejer',
+      '/produkter?sida=1#grejer',
+      '/produkter?sida=3#grejer',
+      '/produkter?sida=3#grejer',
     ]);
     // Page 2 with 12 per page starts at the 13th product.
     expect(page.querySelector('.toolbar')!.textContent).toContain('Visar 13–13 av 25 grejer');

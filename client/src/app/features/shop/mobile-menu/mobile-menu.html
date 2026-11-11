@@ -39,9 +39,9 @@
     <div class="panel-footer">
       <button class="cart-button text-label-m" type="button" (click)="goToCart()">
         Varukorg
-        <span class="text-label-s">
+        <span class="cart-count text-label-s">
           {{ cart.count() }} {{ cart.count() === 1 ? 'grej' : 'grejer' }}
-          <span aria-hidden="true">→</span>
+          <app-icon name="arrow-right" />
         </span>
       </button>
       <p class="legal text-mono-s">© 2026 GREJ — Handgjort i Sverige</p>

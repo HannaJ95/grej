@@ -26,7 +26,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
 
 - `Button` is an attribute on a real `<button>` or `<a>` (`<button appButton variant="danger">`). That way the element keeps the browser's keyboard handling, form submit, `disabled` and `routerLink`. It has three variants (primary, secondary with a 2 px frame, danger) and two sizes (normal for forms and the CMS, `size="large"` for the shop's big buttons). The frame is taken from the padding, so all variants are equally tall.
 - `LinkButton` (`button[appLinkButton]`) is a button that looks like a link, for actions on the same page, such as "Redigera" and "Ta bort" in a CMS list. It has `tone` default or danger.
-- `Icon` shows one of the icons in `public/icons/` as a CSS mask, so it takes the text color around it. `IconButton` is a square button with only an icon (e.g. close), and always needs an `aria-label`. `filled` gives it the surface color, for a button on an image or the dimmed page.
+- `Icon` shows one of the icons in `public/icons/` as a CSS mask, so it takes the text color around it. Arrows and other symbols beside a label are icons, never characters such as →, which Inter's web font lacks, so each browser would draw its own. Inside `Button` an icon is 1.25 times the label's size. `IconButton` is a square button with only an icon (e.g. close), and always needs an `aria-label`. `filled` gives it the surface color, for a button on an image or the dimmed page.
 - `InfoTip` is a small (i) button beside a label that opens a box of help text (`<app-info-tip label="Vad är alt-text?">`). It opens on click, tap or Enter, not on hover, which touch screens and keyboards lack.
   - The box is a native popover, so the browser closes it on Escape or a click outside.
   - From a tablet it sits by the button with CSS anchor positioning: below and to the right, or flipped to where it fits.
@@ -36,7 +36,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - It has no visible label, so `label` becomes the field's `aria-label`.
   - Like the price fields, it searches on Enter or when the field is left, so a list doesn't reload for every letter.
   - It has no clear button of its own; each page clears the search its own way.
-- `Pagination` shows the links to the page before and after, and the page numbers (`?sida=`), e.g. 1 2 3 … 8. A phone gets a shorter list. It shows nothing when the list fits on one page.
+- `Pagination` shows the links to the page before and after, and the page numbers (`?sida=`), e.g. 1 2 3 … 8. A phone gets a shorter list. It shows nothing when the list fits on one page. With `fragment`, its links lead to that id on the page instead of the top; the router's offset is `scroll-padding-top` (`app.config.ts`), so the id lands just below the sticky header.
 - `Breadcrumb` shows e.g. "Hem / Shop / Vas" above a page's title. The current page comes last and is not a link.
 - `QuantityStepper` is the − 1 + control in the cart and on the product page (`[(quantity)]` with `min` and `max`). Its buttons are squares of `--stepper-button-size`, which the product page sets so the stepper is as tall as the large button.
 - `StockStatus` is a colored dot and the stock as text:
@@ -48,6 +48,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - Each panel slides in from its side (`--drawer-from`) while the backdrop fades in, and back out when it closes.
   - Firefox and Safari close the panel at once, without the slide.
   - "Reduce motion" turns the slide off.
+- While any modal `<dialog>` is open (the side panels, `ImageViewer`, `ConfirmDialog`), the page behind it does not scroll, also when the dialog's own list reaches its end (`html:has(dialog:modal)` in `_base.scss`).
 - `shared/field-box.scss` is a text field in a framed box, used by the price fields and the search. The box is the label, so a click anywhere in it reaches the field, and the focus ring goes around the whole box.
 - `shared/select.scss` is a `<select>` with the chevron icon instead of the browser's own arrow, used by the CMS forms and the shop's sort.
   - In Chrome it is a customizable select (`appearance: base-select`), still a real `<select>`. Its list looks like the other popovers: a 2 px frame, the surface color and `--shadow-popover`, the hover color on the row under the mouse or the keyboard, and the check icon on the chosen one. It opens below the field when it fits, and the chevron turns while it is open.
@@ -72,11 +73,13 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - `<main>` is one layer below the header (`isolation: isolate`), so nothing on a page, such as the product page's sticky buy row, can scroll over it.
   - Its bands reach the screen's edges. The content inside them uses `.page-width`: centered, at most `--layout-viewport-width` (1440 px), with `--layout-margin` on the sides (20 px on a phone, 32 px on a tablet, 48 px on a computer).
   - On a phone the menu links are in `MobileMenu`, a `<dialog>` like the cart.
+  - "Shop" in the menu is never underlined, also on its own page; `aria-current="page"` tells screen readers. On hover it gets the secondary text color, like the cart button.
   - The footer's "Shop" lists "Alla produkter" and the five categories with the most products, in name order, each linking to the product list with that category chosen.
   - The footer's big "GREJ." is at most 42 % of the screen width, so it fits between 1024 and 1190 px. It is decoration and takes no clicks, since its letters reach up over the links above.
   - On screens wider than 1440 px the bands (header, start page, moving band, footer) still reach the edges while the content stays centered, so the page keeps one pattern instead of a box in the middle.
 - `ProductCard` is used by both the start page and the product list. It has an image, title and price, a "Slutsåld" or "Få kvar" (1–2 left) badge, and an add button.
   - On a computer the add button is a bar over the image, shown on hover or keyboard focus. On a tablet and a phone, where there is no hover, it is a "+" square.
+  - The card fills its grid row, and the price sits at its bottom. A long title therefore never moves the price or the add button out of line with the rest of the row.
   - The sold-out layer over the image is 70 %, so the image can still be seen.
   - With a mouse, the product's second image fades in over the first on hover or keyboard focus. Touch screens never show or download it; the product page's gallery has it.
 - The start page (`/`, `LandingPage`) has:
@@ -86,6 +89,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - links to the categories from `GET /api/categories`
 - The product list (`/produkter`) has a breadcrumb, the title with the number of products, `CategoryTabs`, and a toolbar with "Visar 1–12 av 40 grejer" ("0 grejer hittades" when nothing matches). It shows two products per row on a phone, and three on a tablet and a computer.
   - Screen readers hear the toolbar's count after each choice (`aria-live`).
+  - A new page from `Pagination` starts at the toolbar (`#grejer`), not at the top, and the focus moves to the toolbar, so Tab goes on into the new products. Back returns to where the customer was.
   - While a new choice loads, the old products and the count stay, so the page doesn't jump. The products fade only if the answer takes more than 0.3 s.
   - From 1024 px the toolbar also shows the chosen filters as chips (`ActiveFilters`). × removes one and moves the focus to the chip beside it, and "Rensa alla" removes them all. The sort box is taller than a row of chips, so the toolbar doesn't grow with the first choice.
   - `SortSelect` at the end of the toolbar sorts the list: "Nyast först", "Lägst pris" or "Högst pris" (`?sortera=`).
