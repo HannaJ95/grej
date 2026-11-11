@@ -36,7 +36,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - It has no visible label, so `label` becomes the field's `aria-label`.
   - Like the price fields, it searches on Enter or when the field is left, so a list doesn't reload for every letter.
   - It has no clear button of its own; each page clears the search its own way.
-- `Pagination` shows the links to the page before and after, and the page numbers (`?sida=`), e.g. 1 2 3 … 8. A phone gets a shorter list. It shows nothing when the list fits on one page.
+- `Pagination` shows the links to the page before and after, and the page numbers (`?sida=`), e.g. 1 2 3 … 8. A phone gets a shorter list. It shows nothing when the list fits on one page. With `fragment`, its links lead to that id on the page instead of the top; the router's offset is `scroll-padding-top` (`app.config.ts`), so the id lands just below the sticky header.
 - `Breadcrumb` shows e.g. "Hem / Shop / Vas" above a page's title. The current page comes last and is not a link.
 - `QuantityStepper` is the − 1 + control in the cart and on the product page (`[(quantity)]` with `min` and `max`). Its buttons are squares of `--stepper-button-size`, which the product page sets so the stepper is as tall as the large button.
 - `StockStatus` is a colored dot and the stock as text:
@@ -88,6 +88,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - links to the categories from `GET /api/categories`
 - The product list (`/produkter`) has a breadcrumb, the title with the number of products, `CategoryTabs`, and a toolbar with "Visar 1–12 av 40 grejer" ("0 grejer hittades" when nothing matches). It shows two products per row on a phone, and three on a tablet and a computer.
   - Screen readers hear the toolbar's count after each choice (`aria-live`).
+  - A new page from `Pagination` starts at the toolbar (`#grejer`), not at the top, and the focus moves to the toolbar, so Tab goes on into the new products. Back returns to where the customer was.
   - While a new choice loads, the old products and the count stay, so the page doesn't jump. The products fade only if the answer takes more than 0.3 s.
   - From 1024 px the toolbar also shows the chosen filters as chips (`ActiveFilters`). × removes one and moves the focus to the chip beside it, and "Rensa alla" removes them all. The sort box is taller than a row of chips, so the toolbar doesn't grow with the first choice.
   - `SortSelect` at the end of the toolbar sorts the list: "Nyast först", "Lägst pris" or "Högst pris" (`?sortera=`).

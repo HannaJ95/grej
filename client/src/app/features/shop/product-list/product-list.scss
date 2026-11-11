@@ -68,6 +68,11 @@
     padding-block: var(--space-16);
   }
 
+  // Inside the edges: Pagination's links put the top edge right under the sticky header.
+  &:focus-visible {
+    outline-offset: calc(-1 * var(--border-width-default));
+  }
+
   p {
     margin: 0;
   }

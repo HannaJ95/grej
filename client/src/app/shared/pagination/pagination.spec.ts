@@ -5,13 +5,19 @@ import { Pagination } from './pagination';
 describe('Pagination', () => {
   // Shows the pagination of the list at /produkter, on page `page` of `totalPages`,
   // while the browser is at `url`.
-  async function show(page: number, totalPages: number, url = '/'): Promise<HTMLElement> {
+  async function show(
+    page: number,
+    totalPages: number,
+    url = '/',
+    fragment?: string,
+  ): Promise<HTMLElement> {
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
     await TestBed.inject(Router).navigateByUrl(url);
     const fixture = TestBed.createComponent(Pagination);
     fixture.componentRef.setInput('path', '/produkter');
     fixture.componentRef.setInput('page', page);
     fixture.componentRef.setInput('totalPages', totalPages);
+    fixture.componentRef.setInput('fragment', fragment);
     await fixture.whenStable();
     return fixture.nativeElement;
   }
@@ -74,5 +80,17 @@ describe('Pagination', () => {
     expect(links(await show(1, 2, '/?visa=alla'))).toEqual([
       ['Nästa', '/produkter?visa=alla&sida=2'],
     ]);
+  });
+
+  it('leads every link to the fragment when it has one', async () => {
+    const element = await show(2, 3, '/', 'grejer');
+    expect(links(element)).toEqual([
+      ['Föregående', '/produkter?sida=1#grejer'],
+      ['Nästa', '/produkter?sida=3#grejer'],
+    ]);
+    const hrefs = [...element.querySelectorAll('.pages:not(.compact) a')].map((a) =>
+      a.getAttribute('href'),
+    );
+    expect(hrefs).toEqual(['/produkter?sida=1#grejer', '/produkter?sida=3#grejer']);
   });
 });

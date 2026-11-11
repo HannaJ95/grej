@@ -18,7 +18,9 @@
   <app-category-tabs [categories]="options().categories" [selected]="categoryIds()" />
 }
 
-<div class="page-width toolbar">
+<!-- Where Pagination's links lead (#grejer). tabindex="-1" lets the router move the focus here
+     too, so Tab goes on into the new page instead of the footer. -->
+<div class="page-width toolbar" id="grejer" tabindex="-1">
   @if (shown(); as s) {
     <!-- aria-live reads out the new number after each choice. tabindex="-1" lets focusCount()
          move the focus here without adding it to the Tab order. -->
@@ -89,7 +91,12 @@
         </ul>
       }
 
-      <app-pagination path="/produkter" [page]="r.page" [totalPages]="r.totalPages" />
+      <app-pagination
+        path="/produkter"
+        fragment="grejer"
+        [page]="r.page"
+        [totalPages]="r.totalPages"
+      />
     } @else {
       <!-- Only before the first answer. Render's free tier can take up to a minute to wake up. -->
       <p role="status">Laddar produkterna…</p>
