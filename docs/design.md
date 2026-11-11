@@ -71,7 +71,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
 The shop has neutral colors. The CMS uses the same tokens, so it gets the same colors and fonts.
 
 - `ShopLayout` (`features/shop/shop-layout/`) has the shop's header (logo, menu, cart) and footer, and the header sticks at the top. The shop's routes are its children in `app.routes.ts`, so the admin pages have no shop header.
-  - The header is the same low height on every screen size: the logo is smaller on a phone, and from a tablet it is as tall as the cart button. That height is `--shop-sticky-top` in `_base.scss`. `scroll-padding-top` uses it, so a focused element is never hidden under the header, and the product list's toolbar sticks below it.
+  - The header is the same low height on every screen size: the logo is smaller on a phone, and from a tablet it is as tall as the cart button. That height is `--shop-sticky-top` in `_base.scss`. `scroll-padding-top` uses it, so a focused element is never hidden under the header.
   - Its bands reach the screen's edges. The content inside them uses `.page-width`: centered, at most `--layout-viewport-width` (1440 px), with `--layout-margin` on the sides (20 px on a phone, 32 px on a tablet, 48 px on a computer).
   - On a phone the menu links are in `MobileMenu`, a `<dialog>` like the cart.
   - The footer's "Shop" lists "Alla produkter" and the five categories with the most products, in name order, each linking to the product list with that category chosen.
@@ -105,7 +105,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
     - A thumb is applied when it is let go, and a field on Enter or when the customer leaves it.
     - A thumb stops at the other one. Typing moves the thumb at once but never changes the text being typed.
   - From 1024 px, `ProductFilters` is a 288 px column to the left.
-  - Below 1024 px the toolbar has "Filter" with the number of choices in a `ButtonCount`, and sticks below the header (not in a window lower than 30rem). The count, Filter and the sort share one row, Filter and the sort to the right. When there is no room, only the sort wraps to a row of its own, still to the right.
+  - Below 1024 px the toolbar has "Filter" with the number of choices in a `ButtonCount`. The toolbar scrolls away with the page on every screen size. The count, Filter and the sort share one row, Filter and the sort to the right. When there is no room, only the sort wraps to a row of its own, still to the right.
     - The button opens `FilterDrawer`, a `<dialog>` from the left with the same `ProductFilters`. It covers the whole screen on a phone and is a 26rem panel on a tablet.
     - Every choice updates the list behind the panel at once. The heading and the close button stick while the filter scrolls, and "Visa 24 grejer" at the bottom closes the panel.
   - When no product matches the filter, `NoResults` shows a framed box:

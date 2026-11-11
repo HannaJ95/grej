@@ -55,19 +55,9 @@
   }
 }
 
-// Below 1024 px it holds Filter, so it sticks below the header. z-index 2: above the product
-// cards' layers, below the header. Its height is also in _base.scss.
 .toolbar {
-  position: sticky;
-  top: var(--shop-sticky-top);
-  z-index: 2;
   padding-block: var(--space-8);
   border-block: var(--border-width-default) solid var(--color-border-default);
-  background: var(--color-bg-page);
-
-  @media (width >= 64rem), (height < 30rem) {
-    position: static;
-  }
 
   @media (width >= 64rem) {
     padding-block: var(--space-16);

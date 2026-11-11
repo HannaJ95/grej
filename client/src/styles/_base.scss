@@ -25,25 +25,11 @@ body:has(app-admin-layout) {
   padding: 0;
 }
 
-// The shop header's height, so focused elements and the product list's toolbar stay below it.
+// The shop header's height, so focused elements stay below it.
 html:has(app-shop-layout) {
   --shop-sticky-top: 4rem;
 
   scroll-padding-top: var(--shop-sticky-top);
-}
-
-// Below 1024 px the product list's toolbar sticks below the header too, so the focus is kept
-// below both. The toolbar's height: two rows on a phone, one on a tablet.
-html:has(app-product-list) {
-  scroll-padding-top: calc(var(--shop-sticky-top) + 5.75rem);
-
-  @media (width >= 48rem) {
-    scroll-padding-top: calc(var(--shop-sticky-top) + 3.25rem);
-  }
-
-  @media (width >= 64rem), (height < 30rem) {
-    scroll-padding-top: var(--shop-sticky-top);
-  }
 }
 
 // What sticks at the top of an admin page: the app bar below 1024 px, AdminPageHeader from
