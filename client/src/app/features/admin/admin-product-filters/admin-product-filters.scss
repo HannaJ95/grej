@@ -14,3 +14,10 @@
 .field {
   min-width: 0;
 }
+
+// One line, like a native select, so a long choice doesn't make its box taller than the others.
+select {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

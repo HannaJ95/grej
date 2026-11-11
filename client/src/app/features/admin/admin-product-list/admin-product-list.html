@@ -53,7 +53,7 @@
                 @if (p.stock < 0) {
                   <span class="oversold text-label-xs">{{ p.stock }} st – fler sålda än det fanns</span>
                 } @else {
-                  <app-stock-status [stock]="p.stock" />
+                  <app-stock-status class="nowrap-in-table" [stock]="p.stock" />
                 }
               </td>
               <td class="visible text-body-s" [class.hidden]="!p.isActive">
@@ -61,7 +61,7 @@
               </td>
               <td class="added text-body-s">
                 <span class="stacked-only">Tillagd </span
-                >{{ p.createdAt | date: 'yyyy-MM-dd' }}
+                ><span class="date">{{ p.createdAt | date: 'yyyy-MM-dd' }}</span>
               </td>
               <td class="manage">
                 <!-- The name in aria-label tells the many "Redigera" apart. -->

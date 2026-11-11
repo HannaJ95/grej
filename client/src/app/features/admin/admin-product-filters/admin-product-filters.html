@@ -15,7 +15,7 @@
         class="text-body-m-compact"
         (change)="choose('kategori', category.value)"
       >
-        <option value="" [selected]="query().categoryId === undefined">Alla kategorier</option>
+        <option value="" [selected]="query().categoryId === undefined">Alla</option>
         @for (group of categoryGroups(); track group.main.id) {
           <optgroup class="text-badge" [label]="group.main.name">
             <option
@@ -50,7 +50,7 @@
         class="text-body-m-compact"
         (change)="choose('material', material.value)"
       >
-        <option value="" [selected]="query().materialId === undefined">Alla material</option>
+        <option value="" [selected]="query().materialId === undefined">Alla</option>
         @for (m of materialChoices(); track m.id) {
           <option [value]="m.id" [selected]="m.id === query().materialId">{{ m.name }}</option>
         }
@@ -68,7 +68,7 @@
         class="text-body-m-compact"
         (change)="choose('farg', color.value)"
       >
-        <option value="" [selected]="query().colorId === undefined">Alla färger</option>
+        <option value="" [selected]="query().colorId === undefined">Alla</option>
         @for (c of colorChoices(); track c.id) {
           <option [value]="c.id" [selected]="c.id === query().colorId">{{ c.name }}</option>
         }

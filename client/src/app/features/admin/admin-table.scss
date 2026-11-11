@@ -46,6 +46,11 @@
   display: none;
 }
 
+// One line while the table has columns. A stacked row has less room, so it may wrap there.
+.nowrap-in-table {
+  white-space: nowrap;
+}
+
 // Too narrow for the columns: each row becomes a small grid with two columns. The cells' own
 // text says what they are, so the column headings are kept for screen readers only. Grid
 // placement on a cell (grid-area, justify-self) only takes effect here.
@@ -95,6 +100,10 @@
 
   #{$table} .stacked-only {
     display: inline;
+  }
+
+  #{$table} .nowrap-in-table {
+    white-space: normal;
   }
 }
 

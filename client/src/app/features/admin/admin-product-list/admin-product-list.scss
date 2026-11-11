@@ -29,8 +29,12 @@
   }
 }
 
-.price,
-.added {
+.price {
+  white-space: nowrap;
+}
+
+// Chrome would otherwise break it after a hyphen.
+.date {
   white-space: nowrap;
 }
 
