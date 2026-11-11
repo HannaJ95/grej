@@ -224,5 +224,6 @@ public class AdminProductService(
         product.Colors.Select(color => color.Id).ToList(),
         ProductImageDto.ListFrom(product),
         ParcelDto.From(product),
-        ProductSizeDto.From(product));
+        ProductSizeDto.From(product),
+        product.CreatedAt);
 }

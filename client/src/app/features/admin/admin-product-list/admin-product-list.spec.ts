@@ -31,6 +31,7 @@ describe('AdminProductList', () => {
     images: [],
     parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
     size: { lengthCm: null, widthCm: null, heightCm: null, diameterCm: null, weightGrams: null },
+    createdAt: '2026-10-02T09:00:00Z',
   };
 
   const keramik: Category = {
@@ -126,6 +127,19 @@ describe('AdminProductList', () => {
     expect(select('#product-filter-color').value).toBe('4');
     expect(select('#product-filter-visibility').value).toBe('dolda');
     expect(select('#product-filter-sort').value).toBe('lagst-pris');
+  });
+
+  it('shows when each product was added, and can sort the oldest first', async () => {
+    const request = await open('/admin/produkter?sortera=aldst');
+
+    expect(request.request.params.get('sort')).toBe('oldest');
+    expect(texts('th')).toContain('Tillagd');
+    // "Tillagd" in the cell is only shown when the row is stacked.
+    expect(texts('td.added')).toEqual(['Tillagd 2026-10-02']);
+    expect(
+      [...select('#product-filter-sort').options].map((o) => o.textContent!.trim()),
+    ).toEqual(['Nyast först', 'Äldst först', 'Lägst pris', 'Högst pris']);
+    expect(select('#product-filter-sort').value).toBe('aldst');
   });
 
   it('groups the subcategories under their main category', async () => {

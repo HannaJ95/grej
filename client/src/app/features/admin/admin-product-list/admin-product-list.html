@@ -19,13 +19,14 @@
         {{ filtered() ? 'Inga produkter matchar filtren.' : 'Det finns inga produkter än.' }}
       </p>
     } @else {
-      <table class="table">
+      <table class="table wide">
         <thead>
           <tr>
             <th class="text-mono-s-caps" scope="col">Produkt</th>
             <th class="end text-mono-s-caps" scope="col">Pris</th>
             <th class="text-mono-s-caps" scope="col">Lager</th>
             <th class="text-mono-s-caps" scope="col">I butiken</th>
+            <th class="text-mono-s-caps" scope="col">Tillagd</th>
             <!-- No visible heading, but screen readers still get a name for the column. -->
             <th scope="col" aria-label="Åtgärder"></th>
           </tr>
@@ -57,6 +58,10 @@
               </td>
               <td class="visible text-body-s" [class.hidden]="!p.isActive">
                 {{ p.isActive ? 'Synlig' : 'Dold' }}
+              </td>
+              <td class="added text-body-s">
+                <span class="stacked-only">Tillagd </span
+                >{{ p.createdAt | date: 'yyyy-MM-dd' }}
               </td>
               <td class="manage">
                 <!-- The name in aria-label tells the many "Redigera" apart. -->

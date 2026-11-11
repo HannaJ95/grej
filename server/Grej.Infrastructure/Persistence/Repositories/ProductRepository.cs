@@ -99,11 +99,13 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
             .ToDictionaryAsync(row => row.CategoryId, row => row.Count, cancellationToken);
 
     // Without a fixed order PostgreSQL may return the rows in any order, and a product could show up
-    // on two pages. So the id decides between equal prices. Highest id = newest.
+    // on two pages. So the id decides between equal prices. The id grows with every new product,
+    // so it gives the same order as CreatedAt.
     private static IOrderedQueryable<Product> Sorted(IQueryable<Product> query, ProductSort sort) => sort switch
     {
         ProductSort.PriceAscending => query.OrderBy(p => p.Price).ThenByDescending(p => p.Id),
         ProductSort.PriceDescending => query.OrderByDescending(p => p.Price).ThenByDescending(p => p.Id),
+        ProductSort.Oldest => query.OrderBy(p => p.Id),
         _ => query.OrderByDescending(p => p.Id),
     };
 

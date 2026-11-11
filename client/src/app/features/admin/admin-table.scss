@@ -41,6 +41,11 @@
   text-align: right;
 }
 
+// Words a cell only needs in a stacked row, where the column heading is hidden, e.g. "Tillagd".
+.stacked-only {
+  display: none;
+}
+
 // Too narrow for the columns: each row becomes a small grid with two columns. The cells' own
 // text says what they are, so the column headings are kept for screen readers only. Grid
 // placement on a cell (grid-area, justify-self) only takes effect here.
@@ -86,6 +91,10 @@
     display: block;
     padding: 0;
     border: none;
+  }
+
+  #{$table} .stacked-only {
+    display: inline;
   }
 }
 

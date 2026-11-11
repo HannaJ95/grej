@@ -24,6 +24,8 @@ export interface AdminProduct {
   images: ProductImage[];
   parcel: Parcel;
   size: ProductSize;
+  // ISO date and time, in UTC.
+  createdAt: string;
 }
 
 // ProductRequest in the API.
@@ -39,6 +41,24 @@ export interface ProductInput {
   colorIds: number[];
   parcel: Parcel;
   size: ProductSize;
+}
+
+// ?sortera= in the CMS product list: the shop's sorts, and the oldest first too.
+export type AdminProductSort = ProductSort | 'aldst';
+
+// In the order the select shows them.
+export const ADMIN_SORTS: Record<AdminProductSort, { label: string; api: string }> = {
+  nyast: SORTS.nyast,
+  aldst: { label: 'Äldst först', api: 'oldest' },
+  'lagst-pris': SORTS['lagst-pris'],
+  'hogst-pris': SORTS['hogst-pris'],
+};
+
+// Missing or unknown becomes the default, like toSort in product-sort.ts.
+export function toAdminSort(value: string | undefined): AdminProductSort {
+  return value !== undefined && Object.hasOwn(ADMIN_SORTS, value)
+    ? (value as AdminProductSort)
+    : DEFAULT_SORT;
 }
 
 // ?visa= in the CMS product list. Undefined shows both.
@@ -57,7 +77,7 @@ export interface AdminProductQuery {
   materialId: number | undefined;
   colorId: number | undefined;
   visibility: ProductVisibility | undefined;
-  sort: ProductSort;
+  sort: AdminProductSort;
 }
 
 export const ALL_PRODUCTS: AdminProductQuery = {
@@ -101,7 +121,7 @@ export class AdminProductService {
           ...(materialId === undefined ? {} : { materialId }),
           ...(colorId === undefined ? {} : { colorId }),
           ...(visibility === undefined ? {} : { isActive: visibility === 'synliga' }),
-          ...(sort === DEFAULT_SORT ? {} : { sort: SORTS[sort].api }),
+          ...(sort === DEFAULT_SORT ? {} : { sort: ADMIN_SORTS[sort].api }),
         },
       };
     });

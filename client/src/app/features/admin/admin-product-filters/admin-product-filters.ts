@@ -1,9 +1,9 @@
 import { Component, computed, inject, input, signal, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminCategoryService } from '../../../core/admin-category.service';
-import { AdminProductQuery, isFiltered } from '../../../core/admin-product.service';
+import { ADMIN_SORTS, AdminProductQuery, isFiltered } from '../../../core/admin-product.service';
 import { AdminPropertyService } from '../../../core/admin-property.service';
-import { DEFAULT_SORT, SORTS } from '../../../core/product-sort';
+import { DEFAULT_SORT } from '../../../core/product-sort';
 import { Icon } from '../../../shared/icons/icon';
 import { LinkButton } from '../../../shared/link-button/link-button';
 import { SearchField } from '../../../shared/search-field/search-field';
@@ -46,7 +46,10 @@ export class AdminProductFilters {
   protected readonly colorChoices = computed(() =>
     this.colors.hasValue() ? this.colors.value().items : [],
   );
-  protected readonly sorts = Object.entries(SORTS).map(([value, { label }]) => ({ value, label }));
+  protected readonly sorts = Object.entries(ADMIN_SORTS).map(([value, { label }]) => ({
+    value,
+    label,
+  }));
 
   protected readonly filtered = computed(() => isFiltered(this.query()));
 

@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
@@ -6,11 +6,12 @@ import {
   AdminProductQuery,
   AdminProductService,
   isFiltered,
+  toAdminSort,
   toVisibility,
 } from '../../../core/admin-product.service';
 import { ConfirmService } from '../../../core/confirm.service';
 import { toSearch } from '../../../core/product-filter';
-import { DEFAULT_SORT, toSort } from '../../../core/product-sort';
+import { DEFAULT_SORT } from '../../../core/product-sort';
 import { ToastService } from '../../../core/toast.service';
 import { Button } from '../../../shared/button/button';
 import { toId } from '../../../shared/id-list';
@@ -32,6 +33,7 @@ import {
   selector: 'app-admin-product-list',
   imports: [
     CurrencyPipe,
+    DatePipe,
     RouterLink,
     Button,
     LinkButton,
@@ -54,7 +56,7 @@ export class AdminProductList {
   readonly materialId = input(undefined, { alias: 'material', transform: toId });
   readonly colorId = input(undefined, { alias: 'farg', transform: toId });
   readonly visibility = input(undefined, { alias: 'visa', transform: toVisibility });
-  readonly sort = input(DEFAULT_SORT, { alias: 'sortera', transform: toSort });
+  readonly sort = input(DEFAULT_SORT, { alias: 'sortera', transform: toAdminSort });
 
   protected readonly query = computed<AdminProductQuery>(() => ({
     page: this.page(),

@@ -109,7 +109,7 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
     }
 
     [Fact]
-    public async Task GetPage_SortsByPrice()
+    public async Task GetPage_SortsByPriceOrAge()
     {
         var categoryId = await AddCategoryAsync();
         var client = await CreateAdminClientAsync();
@@ -119,6 +119,20 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
 
         Assert.Equal(["Skål", "Vas", "Fat"], await GetTitlesAsync(client, "sort=priceAscending"));
         Assert.Equal(["Fat", "Vas", "Skål"], await GetTitlesAsync(client, "sort=priceDescending"));
+        Assert.Equal(["Vas", "Skål", "Fat"], await GetTitlesAsync(client, ""));
+        Assert.Equal(["Fat", "Skål", "Vas"], await GetTitlesAsync(client, "sort=oldest"));
+    }
+
+    [Fact]
+    public async Task GetPage_TellsWhenEachProductWasAdded()
+    {
+        var categoryId = await AddCategoryAsync();
+        var client = await CreateAdminClientAsync();
+        await CreateProductAsync(client, "Vas", categoryId);
+
+        var page = await client.GetFromJsonAsync<PagedResult<AdminProductDto>>("/api/admin/products");
+
+        Assert.Equal(DateTime.UtcNow, Assert.Single(page!.Items).CreatedAt, TimeSpan.FromMinutes(1));
     }
 
     [Fact]
