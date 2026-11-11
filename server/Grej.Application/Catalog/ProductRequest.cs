@@ -38,6 +38,9 @@ public record ProductRequest
     // also checks the rules inside it.
     [Required]
     public required ParcelRequest Parcel { get; init; }
+
+    // Left out of the JSON = no size, like MaterialIds.
+    public ProductSizeRequest Size { get; init; } = new();
 }
 
 // What the CMS form sends to save changes: the same fields and rules, plus the

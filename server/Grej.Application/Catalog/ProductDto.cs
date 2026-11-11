@@ -15,4 +15,5 @@ public record ProductDto(
     // Only the names, sorted, e.g. ["Glas", "Keramik"]. Empty if the product has none.
     IReadOnlyList<string> Materials,
     IReadOnlyList<string> Colors,
-    ParcelDto Parcel);
+    ParcelDto Parcel,
+    ProductSizeDto Size);

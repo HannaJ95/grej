@@ -180,6 +180,20 @@ public class ProductsEndpointTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
+    public async Task GetById_ReturnsTheItemsOwnSize()
+    {
+        var client = CreateClient(new Product
+        {
+            Id = 1, Title = "Kopp", Price = 300m, Stock = 1, IsActive = true,
+            ItemHeightCm = 9.5m, ItemDiameterCm = 8m, ItemWeightGrams = 350,
+        });
+
+        var found = await client.GetFromJsonAsync<ProductDto>("/api/products/1");
+
+        Assert.Equal(new ProductSizeDto(null, null, 9.5m, 8m, 350), found!.Size);
+    }
+
+    [Fact]
     public async Task GetById_InactiveProduct_ReturnsNotFound()
     {
         var client = CreateClient(new Product { Id = 1, Title = "Utkast", Price = 450m, Stock = 1, IsActive = false });

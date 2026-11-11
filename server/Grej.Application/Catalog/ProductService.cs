@@ -115,5 +115,6 @@ public class ProductService(IProductRepository products, ICategoryRepository cat
         // The database returns them in no fixed order.
         product.Materials.Select(material => material.Name).Order().ToList(),
         product.Colors.Select(color => color.Name).Order().ToList(),
-        ParcelDto.From(product));
+        ParcelDto.From(product),
+        ProductSizeDto.From(product));
 }

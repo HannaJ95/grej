@@ -60,10 +60,8 @@ public class AdminProductService(
             return UpdateProductResult.NotFound;
         }
 
-        // The stock has changed since the form was opened, e.g. a customer has paid.
-        // Saving the form's stock would undo that sale, so nothing is saved. (A sale in the
-        // milliseconds between here and SaveChangesAsync makes it throw instead, since
-        // Stock is a concurrency token in ProductConfiguration.)
+        // A customer has paid since the form was opened, and saving its stock would undo the
+        // sale. A sale right before SaveChangesAsync throws instead (the concurrency token).
         if (product.Stock != request.OriginalStock)
         {
             return UpdateProductResult.StockChanged;
@@ -89,10 +87,9 @@ public class AdminProductService(
             return DeleteProductResult.NotFound;
         }
 
-        // Old orders point to their products, so an ordered product is never hard
-        // deleted; the admin hides it instead (constraints.md). Asked through the Orders
-        // module's service, not its tables. The foreign key in OrderItemConfiguration
-        // also stops the delete if an order is created right now.
+        // Old orders point to their products, so the admin hides an ordered product instead
+        // (constraints.md). Asked through the Orders module's service, not its tables. The
+        // foreign key in OrderItemConfiguration also stops the delete if an order is created now.
         if (await orders.IsProductOrderedAsync(id, cancellationToken))
         {
             return DeleteProductResult.OnOrder;
@@ -180,9 +177,8 @@ public class AdminProductService(
         return ImageChangeResult.Changed(product);
     }
 
-    // Copies the form's fields to the product. Used by both create and update. False if the
-    // category, a material or a color does not exist; the product is not changed then.
-    // "Try" as in int.TryParse: it answers with true or false instead of throwing.
+    // For both create and update. False, and the product unchanged, if the category, a material
+    // or a color does not exist.
     private async Task<bool> TryApplyAsync(ProductRequest request, Product product, CancellationToken cancellationToken)
     {
         if (!await categories.ExistsAsync(request.CategoryId, cancellationToken))
@@ -210,6 +206,11 @@ public class AdminProductService(
         product.LengthCm = request.Parcel.LengthCm;
         product.WidthCm = request.Parcel.WidthCm;
         product.HeightCm = request.Parcel.HeightCm;
+        product.ItemLengthCm = request.Size.LengthCm;
+        product.ItemWidthCm = request.Size.WidthCm;
+        product.ItemHeightCm = request.Size.HeightCm;
+        product.ItemDiameterCm = request.Size.DiameterCm;
+        product.ItemWeightGrams = request.Size.WeightGrams;
         product.SetMaterials(chosenMaterials);
         product.SetColors(chosenColors);
         return true;
@@ -227,5 +228,6 @@ public class AdminProductService(
         product.Materials.Select(material => material.Id).ToList(),
         product.Colors.Select(color => color.Id).ToList(),
         ProductImageDto.ListFrom(product),
-        ParcelDto.From(product));
+        ParcelDto.From(product),
+        ProductSizeDto.From(product));
 }

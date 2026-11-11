@@ -127,6 +127,53 @@ public class AdminProductsEndpointTests : IClassFixture<WebApplicationFactory<Pr
         Assert.Equal(0, await CountProductsAsync());
     }
 
+    [Fact]
+    public async Task Create_WithSize_SavesTheGivenValues()
+    {
+        var categoryId = await AddCategoryAsync();
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsJsonAsync("/api/admin/products",
+            new { title = "Kopp", price = 300m, stock = 1, isActive = true, categoryId, parcel = Parcel, size = new { heightCm = 9.5m, diameterCm = 8m, weightGrams = 350 } });
+
+        var created = await response.Content.ReadFromJsonAsync<AdminProductDto>();
+        Assert.Equal(new ProductSizeDto(null, null, 9.5m, 8m, 350), created!.Size);
+        var saved = await FindProductAsync(created.Id);
+        Assert.Equal((9.5m, 8m, 350), (saved?.ItemHeightCm, saved?.ItemDiameterCm, saved?.ItemWeightGrams));
+    }
+
+    [Fact]
+    public async Task Create_WithoutSize_HasNoSize()
+    {
+        var categoryId = await AddCategoryAsync();
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsJsonAsync("/api/admin/products",
+            new { title = "Kopp", price = 300m, stock = 1, isActive = true, categoryId, parcel = Parcel });
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        var created = await response.Content.ReadFromJsonAsync<AdminProductDto>();
+        Assert.Equal(new ProductSizeDto(null, null, null, null, null), created!.Size);
+    }
+
+    [Theory]
+    [InlineData("lengthCm", 0)]
+    [InlineData("widthCm", 1000)]
+    [InlineData("heightCm", 2.25)]
+    [InlineData("diameterCm", -1)]
+    [InlineData("weightGrams", 0)]
+    public async Task Create_InvalidSize_ReturnsBadRequestAndSavesNothing(string field, double value)
+    {
+        var categoryId = await AddCategoryAsync();
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.PostAsJsonAsync("/api/admin/products",
+            new { title = "Kopp", price = 300m, stock = 1, isActive = true, categoryId, parcel = Parcel, size = new Dictionary<string, double> { [field] = value } });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(0, await CountProductsAsync());
+    }
+
     [Theory]
     // 0 = the form sent no category, which ProductRequest's [Range] stops.
     [InlineData(0)]

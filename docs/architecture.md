@@ -179,6 +179,8 @@ erDiagram
 | CategoryId | → Category | Exactly one |
 | SellerId | → User | Always the admin in this version |
 | WeightGrams, LengthCm, WidthCm, HeightCm | int | The packed parcel, for the shipping cost (see Shipping). Not shown in the shop |
+| ItemLengthCm, ItemWidthCm, ItemHeightCm, ItemDiameterCm | decimal(4,1)? | The item itself, shown on the product page. Null = not given |
+| ItemWeightGrams | int? | The item itself, shown on the product page. Null = not given |
 | CreatedAt, UpdatedAt | datetime | |
 
 **ProductImage**
@@ -288,6 +290,7 @@ The CMS has its own endpoints under `/api/admin/` (e.g. `/api/admin/products`), 
 - When the admin saves a product, the form sends the stock the product had when it was last fetched. The page fetches it again after every save. If a customer has bought the product since then, the API answers 409 and saves nothing, so a sale is never overwritten.
 - On "Ny produkt" the first image is chosen in the same form, but it is uploaded right after the product is created, since the upload needs the product's id. If the upload fails, the product still exists, and its page says that the image has to be uploaded again. More images are added on the product's page (ambiguity.md).
 - The product form has the packed parcel's weight and size, sent and returned as one object `parcel` (`ParcelRequest`, `ParcelDto`), with the rules in constraints.md.
+- It also has the item's own size and weight, all optional, as one object `size` (`ProductSizeRequest`, `ProductSizeDto`). The shop's `ProductDto` has `size` for the product page. A request without `size` gives a product without one.
 
 Known limitation: the stock must be 0 or more when the admin saves. A product with stock below 0 (the last item sold twice) therefore gets at least 0 if the admin edits it before the order is handled.
 

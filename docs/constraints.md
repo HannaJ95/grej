@@ -87,6 +87,7 @@ Cancelled
 - Every product has an owner (`SellerId`), which is always the admin in this version. This keeps the door open for a marketplace.
 - A product must have a title, a category and a price greater than 0. This is validated in both the form and the API.
 - A product must have its packed parcel's weight (1–100 000 g) and length, width and height (1–300 cm), in whole numbers. This is validated in both the form and the API.
+- The item's own length, width, height and diameter (0.1–999.9 cm, at most one decimal) and weight (1–100 000 g, a whole number) are optional. This is validated in both the form and the API.
 - A product has at most 10 images (Should; the MVP had one). The first one is the main image. This is checked by the API, and the CMS hides the upload at 10.
 
 ## Stock

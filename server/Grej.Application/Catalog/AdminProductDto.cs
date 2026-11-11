@@ -16,4 +16,5 @@ public record AdminProductDto(
     IReadOnlyList<int> ColorIds,
     // In order, the main image first, as in ProductDto.
     IReadOnlyList<ProductImageDto> Images,
-    ParcelDto Parcel);
+    ParcelDto Parcel,
+    ProductSizeDto Size);

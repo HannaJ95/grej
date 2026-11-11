@@ -24,6 +24,13 @@ public class Product
     public int WidthCm { get; set; }
     public int HeightCm { get; set; }
 
+    // The item itself, shown in the shop. Null = not given, e.g. no width on a round cup.
+    public decimal? ItemLengthCm { get; set; }
+    public decimal? ItemWidthCm { get; set; }
+    public decimal? ItemHeightCm { get; set; }
+    public decimal? ItemDiameterCm { get; set; }
+    public int? ItemWeightGrams { get; set; }
+
     public int CategoryId { get; set; }
 
     // Always the admin in this version (constraints.md). A string, like Identity's user ids.
