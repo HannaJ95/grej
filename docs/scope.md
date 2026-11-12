@@ -55,6 +55,7 @@ The MVP is a single-seller webshop with an admin CMS = all **Must** items below.
 - At most 10 logins and 10 checkouts per minute from one IP address (added 12 Nov)
 - The order on the success page: its rows, shipping and total, and its delivery and payment once paid (added 12 Nov)
 - An about page, "Om GREJ", linked from the header, the phone menu and the footer (added 12 Nov)
+- A terms page, "Villkor", that only says what the shop does (ordering and payment, shipping, the right of withdrawal, personal data and browser storage), with contents that follow the scrolling; linked from the footer and the product page. It is information about the demo shop, not reviewed terms (added 12 Nov)
 
 ### Could
 
