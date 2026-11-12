@@ -9,8 +9,7 @@ import { MobileMenu } from '../mobile-menu/mobile-menu';
 // A longer list would push the footer's other content far down.
 const FOOTER_CATEGORIES = 5;
 
-// The header and footer around every shop page. The shop's routes are its children in
-// app.routes.ts.
+// The shop's routes are its children in app.routes.ts.
 @Component({
   selector: 'app-shop-layout',
   imports: [

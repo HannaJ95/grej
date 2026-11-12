@@ -25,7 +25,7 @@ describe('ShopLayout', () => {
     return { id, name, productCount, subcategories: [] };
   }
 
-  it('links to the start page and the products', async () => {
+  it('links to the start page, the products and the about page', async () => {
     const element = await show();
 
     const links = [...element.querySelectorAll('a')].map((a) => [
@@ -33,13 +33,16 @@ describe('ShopLayout', () => {
       a.getAttribute('href'),
     ]);
     // The closed cart and phone menu are in the page too: the empty cart's "Utforska shoppen"
-    // and the menu's "Shop".
+    // and the menu's links.
     expect(links).toEqual([
       ['GREJ, till startsidan', '/'],
       ['Shop', '/produkter'],
+      ['Om GREJ', '/om-grej'],
       ['Utforska shoppen', '/produkter'],
       ['Shop', '/produkter'],
+      ['Om GREJ', '/om-grej'],
       ['Alla produkter', '/produkter'],
+      ['Om GREJ', '/om-grej'],
     ]);
   });
 
@@ -54,7 +57,8 @@ describe('ShopLayout', () => {
       category(7, 'Trä', 7),
     ]);
 
-    const links = [...element.querySelectorAll('.footer-links a')].map((a) => [
+    // The first list is Shop's.
+    const links = [...element.querySelector('.footer-links')!.querySelectorAll('a')].map((a) => [
       a.textContent!.trim(),
       a.getAttribute('href'),
     ]);
