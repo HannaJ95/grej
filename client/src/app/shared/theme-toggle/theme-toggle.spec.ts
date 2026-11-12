@@ -17,7 +17,7 @@ describe('ThemeToggle', () => {
     localStorage.clear();
   });
 
-  it('is named "Mörkt läge" by its aria-label or its text', async () => {
+  it('offers "Mörkt läge" by its aria-label or its text', async () => {
     const fixture = TestBed.createComponent(Host);
     await fixture.whenStable();
     const element: HTMLElement = fixture.nativeElement;
@@ -29,20 +29,20 @@ describe('ThemeToggle', () => {
     expect(withLabel.textContent!.trim()).toBe('Mörkt läge');
   });
 
-  it('turns dark mode on and shows the sun', async () => {
+  it('turns dark mode on and then offers "Ljust läge" with the sun', async () => {
     const fixture = TestBed.createComponent(Host);
     await fixture.whenStable();
     const element: HTMLElement = fixture.nativeElement;
-    const button = element.querySelector<HTMLButtonElement>('.icon-only')!;
-    expect(button.getAttribute('aria-pressed')).toBe('false');
-    expect(button.querySelector('app-icon')!.getAttribute('style')).toContain('moon.svg');
+    const iconOnly = element.querySelector<HTMLButtonElement>('.icon-only')!;
+    expect(iconOnly.querySelector('app-icon')!.getAttribute('style')).toContain('moon.svg');
 
-    button.click();
+    iconOnly.click();
     await fixture.whenStable();
 
-    expect(button.getAttribute('aria-pressed')).toBe('true');
-    expect(button.querySelector('app-icon')!.getAttribute('style')).toContain('sun.svg');
+    expect(iconOnly.getAttribute('aria-label')).toBe('Ljust läge');
+    expect(iconOnly.querySelector('app-icon')!.getAttribute('style')).toContain('sun.svg');
+    expect(iconOnly.hasAttribute('aria-pressed')).toBe(false);
     // Both buttons read the same service.
-    expect(element.querySelector('.with-label')!.getAttribute('aria-pressed')).toBe('true');
+    expect(element.querySelector('.with-label')!.textContent!.trim()).toBe('Ljust läge');
   });
 });
