@@ -1,0 +1,50 @@
+<div class="hero">
+  <app-breadcrumb [links]="[{ label: 'Hem', path: '/' }]" current="Villkor" />
+  <h1 class="text-display-hero">Villkor</h1>
+  <p class="intro text-body-l">
+    Här står vad som gäller när du handlar hos GREJ: betalning, frakt, ångerrätt och vad vi gör med
+    dina uppgifter.
+  </p>
+  <p class="updated text-mono-s">
+    Senast uppdaterad <time datetime="2026-11-12">2026-11-12</time>
+  </p>
+  <app-demo-notice class="notice">
+    GREJ är ett examensarbete. Villkoren beskriver hur demobutiken fungerar och är inte juridiskt
+    granskade.
+  </app-demo-notice>
+</div>
+
+<div class="body">
+  <nav class="contents" aria-labelledby="contents-title">
+    <h2 class="text-display-2xs" id="contents-title">Innehåll</h2>
+    <ol class="contents-list text-body-s">
+      @for (section of sections; track section.id) {
+        <li>
+          <a routerLink="/villkor" [fragment]="section.id">{{ section.title }}</a>
+        </li>
+      }
+    </ol>
+  </nav>
+
+  <div class="sections text-body-m">
+    @for (section of sections; track section.id; let number = $index) {
+      <section class="section">
+        <!-- tabindex="-1" lets the router move the focus here, so Tab goes on from the section. -->
+        <h2 class="text-display-xs" [id]="section.id" tabindex="-1">
+          {{ number + 1 }}. {{ section.title }}
+        </h2>
+        @for (block of section.content; track $index) {
+          @if (typeof block === 'string') {
+            <p>{{ block }}</p>
+          } @else {
+            <ul class="list">
+              @for (item of block; track $index) {
+                <li>{{ item }}</li>
+              }
+            </ul>
+          }
+        }
+      </section>
+    }
+  </div>
+</div>

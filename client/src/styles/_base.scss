@@ -25,11 +25,12 @@ body:has(app-admin-layout) {
   padding: 0;
 }
 
-// The shop header's height, so focused elements stay below it.
+// The shop header's height, so focused elements stay below it. The extra space-8 keeps the focus
+// ring visible, like in the admin.
 html:has(app-shop-layout) {
   --shop-sticky-top: 4rem;
 
-  scroll-padding-top: var(--shop-sticky-top);
+  scroll-padding-top: calc(var(--shop-sticky-top) + var(--space-8));
 }
 
 // What sticks at the top of an admin page: the app bar below 1024 px, AdminPageHeader from

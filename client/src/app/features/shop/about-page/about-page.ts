@@ -10,7 +10,7 @@ import { Icon } from '../../../shared/icons/icon';
   selector: 'app-about-page',
   imports: [RouterLink, Breadcrumb, Button, DemoNotice, Icon],
   templateUrl: './about-page.html',
-  styleUrl: './about-page.scss',
+  styleUrls: ['../page-hero.scss', './about-page.scss'],
   host: { class: 'page-width' },
 })
 export class AboutPage {

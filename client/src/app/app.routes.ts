@@ -30,6 +30,11 @@ export const routes: Routes = [
           import('./features/shop/about-page/about-page').then((m) => m.AboutPage),
       },
       {
+        path: 'villkor',
+        loadComponent: () =>
+          import('./features/shop/terms-page/terms-page').then((m) => m.TermsPage),
+      },
+      {
         path: 'kassa/tack',
         loadComponent: () =>
           import('./features/shop/success-page/success-page').then((m) => m.SuccessPage),
