@@ -76,7 +76,7 @@ nav {
     background: var(--color-bg-hover);
   }
 
-  // After :hover, so the chosen page stays dark under the mouse.
+  // After :hover, so the chosen page keeps its color under the mouse.
   &.active {
     background: var(--color-bg-inverse);
     color: var(--color-text-on-inverse);

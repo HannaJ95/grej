@@ -1,6 +1,5 @@
 // The mixins come first, since Sass needs a mixin before it is used.
 
-// :root uses these, and so does a part with data-theme="light", which keeps them in dark mode.
 @mixin light-colors {
   color-scheme: light;
 
@@ -152,8 +151,7 @@
   @include dark-colors;
 }
 
-// A part that looks the same in both modes, such as the phone menu. Its own values win over the
-// ones it inherits from <html>.
+// A part that looks the same in both modes, such as the footer and the phone menu.
 [data-theme='light'] {
   @include light-colors;
 }

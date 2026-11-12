@@ -5,8 +5,8 @@
 </button>
 
 <dialog #dialog aria-labelledby="menu-title" (click)="closeOnBackdrop($event)">
-  <!-- On the panel and not the dialog, since the backdrop inherits from the dialog and should
-       dim the page as the page's mode does. -->
+  <!-- Dark in both modes. On the panel, since the backdrop inherits from the dialog and should
+       follow the page's mode. -->
   <div class="panel" data-theme="light">
     <div class="panel-header">
       <h2 class="panel-title text-display-xs" id="menu-title">Meny</h2>

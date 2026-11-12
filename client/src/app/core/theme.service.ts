@@ -2,11 +2,11 @@ import { computed, DOCUMENT, inject, Service, signal } from '@angular/core';
 
 type Theme = 'light' | 'dark';
 
-// The script in index.html reads the same key before the first paint.
+// The script in index.html reads it too.
 const STORAGE_KEY = 'grej.theme';
 
-// Light or dark. The page follows the system's setting until the visitor chooses with
-// ThemeToggle. The choice is <html data-theme>, which the colors in _tokens.scss read.
+// The page follows the system's setting until the visitor chooses with ThemeToggle. The choice is
+// <html data-theme>, which _tokens.scss reads.
 @Service()
 export class ThemeService {
   private readonly root = inject(DOCUMENT).documentElement;

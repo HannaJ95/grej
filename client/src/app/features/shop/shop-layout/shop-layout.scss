@@ -10,7 +10,7 @@
 }
 
 // One layer below the header, so nothing on a page can cover it, whatever its z-index. The line
-// parts the page from the footer in dark mode, where both are dark.
+// parts the page from the footer in dark mode.
 main {
   isolation: isolate;
   border-bottom: 1px solid var(--color-border-subtle);
@@ -46,7 +46,7 @@ main {
   }
 }
 
-// Never underlined, also on its own page. Hover changes the color, like the cart button beside it.
+// Never underlined, also on its own page.
 .nav-link {
   color: var(--color-text-primary);
 

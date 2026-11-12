@@ -46,8 +46,7 @@ export class AdminNav {
     return at < 0 ? undefined : { local: email.slice(0, at), domain: email.slice(at + 1) };
   });
 
-  // isActive gives a signal that is true while the URL starts with the path, e.g. also on
-  // /admin/kategorier/3.
+  // Also true on /admin/kategorier/3.
   private readonly onMainCategoryPage = isActive('/admin/kategorier', this.router);
   // Also /admin/underkategorier/3, which then shows the main categories under Underkategorier.
   protected readonly onSubcategoryPage = isActive('/admin/underkategorier', this.router);
