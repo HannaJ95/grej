@@ -68,6 +68,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - It is a modal `<dialog>`: the focus stays inside it, Escape and the cross close it, and the focus goes back to the button that asked.
   - The focus starts on "Avbryt", so Enter never removes anything by mistake. The confirm button is red for what removes something and dark for other changes.
   - On a phone the buttons are under each other in full width.
+- `DemoNotice` is the framed box "Det här är en demobutik" with an arrow icon, used by the success page and the about page. The heading is fixed, and each page gives its own text as content.
 - `Toast` says that something worked: `toast.show('Ändringarna är sparade.')` (`ToastService`). Its check has the green of the stock status dot.
   - It is shown in the bottom corner for 5 seconds, pauses on hover or focus, and closes with the cross or Escape, like `AddedToCart`.
   - Screen readers hear it through `aria-live`, and it never takes the focus.
@@ -83,9 +84,9 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - Its bands reach the screen's edges. The content inside them uses `.page-width`: centered, at most `--layout-viewport-width` (1440 px), with `--layout-margin` on the sides (20 px on a phone, 32 px on a tablet, 48 px on a computer).
   - From a tablet, `ThemeToggle` is an icon before the cart, as tall as the cart button.
   - On a phone the menu links are in `MobileMenu`, a `<dialog>` like the cart. Its panel is dark in both modes, and has `ThemeToggle` with its text above the cart button.
-  - "Shop" in the menu is never underlined, also on its own page; `aria-current="page"` tells screen readers. On hover it gets the secondary text color, like the cart button.
+  - The menu has "Shop" and "Om GREJ". They are never underlined, also on their own page; `aria-current="page"` tells screen readers. On hover they get the secondary text color, like the cart button.
   - The footer is dark in both modes. In dark mode a 1 px line (the bottom of `<main>`) parts it from the dark page.
-  - The footer's "Shop" lists "Alla produkter" and the five categories with the most products, in name order, each linking to the product list with that category chosen.
+  - The footer's "Shop" lists "Alla produkter" and the five categories with the most products, in name order, each linking to the product list with that category chosen. Beside it, "GREJ" links to "Om GREJ". The columns go below each other only when they don't fit, e.g. with large text.
   - The footer's big "GREJ." is at most 42 % of the screen width, so it fits between 1024 and 1190 px. It is decoration and takes no clicks, since its letters reach up over the links above.
   - On screens wider than 1440 px the bands (header, start page, moving band, footer) still reach the edges while the content stays centered, so the page keeps one pattern instead of a box in the middle.
 - `ProductCard` is used by both the start page and the product list. It has an image, title and price, a "Slutsåld" or "Få kvar" (1–2 left) badge, and an add button.
@@ -159,8 +160,14 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - Beside the title when both fit, otherwise below it (`flex-wrap` with a start width each, so from about 1150 px, and never with 200 % text):
     - "Din beställning": each row with its title, quantity and amount (the amount goes below the title when there is no room), then the products, the shipping and the total, which share `shared/order-sums.scss` with the cart.
     - Once paid, a box with "Leverans" (name, address, shipping method) and "Betalning" ("Betald via Stripe", the order date and the total), side by side when the box is wide enough. There is no card number, since the API does not store it, and no VAT, which is Won't.
-  - Below: "Vad händer nu?" as a numbered list, "Fortsätt handla", and a note that the shop is a demo, where no money is taken and no package is sent.
+  - Below: "Vad händer nu?" as a numbered list, "Fortsätt handla", and a `DemoNotice` that says no money is taken and no package is sent.
   - Without a session, or when the API does not know it, the page shows only the order number from the URL.
+- The about page (`/om-grej`, `AboutPage`) only says what the shop does: one seller who picks every item (scope.md), not a marketplace. It has:
+  - a breadcrumb, the big title "Saker som någon gjort." and an intro
+  - a band in the muted color with a pill, an arch and a circle drawn in CSS. It is decoration (`aria-hidden`), follows dark mode through the color tokens, and gets wider on larger screens while the shapes keep their proportions.
+  - "Så funkar GREJ": how items are picked, paid with Stripe, packed and sent to an ombud. The heading is beside the text from 1024 px.
+  - "Det här tror vi på": three framed cards in an `<ol>`, side by side from 768 px. The big numbers are hidden from screen readers, since the list already numbers them.
+  - "Visa alla grejer" and a `DemoNotice` that says GREJ is a thesis project in Stripe's test mode.
 
 ## Admin
 
