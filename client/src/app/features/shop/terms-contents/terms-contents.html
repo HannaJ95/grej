@@ -1,0 +1,17 @@
+<nav aria-labelledby="contents-title">
+  <h2 class="text-display-2xs" id="contents-title">Innehåll</h2>
+  <ol class="list text-heading-xs">
+    @for (section of sections(); track section.id; let number = $index) {
+      <li>
+        <a
+          routerLink="/villkor"
+          [fragment]="section.id"
+          [attr.aria-current]="section.id === current() ? 'true' : null"
+        >
+          <!-- The list already tells screen readers the number. -->
+          <span aria-hidden="true">{{ number + 1 }}. </span>{{ section.title }}
+        </a>
+      </li>
+    }
+  </ol>
+</nav>

@@ -20,15 +20,15 @@ describe('TermsPage', () => {
   it('links each item in Innehåll to its numbered heading', async () => {
     const element = await show();
 
-    const links = Array.from(element.querySelectorAll<HTMLAnchorElement>('.contents-list a'));
+    const text = (node: Element | null) => node?.textContent?.replace(/\s+/g, ' ').trim();
+    const links = Array.from(element.querySelectorAll<HTMLAnchorElement>('app-terms-contents a'));
     expect(links.length).toBe(10);
 
     links.forEach((link, index) => {
       const id = link.getAttribute('href')?.split('#')[1];
       expect(link.getAttribute('href')).toBe(`/villkor#${id}`);
-
-      const heading = element.querySelector(`h2#${id}`);
-      expect(heading?.textContent?.trim()).toBe(`${index + 1}. ${link.textContent?.trim()}`);
+      expect(text(link)).toMatch(new RegExp(`^${index + 1}\\. `));
+      expect(text(element.querySelector(`h2#${id}`))).toBe(text(link));
     });
   });
 });

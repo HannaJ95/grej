@@ -13,16 +13,7 @@
 </div>
 
 <div class="body">
-  <nav class="contents" aria-labelledby="contents-title">
-    <h2 class="text-display-2xs" id="contents-title">Innehåll</h2>
-    <ol class="contents-list text-body-s">
-      @for (section of sections; track section.id) {
-        <li>
-          <a routerLink="/villkor" [fragment]="section.id">{{ section.title }}</a>
-        </li>
-      }
-    </ol>
-  </nav>
+  <app-terms-contents [sections]="sections" [current]="current()" />
 
   <div class="sections text-body-m">
     @for (section of sections; track section.id; let number = $index) {
