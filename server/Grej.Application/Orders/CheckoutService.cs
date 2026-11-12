@@ -62,4 +62,30 @@ public class CheckoutService(ProductService products, IOrderRepository orders, I
 
         return CheckoutResult.Success(session.Url);
     }
+
+    // Only reads, since the webhook decides what is paid (constraints.md).
+    public async Task<OrderConfirmationDto?> GetOrderAsync(string sessionId, CancellationToken cancellationToken)
+    {
+        var order = await orders.GetByPaymentReferenceAsync(sessionId, cancellationToken);
+        if (order is null)
+        {
+            return null;
+        }
+
+        return new OrderConfirmationDto(
+            order.OrderNumber,
+            // Found by its payment, so the payment is always there.
+            order.Payment!.Status.ToString(),
+            order.CustomerName,
+            order.CustomerEmail,
+            order.AddressLine1,
+            order.AddressLine2,
+            order.PostalCode,
+            order.City,
+            order.ShippingMethod,
+            order.ShippingCost,
+            order.Total,
+            order.Currency,
+            order.Items.Select(OrderItemDto.From).ToList());
+    }
 }

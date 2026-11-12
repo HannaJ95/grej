@@ -24,4 +24,13 @@ public class CheckoutController(CheckoutService checkout) : ControllerBase
 
         return Ok(new { url = result.Url });
     }
+
+    // The order for the success page. Stripe's session id is long and random, so only the
+    // customer Stripe sent there can know it (ambiguity.md).
+    [HttpGet("{sessionId}")]
+    public async Task<IActionResult> GetOrder(string sessionId, CancellationToken cancellationToken)
+    {
+        var order = await checkout.GetOrderAsync(sessionId, cancellationToken);
+        return order is null ? NotFound() : Ok(order);
+    }
 }

@@ -62,7 +62,9 @@ public class StripePaymentProvider(StripeClient stripe, IConfiguration configura
                     },
                 },
             ],
-            SuccessUrl = $"{frontendUrl}/kassa/tack?order={order.OrderNumber}",
+            // Stripe puts the session's id in place of {CHECKOUT_SESSION_ID}, so the success page can
+            // fetch the order. The doubled braces keep them in the text.
+            SuccessUrl = $"{frontendUrl}/kassa/tack?order={order.OrderNumber}&session={{CHECKOUT_SESSION_ID}}",
             CancelUrl = $"{frontendUrl}/",
             Metadata = new Dictionary<string, string> { ["orderNumber"] = order.OrderNumber },
             // The dashboard's payment list shows the PaymentIntent, not the session.

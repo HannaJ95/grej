@@ -20,6 +20,13 @@ public class OrderRepository(GrejDbContext db) : IOrderRepository
             .Include(o => o.Payment)
             .FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
 
+    // Fast, since ProviderReference has a unique index (PaymentConfiguration).
+    public Task<Order?> GetByPaymentReferenceAsync(string reference, CancellationToken cancellationToken) =>
+        db.Orders
+            .Include(o => o.Items)
+            .Include(o => o.Payment)
+            .FirstOrDefaultAsync(o => o.Payment!.ProviderReference == reference, cancellationToken);
+
     public async Task<PagedResult<Order>> GetPageAsync(
         bool all, IReadOnlyCollection<string> searchWords, int page, int pageSize, CancellationToken cancellationToken)
     {

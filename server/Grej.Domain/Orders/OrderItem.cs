@@ -11,6 +11,8 @@ public class OrderItem
     public decimal UnitPrice { get; private set; }
     public int Quantity { get; private set; }
 
+    public decimal LineTotal => UnitPrice * Quantity;
+
     // Only Order creates order rows (Order.AddItem), so the total always matches.
     internal OrderItem(int productId, string titleAtPurchase, decimal unitPrice, int quantity)
     {

@@ -11,6 +11,9 @@ public interface IOrderRepository
     // Null if no order has this id. The order's rows and payment are included.
     Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken);
 
+    // Like GetByIdAsync, by its payment's ProviderReference (Stripe's Checkout session id).
+    Task<Order?> GetByPaymentReferenceAsync(string reference, CancellationToken cancellationToken);
+
     // One page of orders with their payments, for the CMS. all = false gives only what the admin
     // has to do, oldest first; all = true every order, newest first. Every search word must be
     // in the order number, the customer's name or email, or a row's title, in any case.

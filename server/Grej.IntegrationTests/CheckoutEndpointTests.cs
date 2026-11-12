@@ -175,6 +175,40 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal(HttpStatusCode.TooManyRequests, response.StatusCode);
     }
 
+    [Fact]
+    public async Task GetOrder_SessionOfSavedOrder_ReturnsRowsAndPendingPayment()
+    {
+        var client = CreateClient(new Product
+        {
+            Id = 1, Title = "Skål", Price = 450m, Stock = 2, IsActive = true,
+            WeightGrams = 800, LengthCm = 25, WidthCm = 25, HeightCm = 15,
+        });
+        await client.PostAsJsonAsync("/api/checkout", Request(productId: 1, quantity: 2));
+
+        var response = await client.GetAsync($"/api/checkout/{FakePaymentProvider.Reference}");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var order = await response.Content.ReadFromJsonAsync<OrderConfirmationDto>();
+        Assert.NotNull(order);
+        Assert.Equal(orders.Saved.Single().OrderNumber, order.OrderNumber);
+        // The webhook has not arrived, so Checkout's details are not there yet.
+        Assert.Equal("Pending", order.PaymentStatus);
+        Assert.Null(order.CustomerEmail);
+        Assert.Equal([new OrderItemDto("Skål", 450m, 2, 900m)], order.Items);
+        Assert.Equal(129m, order.ShippingCost);
+        Assert.Equal(1029m, order.Total);
+    }
+
+    [Fact]
+    public async Task GetOrder_UnknownSession_ReturnsNotFound()
+    {
+        var client = CreateClient();
+
+        var response = await client.GetAsync("/api/checkout/cs_test_unknown");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
     private static CheckoutRequest Request(int productId, int quantity) =>
         new([new CheckoutItemRequest(productId, quantity)]);
 
@@ -242,7 +276,10 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
             return Task.CompletedTask;
         }
 
-        // Checkout never reads orders back.
+        public Task<Order?> GetByPaymentReferenceAsync(string reference, CancellationToken cancellationToken) =>
+            Task.FromResult(Saved.FirstOrDefault(order => order.Payment?.ProviderReference == reference));
+
+        // Checkout never reads orders by id.
         public Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
