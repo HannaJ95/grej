@@ -160,9 +160,9 @@ Known limitations: the summed volumes are a lower bound for the real box. One it
 - `GET /api/checkout/{sessionId}` (`CheckoutService.GetOrderAsync`, `IOrderRepository.GetByPaymentReferenceAsync`) answers with `OrderConfirmationDto`: the order number and date, the payment's status and provider, the customer's name, email and address, the shipping, the total and the rows. A session it does not know gives 404. It only reads (ambiguity.md).
 - `SuccessPage` gets the order through `CheckoutService.getOrder`, an `httpResource`. While the payment is `Pending`, it reloads it every 2 seconds, at most 15 times. A failed reload keeps the last answer.
 - After `PaymentWebhookService` has saved a payment that just became `Paid`, it calls `OrderService.SendConfirmationAsync`. `OrderConfirmationEmail` builds the subject and the HTML (inline styles, since mail programs drop `<style>`): the rows, the shipping, the total, the delivery address and the demo note. All text from the CMS and Checkout is HTML-encoded. An order without an email gets none.
-- `ResendEmailSender` (`Infrastructure/Email`) implements `IEmailSender`. It posts to Resend's REST API with `Resend:ApiKey` (User Secrets locally, `Resend__ApiKey` on Render) and `Email:From` from `appsettings.json`. It never throws: an error or a refusal is logged as a warning, since the payment is already saved.
+- `ResendEmailSender` (`Infrastructure/Email`) implements `IEmailSender`. It posts to Resend's REST API with `Resend:ApiKey` (User Secrets locally, `Resend__ApiKey` on Render) and `Email:From` from `appsettings.json`, an address on a domain verified in Resend (ambiguity.md). It never throws: an error or a refusal is logged as a warning, since the payment is already saved.
 
-Known limitations: without a verified domain, Resend only delivers to the account's own address (ambiguity.md). A failed email is not sent again, and if the API stops between the save and the send, no email goes out. The email has no plain-text version.
+Known limitations: a failed email is not sent again, and if the API stops between the save and the send, no email goes out. The email has no plain-text version.
 
 ## Rate limiting
 

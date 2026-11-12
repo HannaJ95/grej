@@ -12,8 +12,8 @@ Why: Customer accounts add login, passwords and personal data handling for littl
 Decision: No, not in this version (requires customer accounts).
 
 **What does the customer get as confirmation?**
-Decision: The success page shows the order, and an email is sent when the payment is confirmed (the email was a Could, built 12 Nov). The email is sent through Resend without a verified domain, so it only reaches the address of the developer's Resend account. To any other address nothing is sent, and the order is not affected.
-Why: Stripe does not send receipts in test mode. A domain of its own costs money and DNS setup, and the demo only needs to show that the email works.
+Decision: The success page shows the order, and an email is sent when the payment is confirmed (the email was a Could, built 12 Nov). The email is sent through Resend from `order@grej.hannajohansson01.se`, a subdomain of the developer's own domain that is verified in Resend, so it reaches any address. If it fails, the order is not affected.
+Why: Stripe does not send receipts in test mode. Resend only delivers to other addresses from a verified domain. The developer already had a domain, so it took a few DNS records at one.com. A subdomain keeps the shop's email apart from the portfolio on the main domain, as Resend recommends.
 
 **How does the success page know which order is the customer's?**
 Decision: Stripe puts the Checkout session's id in the success page's address, and the page asks the API for the order behind it (`GET /api/checkout/{sessionId}`). The answer only has what the customer bought and entered in Checkout. Until the webhook has marked the order as paid, the page asks again every 2 seconds, at most 15 times. It shows how the order was paid (Stripe), but not the card, which the API does not store.

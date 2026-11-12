@@ -234,3 +234,7 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 
 - **Building:** Order confirmation by email through Resend's API (Render blocks SMTP), sent by the webhook after the payment is saved, at most once per order. Without a domain of its own, it only reaches my own address. The success page fetches the order by Stripe's session id and asks again until the webhook has arrived. The order sits beside the heading when there is room, with a box for delivery and payment. Claude raised the card number as a decision of its own; I left it out since we don't store it, so it becomes an improvement in the report.
 - **Verification:** dotnet test + client tests. Claude checked the success page at 320–1440 px and 200 % text in Chrome, and fixed a heading and an email address that overflowed. I checked the email and the success page with a local purchase.
+
+- **Verification:** The production check showed that a phone on mobile data got 429 after the laptop's attempts: the last X-Forwarded-For address was a proxy that every visitor shared. The rate limiter now reads Cloudflare's CF-Connecting-IP. After the fix, the laptop got 429 and the phone a normal 401.
+
+- **Verified:** grej.hannajohansson01.se in Resend (3 DNS records + DMARC at one.com), so the order email reaches any address. Email:From changed in appsettings.json; no code change. Removed the "only the developer's address" note from the success page and the docs.
