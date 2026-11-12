@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-32);
-  max-width: 50rem;
   padding-block: var(--space-40) var(--space-80);
 
   @media (width >= 48rem) {
@@ -10,11 +9,33 @@
   }
 }
 
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-32) var(--space-48);
+}
+
 .heading {
   display: flex;
+  // Room for "BESTÄLLNING!" in Display L beside the order.
+  flex: 1 1 38rem;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-20);
+}
+
+.order {
+  display: flex;
+  flex: 1 1 26rem;
+  flex-direction: column;
+  gap: var(--space-20);
+  max-width: 50rem;
+}
+
+.next,
+.notice {
+  max-width: 50rem;
 }
 
 // The gaps set all the spacing. Long words and email addresses break instead of scrolling
@@ -27,10 +48,7 @@ p {
   overflow-wrap: anywhere;
 }
 
-.summary {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-20);
+.box {
   padding: var(--space-20);
   border: var(--border-width-default) solid var(--color-border-default);
   background: var(--color-bg-surface);
@@ -38,6 +56,12 @@ p {
   @media (width >= 48rem) {
     padding: var(--space-24) var(--space-28);
   }
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
 }
 
 .items {
@@ -78,14 +102,23 @@ p {
   white-space: nowrap;
 }
 
-.address {
+// Leverans and Betalning side by side when the box is wide enough.
+.info {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+  flex-wrap: wrap;
+  gap: var(--space-20) var(--space-32);
 }
 
-.address-line {
-  display: block;
+.info-part {
+  display: flex;
+  flex: 1 1 12rem;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0;
+
+  p {
+    color: var(--color-text-secondary);
+  }
 }
 
 .icon-box {

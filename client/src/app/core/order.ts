@@ -43,7 +43,9 @@ export interface OrderDetails extends OrderSummary {
 // OrderConfirmationDto in the API, for the success page.
 export interface OrderConfirmation {
   orderNumber: string;
+  createdAt: string;
   paymentStatus: PaymentStatus;
+  paymentProvider: string;
   // Null until the order is paid.
   customerName: string | null;
   customerEmail: string | null;

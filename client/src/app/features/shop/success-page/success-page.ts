@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, computed, effect, inject, input, linkedSignal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../../core/cart.service';
@@ -15,7 +15,7 @@ const MAX_RETRIES = 15;
 // Only the webhook knows that the order is paid, so the page asks the API (constraints.md).
 @Component({
   selector: 'app-success-page',
-  imports: [CurrencyPipe, RouterLink, Button, Icon],
+  imports: [CurrencyPipe, DatePipe, RouterLink, Button, Icon],
   templateUrl: './success-page.html',
   styleUrls: ['./success-page.scss', '../../../shared/order-sums.scss'],
   host: { class: 'page-width' },

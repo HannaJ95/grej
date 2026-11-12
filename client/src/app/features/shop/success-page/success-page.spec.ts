@@ -25,7 +25,9 @@ const vase: Product = {
 
 const pending: OrderConfirmation = {
   orderNumber: 'GREJ-3F9A1C2B',
+  createdAt: '2026-11-12T10:00:00Z',
   paymentStatus: 'Pending',
+  paymentProvider: 'Stripe',
   customerName: null,
   customerEmail: null,
   addressLine1: null,
@@ -108,7 +110,7 @@ describe('SuccessPage', () => {
     expect(page.querySelector('.summary')?.textContent).toContain('Skål');
     expect(page.querySelector('.summary')?.textContent).toContain('2 st');
     expect(page.querySelector('[role="status"]')?.textContent).toContain('bekräftas');
-    expect(page.querySelector('.address')).toBeNull();
+    expect(page.querySelector('.info')).toBeNull();
 
     await wait(harness, 2000);
     expectOrderRequest().flush(paid);
@@ -117,7 +119,10 @@ describe('SuccessPage', () => {
     expect(page.querySelector('[role="status"]')?.textContent).toContain(
       'Betalningen är klar, och en orderbekräftelse skickas till anna@example.com.',
     );
-    expect(page.querySelector('.address')?.textContent).toContain('111 22 Stockholm');
+    const info = page.querySelector('.info')?.textContent;
+    expect(info).toContain('111 22 Stockholm');
+    expect(info).toContain('Paket till ombud');
+    expect(info).toContain('Betald via Stripe');
     // Paid, so the page stops asking.
     await wait(harness, 2000);
     httpTesting.expectNone((req) => req.url.endsWith('/api/checkout/cs_test_1'));
