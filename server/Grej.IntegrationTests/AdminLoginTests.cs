@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text;
+using Grej.Api;
 using Grej.Application.Identity;
 using Grej.Infrastructure.Identity;
 using Grej.Infrastructure.Persistence;
@@ -131,6 +132,35 @@ public class AdminLoginTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
+    public async Task Login_TooManyAttemptsFromOneAddress_ReturnsTooManyRequests()
+    {
+        await AdminSeeder.SeedAsync(app.Services);
+        // An unknown email, so the lockout never decides the answer.
+        for (var attempt = 0; attempt < RateLimits.PermitsPerMinute; attempt++)
+        {
+            await LoginFrom("203.0.113.1", "someone@example.com", Password);
+        }
+
+        var response = await LoginFrom("203.0.113.1", Email, Password);
+
+        Assert.Equal(HttpStatusCode.TooManyRequests, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Login_TooManyAttemptsFromOneAddress_OtherAddressCanStillLogIn()
+    {
+        await AdminSeeder.SeedAsync(app.Services);
+        for (var attempt = 0; attempt < RateLimits.PermitsPerMinute; attempt++)
+        {
+            await LoginFrom("203.0.113.1", "someone@example.com", Password);
+        }
+
+        var response = await LoginFrom("203.0.113.2", Email, Password);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
     public async Task Me_WithoutToken_ReturnsUnauthorized()
     {
         var response = await app.CreateClient().GetAsync("/api/auth/me");
@@ -180,6 +210,14 @@ public class AdminLoginTests : IClassFixture<WebApplicationFactory<Program>>
         var client = app.CreateClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         return client.GetAsync("/api/auth/me");
+    }
+
+    // Sends the visitor's IP the way Render's proxy does.
+    private Task<HttpResponseMessage> LoginFrom(string ipAddress, string email, string password)
+    {
+        var client = app.CreateClient();
+        client.DefaultRequestHeaders.Add("X-Forwarded-For", ipAddress);
+        return client.PostAsJsonAsync("/api/auth/login", new LoginRequest(email, password));
     }
 
     // A token made like IdentityLoginService makes it, but with any key and claims.

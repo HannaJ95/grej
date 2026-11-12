@@ -1,5 +1,6 @@
 using Grej.Application.Orders;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Grej.Api.Controllers;
 
@@ -10,6 +11,7 @@ public class CheckoutController(CheckoutService checkout) : ControllerBase
 {
     // Creates an order and a payment, and returns the payment page to send the customer to.
     [HttpPost]
+    [EnableRateLimiting(RateLimits.Checkout)]
     public async Task<IActionResult> Create(CheckoutRequest request, CancellationToken cancellationToken)
     {
         var result = await checkout.CreateCheckoutAsync(request, cancellationToken);
