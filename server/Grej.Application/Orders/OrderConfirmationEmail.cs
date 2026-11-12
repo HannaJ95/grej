@@ -52,7 +52,7 @@ public static class OrderConfirmationEmail
                 </table>
                 {Address(order)}
                 <h2 style="margin:0 0 8px;font-size:18px">Vad händer nu?</h2>
-                <p style="margin:0 0 24px">Skaparen packar din grej inom 1–2 arbetsdagar. Sedan skickas paketet med PostNord, och du hämtar ut det hos ditt ombud.</p>
+                <p style="margin:0 0 24px">Vi packar din grej inom 1–2 arbetsdagar. Sedan skickas paketet med PostNord, och du hämtar ut det hos ditt ombud.</p>
                 <p style="margin:0;color:#66635d;font-size:14px">Det här är en demobutik. Betalningen gjordes i Stripes testläge, så inga riktiga pengar har dragits och inget paket skickas.</p>
               </div>
             </div>
