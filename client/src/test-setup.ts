@@ -1,4 +1,4 @@
-// jsdom has no ResizeObserver, which AdminPageHeader uses.
+// jsdom has no ResizeObserver, which AdminPageHeader and TermsContents use.
 class ResizeObserverStub {
   observe(): void {}
   unobserve(): void {}

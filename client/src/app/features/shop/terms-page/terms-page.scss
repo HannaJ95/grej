@@ -50,6 +50,14 @@ ul {
   display: flex;
   flex-direction: column;
   gap: var(--space-16);
+
+  // Below "Hoppa till avsnitt" when it sticks. Not in scroll-padding, which would make the browser
+  // scroll whenever the select itself gets the focus.
+  > h2 {
+    @media (width < 64rem) and (height >= 30rem) {
+      scroll-margin-top: var(--terms-contents-height, 0px);
+    }
+  }
 }
 
 .list {
