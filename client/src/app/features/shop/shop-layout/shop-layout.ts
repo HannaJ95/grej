@@ -1,6 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CategoryService } from '../../../core/category.service';
+import { ThemeToggle } from '../../../shared/theme-toggle/theme-toggle';
 import { AddedToCart } from '../added-to-cart/added-to-cart';
 import { CartDrawer } from '../cart-drawer/cart-drawer';
 import { MobileMenu } from '../mobile-menu/mobile-menu';
@@ -12,7 +13,15 @@ const FOOTER_CATEGORIES = 5;
 // app.routes.ts.
 @Component({
   selector: 'app-shop-layout',
-  imports: [RouterLink, RouterLinkActive, RouterOutlet, AddedToCart, CartDrawer, MobileMenu],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    ThemeToggle,
+    AddedToCart,
+    CartDrawer,
+    MobileMenu,
+  ],
   templateUrl: './shop-layout.html',
   styleUrl: './shop-layout.scss',
 })

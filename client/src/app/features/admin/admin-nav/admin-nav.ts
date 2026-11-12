@@ -5,11 +5,12 @@ import { AuthService } from '../../../core/auth.service';
 import { Badge } from '../../../shared/badge/badge';
 import { Icon } from '../../../shared/icons/icon';
 import { IconButton } from '../../../shared/icon-button/icon-button';
+import { ThemeToggle } from '../../../shared/theme-toggle/theme-toggle';
 
 // AdminLayout shows it to the left on a computer and in a drawer on tablets and phones.
 @Component({
   selector: 'app-admin-nav',
-  imports: [RouterLink, RouterLinkActive, Badge, Icon, IconButton],
+  imports: [RouterLink, RouterLinkActive, Badge, Icon, IconButton, ThemeToggle],
   templateUrl: './admin-nav.html',
   styleUrl: './admin-nav.scss',
 })

@@ -59,6 +59,16 @@ main {
   gap: var(--space-10);
 }
 
+// As tall as the cart button beside it.
+.theme-toggle {
+  display: none;
+
+  @media (width >= 48rem) {
+    display: inline-flex;
+    padding: var(--space-10) var(--space-8);
+  }
+}
+
 // flex, not block, so no line box adds space below the button.
 .mobile-menu {
   display: flex;

@@ -89,6 +89,14 @@ dialog {
   margin-top: auto;
 }
 
+.theme-toggle {
+  --icon-size: 1.25em;
+  --theme-toggle-hover: var(--color-text-on-inverse-secondary);
+
+  align-self: flex-start;
+  padding-block: var(--space-10);
+}
+
 .cart-button {
   display: flex;
   align-items: center;

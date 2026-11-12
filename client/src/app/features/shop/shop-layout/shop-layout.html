@@ -13,6 +13,8 @@
       </a>
     </nav>
     <div class="actions">
+      <!-- Hidden on phones, where the menu has it. -->
+      <button appThemeToggle class="theme-toggle"></button>
       <!-- #cart lets the menu's cart button open the drawer. -->
       <app-cart-drawer #cart />
       <app-mobile-menu class="mobile-menu" (openCart)="cart.open()" />

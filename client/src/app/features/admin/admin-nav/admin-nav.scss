@@ -152,6 +152,14 @@ nav {
   }
 }
 
+// Lined up with "Visa butiken" above it.
+.theme-toggle {
+  --icon-size: 1rem;
+
+  align-self: flex-start;
+  padding: 0 var(--space-14);
+}
+
 .user {
   display: flex;
   align-items: center;

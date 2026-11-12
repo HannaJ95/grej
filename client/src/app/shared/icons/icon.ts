@@ -16,7 +16,9 @@ export type IconName =
   | 'zoom-in'
   | 'zoom-out'
   | 'info'
-  | 'bag';
+  | 'bag'
+  | 'moon'
+  | 'sun';
 
 // The svg is a mask over currentColor, so one file works in every text color. Always
 // decoration: the button or link around it has the text.
