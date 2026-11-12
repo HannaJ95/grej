@@ -5,6 +5,16 @@
   <title>GREJ</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Runs before the first paint, so a saved theme never flashes the other one. Same key as
+       ThemeService. -->
+  <script>
+    try {
+      const theme = localStorage.getItem('grej.theme');
+      if (theme === 'light' || theme === 'dark') {
+        document.documentElement.dataset.theme = theme;
+      }
+    } catch {}
+  </script>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

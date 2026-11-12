@@ -48,8 +48,7 @@
         >
       </li>
       <li>
-        <!-- A button, not a link: it only folds the group. aria-expanded tells screen readers
-             whether the list under it is shown. -->
+        <!-- A button, not a link: it only folds the group. -->
         <button
           type="button"
           class="item text-label-m"
@@ -160,6 +159,7 @@
     Visa butiken
     <app-icon name="arrow-right" />
   </a>
+  <button appThemeToggle showLabel class="theme-toggle text-label-s"></button>
   <div class="user">
     <!-- The initial is only a picture; the email next to it says who it is. -->
     <span class="avatar text-label-xs" aria-hidden="true">{{ initial() }}</span>

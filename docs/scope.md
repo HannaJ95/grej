@@ -58,7 +58,7 @@ The MVP is a single-seller webshop with an admin CMS = all **Must** items below.
 ### Could
 
 - Order confirmation by email (built 12 Nov; sent from a verified domain, ambiguity.md)
-- Dark and light mode
+- Dark and light mode (built 12 Nov; follows the system, with a button that saves the choice)
 
 ### Won't (this version)
 

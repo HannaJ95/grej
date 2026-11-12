@@ -1,19 +1,7 @@
-:root {
-  color-scheme: light;
+// The mixins come first, since Sass needs a mixin before it is used.
 
-  // Primitives: only the color tokens below may use these.
-  --color-linen: #f8f3ea;
-  --color-stone: #cfc4b2;
-  --color-oat: #e3d6c0;
-  --color-charcoal: #2b2a27;
-  --color-graphite: #66635d;
-  --color-mist: #bbb7b0;
-  --color-white: #ffffff;
-  --color-rust: #a33a2a;
-  --color-moss: #4e5d3f;
-  --color-ochre: #a57a1f;
-  --color-charcoal-a20: #2b2a2733;
-  --color-charcoal-a55: #2b2a278c;
+@mixin light-colors {
+  color-scheme: light;
 
   --color-bg-page: var(--color-linen);
   --color-bg-surface: var(--color-linen);
@@ -36,6 +24,62 @@
   --color-feedback-success: var(--color-moss);
   --color-feedback-warning: var(--color-ochre);
   --color-accent-creator: var(--color-charcoal);
+
+  --shadow-popover: 0 0.5rem 1.5rem rgb(43 42 39 / 18%);
+}
+
+// The light colors swapped, so every pair keeps its contrast. Product images stay on white,
+// since the photos are taken on white.
+@mixin dark-colors {
+  color-scheme: dark;
+
+  --color-bg-page: var(--color-charcoal);
+  --color-bg-surface: var(--color-charcoal);
+  --color-bg-muted: var(--color-ash);
+  --color-bg-inverse: var(--color-linen);
+  --color-bg-inverse-hover: var(--color-stone);
+  --color-bg-hover: var(--color-soot);
+  --color-text-primary: var(--color-linen);
+  --color-text-secondary: var(--color-mist);
+  --color-text-on-inverse: var(--color-charcoal);
+  --color-text-on-inverse-secondary: var(--color-graphite);
+  --color-border-default: var(--color-linen);
+  --color-border-subtle: var(--color-linen-a20);
+  --color-border-inverse: var(--color-charcoal);
+  --color-icon-default: var(--color-linen);
+  --color-icon-inverse: var(--color-charcoal);
+  --color-overlay-scrim: var(--color-black-a70);
+  --color-feedback-error: var(--color-rust-light);
+  --color-feedback-success: var(--color-moss-light);
+  --color-feedback-warning: var(--color-ochre-light);
+  --color-accent-creator: var(--color-linen);
+
+  --shadow-popover: 0 0.5rem 1.5rem rgb(0 0 0 / 50%);
+}
+
+:root {
+  // Primitives: only the color tokens in the mixins may use these.
+  --color-linen: #f8f3ea;
+  --color-stone: #cfc4b2;
+  --color-oat: #e3d6c0;
+  --color-charcoal: #2b2a27;
+  --color-graphite: #66635d;
+  --color-mist: #bbb7b0;
+  --color-white: #ffffff;
+  --color-rust: #a33a2a;
+  --color-moss: #4e5d3f;
+  --color-ochre: #a57a1f;
+  --color-charcoal-a20: #2b2a2733;
+  --color-charcoal-a55: #2b2a278c;
+  --color-soot: #3b3934;
+  --color-ash: #4a4741;
+  --color-rust-light: #ec8a76;
+  --color-moss-light: #9fb58a;
+  --color-ochre-light: #d6a640;
+  --color-linen-a20: #f8f3ea33;
+  --color-black-a70: #000000b3;
+
+  @include light-colors;
 
   --space-2: 0.125rem;
   --space-4: 0.25rem;
@@ -64,8 +108,6 @@
   --size-control-height: 3.125rem;
   // A number, not "318 / 380", so calc() can use it.
   --ratio-product-image: calc(318 / 380);
-
-  --shadow-popover: 0 0.5rem 1.5rem rgb(43 42 39 / 18%);
 
   // Mobile first: the media queries below override these.
   --font-size-display-hero: 6.875rem;
@@ -96,6 +138,22 @@
   --layout-columns: 4;
   --layout-admin-gutter: 1.25rem;
   --layout-viewport-width: 24.375rem;
+}
+
+// The system's setting, unless the visitor has chosen light (data-theme on <html>).
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include dark-colors;
+  }
+}
+
+:root[data-theme='dark'] {
+  @include dark-colors;
+}
+
+// A part that looks the same in both modes, such as the footer and the phone menu.
+[data-theme='light'] {
+  @include light-colors;
 }
 
 // Media queries cannot read custom properties, so the breakpoints are written out.

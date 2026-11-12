@@ -5,11 +5,12 @@ import { AuthService } from '../../../core/auth.service';
 import { Badge } from '../../../shared/badge/badge';
 import { Icon } from '../../../shared/icons/icon';
 import { IconButton } from '../../../shared/icon-button/icon-button';
+import { ThemeToggle } from '../../../shared/theme-toggle/theme-toggle';
 
 // AdminLayout shows it to the left on a computer and in a drawer on tablets and phones.
 @Component({
   selector: 'app-admin-nav',
-  imports: [RouterLink, RouterLinkActive, Badge, Icon, IconButton],
+  imports: [RouterLink, RouterLinkActive, Badge, Icon, IconButton, ThemeToggle],
   templateUrl: './admin-nav.html',
   styleUrl: './admin-nav.scss',
 })
@@ -45,8 +46,7 @@ export class AdminNav {
     return at < 0 ? undefined : { local: email.slice(0, at), domain: email.slice(at + 1) };
   });
 
-  // isActive gives a signal that is true while the URL starts with the path, e.g. also on
-  // /admin/kategorier/3.
+  // Also true on /admin/kategorier/3.
   private readonly onMainCategoryPage = isActive('/admin/kategorier', this.router);
   // Also /admin/underkategorier/3, which then shows the main categories under Underkategorier.
   protected readonly onSubcategoryPage = isActive('/admin/underkategorier', this.router);

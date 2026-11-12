@@ -76,7 +76,7 @@ nav {
     background: var(--color-bg-hover);
   }
 
-  // After :hover, so the chosen page stays dark under the mouse.
+  // After :hover, so the chosen page keeps its color under the mouse.
   &.active {
     background: var(--color-bg-inverse);
     color: var(--color-text-on-inverse);
@@ -150,6 +150,14 @@ nav {
   &:hover {
     text-decoration: underline;
   }
+}
+
+// Lined up with "Visa butiken" above it.
+.theme-toggle {
+  --icon-size: 1rem;
+
+  align-self: flex-start;
+  padding: 0 var(--space-14);
 }
 
 .user {

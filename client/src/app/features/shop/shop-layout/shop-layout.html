@@ -13,6 +13,8 @@
       </a>
     </nav>
     <div class="actions">
+      <!-- Hidden on phones, where the menu has it. -->
+      <button appThemeToggle class="theme-toggle"></button>
       <!-- #cart lets the menu's cart button open the drawer. -->
       <app-cart-drawer #cart />
       <app-mobile-menu class="mobile-menu" (openCart)="cart.open()" />
@@ -26,7 +28,8 @@
   <router-outlet />
 </main>
 
-<footer class="footer">
+<!-- The light mode's colors, so it is dark in both modes. -->
+<footer class="footer" data-theme="light">
   <div class="page-width">
     <nav class="footer-nav" aria-label="Sidfot">
       <h2 class="footer-heading text-heading-xs">Shop</h2>

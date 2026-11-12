@@ -6,8 +6,7 @@ import { ShopLayout } from './shop-layout';
 
 describe('ShopLayout', () => {
   async function show(categories: object[] = []): Promise<HTMLElement> {
-    // The cart is saved in localStorage, which other spec files can leave things in. An empty
-    // cart every time, so the test does not depend on which files ran before.
+    // Other spec files can leave a cart in localStorage.
     localStorage.clear();
     TestBed.configureTestingModule({
       providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
@@ -33,8 +32,8 @@ describe('ShopLayout', () => {
       a.getAttribute('aria-label') ?? a.textContent!.trim(),
       a.getAttribute('href'),
     ]);
-    // The closed cart (empty, so its "Utforska shoppen") and the closed phone menu are in the
-    // page too, so "Shop" is there twice: in the header and in the menu.
+    // The closed cart and phone menu are in the page too: the empty cart's "Utforska shoppen"
+    // and the menu's "Shop".
     expect(links).toEqual([
       ['GREJ, till startsidan', '/'],
       ['Shop', '/produkter'],
@@ -84,7 +83,8 @@ describe('ShopLayout', () => {
 
   it('shows the cart button with the number of products', async () => {
     const element = await show();
-    const button = element.querySelector('header button')!;
+    // The menu has a .cart-button too.
+    const button = element.querySelector('app-cart-drawer .cart-button')!;
 
     expect(button.textContent!.trim()).toBe('0');
     expect(button.getAttribute('aria-label')).toBe('Varukorg, 0 grejer');

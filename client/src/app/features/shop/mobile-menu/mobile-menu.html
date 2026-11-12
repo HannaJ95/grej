@@ -5,7 +5,9 @@
 </button>
 
 <dialog #dialog aria-labelledby="menu-title" (click)="closeOnBackdrop($event)">
-  <div class="panel">
+  <!-- Dark in both modes. On the panel, since the backdrop inherits from the dialog and should
+       follow the page's mode. -->
+  <div class="panel" data-theme="light">
     <div class="panel-header">
       <h2 class="panel-title text-display-xs" id="menu-title">Meny</h2>
       <button
@@ -37,6 +39,7 @@
     </nav>
 
     <div class="panel-footer">
+      <button appThemeToggle showLabel class="theme-toggle text-label-m"></button>
       <button class="cart-button text-label-m" type="button" (click)="goToCart()">
         Varukorg
         <span class="cart-count text-label-s">
