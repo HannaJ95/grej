@@ -25,6 +25,11 @@ export const routes: Routes = [
           import('./features/shop/product-page/product-page').then((m) => m.ProductPage),
       },
       {
+        path: 'om-grej',
+        loadComponent: () =>
+          import('./features/shop/about-page/about-page').then((m) => m.AboutPage),
+      },
+      {
         path: 'kassa/tack',
         loadComponent: () =>
           import('./features/shop/success-page/success-page').then((m) => m.SuccessPage),
