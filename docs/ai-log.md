@@ -231,3 +231,6 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - **Verification:** build + affected specs. Claude checked 320–1440 px and 200 % zoom in Chrome.
 
 - **Building:** Rate limiting on login and checkout (10 per minute per IP address, 429), with ASP.NET Core's built-in rate limiter and forwarded headers behind Render's proxy. Claude wrote it; I checked 429 locally.
+
+- **Building:** Order confirmation by email through Resend's API (Render blocks SMTP), sent by the webhook after the payment is saved, at most once per order. Without a domain of its own, it only reaches my own address. The success page fetches the order by Stripe's session id and asks again until the webhook has arrived. The order sits beside the heading when there is room, with a box for delivery and payment. Claude raised the card number as a decision of its own; I left it out since we don't store it, so it becomes an improvement in the report.
+- **Verification:** dotnet test + client tests. Claude checked the success page at 320–1440 px and 200 % text in Chrome, and fixed a heading and an email address that overflowed. I checked the email and the success page with a local purchase.

@@ -145,13 +145,13 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
 - When something is added, `AddedToCart` shows a small popup under the cart button.
   - It closes itself after 5 seconds, which pause on hover or focus. It also closes with the cross or with Escape.
   - It never takes the focus, and screen readers read it through `aria-live`.
-- The success page (`/kassa/tack?order=…`) has:
-  - a check mark and the title
-  - the order number from the URL, with "Din beställning håller på att bekräftas"
-  - "Vad händer nu?" as a numbered list
-  - "Fortsätt handla"
-  - a note that the shop is a demo, where no money is taken and nothing is sent
-- The success page has no order summary, since it only has the order number (there is no public endpoint for an order). It has no email texts, since no email is sent.
+- The success page (`/kassa/tack?order=…&session=…`):
+  - At the top are the check mark, the title and a status line (`role="status"`). It gives the order number with "Din beställning håller på att bekräftas", and changes to "Betalningen är klar, och en orderbekräftelse skickas till …" when the webhook has arrived. Long words and email addresses break.
+  - Beside the title when both fit, otherwise below it (`flex-wrap` with a start width each, so from about 1150 px, and never with 200 % text):
+    - "Din beställning": each row with its title, quantity and amount (the amount goes below the title when there is no room), then the products, the shipping and the total, which share `shared/order-sums.scss` with the cart.
+    - Once paid, a box with "Leverans" (name, address, shipping method) and "Betalning" ("Betald via Stripe", the order date and the total), side by side when the box is wide enough. There is no card number, since the API does not store it, and no VAT, which is Won't.
+  - Below: "Vad händer nu?" as a numbered list, "Fortsätt handla", and a note that the shop is a demo, where no money is taken, nothing is sent and the confirmation only reaches the developer's address.
+  - Without a session, or when the API does not know it, the page shows only the order number from the URL.
 
 ## Admin
 

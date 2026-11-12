@@ -105,10 +105,11 @@ Cancelled
 - The database is updated from the Stripe webhook, never from the success page in the browser. If Stripe and the database disagree, Stripe wins.
 - The webhook verifies Stripe's signature before trusting the request.
 - The same webhook event may arrive more than once. Handling it twice must not change anything twice.
+- The confirmation email is sent after the webhook has saved the paid payment, at most once per order. An email that cannot be sent never fails the webhook.
 
 ## Security
 
-- Secrets (Stripe keys, Supabase keys, database connection, admin password) are stored in User Secrets locally and environment variables in hosting, never in the code or the repo.
+- Secrets (Stripe keys, Supabase keys, the Resend key, database connection, admin password) are stored in User Secrets locally and environment variables in hosting, never in the code or the repo.
 - Passwords are hashed, never stored in plain text.
 - The API only accepts requests from the frontend's own domain (CORS).
 - Login and checkout allow at most 10 attempts per minute per IP address each. After that the API answers 429 Too Many Requests.
@@ -126,7 +127,8 @@ Cancelled
 |---|---|
 | Customer cancels or closes Stripe Checkout | Cart is kept, customer can try again. The payment expires later and the order is cancelled |
 | Customer's card is declined | Customer stays in Stripe Checkout and can try another card |
-| Customer reaches the success page before the webhook has arrived | Page says the order is being confirmed, not that it is paid |
+| Customer reaches the success page before the webhook has arrived | Page says the order is being confirmed, not that it is paid, and asks the API again until it is |
+| The confirmation email cannot be sent | The order is still paid and saved; the API logs a warning |
 | Webhook never arrives | Payment stays `Pending`; admin can see pending orders |
 | Product sold out while in cart | Customer is told before checkout, product is removed from cart |
 | Product price changed while in cart | Customer pays the current price from the database and sees it before paying |

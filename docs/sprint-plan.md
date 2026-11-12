@@ -107,10 +107,11 @@ In priority order. Responsive design and accessibility are checked on every page
 - [x] Polish: categories in the footer, a bag icon on the cart button, and "Frakt och retur" on the product page (added 11 Nov)
 - [x] Search and filters in the CMS: products (category, material, color, visibility, sort, date added), materials and colors, with linked product counts (added 12 Nov)
 - [x] Rate limiting on login and checkout: 10 attempts per minute per IP address, with a message on the page (added 12 Nov)
+- [x] Order confirmation by email, and the order with its delivery and payment on the success page (added 12 Nov)
 
 Dropped on 8 Nov, when the deadline moved:
 
-- The Could items: order confirmation email, dark and light mode
+- The Could items: order confirmation email (built after all on 12 Nov), dark and light mode
 
 ## Wrap-up (Fri 13 – Sun 15 Nov)
 
