@@ -229,3 +229,5 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 
 - **Building:** Removed the initial from the CMS app bar. The CMS search fields now have a hint below the field that says what they search in (chosen over a placeholder or an (i) icon). The search sentence in the order list's intro was removed so it isn't said twice.
 - **Verification:** build + affected specs. Claude checked 320–1440 px and 200 % zoom in Chrome.
+
+- **Building:** Rate limiting on login and checkout (10 per minute per IP address, 429), with ASP.NET Core's built-in rate limiter and forwarded headers behind Render's proxy. Claude wrote it; I checked 429 locally.

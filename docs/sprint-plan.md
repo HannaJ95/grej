@@ -106,6 +106,7 @@ In priority order. Responsive design and accessibility are checked on every page
 - [x] Sort the product list by newest or price, from the toolbar (added 10 Nov)
 - [x] Polish: categories in the footer, a bag icon on the cart button, and "Frakt och retur" on the product page (added 11 Nov)
 - [x] Search and filters in the CMS: products (category, material, color, visibility, sort, date added), materials and colors, with linked product counts (added 12 Nov)
+- [x] Rate limiting on login and checkout: 10 attempts per minute per IP address, with a message on the page (added 12 Nov)
 
 Dropped on 8 Nov, when the deadline moved:
 
