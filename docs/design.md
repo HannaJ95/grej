@@ -68,7 +68,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - It is a modal `<dialog>`: the focus stays inside it, Escape and the cross close it, and the focus goes back to the button that asked.
   - The focus starts on "Avbryt", so Enter never removes anything by mistake. The confirm button is red for what removes something and dark for other changes.
   - On a phone the buttons are under each other in full width.
-- `DemoNotice` is the framed box "Det här är en demobutik" with an arrow icon, used by the success page and the about page. The heading is fixed, and each page gives its own text as content.
+- `DemoNotice` is the framed box "Det här är en demobutik" with an arrow icon, used by the success page, the about page and the terms page. The heading is fixed, and each page gives its own text as content.
 - `Toast` says that something worked: `toast.show('Ändringarna är sparade.')` (`ToastService`). Its check has the green of the stock status dot.
   - It is shown in the bottom corner for 5 seconds, pauses on hover or focus, and closes with the cross or Escape, like `AddedToCart`.
   - Screen readers hear it through `aria-live`, and it never takes the focus.
@@ -79,14 +79,14 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
 The shop has neutral colors. The CMS uses the same tokens, so it gets the same colors and fonts.
 
 - `ShopLayout` (`features/shop/shop-layout/`) has the shop's header (logo, menu, dark mode button, cart) and footer, and the header sticks at the top. The shop's routes are its children in `app.routes.ts`, so the admin pages have no shop header.
-  - The header is the same low height on every screen size: the logo is smaller on a phone, and from a tablet it is as tall as the cart button. That height is `--shop-sticky-top` in `_base.scss`. `scroll-padding-top` uses it, so a focused element is never hidden under the header.
+  - The header is the same low height on every screen size: the logo is smaller on a phone, and from a tablet it is as tall as the cart button. That height is `--shop-sticky-top` in `_base.scss`. `scroll-padding-top` is that height plus `--space-8`, so a focused element and its focus ring are never hidden under the header.
   - `<main>` is one layer below the header (`isolation: isolate`), so nothing on a page, such as the product page's sticky buy row, can scroll over it.
   - Its bands reach the screen's edges. The content inside them uses `.page-width`: centered, at most `--layout-viewport-width` (1440 px), with `--layout-margin` on the sides (20 px on a phone, 32 px on a tablet, 48 px on a computer).
   - From a tablet, `ThemeToggle` is an icon before the cart, as tall as the cart button.
   - On a phone the menu links are in `MobileMenu`, a `<dialog>` like the cart. Its panel is dark in both modes, and has `ThemeToggle` with its text above the cart button.
   - The menu has "Shop" and "Om GREJ". They are never underlined, also on their own page; `aria-current="page"` tells screen readers. On hover they get the secondary text color, like the cart button.
   - The footer is dark in both modes. In dark mode a 1 px line (the bottom of `<main>`) parts it from the dark page.
-  - The footer's "Shop" lists "Alla produkter" and the five categories with the most products, in name order, each linking to the product list with that category chosen. Beside it, "GREJ" links to "Om GREJ". The columns go below each other only when they don't fit, e.g. with large text.
+  - The footer's "Shop" lists "Alla produkter" and the five categories with the most products, in name order, each linking to the product list with that category chosen. Beside it, "GREJ" links to "Om GREJ" and "Villkor". The columns go below each other only when they don't fit, e.g. with large text.
   - The footer's big "GREJ." is at most 42 % of the screen width, so it fits between 1024 and 1190 px. It is decoration and takes no clicks, since its letters reach up over the links above.
   - On screens wider than 1440 px the bands (header, start page, moving band, footer) still reach the edges while the content stays centered, so the page keeps one pattern instead of a box in the middle.
 - `ProductCard` is used by both the start page and the product list. It has an image, title and price, a "Slutsåld" or "Få kvar" (1–2 left) badge, and an add button.
@@ -143,7 +143,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - three folds (`<details>`), closed at first, which open and close with the same short height animation as `FilterGroup`. Reduced motion turns it off, and browsers without `::details-content` open them at once.
     - "Beskrivning": the whole description.
     - "Detaljer": only the rows the product has, i.e. Material, Färg, Mått and Vikt. Mått is e.g. "Ø 8 × H 9 cm", with the height last, and screen readers hear "diameter 8 cm, höjd 9 cm" instead. Vikt is in kg from 1 000 g. The fold is left out when the product has none of them.
-    - "Frakt och retur": Leverans (Paket till ombud), Frakt (this product alone, from its packed size with the cart's copy of the shipping rule) and Ångerrätt (14 dagar), with a sentence that several products are counted as one parcel in the cart.
+    - "Frakt och retur": Leverans (Paket till ombud), Frakt (this product alone, from its packed size with the cart's copy of the shipping rule) and Ångerrätt (14 dagar), with a sentence that several products are counted as one parcel in the cart, and "Läs mer i villkoren", which leads to the terms page's Frakt section (`/villkor#frakt`).
 - The buy row on a phone:
   - It sticks at the bottom of the screen until the page is scrolled down to its place, where it stays.
   - The row itself sticks, instead of a separate buy bar, so the page never shows two buy buttons.
@@ -163,11 +163,20 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - Below: "Vad händer nu?" as a numbered list, "Fortsätt handla", and a `DemoNotice` that says no money is taken and no package is sent.
   - Without a session, or when the API does not know it, the page shows only the order number from the URL.
 - The about page (`/om-grej`, `AboutPage`) only says what the shop does: one seller who picks every item (scope.md), not a marketplace. It has:
-  - a breadcrumb, the big title "Saker som någon gjort." and an intro
+  - a breadcrumb, the big title "Saker som någon gjort." and an intro. This top is `features/shop/page-hero.scss`, shared with the terms page.
   - a band in the muted color with a pill, an arch and a circle drawn in CSS. It is decoration (`aria-hidden`), follows dark mode through the color tokens, and gets wider on larger screens while the shapes keep their proportions.
   - "Så funkar GREJ": how items are picked, paid with Stripe, packed and sent to an ombud. The heading is beside the text from 1024 px.
   - "Det här tror vi på": three framed cards in an `<ol>`, side by side from 768 px. The big numbers are hidden from screen readers, since the list already numbers them.
   - "Visa alla grejer" and a `DemoNotice` that says GREJ is a thesis project in Stripe's test mode.
+- The terms page (`/villkor`, `TermsPage`) only says what the shop and the API really do, and is not legally reviewed (VAT and distance selling are Won't in scope.md). It has no company details, contact or other details the shop lacks, and says so where a section would need them (Retur, Reklamation, Tvister). It has:
+  - the same top as the about page, the big title "Villkor", the date it was updated (`<time>`, in mono) and a `DemoNotice`
+  - ten numbered sections, whose texts are data in `terms-sections.ts`: a string is a paragraph and a list of strings a bulleted list. Each heading has `tabindex="-1"`, so the focus can move there and Tab goes on from the section.
+  - `TermsContents`, the sections' contents:
+    - From 1024 px, "Innehåll" is a 288 px column to the left that sticks while the text scrolls. Each section is a row with a line at its start; the rows are in the secondary text color and get the primary color on hover. The current section has the primary color, `aria-current="true"` and a wider, dark line, so it isn't told by color alone. The number is hidden from screen readers, since the list numbers the rows.
+    - Below 1024 px, "Hoppa till avsnitt" is a `shared/select.scss` select in a bar that sticks below the header and reaches the screen's edges. The select shows the current section.
+    - A link or a choice scrolls smoothly to the section (at once with reduced motion), moves the focus to its heading and puts `#id` in the address with the router's `scroll: 'manual'`. A link is a plain `href`, so ctrl/cmd-click still opens a new tab. Chrome's styled select gives the focus back to the select after a choice, so its scroll starts right after that.
+  - The current section is the last one whose heading has scrolled up to where a link puts it, updated on scroll (`TermsPage.updateCurrent`).
+  - Below 1024 px the headings have the bar's height as `scroll-margin-top`, which `TermsContents` measures with a `ResizeObserver` (`--terms-contents-height`). It is not in `scroll-padding-top`, since the browser would then scroll whenever the select itself got the focus. The router doesn't count `scroll-margin-top`, so the page scrolls a `#fragment` in the URL into view again right after the router.
 
 ## Admin
 

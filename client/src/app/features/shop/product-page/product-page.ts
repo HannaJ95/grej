@@ -9,6 +9,7 @@ import {
   linkedSignal,
   viewChild,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { CartService } from '../../../core/cart.service';
 import { Product, ProductService } from '../../../core/product.service';
 import { sizeText, weightText } from '../../../core/product-size';
@@ -25,7 +26,16 @@ const SHORT_DESCRIPTION = 150;
 
 @Component({
   selector: 'app-product-page',
-  imports: [CurrencyPipe, Breadcrumb, Button, Icon, QuantityStepper, StockStatus, ProductGallery],
+  imports: [
+    CurrencyPipe,
+    RouterLink,
+    Breadcrumb,
+    Button,
+    Icon,
+    QuantityStepper,
+    StockStatus,
+    ProductGallery,
+  ],
   templateUrl: './product-page.html',
   styleUrl: './product-page.scss',
   host: { class: 'page-width' },

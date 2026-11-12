@@ -1,0 +1,68 @@
+// Long words break instead of widening the page.
+h1,
+h2,
+p,
+ul {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.updated {
+  color: var(--color-text-secondary);
+}
+
+.notice {
+  max-width: 50rem;
+}
+
+// minmax(0, 1fr), so a long word can't widen the text's column.
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-40);
+  padding-block-end: var(--space-80);
+
+  @media (width >= 48rem) {
+    gap: var(--space-56);
+    padding-block-end: var(--space-120);
+  }
+
+  @media (width >= 64rem) {
+    display: grid;
+    grid-template-columns: 18rem minmax(0, 1fr);
+    align-items: start;
+    column-gap: var(--space-56);
+  }
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-40);
+  max-width: 45rem;
+
+  @media (width >= 48rem) {
+    gap: var(--space-56);
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+
+  // Below "Hoppa till avsnitt" when it sticks. Not in scroll-padding, which would make the browser
+  // scroll whenever the select itself gets the focus.
+  > h2 {
+    @media (width < 64rem) and (height >= 30rem) {
+      scroll-margin-top: var(--terms-contents-height, 0px);
+    }
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding-inline-start: var(--space-20);
+}

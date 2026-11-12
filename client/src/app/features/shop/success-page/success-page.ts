@@ -24,10 +24,7 @@ const MAX_RETRIES = 15;
 export class SuccessPage {
   protected readonly steps = [
     { title: 'Vi packar din grej', text: 'Inom 1–2 arbetsdagar.' },
-    {
-      title: 'Paketet skickas med PostNord',
-      text: 'Spara ordernumret om du vill fråga oss om leveransen.',
-    },
+    { title: 'Paketet skickas med PostNord', text: 'Ordernumret står också i orderbekräftelsen.' },
     {
       title: 'Hämta ut paketet',
       text: 'Hos ditt PostNord-ombud, normalt inom 2–4 arbetsdagar.',

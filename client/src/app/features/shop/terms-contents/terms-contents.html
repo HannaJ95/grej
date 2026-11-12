@@ -1,0 +1,31 @@
+<nav aria-labelledby="contents-title">
+  <h2 class="title text-display-2xs" id="contents-title">Innehåll</h2>
+  <ol class="list text-heading-xs">
+    @for (section of sections(); track section.id; let number = $index) {
+      <li>
+        <a
+          href="/villkor#{{ section.id }}"
+          [attr.aria-current]="section.id === current() ? 'true' : null"
+          (click)="goTo($event, section.id)"
+        >
+          <!-- The list already tells screen readers the number. -->
+          <span aria-hidden="true">{{ number + 1 }}. </span>{{ section.title }}
+        </a>
+      </li>
+    }
+  </ol>
+
+  <div class="jump">
+    <label class="text-label-s" for="jump-select">Hoppa till avsnitt</label>
+    <span class="select">
+      <select #select id="jump-select" class="text-body-m" (change)="choose(select.value)">
+        @for (section of sections(); track section.id; let number = $index) {
+          <option [value]="section.id" [selected]="section.id === current()">
+            {{ number + 1 }}. {{ section.title }}
+          </option>
+        }
+      </select>
+      <app-icon name="chevron-down" />
+    </span>
+  </div>
+</nav>

@@ -82,6 +82,9 @@ describe('ProductPage', () => {
     // Only the amount: the tests run without the app's Swedish locale.
     expect(shipping).toContain('79');
     expect(withdrawal).toBe('14 dagar');
+    expect(harness.routeNativeElement!.querySelector('.note a')?.getAttribute('href')).toBe(
+      '/villkor#frakt',
+    );
   });
 
   it('shortens a long description, and "Mer information" opens the whole one', async () => {
