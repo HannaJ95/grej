@@ -14,6 +14,13 @@
   --color-ochre: #a57a1f;
   --color-charcoal-a20: #2b2a2733;
   --color-charcoal-a55: #2b2a278c;
+  --color-soot: #3b3934;
+  --color-ash: #4a4741;
+  --color-rust-light: #ec8a76;
+  --color-moss-light: #9fb58a;
+  --color-ochre-light: #d6a640;
+  --color-linen-a20: #f8f3ea33;
+  --color-black-a70: #000000b3;
 
   --color-bg-page: var(--color-linen);
   --color-bg-surface: var(--color-linen);
@@ -96,6 +103,46 @@
   --layout-columns: 4;
   --layout-admin-gutter: 1.25rem;
   --layout-viewport-width: 24.375rem;
+}
+
+// The light colors swapped, so every pair keeps its contrast. Product images stay on white,
+// since the photos are taken on white.
+@mixin dark-colors {
+  color-scheme: dark;
+
+  --color-bg-page: var(--color-charcoal);
+  --color-bg-surface: var(--color-charcoal);
+  --color-bg-muted: var(--color-ash);
+  --color-bg-inverse: var(--color-linen);
+  --color-bg-inverse-hover: var(--color-stone);
+  --color-bg-hover: var(--color-soot);
+  --color-text-primary: var(--color-linen);
+  --color-text-secondary: var(--color-mist);
+  --color-text-on-inverse: var(--color-charcoal);
+  --color-text-on-inverse-secondary: var(--color-graphite);
+  --color-border-default: var(--color-linen);
+  --color-border-subtle: var(--color-linen-a20);
+  --color-border-inverse: var(--color-charcoal);
+  --color-icon-default: var(--color-linen);
+  --color-icon-inverse: var(--color-charcoal);
+  --color-overlay-scrim: var(--color-black-a70);
+  --color-feedback-error: var(--color-rust-light);
+  --color-feedback-success: var(--color-moss-light);
+  --color-feedback-warning: var(--color-ochre-light);
+  --color-accent-creator: var(--color-linen);
+
+  --shadow-popover: 0 0.5rem 1.5rem rgb(0 0 0 / 50%);
+}
+
+// The system's setting, unless the visitor has chosen light (data-theme on <html>).
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include dark-colors;
+  }
+}
+
+:root[data-theme='dark'] {
+  @include dark-colors;
 }
 
 // Media queries cannot read custom properties, so the breakpoints are written out.
