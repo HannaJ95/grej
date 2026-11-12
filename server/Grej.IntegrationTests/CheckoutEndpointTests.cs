@@ -188,7 +188,10 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var order = await response.Content.ReadFromJsonAsync<OrderConfirmationDto>();
         Assert.NotNull(order);
-        Assert.Equal(orders.Saved.Single().OrderNumber, order.OrderNumber);
+        var saved = orders.Saved.Single();
+        Assert.Equal(saved.OrderNumber, order.OrderNumber);
+        Assert.Equal(saved.CreatedAt, order.CreatedAt);
+        Assert.Equal("Fake", order.PaymentProvider);
         // The webhook has not arrived, so Checkout's details are not there yet.
         Assert.Equal("Pending", order.PaymentStatus);
         Assert.Null(order.CustomerEmail);

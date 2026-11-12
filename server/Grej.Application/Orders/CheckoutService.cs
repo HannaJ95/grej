@@ -66,10 +66,13 @@ public class CheckoutService(ProductService products, IOrderRepository orders, I
             return null;
         }
 
+        // Found by its payment, so the payment is always there.
+        var payment = order.Payment!;
         return new OrderConfirmationDto(
             order.OrderNumber,
-            // Found by its payment, so the payment is always there.
-            order.Payment!.Status.ToString(),
+            order.CreatedAt,
+            payment.Status.ToString(),
+            payment.Provider,
             order.CustomerName,
             order.CustomerEmail,
             order.AddressLine1,

@@ -49,7 +49,9 @@ public record OrderDetailsDto(
 // For the success page, so only what the customer bought and entered.
 public record OrderConfirmationDto(
     string OrderNumber,
+    DateTime CreatedAt,
     string PaymentStatus,
+    string PaymentProvider,
     // Null until the order is paid.
     string? CustomerName,
     string? CustomerEmail,
