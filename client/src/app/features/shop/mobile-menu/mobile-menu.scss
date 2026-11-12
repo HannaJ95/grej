@@ -33,16 +33,18 @@ dialog {
   max-height: 100dvh;
   padding: 0;
   border: none;
-  background: var(--color-bg-inverse);
-  color: var(--color-text-on-inverse);
+  background: none;
 }
 
-// Fills the dialog, so a click on the dialog element itself can only be on the backdrop.
+// Fills the dialog, so a click on the dialog element itself can only be on the backdrop. Dark in
+// both modes (data-theme="light" in the template).
 .panel {
   display: flex;
   flex-direction: column;
   height: 100%;
   padding: var(--space-12) var(--space-20) var(--space-28);
+  background: var(--color-bg-inverse);
+  color: var(--color-text-on-inverse);
 
   :focus-visible {
     outline-color: var(--color-border-inverse);
