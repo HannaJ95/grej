@@ -25,7 +25,7 @@ describe('ShopLayout', () => {
     return { id, name, productCount, subcategories: [] };
   }
 
-  it('links to the start page, the products and the about page', async () => {
+  it('links to the start page, the products, the about page and the terms', async () => {
     const element = await show();
 
     const links = [...element.querySelectorAll('a')].map((a) => [
@@ -43,6 +43,7 @@ describe('ShopLayout', () => {
       ['Om GREJ', '/om-grej'],
       ['Alla produkter', '/produkter'],
       ['Om GREJ', '/om-grej'],
+      ['Villkor', '/villkor'],
     ]);
   });
 
