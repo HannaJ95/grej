@@ -11,6 +11,7 @@ import {
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../../core/cart.service';
 import { CheckoutService } from '../../../core/checkout.service';
+import { isTooManyRequests, TOO_MANY_REQUESTS_MESSAGE } from '../../../core/too-many-requests';
 import { Button } from '../../../shared/button/button';
 import { IconButton } from '../../../shared/icon-button/icon-button';
 import { Icon } from '../../../shared/icons/icon';
@@ -38,7 +39,7 @@ export class CartDrawer {
 
   // True while the API creates the order, so the button cannot be clicked twice.
   protected readonly isBuying = signal(false);
-  protected readonly buyFailed = signal(false);
+  protected readonly buyError = signal<string | null>(null);
   // True when the API has changed the cart because some products ran out.
   protected readonly cartChanged = signal(false);
 
@@ -67,7 +68,7 @@ export class CartDrawer {
   // Public, so the "Tillagd i varukorgen" popup's "Till kassan" can start it too.
   async goToCheckout(): Promise<void> {
     this.isBuying.set(true);
-    this.buyFailed.set(false);
+    this.buyError.set(null);
     this.cartChanged.set(false);
     try {
       // Only ids and quantities are sent; the API takes the prices from the database.
@@ -84,8 +85,12 @@ export class CartDrawer {
       }
       // Leaves the app for Stripe's payment page, so isBuying is never reset here.
       this.document.location.href = result.url;
-    } catch {
-      this.buyFailed.set(true);
+    } catch (error) {
+      this.buyError.set(
+        isTooManyRequests(error)
+          ? TOO_MANY_REQUESTS_MESSAGE
+          : 'Det gick inte att gå till betalningen. Försök igen.',
+      );
       this.isBuying.set(false);
     }
   }

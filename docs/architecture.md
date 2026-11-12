@@ -91,6 +91,7 @@ client/
 | **Prices and shipping calculated in the API** from the database; title and price stored on each order row, shipping on the order | Prices in the browser can be manipulated; old orders must not change |
 | **Money as `decimal` + currency** (SEK in this version) | Floating point gives rounding errors; storing the currency keeps more currencies possible |
 | **ASP.NET Core Identity + JWT**, role Admin | Frontend and API are on different domains, which makes tokens simpler than cookies |
+| **Rate limiting per IP address** on login and checkout, built into ASP.NET Core | The lockout only protects one account at a time, and each checkout saves an order and creates a Stripe session |
 | **Supabase for database and images** | One service I already know for both; images cannot be stored on Render, whose file system is cleared on every deploy |
 | **Cart in localStorage** | Customers buy as guests, so there is no account to store the cart on |
 | **`SellerId` on every product** (always the admin) | Cheap now, keeps a future marketplace possible |
@@ -147,6 +148,17 @@ The shipping cost comes from the products' packed parcels (Should, ambiguity.md)
 - The demo orders get their shipping from the same rule in `DemoSeeder`.
 
 Known limitations: the summed volumes are a lower bound for the real box. One item over 20 kg in volume weight, such as a large painting, is priced as several parcels although it cannot be split, and the carriers' largest sizes are not checked. There is one method and no carrier API. A cart saved before shipping was built shows "Frakten läggs till i kassan." until its products are added again. The migration `AddShipping` gave existing products 1 000 g and 30 × 20 × 10 cm, since the columns cannot be empty and the deployed API did not send them yet; `reset-demo` replaced these with the demo data's own values.
+
+## Rate limiting
+
+`POST /api/auth/login` and `POST /api/checkout` allow 10 requests per minute per IP address each (constraints.md). This uses ASP.NET Core's built-in rate limiting, so no package is needed:
+
+- `Program.cs` registers one policy per endpoint with `AddRateLimiter`, with the names and the limit in `Grej.Api/RateLimits.cs`. Each policy has one fixed window per IP address. The window starts at the first attempt and starts over after a minute. The controllers choose a policy with `[EnableRateLimiting]`.
+- Above the limit the API answers 429. In Angular, `isTooManyRequests` (`core/too-many-requests.ts`) lets the login page and the cart show "För många försök på kort tid. Vänta en minut och försök igen."
+- On Render every request comes through Render's proxy, which adds the visitor's IP to `X-Forwarded-For`. `UseForwardedHeaders` makes the last address in that header, the one the proxy added, the request's IP. It trusts every sender, since Render's proxy addresses are not published and the API can only be reached through the proxy. Without this, every visitor would share the proxy's counter.
+- `UseForwardedHeaders` comes first in the pipeline, and `UseRateLimiter` after `UseCors`, so a 429 has the CORS headers the browser needs to show it to Angular.
+
+Known limitations: the counters are in the API's memory, so they start over when Render restarts the API, and several instances would not share them (Render runs one). Visitors behind the same IP address, e.g. on one school Wi-Fi, share the limit. Up to 20 attempts can pass in a row when they fall on both sides of the end of a window.
 
 ## Data model
 
@@ -261,7 +273,7 @@ erDiagram
 
 Users and roles use the standard ASP.NET Core Identity tables. The only role in this version is `Admin`.
 
-The admin account is created with `dotnet run --project Grej.Api -- seed-admin` from `Admin:Email` and `Admin:Password` in User Secrets. `POST /api/auth/login` returns a JWT with the `Admin` role, valid for 8 hours, signed with `Jwt:SigningKey`. Five wrong passwords in a row lock the account for 5 minutes.
+The admin account is created with `dotnet run --project Grej.Api -- seed-admin` from `Admin:Email` and `Admin:Password` in User Secrets. `POST /api/auth/login` returns a JWT with the `Admin` role, valid for 8 hours, signed with `Jwt:SigningKey`. Five wrong passwords in a row lock the account for 5 minutes. On top of that, one IP address may try 10 times per minute (Rate limiting), so one computer cannot try many email addresses either.
 
 Every admin endpoint has `[Authorize(Roles = Roles.Admin)]`. The API checks the token's signature, issuer, audience and expiry with JwtBearer in `Program.cs`, using the same `Jwt` settings as the login. No valid token gives 401, and a token without the `Admin` role gives 403. `GET /api/auth/me` returns the logged-in admin's email. The CMS's menu shows the email without asking the API: `AuthService.email()` reads it from the token's middle part (the API puts it there), which is signed but not secret.
 

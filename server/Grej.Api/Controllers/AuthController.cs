@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Grej.Application.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Grej.Api.Controllers;
@@ -11,8 +12,10 @@ namespace Grej.Api.Controllers;
 [Route("api/auth")]
 public class AuthController(ILoginService login) : ControllerBase
 {
-    // Returns a token if the email and password are right.
+    // Returns a token if the email and password are right. Rate limited per IP address on top
+    // of the lockout, which only protects one account at a time.
     [HttpPost("login")]
+    [EnableRateLimiting(RateLimits.Login)]
     public async Task<IActionResult> Login(LoginRequest request)
     {
         var result = await login.LoginAsync(request);

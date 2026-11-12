@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { email, form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
+import { isTooManyRequests, TOO_MANY_REQUESTS_MESSAGE } from '../../../core/too-many-requests';
 import { Badge } from '../../../shared/badge/badge';
 import { Button } from '../../../shared/button/button';
 import { firstError } from '../../../shared/first-error';
@@ -43,10 +44,12 @@ export class LoginPage {
               message:
                 'Fel e-postadress eller lösenord. Efter 5 försök i rad låses kontot i 5 minuter.',
             };
-          } catch {
+          } catch (error) {
             return {
               kind: 'login',
-              message: 'Kunde inte logga in just nu. Försök igen om en stund.',
+              message: isTooManyRequests(error)
+                ? TOO_MANY_REQUESTS_MESSAGE
+                : 'Kunde inte logga in just nu. Försök igen om en stund.',
             };
           }
         },

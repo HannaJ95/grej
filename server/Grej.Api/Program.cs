@@ -1,14 +1,16 @@
 using System.Text;
+using System.Threading.RateLimiting;
+using Grej.Api;
 using Grej.Application;
 using Grej.Infrastructure;
 using Grej.Infrastructure.DemoData;
 using Grej.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -41,7 +43,26 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy => policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod()));
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+// On Render every request comes from Render's proxy, which adds the visitor's IP to
+// X-Forwarded-For. Its addresses are not published, so any sender is trusted: the API can
+// only be reached through the proxy. Only the last address is read, the one the proxy added.
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor;
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
+// Slows down password guessing and checkout spam, since each checkout saves an order and
+// creates a Stripe session. Each policy counts on its own.
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy(RateLimits.Login, PerIpAddress);
+    options.AddPolicy(RateLimits.Checkout, PerIpAddress);
+});
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
@@ -73,7 +94,9 @@ if (args.Contains("reset-demo"))
     return;
 }
 
-// Configure the HTTP request pipeline.
+// First, so everything after it sees the visitor's IP instead of the proxy's.
+app.UseForwardedHeaders();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -83,6 +106,9 @@ app.UseHttpsRedirection();
 
 app.UseCors();
 
+// After CORS, so a 429 has the CORS headers the browser needs to show it to the frontend.
+app.UseRateLimiter();
+
 // Reads the token, if there is one, and works out who is asking.
 app.UseAuthentication();
 // Then checks [Authorize]: 401 without a valid token, 403 without the Admin role.
@@ -91,3 +117,13 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// One counter per IP address, so visitors on the same network (one Wi-Fi) share it.
+static RateLimitPartition<string> PerIpAddress(HttpContext context) =>
+    RateLimitPartition.GetFixedWindowLimiter(
+        context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = RateLimits.PermitsPerMinute,
+            Window = TimeSpan.FromMinutes(1),
+        });

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using Grej.Api;
 using Grej.Application.Catalog;
 using Grej.Application.Common;
 using Grej.Application.Orders;
@@ -156,6 +157,22 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         var response = await client.PostAsJsonAsync("/api/checkout", new CheckoutRequest([null!]));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Create_TooManyAttemptsFromOneAddress_ReturnsTooManyRequests()
+    {
+        // Sold out, so the allowed attempts answer 409 and save nothing.
+        var client = CreateClient(new Product { Id = 1, Title = "Skål", Price = 450m, Stock = 0, IsActive = true });
+        client.DefaultRequestHeaders.Add("X-Forwarded-For", "203.0.113.1");
+        for (var attempt = 0; attempt < RateLimits.PermitsPerMinute; attempt++)
+        {
+            await client.PostAsJsonAsync("/api/checkout", Request(productId: 1, quantity: 1));
+        }
+
+        var response = await client.PostAsJsonAsync("/api/checkout", Request(productId: 1, quantity: 1));
+
+        Assert.Equal(HttpStatusCode.TooManyRequests, response.StatusCode);
     }
 
     private static CheckoutRequest Request(int productId, int quantity) =>

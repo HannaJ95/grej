@@ -111,6 +111,7 @@ Cancelled
 - Secrets (Stripe keys, Supabase keys, database connection, admin password) are stored in User Secrets locally and environment variables in hosting, never in the code or the repo.
 - Passwords are hashed, never stored in plain text.
 - The API only accepts requests from the frontend's own domain (CORS).
+- Login and checkout allow at most 10 attempts per minute per IP address each. After that the API answers 429 Too Many Requests.
 - Uploaded files must be images (jpg, png, webp) and at most 5 MB.
 
 ## Performance and scale
@@ -131,3 +132,4 @@ Cancelled
 | Product price changed while in cart | Customer pays the current price from the database and sees it before paying |
 | Admin enters invalid data | Clear error message; nothing is saved |
 | API is down | Frontend shows an error message instead of a blank page |
+| Too many logins or checkouts from one IP address | API answers 429; the page asks the visitor to wait a minute and try again |
