@@ -5,8 +5,7 @@ import { Icon } from '../../../shared/icons/icon';
 import { IconButton } from '../../../shared/icon-button/icon-button';
 import { ThemeToggle } from '../../../shared/theme-toggle/theme-toggle';
 
-// The phone menu. A native <dialog> like the cart, so the browser handles Escape, the focus and
-// the backdrop.
+// A native <dialog>, so the browser handles Escape, the focus and the backdrop.
 @Component({
   selector: 'app-mobile-menu',
   imports: [RouterLink, RouterLinkActive, Icon, IconButton, ThemeToggle],

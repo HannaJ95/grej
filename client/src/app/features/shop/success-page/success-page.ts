@@ -5,6 +5,7 @@ import { CartService } from '../../../core/cart.service';
 import { CheckoutService } from '../../../core/checkout.service';
 import { OrderConfirmation } from '../../../core/order';
 import { Button } from '../../../shared/button/button';
+import { DemoNotice } from '../../../shared/demo-notice/demo-notice';
 import { Icon } from '../../../shared/icons/icon';
 
 // The webhook usually arrives within seconds. After 30 the page stops asking.
@@ -15,14 +16,14 @@ const MAX_RETRIES = 15;
 // Only the webhook knows that the order is paid, so the page asks the API (constraints.md).
 @Component({
   selector: 'app-success-page',
-  imports: [CurrencyPipe, DatePipe, RouterLink, Button, Icon],
+  imports: [CurrencyPipe, DatePipe, RouterLink, Button, DemoNotice, Icon],
   templateUrl: './success-page.html',
   styleUrls: ['./success-page.scss', '../../../shared/order-sums.scss'],
   host: { class: 'page-width' },
 })
 export class SuccessPage {
   protected readonly steps = [
-    { title: 'Skaparen packar din grej', text: 'Inom 1–2 arbetsdagar.' },
+    { title: 'Vi packar din grej', text: 'Inom 1–2 arbetsdagar.' },
     {
       title: 'Paketet skickas med PostNord',
       text: 'Spara ordernumret om du vill fråga oss om leveransen.',
@@ -39,7 +40,7 @@ export class SuccessPage {
 
   private readonly placed = inject(CheckoutService).getOrder(this.session);
 
-  // Kept when a later request fails, like ProductList's lastResult.
+  // Kept when a later request fails.
   protected readonly confirmation = linkedSignal<
     OrderConfirmation | undefined,
     OrderConfirmation | undefined
@@ -65,7 +66,6 @@ export class SuccessPage {
     return confirmation ? confirmation.total - (confirmation.shippingCost ?? 0) : 0;
   });
 
-  // Null fields left out, e.g. the second address line.
   protected readonly address = computed(() => {
     const c = this.confirmation();
     if (!c?.addressLine1) {

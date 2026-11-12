@@ -1,0 +1,56 @@
+<div class="hero">
+  <app-breadcrumb [links]="[{ label: 'Hem', path: '/' }]" current="Om GREJ" />
+  <h1 class="text-display-hero">Saker som någon gjort.</h1>
+  <p class="intro text-body-l">
+    GREJ är en liten butik på nätet för handgjorda saker, som keramik, textil och smycken. Allt är
+    gjort för hand, och inga två grejer är exakt likadana.
+  </p>
+</div>
+
+<div class="art" aria-hidden="true">
+  <div class="shapes">
+    <span class="pill"></span>
+    <span class="arch"></span>
+    <span class="sun"></span>
+  </div>
+</div>
+
+<section class="how" aria-labelledby="how-title">
+  <h2 class="text-display-m" id="how-title">Så funkar GREJ</h2>
+  <div class="how-text text-body-m">
+    <p>
+      Vi väljer ut varje grej själva och lägger upp den med bilder och en beskrivning, så att du ser
+      vad du får innan du köper.
+    </p>
+    <p>
+      Du betalar via Stripe. Vi packar din grej inom 1–2 arbetsdagar och skickar den med PostNord
+      till ditt ombud.
+    </p>
+    <p>Butiken är liten med flit, så att varje grej får ta plats.</p>
+  </div>
+</section>
+
+<section class="values" aria-labelledby="values-title">
+  <h2 class="text-display-l" id="values-title">Det här tror vi på</h2>
+  <ol class="value-list">
+    @for (value of values; track value.title; let number = $index) {
+      <li class="value">
+        <!-- The list already tells screen readers the number. -->
+        <span class="text-display-l" aria-hidden="true">0{{ number + 1 }}</span>
+        <h3 class="text-display-xs">{{ value.title }}</h3>
+        <p class="text-body-m">{{ value.text }}</p>
+      </li>
+    }
+  </ol>
+</section>
+
+<div class="end">
+  <a appButton size="large" class="shop-link" routerLink="/produkter">
+    Visa alla grejer
+    <app-icon name="arrow-right" />
+  </a>
+  <app-demo-notice>
+    GREJ är byggd som ett examensarbete. Betalningen görs i Stripes testläge, så inga riktiga pengar
+    dras och inga paket skickas.
+  </app-demo-notice>
+</div>

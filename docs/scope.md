@@ -54,6 +54,7 @@ The MVP is a single-seller webshop with an admin CMS = all **Must** items below.
 - Search and filter the products in the CMS, and search its materials and colors; the product counts on the category, material and color pages link to the filtered list (added 12 Nov)
 - At most 10 logins and 10 checkouts per minute from one IP address (added 12 Nov)
 - The order on the success page: its rows, shipping and total, and its delivery and payment once paid (added 12 Nov)
+- An about page, "Om GREJ", linked from the header, the phone menu and the footer (added 12 Nov)
 
 ### Could
 

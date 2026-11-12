@@ -241,3 +241,7 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 
 - **Building:** Dark and light mode (Could, built after all). The page follows the system until the visitor chooses with a button in the header, the phone menu or the admin menu; the choice is saved in localStorage and set before the first paint. Dark mode swaps the color tokens; the footer and the phone menu stay dark in both modes, and product images stay on white.
 - **Verification:** client tests + build; Claude checked 320–1440 px in both modes in Chrome. A shop-layout test failed for me but passed for Claude, whose runs reused an old build of the spec.
+
+- **Building:** About page `/om-grej`, linked from the header, the phone menu and the footer. The texts only describe what exists: a curated shop with one seller, not a marketplace. "Skaparen packar" became "Vi packar" on the success page and in the order email. The demo notice is now a shared component, `DemoNotice`.
+- **Design system:** The ring on Å reached into the line above in Anton headings with several lines. The Display styles' line height is now 1.3 instead of 1.16, and the logo keeps 1.16.
+- **Verification:** build + client tests + axe. Claude checked 320–1440 px in both modes in Chrome.

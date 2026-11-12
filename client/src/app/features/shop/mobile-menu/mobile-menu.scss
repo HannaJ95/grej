@@ -36,7 +36,7 @@ dialog {
   background: none;
 }
 
-// Fills the dialog, so a click on the dialog element itself can only be on the backdrop.
+// Fills the dialog, which closeOnBackdrop() relies on.
 .panel {
   display: flex;
   flex-direction: column;

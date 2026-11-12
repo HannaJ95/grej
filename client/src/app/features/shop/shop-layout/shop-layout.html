@@ -1,7 +1,7 @@
 <header class="header">
   <div class="page-width header-content">
     <a class="logo text-display-logo" routerLink="/" aria-label="GREJ, till startsidan">GREJ.</a>
-    <!-- Hidden on phones, where the same link is in the menu. -->
+    <!-- Hidden on phones, where the menu has the same links. -->
     <nav class="nav" aria-label="Huvudmeny">
       <a
         class="nav-link text-label-nav"
@@ -10,6 +10,14 @@
         ariaCurrentWhenActive="page"
       >
         Shop
+      </a>
+      <a
+        class="nav-link text-label-nav"
+        routerLink="/om-grej"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
+        Om GREJ
       </a>
     </nav>
     <div class="actions">
@@ -32,17 +40,25 @@
 <footer class="footer" data-theme="light">
   <div class="page-width">
     <nav class="footer-nav" aria-label="Sidfot">
-      <h2 class="footer-heading text-heading-xs">Shop</h2>
-      <ul class="footer-links text-body-s">
-        <li><a routerLink="/produkter">Alla produkter</a></li>
-        @for (category of footerCategories(); track category.id) {
-          <li>
-            <a routerLink="/produkter" [queryParams]="{ kategori: category.id }">
-              {{ category.name }}
-            </a>
-          </li>
-        }
-      </ul>
+      <div class="footer-column">
+        <h2 class="footer-heading text-heading-xs">Shop</h2>
+        <ul class="footer-links text-body-s">
+          <li><a routerLink="/produkter">Alla produkter</a></li>
+          @for (category of footerCategories(); track category.id) {
+            <li>
+              <a routerLink="/produkter" [queryParams]="{ kategori: category.id }">
+                {{ category.name }}
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h2 class="footer-heading text-heading-xs">GREJ</h2>
+        <ul class="footer-links text-body-s">
+          <li><a routerLink="/om-grej">Om GREJ</a></li>
+        </ul>
+      </div>
     </nav>
 
     <!-- The big logo is decoration; the header's logo already has the name. -->

@@ -1,10 +1,8 @@
 <div class="confirmation">
-  <!-- Side by side only when both fit, so a narrow screen or large text puts the order below. -->
   <div class="top">
     <div class="heading">
       <span class="icon-box"><app-icon name="check" /></span>
       <h1 class="text-display-l">Tack för din beställning!</h1>
-      <!-- Read out when the payment is confirmed. -->
       <p class="text-body-l" role="status">{{ status() }}</p>
     </div>
 
@@ -93,14 +91,7 @@
 
   <a appButton size="large" class="continue" routerLink="/produkter">Fortsätt handla</a>
 
-  <div class="notice">
-    <span class="notice-icon"><app-icon name="arrow-right" /></span>
-    <div class="step-text">
-      <p class="text-heading-xs">Det här är en demobutik</p>
-      <p class="text-body-s">
-        Betalningen gjordes i Stripes testläge. Inga riktiga pengar har dragits och inget paket
-        skickas.
-      </p>
-    </div>
-  </div>
+  <app-demo-notice class="notice">
+    Betalningen gjordes i Stripes testläge. Inga riktiga pengar har dragits och inget paket skickas.
+  </app-demo-notice>
 </div>

@@ -21,9 +21,9 @@
     </div>
 
     <nav aria-label="Huvudmeny">
+      <!-- The links close the menu, since the new page is shown behind it. -->
       <ul class="links">
         <li>
-          <!-- Closes the menu, since the new page is shown behind it. -->
           <a
             class="link text-display-m"
             routerLink="/produkter"
@@ -32,6 +32,18 @@
             (click)="close()"
           >
             Shop
+            <app-icon name="arrow-right" />
+          </a>
+        </li>
+        <li>
+          <a
+            class="link text-display-m"
+            routerLink="/om-grej"
+            routerLinkActive="active"
+            ariaCurrentWhenActive="page"
+            (click)="close()"
+          >
+            Om GREJ
             <app-icon name="arrow-right" />
           </a>
         </li>

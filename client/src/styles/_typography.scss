@@ -13,6 +13,10 @@ $font-text:
   sans-serif;
 $font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
 
+// The ring on Å reaches 1.23em above the baseline in Anton, so less would let it touch the
+// line above.
+$display-line-height: 1.3;
+
 // Sets every property, so a class never inherits e.g. uppercase from its parent.
 @mixin text-style(
   $font,
@@ -33,33 +37,34 @@ $font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
 }
 
 .text-display-hero {
-  @include text-style($font-display, 400, display-hero, 1.16, $case: uppercase);
+  @include text-style($font-display, 400, display-hero, $display-line-height, $case: uppercase);
 }
 
 .text-display-xl {
-  @include text-style($font-display, 400, display-xl, 1.16, $case: uppercase);
+  @include text-style($font-display, 400, display-xl, $display-line-height, $case: uppercase);
 }
 
 .text-display-l {
-  @include text-style($font-display, 400, display-l, 1.16, $case: uppercase);
+  @include text-style($font-display, 400, display-l, $display-line-height, $case: uppercase);
 }
 
 .text-display-m {
-  @include text-style($font-display, 400, display-m, 1.16, $case: uppercase);
+  @include text-style($font-display, 400, display-m, $display-line-height, $case: uppercase);
 }
 
 .text-display-s {
-  @include text-style($font-display, 400, display-s, 1.16, $case: uppercase);
+  @include text-style($font-display, 400, display-s, $display-line-height, $case: uppercase);
 }
 
 .text-display-xs {
-  @include text-style($font-display, 400, display-xs, 1.16, $case: uppercase);
+  @include text-style($font-display, 400, display-xs, $display-line-height, $case: uppercase);
 }
 
 .text-display-2xs {
-  @include text-style($font-display, 400, display-2xs, 1.16, $case: uppercase);
+  @include text-style($font-display, 400, display-2xs, $display-line-height, $case: uppercase);
 }
 
+// Always one line, and the header's height depends on it.
 .text-display-logo {
   @include text-style($font-display, 400, display-logo, 1.16, $case: uppercase);
 }
