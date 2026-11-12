@@ -61,8 +61,7 @@ public class AdminOrderService(IOrderRepository orders, ProductService products,
 
         order.CancelByAdmin();
 
-        // Here, since a refund never changes the stock (constraints.md). Through ProductService,
-        // since the stock belongs to Catalog.
+        // Here, since a refund never changes the stock (constraints.md). The stock belongs to Catalog.
         var items = order.Items.Select(item => new ProductQuantity(item.ProductId, item.Quantity)).ToList();
         await products.IncreaseStockAsync(items, cancellationToken);
 
@@ -108,9 +107,7 @@ public class AdminOrderService(IOrderRepository orders, ProductService products,
         order.Country,
         order.ShippingMethod,
         order.ShippingCost,
-        order.Items
-            .Select(item => new OrderItemDto(item.TitleAtPurchase, item.UnitPrice, item.Quantity, item.UnitPrice * item.Quantity))
-            .ToList());
+        order.Items.Select(OrderItemDto.From).ToList());
 
     // Only null if a query forgot Include(o => o.Payment).
     private static string PaymentStatusOf(Order order) =>

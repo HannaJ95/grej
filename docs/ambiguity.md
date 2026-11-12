@@ -12,8 +12,12 @@ Why: Customer accounts add login, passwords and personal data handling for littl
 Decision: No, not in this version (requires customer accounts).
 
 **What does the customer get as confirmation?**
-Decision: The success page shows an order number. Email confirmation is Could.
-Why: Stripe does not send receipts in test mode, so the success page is the only confirmation in the MVP.
+Decision: The success page shows the order, and an email is sent when the payment is confirmed (the email was a Could, built 12 Nov). The email is sent through Resend without a verified domain, so it only reaches the address of the developer's Resend account. To any other address nothing is sent, and the order is not affected.
+Why: Stripe does not send receipts in test mode. A domain of its own costs money and DNS setup, and the demo only needs to show that the email works.
+
+**How does the success page know which order is the customer's?**
+Decision: Stripe puts the Checkout session's id in the success page's address, and the page asks the API for the order behind it (`GET /api/checkout/{sessionId}`). The answer only has what the customer bought and entered in Checkout. Until the webhook has marked the order as paid, the page asks again every 2 seconds, at most 15 times. It shows how the order was paid (Stripe), but not the card, which the API does not store.
+Why: The session id is long and random, so only the customer Stripe sent there knows it, unlike the short order number the customer is shown. This is how Stripe recommends showing an order after Checkout. The page only reads; the webhook still decides that the order is paid (constraints.md).
 
 ## Cart
 

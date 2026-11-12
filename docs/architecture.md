@@ -13,6 +13,7 @@ flowchart LR
     API -->|create Checkout session| Stripe["Stripe"]
     Browser -->|redirect to pay| Stripe
     Stripe -->|webhook| API
+    API -->|confirmation email| Resend["Resend"]
 ```
 
 | Part | Technology | Hosting |
@@ -22,6 +23,7 @@ flowchart LR
 | Database | PostgreSQL | Supabase |
 | Images | Supabase Storage | Supabase |
 | Payments | Stripe Checkout (test mode) + webhook | Stripe |
+| Email | Resend's REST API | Resend |
 
 The API runs on Render as a Docker container, since Render has no built-in .NET support. It connects to the database through Supabase's session pooler, because Render can only reach IPv4 addresses.
 
@@ -68,7 +70,7 @@ server/
   Grej.Api/              Controllers per module, Program.cs
   Grej.Application/      Catalog/, Orders/, Payments/, Identity/, Common/ (e.g. PagedResult)
   Grej.Domain/           Catalog/, Orders/, Payments/
-  Grej.Infrastructure/   Persistence/ (DbContext, migrations, repositories), Identity/ (admin seed, login), Stripe/, Images/, DemoData/ (demo content, reset-demo)
+  Grej.Infrastructure/   Persistence/ (DbContext, migrations, repositories), Identity/ (admin seed, login), Stripe/, Images/, Email/ (Resend), DemoData/ (demo content, reset-demo)
   Grej.UnitTests/        Domain and application rules
   Grej.IntegrationTests/ API, checkout and webhook against a test database
 client/
@@ -91,6 +93,7 @@ client/
 | **Prices and shipping calculated in the API** from the database; title and price stored on each order row, shipping on the order | Prices in the browser can be manipulated; old orders must not change |
 | **Money as `decimal` + currency** (SEK in this version) | Floating point gives rounding errors; storing the currency keeps more currencies possible |
 | **ASP.NET Core Identity + JWT**, role Admin | Frontend and API are on different domains, which makes tokens simpler than cookies |
+| **Confirmation email through Resend's REST API**, sent after the webhook has saved | Render's free tier blocks SMTP; sending after the save means an email only goes out for a saved payment, and at most once |
 | **Rate limiting per IP address** on login and checkout, built into ASP.NET Core | The lockout only protects one account at a time, and each checkout saves an order and creates a Stripe session |
 | **Supabase for database and images** | One service I already know for both; images cannot be stored on Render, whose file system is cleared on every deploy |
 | **Cart in localStorage** | Customers buy as guests, so there is no account to store the cart on |
@@ -117,9 +120,11 @@ sequenceDiagram
     F->>S: Redirect
     C->>S: Pays
     S-->>F: Redirect to success page ("being confirmed")
+    F->>A: GET /api/checkout/{sessionId}, again every 2 s until Paid
     S->>A: Webhook checkout.session.completed
     A->>A: Verify signature, skip if already handled
     A->>A: Payment → Paid, stock decreased, order flagged if the stock went below 0
+    A->>A: Save, then send the confirmation email through Resend
 ```
 
 The order is saved only after Stripe has created the session, together with its rows and payment in one transaction. If Stripe does not answer, nothing is saved, so there is never an order whose payment can never be paid. If the database fails after Stripe has answered, the customer never gets the URL and the unused session expires in Stripe, so the webhook must ignore sessions it does not know.
@@ -148,6 +153,16 @@ The shipping cost comes from the products' packed parcels (Should, ambiguity.md)
 - The demo orders get their shipping from the same rule in `DemoSeeder`.
 
 Known limitations: the summed volumes are a lower bound for the real box. One item over 20 kg in volume weight, such as a large painting, is priced as several parcels although it cannot be split, and the carriers' largest sizes are not checked. There is one method and no carrier API. A cart saved before shipping was built shows "Frakten läggs till i kassan." until its products are added again. The migration `AddShipping` gave existing products 1 000 g and 30 × 20 × 10 cm, since the columns cannot be empty and the deployed API did not send them yet; `reset-demo` replaced these with the demo data's own values.
+
+### Success page and confirmation email
+
+- `StripePaymentProvider` sets the success URL to `/kassa/tack?order=…&session={CHECKOUT_SESSION_ID}`, and Stripe fills in the session's id.
+- `GET /api/checkout/{sessionId}` (`CheckoutService.GetOrderAsync`, `IOrderRepository.GetByPaymentReferenceAsync`) answers with `OrderConfirmationDto`: the order number and date, the payment's status and provider, the customer's name, email and address, the shipping, the total and the rows. A session it does not know gives 404. It only reads (ambiguity.md).
+- `SuccessPage` gets the order through `CheckoutService.getOrder`, an `httpResource`. While the payment is `Pending`, it reloads it every 2 seconds, at most 15 times. A failed reload keeps the last answer.
+- After `PaymentWebhookService` has saved a payment that just became `Paid`, it calls `OrderService.SendConfirmationAsync`. `OrderConfirmationEmail` builds the subject and the HTML (inline styles, since mail programs drop `<style>`): the rows, the shipping, the total, the delivery address and the demo note. All text from the CMS and Checkout is HTML-encoded. An order without an email gets none.
+- `ResendEmailSender` (`Infrastructure/Email`) implements `IEmailSender`. It posts to Resend's REST API with `Resend:ApiKey` (User Secrets locally, `Resend__ApiKey` on Render) and `Email:From` from `appsettings.json`. It never throws: an error or a refusal is logged as a warning, since the payment is already saved.
+
+Known limitations: without a verified domain, Resend only delivers to the account's own address (ambiguity.md). A failed email is not sent again, and if the API stops between the save and the send, no email goes out. The email has no plain-text version.
 
 ## Rate limiting
 

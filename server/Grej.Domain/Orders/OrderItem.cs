@@ -1,7 +1,6 @@
 namespace Grej.Domain.Orders;
 
-// One row on an order. Title and price are copied from the product at the time
-// of purchase, so later changes to the product never change old orders.
+// Title and price are copied at purchase, so later product changes never change old orders.
 public class OrderItem
 {
     public int Id { get; private set; }
@@ -11,7 +10,9 @@ public class OrderItem
     public decimal UnitPrice { get; private set; }
     public int Quantity { get; private set; }
 
-    // Only Order creates order rows (Order.AddItem), so the total always matches.
+    public decimal LineTotal => UnitPrice * Quantity;
+
+    // Only Order.AddItem creates rows, so the total always matches.
     internal OrderItem(int productId, string titleAtPurchase, decimal unitPrice, int quantity)
     {
         ProductId = productId;
@@ -20,6 +21,6 @@ public class OrderItem
         Quantity = quantity;
     }
 
-    // Used by EF Core when it reads a row from the database.
+    // For EF Core.
     private OrderItem() { }
 }

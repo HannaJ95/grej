@@ -17,16 +17,18 @@ import { IconButton } from '../../../shared/icon-button/icon-button';
 import { Icon } from '../../../shared/icons/icon';
 import { QuantityStepper } from '../../../shared/quantity-stepper/quantity-stepper';
 
-// The cart button and its panel, a native <dialog>, so the browser handles Escape, the focus
-// and the backdrop.
+// A native <dialog>, so the browser handles Escape, the focus and the backdrop.
 @Component({
   imports: [CurrencyPipe, RouterLink, Button, Icon, IconButton, QuantityStepper],
   selector: 'app-cart-drawer',
-  styleUrls: ['./cart-drawer.scss', '../../../shared/drawer.scss'],
+  styleUrls: [
+    './cart-drawer.scss',
+    '../../../shared/drawer.scss',
+    '../../../shared/order-sums.scss',
+  ],
   templateUrl: './cart-drawer.html',
   host: {
-    // When the customer goes back from Stripe, the browser can show this page
-    // exactly as it was left, with the button still waiting. This resets it.
+    // Going back from Stripe can show the page as it was left, with the button still waiting.
     '(window:pageshow)': 'isBuying.set(false)',
   },
 })
@@ -37,7 +39,7 @@ export class CartDrawer {
 
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
 
-  // True while the API creates the order, so the button cannot be clicked twice.
+  // While the API creates the order, so the button cannot be clicked twice.
   protected readonly isBuying = signal(false);
   protected readonly buyError = signal<string | null>(null);
   // True when the API has changed the cart because some products ran out.

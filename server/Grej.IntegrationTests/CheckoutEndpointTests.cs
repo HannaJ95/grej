@@ -14,12 +14,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Grej.IntegrationTests;
 
-// Tests POST /api/checkout through the real API, but with fakes instead of the
-// database and Stripe, so the tests need neither a database nor a Stripe key.
+// The real API with fakes instead of the database and Stripe, so no Stripe key is needed.
 public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
     : IClassFixture<WebApplicationFactory<Program>>
 {
-    // New per test, since xUnit creates the class for each test.
+    // New per test, since xUnit creates the class per test.
     private readonly FakeOrderRepository orders = new();
 
     [Fact]
@@ -80,8 +79,7 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
             new Product { Id = 1, Title = "Skål", Price = 450m, Stock = 1, IsActive = true },
             new Product { Id = 2, Title = "Tavla", Price = 1200.50m, Stock = 3, IsActive = true });
 
-        // A manipulated browser that sends its own prices. CheckoutRequest has no
-        // price field, so the JSON reader skips them.
+        // A manipulated browser that sends prices. CheckoutRequest has no price, so they are skipped.
         var response = await client.PostAsJsonAsync("/api/checkout", new
         {
             items = new[]
@@ -175,6 +173,43 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal(HttpStatusCode.TooManyRequests, response.StatusCode);
     }
 
+    [Fact]
+    public async Task GetOrder_SessionOfSavedOrder_ReturnsRowsAndPendingPayment()
+    {
+        var client = CreateClient(new Product
+        {
+            Id = 1, Title = "Skål", Price = 450m, Stock = 2, IsActive = true,
+            WeightGrams = 800, LengthCm = 25, WidthCm = 25, HeightCm = 15,
+        });
+        await client.PostAsJsonAsync("/api/checkout", Request(productId: 1, quantity: 2));
+
+        var response = await client.GetAsync($"/api/checkout/{FakePaymentProvider.Reference}");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var order = await response.Content.ReadFromJsonAsync<OrderConfirmationDto>();
+        Assert.NotNull(order);
+        var saved = orders.Saved.Single();
+        Assert.Equal(saved.OrderNumber, order.OrderNumber);
+        Assert.Equal(saved.CreatedAt, order.CreatedAt);
+        Assert.Equal("Fake", order.PaymentProvider);
+        // The webhook has not arrived, so Checkout's details are not there yet.
+        Assert.Equal("Pending", order.PaymentStatus);
+        Assert.Null(order.CustomerEmail);
+        Assert.Equal([new OrderItemDto("Skål", 450m, 2, 900m)], order.Items);
+        Assert.Equal(129m, order.ShippingCost);
+        Assert.Equal(1029m, order.Total);
+    }
+
+    [Fact]
+    public async Task GetOrder_UnknownSession_ReturnsNotFound()
+    {
+        var client = CreateClient();
+
+        var response = await client.GetAsync("/api/checkout/cs_test_unknown");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
     private static CheckoutRequest Request(int productId, int quantity) =>
         new([new CheckoutItemRequest(productId, quantity)]);
 
@@ -190,10 +225,8 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
     private static async Task<List<UnavailableItem>?> UnavailableItemsAsync(HttpResponseMessage response) =>
         (await response.Content.ReadFromJsonAsync<ConflictResponse>())?.UnavailableItems;
 
-    // The JSON that POST /api/checkout returns.
     private record CheckoutResponse(string Url);
 
-    // The JSON that POST /api/checkout returns with 409 Conflict.
     private record ConflictResponse(List<UnavailableItem> UnavailableItems);
 
     private class FakeProductRepository(Product[] products) : IProductRepository
@@ -231,7 +264,6 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         public Task SaveChangesAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
     }
 
-    // Remembers saved orders instead of writing them to the database.
     private class FakeOrderRepository : IOrderRepository
     {
         public List<Order> Saved { get; } = [];
@@ -242,7 +274,10 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
             return Task.CompletedTask;
         }
 
-        // Checkout never reads orders back.
+        public Task<Order?> GetByPaymentReferenceAsync(string reference, CancellationToken cancellationToken) =>
+            Task.FromResult(Saved.FirstOrDefault(order => order.Payment?.ProviderReference == reference));
+
+        // Checkout never reads orders by id.
         public Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
