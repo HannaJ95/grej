@@ -18,7 +18,6 @@ export class AdminLayout {
   // Read once from the token when the layout is created, i.e. after the login. Logging out
   // leaves the layout, so it is never out of date.
   protected readonly email = inject(AuthService).email() ?? undefined;
-  protected readonly initial = this.email?.charAt(0).toUpperCase() ?? '';
 
   private readonly drawer = viewChild.required<ElementRef<HTMLDialogElement>>('drawer');
 
