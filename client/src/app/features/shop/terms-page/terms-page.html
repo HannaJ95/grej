@@ -19,7 +19,7 @@
     @for (section of sections; track section.id; let number = $index) {
       <section class="section">
         <!-- tabindex="-1" lets the router move the focus here, so Tab goes on from the section. -->
-        <h2 class="text-display-xs" [id]="section.id" tabindex="-1">
+        <h2 #heading class="text-display-xs" [id]="section.id" tabindex="-1">
           {{ number + 1 }}. {{ section.title }}
         </h2>
         @for (block of section.content; track $index) {
