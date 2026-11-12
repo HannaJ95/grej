@@ -1,5 +1,5 @@
 import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { CartService } from '../../../core/cart.service';
@@ -76,5 +76,25 @@ describe('CartDrawer', () => {
 
     expect(element.querySelector('.total')!.textContent).toContain('Summa');
     expect(element.querySelector('.line')!.textContent).toBe('Frakten läggs till i kassan.');
+  });
+
+  it('asks the customer to wait when the API answers 429', async () => {
+    TestBed.inject(CartService).add(vase);
+    const fixture = TestBed.createComponent(CartDrawer);
+    await fixture.whenStable();
+
+    const checkout = fixture.componentInstance.goToCheckout();
+    TestBed.inject(HttpTestingController)
+      .expectOne((req) => req.url.endsWith('/api/checkout'))
+      .flush(null, { status: 429, statusText: 'Too Many Requests' });
+    await checkout;
+    await fixture.whenStable();
+
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.querySelector('[role="alert"]')!.textContent).toContain(
+      'För många försök på kort tid. Vänta en minut och försök igen.',
+    );
+    // "Till kassan" can be clicked again once the minute has passed.
+    expect(element.querySelector<HTMLButtonElement>('button.full-width')!.disabled).toBe(false);
   });
 });

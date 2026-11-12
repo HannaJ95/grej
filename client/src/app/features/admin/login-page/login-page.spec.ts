@@ -43,6 +43,21 @@ describe('LoginPage', () => {
     expect(TestBed.inject(Router).url).toBe('/admin/logga-in');
   });
 
+  it('asks the admin to wait when the API answers 429', async () => {
+    type('#email', 'admin@example.com');
+    type('#password', 'Fel-lösenord-1');
+    await send();
+
+    httpTesting
+      .expectOne((req) => req.url.endsWith('/api/auth/login'))
+      .flush(null, { status: 429, statusText: 'Too Many Requests' });
+    await settle();
+
+    expect(page().querySelector('[role="alert"]')?.textContent).toContain(
+      'För många försök på kort tid. Vänta en minut och försök igen.',
+    );
+  });
+
   it('goes to /admin after logging in', async () => {
     type('#email', 'admin@example.com');
     type('#password', 'Rätt-lösenord-1');

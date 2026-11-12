@@ -137,8 +137,8 @@
             <app-icon name="arrow-right" />
           }
         </button>
-        @if (buyFailed()) {
-          <p role="alert">Det gick inte att gå till betalningen. Försök igen.</p>
+        @if (buyError(); as message) {
+          <p role="alert">{{ message }}</p>
         }
         <button
           appButton
