@@ -46,7 +46,7 @@ public record OrderDetailsDto(
     decimal? ShippingCost,
     IReadOnlyList<OrderItemDto> Items);
 
-// For the success page: only what the customer bought and entered in Checkout.
+// For the success page, so only what the customer bought and entered.
 public record OrderConfirmationDto(
     string OrderNumber,
     string PaymentStatus,

@@ -5,11 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Grej.IntegrationTests;
 
-// Tests the queries in OrderRepository with EF Core's in-memory database,
-// like ProductRepositoryTests.
+// With EF Core's in-memory database, like ProductRepositoryTests.
 public class OrderRepositoryTests
 {
-    // A new database per test. Several DbContexts can open the same one by its name.
+    // A new database per test. Several DbContexts open it by its name.
     private readonly DbContextOptions<GrejDbContext> options = new DbContextOptionsBuilder<GrejDbContext>()
         .UseInMemoryDatabase(Guid.NewGuid().ToString())
         .Options;
@@ -24,8 +23,7 @@ public class OrderRepositoryTests
             await new OrderRepository(db).AddAsync(order, CancellationToken.None);
         }
 
-        // A new DbContext, like a new request: it has not seen the order above,
-        // so the rows are only there if the query fetches them.
+        // A new DbContext, like a new request, so the rows are only there if the query fetches them.
         await using var newDb = new GrejDbContext(options);
         var found = await new OrderRepository(newDb).GetByIdAsync(order.Id, CancellationToken.None);
 

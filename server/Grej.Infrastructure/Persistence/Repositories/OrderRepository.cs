@@ -32,17 +32,14 @@ public class OrderRepository(GrejDbContext db) : IOrderRepository
     {
         IQueryable<Order> query = db.Orders;
 
-        // Paid and not shipped (to ship or to refund), or pending and refunded (to cancel).
-        // Order's NeedsRefund and NeedsCancelling cannot become SQL, so the rules are written out.
-        // The ! only quiets the compiler: every order has a payment.
+        // Order's rules written out, since its properties cannot become SQL. Every order has a payment.
         if (!all)
         {
             query = query.Where(o => (o.Status != OrderStatus.Shipped && o.Payment!.Status == PaymentStatus.Paid)
                 || (o.Status == OrderStatus.Pending && o.Payment!.Status == PaymentStatus.Refunded));
         }
 
-        // One Where per word, so every word must match, like ProductRepository. The null checks
-        // are for the in-memory database the tests use.
+        // One Where per word, so every word must match. The null checks are for the in-memory test database.
         foreach (var word in searchWords.Select(w => w.ToLowerInvariant()))
         {
             query = query.Where(o => o.OrderNumber.ToLower().Contains(word)
@@ -51,9 +48,7 @@ public class OrderRepository(GrejDbContext db) : IOrderRepository
                 || o.Items.Any(i => i.TitleAtPurchase.ToLower().Contains(word)));
         }
 
-        // What waits comes oldest first, so the order that has waited longest is at the top
-        // (ambiguity.md). The id decides between orders created at the same time, so the order
-        // never changes between pages.
+        // What waits comes oldest first (ambiguity.md). The id keeps the order the same between pages.
         query = all
             ? query.OrderByDescending(o => o.CreatedAt).ThenByDescending(o => o.Id)
             : query.OrderBy(o => o.CreatedAt).ThenBy(o => o.Id);

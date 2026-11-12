@@ -5,25 +5,23 @@ namespace Grej.Application.Orders;
 
 public interface IOrderRepository
 {
-    // Saves a new order together with its rows and payment, in one transaction.
+    // The order, its rows and its payment in one transaction.
     Task AddAsync(Order order, CancellationToken cancellationToken);
 
-    // Null if no order has this id. The order's rows and payment are included.
+    // With the rows and the payment.
     Task<Order?> GetByIdAsync(int id, CancellationToken cancellationToken);
 
-    // Like GetByIdAsync, by its payment's ProviderReference (Stripe's Checkout session id).
+    // By the payment's ProviderReference (the Checkout session id), with the rows and the payment.
     Task<Order?> GetByPaymentReferenceAsync(string reference, CancellationToken cancellationToken);
 
-    // One page of orders with their payments, for the CMS. all = false gives only what the admin
-    // has to do, oldest first; all = true every order, newest first. Every search word must be
-    // in the order number, the customer's name or email, or a row's title, in any case.
+    // For the CMS. all = false: what the admin has to do, oldest first; all = true: every order,
+    // newest first. Every search word must be in the number, the customer's name or email, or a row's title.
     Task<PagedResult<Order>> GetPageAsync(
         bool all, IReadOnlyCollection<string> searchWords, int page, int pageSize, CancellationToken cancellationToken);
 
-    // True if any order, whatever its status, has a row with this product.
+    // Whatever the order's status.
     Task<bool> ContainsProductAsync(int productId, CancellationToken cancellationToken);
 
-    // Saves the changes made to orders fetched above, together with all other changes
-    // in the same request (e.g. the stock), in one transaction. Like IPaymentRepository.
+    // Together with the request's other changes (e.g. the stock), in one transaction.
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }

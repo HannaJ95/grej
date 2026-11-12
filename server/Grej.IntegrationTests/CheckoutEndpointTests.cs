@@ -14,12 +14,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Grej.IntegrationTests;
 
-// Tests POST /api/checkout through the real API, but with fakes instead of the
-// database and Stripe, so the tests need neither a database nor a Stripe key.
+// The real API with fakes instead of the database and Stripe, so no Stripe key is needed.
 public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
     : IClassFixture<WebApplicationFactory<Program>>
 {
-    // New per test, since xUnit creates the class for each test.
+    // New per test, since xUnit creates the class per test.
     private readonly FakeOrderRepository orders = new();
 
     [Fact]
@@ -80,8 +79,7 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
             new Product { Id = 1, Title = "Skål", Price = 450m, Stock = 1, IsActive = true },
             new Product { Id = 2, Title = "Tavla", Price = 1200.50m, Stock = 3, IsActive = true });
 
-        // A manipulated browser that sends its own prices. CheckoutRequest has no
-        // price field, so the JSON reader skips them.
+        // A manipulated browser that sends prices. CheckoutRequest has no price, so they are skipped.
         var response = await client.PostAsJsonAsync("/api/checkout", new
         {
             items = new[]
@@ -224,10 +222,8 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
     private static async Task<List<UnavailableItem>?> UnavailableItemsAsync(HttpResponseMessage response) =>
         (await response.Content.ReadFromJsonAsync<ConflictResponse>())?.UnavailableItems;
 
-    // The JSON that POST /api/checkout returns.
     private record CheckoutResponse(string Url);
 
-    // The JSON that POST /api/checkout returns with 409 Conflict.
     private record ConflictResponse(List<UnavailableItem> UnavailableItems);
 
     private class FakeProductRepository(Product[] products) : IProductRepository
@@ -265,7 +261,6 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
         public Task SaveChangesAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
     }
 
-    // Remembers saved orders instead of writing them to the database.
     private class FakeOrderRepository : IOrderRepository
     {
         public List<Order> Saved { get; } = [];

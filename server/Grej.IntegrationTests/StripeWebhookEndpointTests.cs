@@ -15,8 +15,7 @@ using Product = Grej.Domain.Catalog.Product;
 
 namespace Grej.IntegrationTests;
 
-// The real API and signature check, with fakes instead of the database. The tests sign with a
-// test secret, the way Stripe signs with the real one.
+// The real API and signature check with a fake database. The tests sign with a test secret.
 public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
     : IClassFixture<WebApplicationFactory<Program>>
 {

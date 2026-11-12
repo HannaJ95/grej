@@ -18,7 +18,7 @@ public class StripePaymentProvider(StripeClient stripe, IConfiguration configura
         var frontendUrl = configuration["Frontend:Url"]
             ?? throw new InvalidOperationException("Frontend:Url is not configured.");
 
-        // Always set by CheckoutService, and already included in the payment's amount.
+        // Always set by CheckoutService.
         var shippingCost = order.ShippingCost
             ?? throw new InvalidOperationException("The order has no shipping.");
 
@@ -38,14 +38,12 @@ public class StripePaymentProvider(StripeClient stripe, IConfiguration configura
                     },
                 },
             }).ToList(),
-            // Swedish addresses only (constraints.md). Checkout always asks for the email,
-            // and the name is part of the address.
+            // Swedish only (constraints.md). Checkout always collects the email and the name.
             ShippingAddressCollection = new SessionShippingAddressCollectionOptions
             {
                 AllowedCountries = ["SE"],
             },
-            // Our own cost instead of a rate saved in the dashboard, so the API decides the
-            // shipping like the prices.
+            // Our own cost, not a dashboard rate, so the API decides the shipping like the prices.
             ShippingOptions =
             [
                 new SessionShippingOptionOptions
@@ -62,8 +60,7 @@ public class StripePaymentProvider(StripeClient stripe, IConfiguration configura
                     },
                 },
             ],
-            // Stripe puts the session's id in place of {CHECKOUT_SESSION_ID}, so the success page can
-            // fetch the order. The doubled braces keep them in the text.
+            // Stripe fills in {CHECKOUT_SESSION_ID}, which the success page fetches the order with.
             SuccessUrl = $"{frontendUrl}/kassa/tack?order={order.OrderNumber}&session={{CHECKOUT_SESSION_ID}}",
             CancelUrl = $"{frontendUrl}/",
             Metadata = new Dictionary<string, string> { ["orderNumber"] = order.OrderNumber },
@@ -79,6 +76,6 @@ public class StripePaymentProvider(StripeClient stripe, IConfiguration configura
         return new CheckoutSession(session.Id, session.Url);
     }
 
-    // Stripe wants öre. Prices have at most two decimals (numeric(10,2)), so nothing is lost.
+    // Öre. Prices have at most two decimals, so nothing is lost.
     private static long ToMinorUnits(decimal amount) => (long)(amount * 100);
 }

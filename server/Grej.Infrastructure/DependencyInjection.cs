@@ -1,7 +1,9 @@
 using Grej.Application.Catalog;
+using Grej.Application.Common;
 using Grej.Application.Identity;
 using Grej.Application.Orders;
 using Grej.Application.Payments;
+using Grej.Infrastructure.Email;
 using Grej.Infrastructure.Identity;
 using Grej.Infrastructure.Images;
 using Grej.Infrastructure.Persistence;
@@ -21,8 +23,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<GrejDbContext>(options => options.UseNpgsql(
             configuration.GetConnectionString("Grej"),
-            // One query with joins for a product's lists, faster than one trip to Supabase per list.
-            // Set explicitly, or EF Core logs a warning for every such query.
+            // One query with joins, faster than one trip to Supabase per list. Explicit, or EF Core warns.
             npgsql => npgsql.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
         // Core only, without the cookie login, since the API uses JWT.
@@ -45,6 +46,7 @@ public static class DependencyInjection
         services.AddSingleton<IPaymentDashboard, StripeDashboard>();
 
         services.AddHttpClient<IImageStorage, SupabaseImageStorage>();
+        services.AddHttpClient<IEmailSender, ResendEmailSender>();
 
         return services;
     }
