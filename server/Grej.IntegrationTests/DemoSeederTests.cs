@@ -126,6 +126,20 @@ public class DemoSeederTests
     }
 
     [Fact]
+    public async Task SeedAsync_AddsTheProductsADayApart_BeforeTheOldestOrder()
+    {
+        await SeedAsync();
+
+        await using var db = new GrejDbContext(options);
+        var dates = await db.Products.OrderBy(p => p.Id).Select(p => p.CreatedAt).ToListAsync();
+
+        Assert.All(dates.Zip(dates.Skip(1)), pair =>
+            Assert.Equal(TimeSpan.FromDays(1), pair.Second - pair.First));
+        var oldestOrder = DateTime.UtcNow.AddDays(-catalog.Orders.Max(o => o.DaysAgo));
+        Assert.Equal(oldestOrder.AddDays(-1), dates[^1], TimeSpan.FromMinutes(1));
+    }
+
+    [Fact]
     public async Task SeedAsync_SavesTheDemoOrders_PaidAndHandled()
     {
         await SeedAsync();

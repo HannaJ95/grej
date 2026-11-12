@@ -1,8 +1,6 @@
 <app-admin-page-header eyebrow="Butik" title="Beställningar" />
 
-<p class="intro text-body-m">
-  Att göra visar det som väntar på dig, äldst först. Sök på ordernummer, kund eller produkt.
-</p>
+<p class="intro text-body-m">Att göra visar det som väntar på dig, äldst först.</p>
 
 <div class="toolbar">
   <!-- The tabs keep the search, and start on page 1. -->
@@ -33,6 +31,7 @@
     <app-search-field
       class="search-field"
       label="Sök bland beställningarna"
+      hint="Sök på ordernummer, namn, e-post eller produkt."
       [value]="search()"
       (searched)="showSearch($event)"
     />

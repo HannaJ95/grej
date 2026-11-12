@@ -204,7 +204,8 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
             throw new NotImplementedException();
 
         // Only the CMS uses these.
-        public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
+        public Task<PagedResult<Product>> GetPageAsync(
+            int page, int pageSize, ProductFilter filter, ProductSort sort, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
         public Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken cancellationToken) =>
             throw new NotImplementedException();

@@ -2,12 +2,10 @@
   {{ editing() ? 'Redigera' : 'Ny' }} {{ texts().noun }}
 </h2>
 
-<!-- formRoot turns off the browser's own validation and runs save() in admin-category-card.ts. -->
 <form class="fields" aria-labelledby="category-card-title" [formRoot]="categoryForm">
   @if (kind() === 'sub') {
     <p class="field">
       <label class="text-label-xs" for="category-parent">Huvudkategori</label>
-      <!-- The browser's own arrow is hidden (appearance: none) and the chevron icon is shown. -->
       <span class="select">
         <select
           id="category-parent"
@@ -20,7 +18,7 @@
           <option value="">
             {{ editing() ? 'Ingen – gör den till en huvudkategori' : 'Välj huvudkategori' }}
           </option>
-          <!-- The options can arrive after the form. Signal Forms then selects the right one. -->
+          <!-- The options can arrive after the form, and Signal Forms still selects the right one. -->
           @for (c of mainCategories(); track c.id) {
             <option [value]="c.id">{{ c.name }}</option>
           }
@@ -35,7 +33,6 @@
 
   <p class="field">
     <label class="text-label-xs" for="category-name">Namn</label>
-    <!-- #nameInput lets focusName() find the field. -->
     <input
       #nameInput
       id="category-name"

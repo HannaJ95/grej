@@ -33,7 +33,7 @@ describe('AdminMainCategories', () => {
     name: 'Textil',
     parentId: null,
     parentName: null,
-    productCount: 1,
+    productCount: 0,
     subcategoryCount: 0,
   };
 
@@ -54,7 +54,7 @@ describe('AdminMainCategories', () => {
 
   afterEach(() => {
     httpTesting.verify();
-    // Removes the spy on ConfirmService.ask after the test that answers the dialog.
+    // Removes the spy on ConfirmService.ask.
     vi.restoreAllMocks();
   });
 
@@ -64,11 +64,21 @@ describe('AdminMainCategories', () => {
     expect(texts('main .row .name')).toEqual(['Keramik', 'Textil']);
     expect(texts('main .row .meta')).toEqual([
       '1 underkategori · 42 produkter',
-      '0 underkategorier · 1 produkt',
+      '0 underkategorier · 0 produkter',
     ]);
     expect(page().querySelector('.sidebar a[href="/admin/kategorier"]')?.textContent).toContain(
       'Huvudkategorier 2',
     );
+  });
+
+  it('links a product count to the product list with the category chosen, but not 0', async () => {
+    await open('/admin/kategorier');
+
+    expect(hrefs('main .row .meta a')).toEqual([
+      '/admin/underkategorier/3',
+      '/admin/produkter?kategori=3',
+      '/admin/underkategorier/4',
+    ]);
   });
 
   it('creates a main category and fetches the list again', async () => {
@@ -83,6 +93,17 @@ describe('AdminMainCategories', () => {
     await answerList();
     expect(texts('app-toast .text')).toEqual(['Glas har lagts till.']);
     expect(nameInput().value).toBe('');
+  });
+
+  it('shows "Fyll i ett namn." only when the admin tries to save', async () => {
+    await open('/admin/kategorier');
+
+    await leave('#category-name');
+    expect(page().textContent).not.toContain('Fyll i ett namn.');
+
+    await click('Lägg till huvudkategori');
+    expect(texts('main .error')).toEqual(['Fyll i ett namn.']);
+    expect(nameInput().getAttribute('aria-invalid')).toBe('true');
   });
 
   it('opens a category in the card with Redigera, and saves the change', async () => {
@@ -158,11 +179,21 @@ describe('AdminMainCategories', () => {
     );
   }
 
+  function hrefs(selector: string): (string | null)[] {
+    return [...page().querySelectorAll(selector)].map((e) => e.getAttribute('href'));
+  }
+
   // Types into an input the way a user does, so Signal Forms sees the change.
   function type(selector: string, value: string): void {
     const input = page().querySelector<HTMLInputElement>(selector)!;
     input.value = value;
     input.dispatchEvent(new Event('input'));
+  }
+
+  // Leaves a field, which marks it as touched.
+  async function leave(selector: string): Promise<void> {
+    page().querySelector(selector)!.dispatchEvent(new Event('blur'));
+    await harness.fixture.whenStable();
   }
 
   // Clicks the first button in the page (not the menu) with this text, and waits.
@@ -174,7 +205,7 @@ describe('AdminMainCategories', () => {
     await settle();
   }
 
-  // Lets a click finish (the request or the navigation), and waits until the page has updated.
+  // Lets a click finish its request or navigation, then waits for the page to update.
   async function settle(): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve));
     await harness.fixture.whenStable();

@@ -1,3 +1,7 @@
+.filters {
+  margin-bottom: var(--space-24);
+}
+
 .product {
   display: flex;
   align-items: center;
@@ -26,6 +30,11 @@
 }
 
 .price {
+  white-space: nowrap;
+}
+
+// Chrome would otherwise break it after a hyphen.
+.date {
   white-space: nowrap;
 }
 

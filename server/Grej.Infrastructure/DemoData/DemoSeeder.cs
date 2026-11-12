@@ -115,6 +115,16 @@ public static class DemoSeeder
             products.Add((product, demoCategory.ImagesOf(demoProduct)));
         }
         db.Products.AddRange(products.Select(entry => entry.Product));
+        // A day apart, oldest first like the ids, so the CMS's "Tillagd" differs. The newest is a
+        // day older than the oldest demo order, so every order's products existed when it was made.
+        // CreatedAt has a private setter, as for the orders below.
+        var now = DateTime.UtcNow;
+        var newestDaysAgo = catalog.Orders.Select(o => o.DaysAgo).DefaultIfEmpty(0).Max() + 1;
+        for (var i = 0; i < products.Count; i++)
+        {
+            var daysAgo = newestDaysAgo + products.Count - 1 - i;
+            db.Entry(products[i].Product).Property(p => p.CreatedAt).CurrentValue = now.AddDays(-daysAgo);
+        }
         await db.SaveChangesAsync();
 
         // A copy per product, at the same kind of path as an upload in the CMS, since deleting a
@@ -134,7 +144,6 @@ public static class DemoSeeder
         // Last, since the orders' rows point to the products' ids. Every title is unique
         // (DemoCatalogTests), so the products can be found by it.
         var productsByTitle = products.ToDictionary(entry => entry.Product.Title, entry => entry.Product);
-        var now = DateTime.UtcNow;
         foreach (var demoOrder in catalog.Orders)
         {
             var order = CreateOrder(demoOrder, productsByTitle);

@@ -24,6 +24,7 @@ describe('AdminProductImage', () => {
     images: [],
     parcel: { weightGrams: 900, lengthCm: 25, widthCm: 25, heightCm: 15 },
     size: { lengthCm: null, widthCm: null, heightCm: null, diameterCm: null, weightGrams: null },
+    createdAt: '2026-10-02T09:00:00Z',
   };
 
   beforeEach(async () => {

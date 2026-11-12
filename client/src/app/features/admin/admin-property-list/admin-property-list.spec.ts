@@ -1,22 +1,22 @@
 import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+  TestRequest,
+} from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../../app.routes';
 import { ConfirmService } from '../../../core/confirm.service';
-import {
-  ProductProperty,
-  ProductPropertyDetails,
-  PropertyKind,
-} from '../../../core/product-property';
+import { ProductPropertyDetails, PropertyKind } from '../../../core/product-property';
 
 describe('AdminPropertyList', () => {
   let httpTesting: HttpTestingController;
   let harness: RouterTestingHarness;
 
-  const lera: ProductProperty = { id: 3, name: 'Lera' };
-  const tra: ProductProperty = { id: 5, name: 'Trä' };
+  const lera: ProductPropertyDetails = { id: 3, name: 'Lera', productCount: 2 };
+  const tra: ProductPropertyDetails = { id: 5, name: 'Trä', productCount: 0 };
 
   beforeEach(async () => {
     // A logged-in admin, so adminGuard lets the test in.
@@ -40,8 +40,8 @@ describe('AdminPropertyList', () => {
 
   it('shows the colors with the words for colors', async () => {
     await open('/admin/farger', 'colors', [
-      { id: 2, name: 'Blå' },
-      { id: 4, name: 'Vit' },
+      { id: 2, name: 'Blå', productCount: 0 },
+      { id: 4, name: 'Vit', productCount: 0 },
     ]);
 
     expect(page().querySelector('h1')?.textContent).toBe('Färger');
@@ -52,6 +52,9 @@ describe('AdminPropertyList', () => {
     expect(texts('main .row .name')).toEqual(['Blå', 'Vit']);
     expect(button('Redigera Blå')).toBeDefined();
     expect(button('Ta bort Vit')).toBeDefined();
+    expect(page().querySelector('input[type="search"]')?.getAttribute('aria-label')).toBe(
+      'Sök bland färgerna',
+    );
   });
 
   it('says when there are no materials yet', async () => {
@@ -59,6 +62,42 @@ describe('AdminPropertyList', () => {
 
     expect(page().querySelector('h1')?.textContent).toBe('Material');
     expect(texts('main .state')).toEqual(['Det finns inga material än.']);
+  });
+
+  it('links a product count to the product list with that material, but not 0', async () => {
+    await open('/admin/material', 'materials', [lera, tra]);
+
+    expect(texts('main .row .meta')).toEqual(['2 produkter', '0 produkter']);
+    expect(hrefs('main .row .meta a')).toEqual(['/admin/produkter?material=3']);
+  });
+
+  it('links to the product list with that color, as ?farg=', async () => {
+    await open('/admin/farger', 'colors', [{ id: 4, name: 'Vit', productCount: 1 }]);
+
+    expect(texts('main .row .meta')).toEqual(['1 produkt']);
+    expect(hrefs('main .row .meta a')).toEqual(['/admin/produkter?farg=4']);
+  });
+
+  it('sends the search, shows the hits, and clears the search', async () => {
+    const request = await open('/admin/material?sok=lera&sida=2', 'materials', [lera], 2);
+
+    expect(request.request.params.toString()).toBe('page=2&search=lera');
+    expect(texts('main .search-info p')).toEqual(['1 träff']);
+
+    // No settle(): whenStable() would wait for the new list request.
+    button('Rensa sökningen')!.click();
+    await answerList('materials', [lera, tra]);
+
+    expect(url()).toBe('/admin/material');
+    expect(page().querySelector('.search-info')).toBeNull();
+    expect(document.activeElement).toBe(page().querySelector('input[type="search"]'));
+  });
+
+  it('says when nothing matches the search', async () => {
+    await open('/admin/material?sok=glas', 'materials', []);
+
+    expect(texts('main .state')).toEqual(['Inga material matchar ”glas”.']);
+    expect(texts('main .search-info p')).toEqual(['0 träffar']);
   });
 
   it('creates a material and fetches the list again', async () => {
@@ -71,10 +110,21 @@ describe('AdminPropertyList', () => {
     expect(request.request.url).toMatch(/\/api\/admin\/materials$/);
     expect(request.request.body).toEqual({ name: 'Bomull' });
     request.flush({ id: 9, name: 'Bomull' });
-    await answerList('materials', [{ id: 9, name: 'Bomull' }, lera, tra]);
+    await answerList('materials', [{ id: 9, name: 'Bomull', productCount: 0 }, lera, tra]);
 
     expect(texts('app-toast .text')).toEqual(['Bomull har lagts till.']);
     expect(texts('main .row .name')).toEqual(['Bomull', 'Lera', 'Trä']);
+  });
+
+  it('shows "Fyll i ett namn." only when the admin tries to save', async () => {
+    await open('/admin/material', 'materials', [lera, tra]);
+
+    nameInput().dispatchEvent(new Event('blur'));
+    await harness.fixture.whenStable();
+    expect(page().textContent).not.toContain('Fyll i ett namn.');
+
+    await click('Lägg till material');
+    expect(texts('main .error')).toEqual(['Fyll i ett namn.']);
   });
 
   it('opens a material in the card with Redigera, and saves the new name', async () => {
@@ -94,7 +144,7 @@ describe('AdminPropertyList', () => {
     expect(request.request.url).toMatch(/\/api\/admin\/materials\/3$/);
     expect(request.request.body).toEqual({ name: 'Lergods' });
     request.flush(null, { status: 204, statusText: 'No Content' });
-    await answerList('materials', [{ id: 3, name: 'Lergods' }, tra]);
+    await answerList('materials', [{ ...lera, name: 'Lergods' }, tra]);
 
     await vi.waitFor(() => expect(url()).toBe('/admin/material'));
     expect(texts('#property-card-title')).toEqual(['Nytt material']);
@@ -117,7 +167,6 @@ describe('AdminPropertyList', () => {
     const ask = vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(false);
 
     await click('Ta bort Lera');
-    await answerDetails({ ...lera, productCount: 2 });
 
     expect(ask).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -129,11 +178,10 @@ describe('AdminPropertyList', () => {
   });
 
   it('says "1 produkt" and "den" when one product has it', async () => {
-    await open('/admin/material', 'materials', [lera, tra]);
+    await open('/admin/material', 'materials', [{ ...lera, productCount: 1 }, tra]);
     const ask = vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(false);
 
     await click('Ta bort Lera');
-    await answerDetails({ ...lera, productCount: 1 });
 
     expect(ask).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -146,27 +194,27 @@ describe('AdminPropertyList', () => {
     await open('/admin/material', 'materials', [lera, tra]);
     const ask = vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(true);
 
-    await click('Ta bort Lera');
-    await answerDetails({ ...lera, productCount: 0 });
+    await click('Ta bort Trä');
 
     expect(ask).toHaveBeenCalledWith(
-      expect.objectContaining({ message: 'Ingen produkt har Lera. Det går inte att ångra.' }),
+      expect.objectContaining({ message: 'Ingen produkt har Trä. Det går inte att ångra.' }),
     );
     httpTesting
-      .expectOne((req) => req.method === 'DELETE' && req.url.endsWith('/api/admin/materials/3'))
+      .expectOne((req) => req.method === 'DELETE' && req.url.endsWith('/api/admin/materials/5'))
       .flush(null, { status: 204, statusText: 'No Content' });
-    await answerList('materials', [tra]);
+    await answerList('materials', [lera]);
 
-    expect(texts('app-toast .text')).toEqual(['Lera har tagits bort.']);
-    expect(texts('main .row .name')).toEqual(['Trä']);
+    expect(texts('app-toast .text')).toEqual(['Trä har tagits bort.']);
+    expect(texts('main .row .name')).toEqual(['Lera']);
   });
 
   it('says so when a material cannot be deleted', async () => {
     await open('/admin/material', 'materials', [lera, tra]);
+    vi.spyOn(TestBed.inject(ConfirmService), 'ask').mockResolvedValue(true);
 
     await click('Ta bort Lera');
     const request = await vi.waitFor(() =>
-      httpTesting.expectOne((req) => req.url.endsWith('/api/admin/materials/3')),
+      httpTesting.expectOne((req) => req.method === 'DELETE'),
     );
     request.error(new ProgressEvent('error'));
     await settle();
@@ -179,18 +227,18 @@ describe('AdminPropertyList', () => {
   async function open(
     path: string,
     kind: PropertyKind,
-    items: ProductProperty[],
+    items: ProductPropertyDetails[],
     pageNumber = 1,
-  ): Promise<void> {
+  ): Promise<TestRequest> {
     await harness.navigateByUrl(path);
-    await answerList(kind, items, pageNumber);
+    return answerList(kind, items, pageNumber);
   }
 
   async function answerList(
     kind: PropertyKind,
-    items: ProductProperty[],
+    items: ProductPropertyDetails[],
     pageNumber = 1,
-  ): Promise<void> {
+  ): Promise<TestRequest> {
     const request = await vi.waitFor(() =>
       httpTesting.expectOne(
         (req) => req.method === 'GET' && req.url.endsWith(`/api/admin/${kind}`),
@@ -204,14 +252,7 @@ describe('AdminPropertyList', () => {
       totalPages: pageNumber,
     });
     await harness.fixture.whenStable();
-  }
-
-  async function answerDetails(details: ProductPropertyDetails): Promise<void> {
-    const request = await vi.waitFor(() =>
-      httpTesting.expectOne((req) => req.url.endsWith(`/api/admin/materials/${details.id}`)),
-    );
-    request.flush(details);
-    await settle();
+    return request;
   }
 
   function page(): HTMLElement {
@@ -230,6 +271,10 @@ describe('AdminPropertyList', () => {
     return [...page().querySelectorAll(selector)].map((e) =>
       e.textContent!.replace(/\s+/g, ' ').trim(),
     );
+  }
+
+  function hrefs(selector: string): (string | null)[] {
+    return [...page().querySelectorAll(selector)].map((e) => e.getAttribute('href'));
   }
 
   // Sets the value the way typing does, so Signal Forms sees the change.

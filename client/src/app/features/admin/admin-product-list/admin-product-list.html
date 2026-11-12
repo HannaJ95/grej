@@ -4,6 +4,8 @@
 
 <p class="intro text-body-m">Dolda produkter syns bara här, inte i butiken.</p>
 
+<app-admin-product-filters class="filters" [query]="query()" [hits]="hits()" />
+
 <div class="card list">
   @if (removeError(); as message) {
     <p class="text-body-s" role="alert">{{ message }}</p>
@@ -13,15 +15,18 @@
   @if (result.hasValue()) {
     @let r = result.value();
     @if (r.items.length === 0) {
-      <p class="state">Det finns inga produkter än.</p>
+      <p class="state">
+        {{ filtered() ? 'Inga produkter matchar filtren.' : 'Det finns inga produkter än.' }}
+      </p>
     } @else {
-      <table class="table">
+      <table class="table wide">
         <thead>
           <tr>
             <th class="text-mono-s-caps" scope="col">Produkt</th>
             <th class="end text-mono-s-caps" scope="col">Pris</th>
             <th class="text-mono-s-caps" scope="col">Lager</th>
             <th class="text-mono-s-caps" scope="col">I butiken</th>
+            <th class="text-mono-s-caps" scope="col">Tillagd</th>
             <!-- No visible heading, but screen readers still get a name for the column. -->
             <th scope="col" aria-label="Åtgärder"></th>
           </tr>
@@ -48,15 +53,18 @@
                 @if (p.stock < 0) {
                   <span class="oversold text-label-xs">{{ p.stock }} st – fler sålda än det fanns</span>
                 } @else {
-                  <app-stock-status [stock]="p.stock" />
+                  <app-stock-status class="nowrap-in-table" [stock]="p.stock" />
                 }
               </td>
               <td class="visible text-body-s" [class.hidden]="!p.isActive">
                 {{ p.isActive ? 'Synlig' : 'Dold' }}
               </td>
+              <td class="added text-body-s">
+                <span class="stacked-only">Tillagd </span
+                ><span class="date">{{ p.createdAt | date: 'yyyy-MM-dd' }}</span>
+              </td>
               <td class="manage">
-                <!-- A link, since editing opens the product's own page. The name in aria-label
-                     tells the many "Redigera" apart, like on the category pages. -->
+                <!-- The name in aria-label tells the many "Redigera" apart. -->
                 <span class="links">
                   <a
                     class="edit text-link-s"
@@ -80,6 +88,7 @@
         </tbody>
       </table>
     }
+    <!-- The links keep the filters. -->
     <app-pagination path="/admin/produkter" [page]="r.page" [totalPages]="r.totalPages" />
   } @else if (result.error()) {
     <p class="state" role="alert">Produkterna kunde inte visas.</p>

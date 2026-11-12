@@ -6,17 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Grej.Api.Controllers;
 
-// The CMS's endpoints for materials and colors, written once for both. Abstract, so ASP.NET Core
-// never uses it as a controller by itself: AdminMaterialsController and AdminColorsController
-// inherit every endpoint below and give the route and the type. The attributes here are inherited
-// too, so both are protected like AdminCategoriesController: 401 without a valid token, 403
-// without the Admin role (constraints.md).
+// The CMS's endpoints for materials and colors, written once for both. Abstract, so only
+// AdminMaterialsController and AdminColorsController, which give the route and the type, become
+// controllers. They inherit the attributes too: 401 without a valid token, 403 without the Admin
+// role (constraints.md).
 [ApiController]
 [Authorize(Roles = Roles.Admin)]
 public abstract class AdminPropertiesController<T>(AdminPropertyService<T> properties) : ControllerBase
     where T : ProductProperty, new()
 {
-    // E.g. GET /api/admin/materials?page=2. Sorted by name.
+    // E.g. GET /api/admin/materials?search=trä. Sorted by name, with each one's product count.
     [HttpGet]
     public async Task<IActionResult> GetPage([FromQuery] PropertyListQuery query, CancellationToken cancellationToken)
     {
@@ -38,7 +37,6 @@ public abstract class AdminPropertiesController<T>(AdminPropertyService<T> prope
         return Ok(property);
     }
 
-    // [ApiController] answers 400 by itself if the name breaks a rule in PropertyRequest.
     [HttpPost]
     public async Task<IActionResult> Create(PropertyRequest request, CancellationToken cancellationToken)
     {

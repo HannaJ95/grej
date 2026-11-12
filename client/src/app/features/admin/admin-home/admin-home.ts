@@ -2,7 +2,7 @@ import { Component, computed, inject, Resource, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminCategoryService } from '../../../core/admin-category.service';
 import { AdminOrderService } from '../../../core/admin-order.service';
-import { AdminProductService } from '../../../core/admin-product.service';
+import { ALL_PRODUCTS, AdminProductService } from '../../../core/admin-product.service';
 import { Icon } from '../../../shared/icons/icon';
 import { AdminPageHeader } from '../admin-page-header/admin-page-header';
 
@@ -28,7 +28,7 @@ interface OverviewCard {
 export class AdminHome {
   // Only the first page is fetched; totalCount counts them all.
   private readonly toDo = inject(AdminOrderService).getOrders(signal(1), signal(false));
-  private readonly products = inject(AdminProductService).getProducts(signal(1));
+  private readonly products = inject(AdminProductService).getProducts(signal(ALL_PRODUCTS));
   // The same request as the menu's numbers, so they show up in the menu too.
   private readonly categories = inject(AdminCategoryService).loadAll();
 

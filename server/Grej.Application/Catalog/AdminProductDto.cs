@@ -15,4 +15,5 @@ public record AdminProductDto(
     IReadOnlyList<int> ColorIds,
     IReadOnlyList<ProductImageDto> Images,
     ParcelDto Parcel,
-    ProductSizeDto Size);
+    ProductSizeDto Size,
+    DateTime CreatedAt);

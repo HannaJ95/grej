@@ -13,9 +13,11 @@ public class AdminProductService(
     OrderService orders,
     IImageStorage images)
 {
-    public async Task<PagedResult<AdminProductDto>> GetProductsAsync(ProductListQuery query, CancellationToken cancellationToken)
+    public async Task<PagedResult<AdminProductDto>> GetProductsAsync(AdminProductListQuery query, CancellationToken cancellationToken)
     {
-        var page = await products.GetPageAsync(query.Page, query.PageSize, cancellationToken);
+        var filter = await ProductFilter.FromQueryAsync(query, categories, cancellationToken);
+        var page = await products.GetPageAsync(
+            query.Page, query.PageSize, filter with { IsActive = query.IsActive }, query.Sort, cancellationToken);
 
         return new PagedResult<AdminProductDto>(
             page.Items.Select(ToDto).ToList(),
@@ -222,5 +224,6 @@ public class AdminProductService(
         product.Colors.Select(color => color.Id).ToList(),
         ProductImageDto.ListFrom(product),
         ParcelDto.From(product),
-        ProductSizeDto.From(product));
+        ProductSizeDto.From(product),
+        product.CreatedAt);
 }

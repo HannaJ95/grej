@@ -15,8 +15,7 @@
   z-index: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-12);
+  gap: var(--space-14);
   // min-height, so zoomed text can make it taller.
   min-height: 4rem;
   padding: var(--space-10) var(--layout-margin);
@@ -26,12 +25,6 @@
   @media (width >= 64rem) {
     display: none;
   }
-}
-
-.app-bar-start {
-  display: flex;
-  align-items: center;
-  gap: var(--space-14);
 }
 
 .menu-button {
@@ -56,17 +49,6 @@
   &:hover {
     background: var(--color-bg-hover);
   }
-}
-
-.avatar {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  background: var(--color-bg-inverse);
-  color: var(--color-text-on-inverse);
 }
 
 .sidebar {

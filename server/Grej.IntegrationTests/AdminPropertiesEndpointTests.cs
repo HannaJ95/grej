@@ -65,15 +65,41 @@ public abstract class AdminPropertiesEndpointTests<T> : IClassFixture<WebApplica
     }
 
     [Fact]
-    public async Task GetPage_ReturnsThemSortedByName()
+    public async Task GetPage_ReturnsThemSortedByName_WithTheirProductCounts()
+    {
+        var lera = await AddPropertyAsync("Lera");
+        var glas = await AddPropertyAsync("Glas");
+        await AddProductWithAsync(lera);
+        await AddProductWithAsync(lera);
+        var client = await CreateAdminClientAsync();
+
+        var page = await client.GetFromJsonAsync<PagedResult<PropertyDetailsDto>>(Url);
+
+        Assert.Equal([new PropertyDetailsDto(glas, "Glas", 0), new PropertyDetailsDto(lera, "Lera", 2)], page!.Items);
+    }
+
+    [Fact]
+    public async Task GetPage_Search_FindsEveryWordInTheName_IgnoringCase()
     {
         await AddPropertyAsync("Lera");
+        await AddPropertyAsync("Glaserad lera");
         await AddPropertyAsync("Glas");
         var client = await CreateAdminClientAsync();
 
-        var page = await client.GetFromJsonAsync<PagedResult<PropertyDto>>(Url);
+        var page = await client.GetFromJsonAsync<PagedResult<PropertyDetailsDto>>($"{Url}?search=LERA%20gla");
 
-        Assert.Equal(["Glas", "Lera"], page!.Items.Select(p => p.Name));
+        Assert.Equal(["Glaserad lera"], page!.Items.Select(p => p.Name));
+        Assert.Equal(1, page.TotalCount);
+    }
+
+    [Fact]
+    public async Task GetPage_TooLongSearch_ReturnsBadRequest()
+    {
+        var client = await CreateAdminClientAsync();
+
+        var response = await client.GetAsync($"{Url}?search={new string('a', 101)}");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]

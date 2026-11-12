@@ -1,5 +1,5 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Service, Signal } from '@angular/core';
+import { inject, Service, Signal, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PagedResult } from './paged-result';
@@ -10,16 +10,19 @@ import { ProductProperty, ProductPropertyDetails, PropertyKind } from './product
 export class AdminPropertyService {
   private readonly http = inject(HttpClient);
 
-  // Sorted by name, up to 100 per page.
-  getProperties(kind: Signal<PropertyKind>, page: Signal<number>) {
-    return httpResource<PagedResult<ProductProperty>>(() => ({
-      url: this.url(kind()),
-      params: { page: page() },
-    }));
-  }
-
-  get(kind: PropertyKind, id: number): Promise<ProductPropertyDetails> {
-    return firstValueFrom(this.http.get<ProductPropertyDetails>(`${this.url(kind)}/${id}`));
+  // Sorted by name, up to 100 per page. The search is only sent when there is one.
+  getProperties(
+    kind: Signal<PropertyKind>,
+    page: Signal<number>,
+    search: Signal<string> = signal(''),
+  ) {
+    return httpResource<PagedResult<ProductPropertyDetails>>(() => {
+      const text = search();
+      return {
+        url: this.url(kind()),
+        params: { page: page(), ...(text ? { search: text } : {}) },
+      };
+    });
   }
 
   create(kind: PropertyKind, name: string): Promise<ProductProperty> {

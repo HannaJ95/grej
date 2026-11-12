@@ -16,14 +16,15 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
 
     public Task<PagedResult<Product>> GetActivePageAsync(
         int page, int pageSize, ProductFilter filter, ProductSort sort, CancellationToken cancellationToken) =>
-        ToPageAsync(Sorted(ActiveMatching(filter), sort), page, pageSize, cancellationToken);
+        ToPageAsync(Sorted(Matching(filter with { IsActive = true }), sort), page, pageSize, cancellationToken);
 
     // decimal? makes MAX return null instead of throwing when no product matches.
     public Task<decimal?> GetHighestActivePriceAsync(ProductFilter filter, CancellationToken cancellationToken) =>
-        ActiveMatching(filter).MaxAsync(p => (decimal?)p.Price, cancellationToken);
+        Matching(filter with { IsActive = true }).MaxAsync(p => (decimal?)p.Price, cancellationToken);
 
-    public Task<PagedResult<Product>> GetPageAsync(int page, int pageSize, CancellationToken cancellationToken) =>
-        ToPageAsync(Sorted(db.Products, ProductSort.Newest), page, pageSize, cancellationToken);
+    public Task<PagedResult<Product>> GetPageAsync(
+        int page, int pageSize, ProductFilter filter, ProductSort sort, CancellationToken cancellationToken) =>
+        ToPageAsync(Sorted(Matching(filter), sort), page, pageSize, cancellationToken);
 
     // EXISTS in SQL: PostgreSQL stops at the first product it finds.
     public Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken cancellationToken) =>
@@ -44,10 +45,15 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
         await db.SaveChangesAsync(cancellationToken);
     }
 
-    // Shared by the page and the highest price, so both always filter the same way.
-    private IQueryable<Product> ActiveMatching(ProductFilter filter)
+    // Shared by the shop's page, its highest price and the CMS, so all filter the same way.
+    private IQueryable<Product> Matching(ProductFilter filter)
     {
-        var query = db.Products.Where(p => p.IsActive);
+        IQueryable<Product> query = db.Products;
+
+        if (filter.IsActive is { } isActive)
+        {
+            query = query.Where(p => p.IsActive == isActive);
+        }
 
         if (filter.CategoryIds.Count > 0)
         {
@@ -93,11 +99,13 @@ public class ProductRepository(GrejDbContext db) : IProductRepository
             .ToDictionaryAsync(row => row.CategoryId, row => row.Count, cancellationToken);
 
     // Without a fixed order PostgreSQL may return the rows in any order, and a product could show up
-    // on two pages. So the id decides between equal prices. Highest id = newest.
+    // on two pages. So the id decides between equal prices. The id grows with every new product,
+    // so it gives the same order as CreatedAt.
     private static IOrderedQueryable<Product> Sorted(IQueryable<Product> query, ProductSort sort) => sort switch
     {
         ProductSort.PriceAscending => query.OrderBy(p => p.Price).ThenByDescending(p => p.Id),
         ProductSort.PriceDescending => query.OrderByDescending(p => p.Price).ThenByDescending(p => p.Id),
+        ProductSort.Oldest => query.OrderBy(p => p.Id),
         _ => query.OrderByDescending(p => p.Id),
     };
 

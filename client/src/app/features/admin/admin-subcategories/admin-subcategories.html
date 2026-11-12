@@ -59,11 +59,16 @@
               <li class="row">
                 <span class="name text-label-s">{{ s.name }}</span>
                 <span class="meta text-body-s">
-                  {{ s.productCount }} {{ s.productCount === 1 ? 'produkt' : 'produkter' }}
+                  @if (s.productCount > 0) {
+                    <a routerLink="/admin/produkter" [queryParams]="{ kategori: s.id }"
+                      >{{ s.productCount }} {{ s.productCount === 1 ? 'produkt' : 'produkter' }}</a
+                    >
+                  } @else {
+                    0 produkter
+                  }
                 </span>
                 <span class="actions">
-                  <!-- The name in aria-label tells the many buttons apart, as on the main
-                       category page. -->
+                  <!-- The name in aria-label tells the many buttons apart. -->
                   <button
                     type="button"
                     class="link text-link-s"

@@ -51,6 +51,7 @@ The MVP is a single-seller webshop with an admin CMS = all **Must** items below.
 - Search orders in the CMS by order number, customer and product (added 10 Nov)
 - Sort the product list by newest or price (added 10 Nov)
 - The item's own size and weight on the product page, optional for each product (added 11 Nov)
+- Search and filter the products in the CMS, and search its materials and colors; the product counts on the category, material and color pages link to the filtered list (added 12 Nov)
 
 ### Could
 

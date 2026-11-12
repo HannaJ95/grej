@@ -18,6 +18,21 @@
   <section class="card list" aria-labelledby="property-list-title">
     <h2 class="text-display-2xs" id="property-list-title">Alla {{ texts().plural }}</h2>
 
+    <div class="search">
+      <app-search-field
+        [label]="'Sök bland ' + texts().theAll"
+        [hint]="texts().searchHint"
+        [value]="search()"
+        (searched)="showSearch($event)"
+      />
+      @if (search()) {
+        <div class="search-info">
+          <p class="text-label-s" aria-live="polite">{{ hits() }}</p>
+          <button appLinkButton type="button" (click)="clearSearch()">Rensa sökningen</button>
+        </div>
+      }
+    </div>
+
     @if (removeError(); as message) {
       <p role="alert">{{ message }}</p>
     }
@@ -26,12 +41,27 @@
     @if (result.hasValue()) {
       @let r = result.value();
       @if (r.items.length === 0) {
-        <p class="state">Det finns inga {{ texts().plural }} än.</p>
+        <p class="state">
+          @if (search()) {
+            Inga {{ texts().plural }} matchar ”{{ search() }}”.
+          } @else {
+            Det finns inga {{ texts().plural }} än.
+          }
+        </p>
       } @else {
         <ul class="rows">
           @for (p of r.items; track p.id) {
             <li class="row">
               <span class="name text-label-s">{{ p.name }}</span>
+              <span class="meta text-body-s">
+                @if (p.productCount > 0) {
+                  <a routerLink="/admin/produkter" [queryParams]="productParams(p)"
+                    >{{ p.productCount }} {{ p.productCount === 1 ? 'produkt' : 'produkter' }}</a
+                  >
+                } @else {
+                  0 produkter
+                }
+              </span>
               <span class="actions">
                 <button
                   appLinkButton
@@ -55,6 +85,7 @@
           }
         </ul>
       }
+      <!-- The links keep ?sok=. -->
       <app-pagination [path]="texts().path" [page]="r.page" [totalPages]="r.totalPages" />
     } @else if (result.error()) {
       <p class="state" role="alert">{{ texts().theAll | titlecase }} kunde inte visas.</p>

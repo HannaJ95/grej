@@ -14,8 +14,8 @@ describe('StockStatus', () => {
 
   it('says how many are left, with a color for few, some and many', async () => {
     expect(await show(0)).toEqual(['Slutsåld', 'sold-out']);
-    expect(await show(2)).toEqual(['Få kvar – 2 st', 'few']);
-    expect(await show(4)).toEqual(['I lager – 4 st', 'some']);
-    expect(await show(12)).toEqual(['I lager – 12 st', 'many']);
+    expect(await show(2)).toEqual(['Få kvar – 2 st', 'few']);
+    expect(await show(4)).toEqual(['I lager – 4 st', 'some']);
+    expect(await show(12)).toEqual(['I lager – 12 st', 'many']);
   });
 });

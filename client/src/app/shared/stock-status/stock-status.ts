@@ -59,6 +59,7 @@ export class StockStatus {
     if (stock <= 0) {
       return 'Slutsåld';
     }
-    return `${stock <= FEW_LEFT ? 'Få kvar' : 'I lager'} – ${stock} st`;
+    // A no-break space, so "st" never ends up alone on a line of its own.
+    return `${stock <= FEW_LEFT ? 'Få kvar' : 'I lager'} – ${stock} st`;
   });
 }

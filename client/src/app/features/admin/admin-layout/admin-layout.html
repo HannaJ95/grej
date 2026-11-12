@@ -1,22 +1,18 @@
 <!-- Tablets and phones: the menu button opens the menu as a drawer. -->
 <header class="app-bar">
-  <div class="app-bar-start">
-    <button
-      class="menu-button"
-      type="button"
-      aria-label="Meny"
-      aria-haspopup="dialog"
-      (click)="open()"
-    >
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-    <span class="text-display-xs">GREJ.</span>
-    <app-badge>Admin</app-badge>
-  </div>
-  <!-- The initial is only a picture; the email is in the menu. -->
-  <span class="avatar text-label-xs" aria-hidden="true">{{ initial }}</span>
+  <button
+    class="menu-button"
+    type="button"
+    aria-label="Meny"
+    aria-haspopup="dialog"
+    (click)="open()"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  <span class="text-display-xs">GREJ.</span>
+  <app-badge>Admin</app-badge>
 </header>
 
 <!-- Computers: the menu is always shown to the left. -->

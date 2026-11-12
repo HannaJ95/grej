@@ -16,9 +16,8 @@
   list-style: none;
 }
 
-// A row of its own at full width until 40rem, which holds both tabs and a 16rem field with room
-// to spare. The count and "Rensa sökningen" go below the field, so it keeps its width when they
-// appear. min-width: 0, or the input's own width would widen the page with large text.
+// A row of its own until 40rem, where both tabs and the field fit. min-width: 0, or the input's
+// own width would widen the page with large text.
 .search {
   display: flex;
   flex: 1 1 100%;
@@ -30,14 +29,6 @@
     flex-basis: 16rem;
     max-width: 24rem;
   }
-}
-
-.search-info {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-4) var(--space-16);
 }
 
 // A long search wraps instead of widening the page.

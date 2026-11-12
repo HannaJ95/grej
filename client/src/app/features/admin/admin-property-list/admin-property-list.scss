@@ -1,0 +1,12 @@
+// The card has no gap of its own, since its rows have padding.
+.search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-16);
+}
+
+// A long search wraps instead of widening the page.
+.state {
+  overflow-wrap: anywhere;
+}

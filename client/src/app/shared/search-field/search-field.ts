@@ -1,8 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import { Component, ElementRef, input, output, viewChild } from '@angular/core';
 import { Icon } from '../icons/icon';
 
+let nextId = 0;
+
 // Searches on Enter or when the field is left, so a list doesn't reload for every letter.
-// <app-search-field label="Sök bland grejerna" [value]="filter().search" (searched)="…" />
+// <app-search-field label="Sök bland grejerna" hint="Sök på titel." [value]="…" (searched)="…" />
 @Component({
   selector: 'app-search-field',
   imports: [Icon],
@@ -17,6 +19,7 @@ import { Icon } from '../icons/icon';
           type="search"
           placeholder="Sök…"
           [attr.aria-label]="label()"
+          [attr.aria-describedby]="hint() ? hintId : null"
           maxlength="100"
           enterkeyhint="search"
           autocomplete="off"
@@ -24,12 +27,26 @@ import { Icon } from '../icons/icon';
           (change)="searched.emit(field.value.trim())"
         />
       </label>
+      @if (hint()) {
+        <p class="hint text-body-s" [id]="hintId">{{ hint() }}</p>
+      }
     </form>
   `,
   styleUrl: '../field-box.scss',
   styles: `
     :host {
       display: block;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .hint {
+      margin: 0;
+      color: var(--color-text-secondary);
     }
 
     .field-box {
@@ -60,7 +77,19 @@ export class SearchField {
   readonly label = input.required<string>();
   // The search in the URL, '' when there is none.
   readonly value = input.required<string>();
+  // What the list searches in, since that differs between lists.
+  readonly hint = input<string>();
   // Not "search": a search field's own DOM event has that name and would reach the parent's
   // listener too.
   readonly searched = output<string>();
+
+  // Unique, like InfoTip's, in case a page has two search fields.
+  protected readonly hintId = `search-hint-${nextId++}`;
+
+  private readonly field = viewChild.required<ElementRef<HTMLInputElement>>('field');
+
+  // E.g. when the button that cleared the search disappears.
+  focus(): void {
+    this.field().nativeElement.focus();
+  }
 }

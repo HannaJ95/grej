@@ -2,10 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { SearchField } from './search-field';
 
 describe('SearchField', () => {
-  async function render(value = '') {
+  async function render(value = '', hint?: string) {
     const fixture = TestBed.createComponent(SearchField);
     fixture.componentRef.setInput('label', 'Sök bland grejerna');
     fixture.componentRef.setInput('value', value);
+    fixture.componentRef.setInput('hint', hint);
     const searches: string[] = [];
     fixture.componentInstance.searched.subscribe((search) => searches.push(search));
     await fixture.whenStable();
@@ -20,6 +21,21 @@ describe('SearchField', () => {
     expect(field.value).toBe('vas');
     expect(field.getAttribute('aria-label')).toBe('Sök bland grejerna');
     expect(element.querySelector('form')!.getAttribute('role')).toBe('search');
+  });
+
+  it('shows the hint below the field and describes the field with it', async () => {
+    const { element, field } = await render('', 'Sök på titel.');
+
+    const hint = element.querySelector('.hint')!;
+    expect(hint.textContent).toBe('Sök på titel.');
+    expect(field.getAttribute('aria-describedby')).toBe(hint.id);
+  });
+
+  it('has no hint and no description without a hint', async () => {
+    const { element, field } = await render();
+
+    expect(element.querySelector('.hint')).toBeNull();
+    expect(field.hasAttribute('aria-describedby')).toBe(false);
   });
 
   it('sends the text without the spaces around it when the field is committed', async () => {

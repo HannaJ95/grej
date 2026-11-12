@@ -18,13 +18,11 @@ import { Icon } from '../../../shared/icons/icon';
 
 interface CategoryFormModel {
   name: string;
-  // The main category's id as text, since a <select>'s value is always text (like categoryId in
-  // the product form). '' = none. Only used for a subcategory.
+  // Text, since a <select>'s value is text. '' = none. Only used for a subcategory.
   parentId: string;
 }
 
-// Creates a category, or changes the one in editing. The page decides which one from ?redigera=
-// in the URL, and with kind whether it is a main category or a subcategory.
+// Creates a category, or changes the one in editing (?redigera= on the page).
 @Component({
   selector: 'app-admin-category-card',
   imports: [FormRoot, FormField, Button, Icon],
@@ -40,35 +38,37 @@ export class AdminCategoryCard {
   readonly editing = input<Category>();
   // The choices in the "Huvudkategori" menu, for a subcategory.
   readonly mainCategories = input<Category[]>([]);
-  // The main category chosen from the start for a new subcategory, e.g. on Keramik's page.
+  // Chosen from the start for a new subcategory, e.g. on Keramik's page.
   readonly defaultParentId = input<number>();
-  // Tells the page that the card is done, so it can show an empty card again.
+  // So the page can show an empty card again.
   readonly saved = output();
   readonly cancelled = output();
 
   private readonly nameInput = viewChild.required<ElementRef<HTMLInputElement>>('nameInput');
 
-  // The words that differ between the two kinds.
   protected readonly texts = computed(() =>
     this.kind() === 'main'
       ? { noun: 'huvudkategori', example: 'T.ex. Belysning' }
       : { noun: 'underkategori', example: 'T.ex. Vaser' },
   );
 
-  // Filled in again whenever the page changes which category is edited, or which main category
-  // a new subcategory gets.
+  // Filled in again when the page changes editing or defaultParentId.
   private readonly model = linkedSignal<CategoryFormModel>(() => {
     const editing = this.editing();
     const parentId = editing ? editing.parentId : this.defaultParentId();
     return { name: editing?.name ?? '', parentId: parentId == null ? '' : String(parentId) };
   });
 
+  // Errors wait until the admin tries to save, not just leaves a field. Another category in the
+  // card starts without them.
+  private readonly showErrors = linkedSignal({ source: this.editing, computation: () => false });
+
   protected readonly categoryForm = form(
     this.model,
     // The same rules as CategoryRequest in the API.
     (field) => {
       required(field.name, { message: 'Fyll i ett namn.' });
-      // required lets "   " through, as in the product form.
+      // required() accepts a name of only spaces.
       pattern(field.name, /\S/, { message: 'Fyll i ett namn.' });
       maxLength(field.name, 100, { message: 'Namnet får vara högst 100 tecken.' });
       // A new subcategory must have a main category. A changed one may lose it and become a
@@ -78,11 +78,15 @@ export class AdminCategoryCard {
         when: () => this.kind() === 'sub' && !this.editing(),
       });
     },
-    { submission: { action: () => this.save() } },
+    { submission: { action: () => this.save(), onInvalid: () => this.showErrors.set(true) } },
   );
 
-  protected readonly nameError = computed(() => firstError(this.categoryForm.name));
-  protected readonly parentError = computed(() => firstError(this.categoryForm.parentId));
+  protected readonly nameError = computed(() =>
+    this.showErrors() ? firstError(this.categoryForm.name) : undefined,
+  );
+  protected readonly parentError = computed(() =>
+    this.showErrors() ? firstError(this.categoryForm.parentId) : undefined,
+  );
   protected readonly saveError = computed(() => this.categoryForm().errors()[0]?.message);
 
   // Called by the page, e.g. after "Redigera", so the admin can type at once.
@@ -105,9 +109,9 @@ export class AdminCategoryCard {
         await this.categories.create(name, parentId);
         this.toast.show(`${name} har lagts till.`);
       }
-      // An empty name field that is not "touched", so "Fyll i ett namn." is not shown at once.
       // The main category stays chosen, so several subcategories can be added in a row.
       this.categoryForm().reset({ name: '', parentId: editing ? '' : chosen });
+      this.showErrors.set(false);
       this.saved.emit();
       return undefined;
     } catch {
