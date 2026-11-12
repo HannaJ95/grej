@@ -26,6 +26,7 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
     // New per test: a Pending payment for one item of a product with stock 1.
     private readonly Product product = new() { Id = 1, Title = "Skål", Price = 450m, Stock = 1, IsActive = true };
     private readonly FakePaymentRepository payments = new(Reference, productId: 1);
+    private readonly FakeEmailSender emails = new();
 
     [Fact]
     public async Task Post_PaidSession_MarksPaymentAsPaidAndDecreasesStock()
@@ -70,6 +71,16 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
+    public async Task Post_PaidSession_SendsConfirmationToCustomer()
+    {
+        await PostAsync(CheckoutCompleted(Reference), signedWith: Secret);
+
+        var email = Assert.Single(emails.Sent);
+        Assert.Equal("anna@example.com", email.To);
+        Assert.Contains(payments.Order.OrderNumber, email.Subject);
+    }
+
+    [Fact]
     public async Task Post_PaidSession_StoresPaymentIntentId()
     {
         await PostAsync(CheckoutCompleted(Reference), signedWith: Secret);
@@ -78,17 +89,18 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
-    public async Task Post_PaidSessionWithoutAddress_MarksPaymentAsPaid()
+    public async Task Post_PaidSessionWithoutAddress_MarksPaymentAsPaidWithoutEmail()
     {
         var response = await PostAsync(CheckoutCompleted(Reference, withAddress: false), signedWith: Secret);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(PaymentStatus.Paid, payments.Payment.Status);
         Assert.Null(payments.Order.CustomerName);
+        Assert.Empty(emails.Sent);
     }
 
     [Fact]
-    public async Task Post_SameEventTwice_DecreasesStockOnce()
+    public async Task Post_SameEventTwice_DecreasesStockAndSendsEmailOnce()
     {
         await PostAsync(CheckoutCompleted(Reference), signedWith: Secret);
         var response = await PostAsync(CheckoutCompleted(Reference), signedWith: Secret);
@@ -96,6 +108,7 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(PaymentStatus.Paid, payments.Payment.Status);
         Assert.Equal(0, product.Stock);
+        Assert.Single(emails.Sent);
     }
 
     [Fact]
@@ -108,6 +121,7 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal(OrderStatus.Cancelled, payments.Order.Status);
         Assert.Equal(1, product.Stock);
         Assert.True(payments.Saved);
+        Assert.Empty(emails.Sent);
     }
 
     [Fact]
@@ -251,6 +265,7 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
                     services.AddScoped<IPaymentRepository>(_ => payments);
                     services.AddScoped<IOrderRepository>(_ => new FakeOrderRepository(payments.Order));
                     services.AddScoped<IProductRepository>(_ => new FakeProductRepository(product));
+                    services.AddScoped<IEmailSender>(_ => emails);
                 });
             })
             .CreateClient();
@@ -294,6 +309,17 @@ public class StripeWebhookEndpointTests(WebApplicationFactory<Program> factory)
         public Task SaveChangesAsync(CancellationToken cancellationToken)
         {
             Saved = true;
+            return Task.CompletedTask;
+        }
+    }
+
+    private class FakeEmailSender : IEmailSender
+    {
+        public List<EmailMessage> Sent { get; } = [];
+
+        public Task SendAsync(EmailMessage message, CancellationToken cancellationToken)
+        {
+            Sent.Add(message);
             return Task.CompletedTask;
         }
     }

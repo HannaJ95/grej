@@ -1,15 +1,15 @@
 using Grej.Application.Catalog;
+using Grej.Application.Common;
 using Grej.Domain.Orders;
 
 namespace Grej.Application.Orders;
 
-public class OrderService(IOrderRepository orders, ProductService products)
+public class OrderService(IOrderRepository orders, ProductService products, IEmailSender email)
 {
-    // The first time the payment becomes Paid. Nothing is saved here, since the webhook saves
-    // the payment, the order and the stock in one transaction.
-    public async Task HandlePaidAsync(int orderId, CustomerDetails? customer, CancellationToken cancellationToken)
+    // The first time the payment becomes Paid. The webhook saves everything in one transaction.
+    public async Task<Order> HandlePaidAsync(int orderId, CustomerDetails? customer, CancellationToken cancellationToken)
     {
-        // A payment is only saved together with its order.
+        // A payment is always saved with its order.
         var order = await orders.GetByIdAsync(orderId, cancellationToken)
             ?? throw new InvalidOperationException($"Order {orderId} does not exist.");
 
@@ -24,7 +24,15 @@ public class OrderService(IOrderRepository orders, ProductService products)
         {
             order.MarkAsOversold();
         }
+
+        return order;
     }
+
+    // Only after the webhook has saved, so no email goes out for a payment that was not saved.
+    public Task SendConfirmationAsync(Order order, CancellationToken cancellationToken) =>
+        order.CustomerEmail is null
+            ? Task.CompletedTask
+            : email.SendAsync(OrderConfirmationEmail.Create(order), cancellationToken);
 
     // Like HandlePaidAsync, the first time the payment becomes Expired.
     public async Task HandleExpiredAsync(int orderId, CancellationToken cancellationToken)
@@ -32,7 +40,7 @@ public class OrderService(IOrderRepository orders, ProductService products)
         var order = await orders.GetByIdAsync(orderId, cancellationToken)
             ?? throw new InvalidOperationException($"Order {orderId} does not exist.");
 
-        // The stock is not touched, since it only decreases when an order is paid.
+        // No stock change, since the stock only decreases when an order is paid.
         order.Cancel();
     }
 
