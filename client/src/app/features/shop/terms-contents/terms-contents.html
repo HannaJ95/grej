@@ -4,9 +4,9 @@
     @for (section of sections(); track section.id; let number = $index) {
       <li>
         <a
-          routerLink="/villkor"
-          [fragment]="section.id"
+          href="/villkor#{{ section.id }}"
           [attr.aria-current]="section.id === current() ? 'true' : null"
+          (click)="goTo($event, section.id)"
         >
           <!-- The list already tells screen readers the number. -->
           <span aria-hidden="true">{{ number + 1 }}. </span>{{ section.title }}
