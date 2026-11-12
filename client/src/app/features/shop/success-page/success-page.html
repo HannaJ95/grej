@@ -2,13 +2,60 @@
   <div class="heading">
     <span class="icon-box"><app-icon name="check" /></span>
     <h1 class="text-display-l">Tack för din beställning!</h1>
-    <p class="text-body-l">
-      @if (order()) {
-        Ordernummer {{ order() }}. Spara numret om du behöver kontakta oss.
-      }
-      Din beställning håller på att bekräftas.
-    </p>
+    <!-- Read out when the payment is confirmed. -->
+    <p class="text-body-l" role="status">{{ status() }}</p>
   </div>
+
+  @if (confirmation(); as placed) {
+    <section class="summary" aria-labelledby="summary-heading">
+      <h2 id="summary-heading" class="text-display-xs">Din beställning</h2>
+      <ul class="items">
+        @for (item of placed.items; track $index) {
+          <li class="item">
+            <span class="item-text">
+              <span class="text-heading-xs">{{ item.title }} </span>
+              <span class="quantity text-body-s">{{ item.quantity }} st </span>
+            </span>
+            <span class="text-price">{{
+              item.lineTotal | currency: placed.currency : 'symbol' : '1.0-2'
+            }}</span>
+          </li>
+        }
+      </ul>
+
+      <!-- The spaces at the end keep a screen reader from reading label and amount as one. -->
+      <div class="sums">
+        @if (placed.shippingCost !== null) {
+          <p class="line text-body-s">
+            <span>Produkter </span>
+            <span>{{ productsTotal() | currency: placed.currency : 'symbol' : '1.0-2' }}</span>
+          </p>
+          <p class="line text-body-s">
+            <span>Frakt ({{ placed.shippingMethod }}) </span>
+            <span>{{ placed.shippingCost | currency: placed.currency : 'symbol' : '1.0-2' }}</span>
+          </p>
+        }
+        <p class="total text-label-m">
+          <span>Totalt </span>
+          <span class="text-label-l">{{
+            placed.total | currency: placed.currency : 'symbol' : '1.0-2'
+          }}</span>
+        </p>
+      </div>
+
+      <!-- Stripe sends the address with the webhook, so it comes when the order is paid. -->
+      @if (address().length > 0) {
+        <div class="address">
+          <h3 class="text-heading-xs">Levereras till</h3>
+          <p class="text-body-m">
+            @for (line of address(); track $index) {
+              <span class="address-line">{{ line }}</span>
+            }
+          </p>
+        </div>
+      }
+    </section>
+  }
 
   <div class="next">
     <h2 class="text-display-xs">Vad händer nu?</h2>
@@ -34,7 +81,7 @@
       <p class="text-heading-xs">Det här är en demobutik</p>
       <p class="text-body-s">
         Betalningen gjordes i Stripes testläge. Inga riktiga pengar har dragits och inget paket
-        skickas.
+        skickas. Orderbekräftelsen kommer bara fram till utvecklarens egen adress.
       </p>
     </div>
   </div>

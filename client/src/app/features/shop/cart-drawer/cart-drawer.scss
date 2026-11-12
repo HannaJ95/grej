@@ -1,5 +1,4 @@
-// No box, only the icon and the number, which change color together. The padding is the touch
-// target: as tall as the phone menu's button beside it.
+// No box, only the icon and the number. The padding makes it as tall as the menu button beside it.
 .cart-button {
   display: inline-flex;
   align-items: center;
@@ -14,8 +13,7 @@
     color: var(--color-text-secondary);
   }
 
-  // The bag sits low in its icon, under the handle, so the number is moved down to the bag's
-  // middle instead of the icon's.
+  // The bag sits low in its icon, so the number moves down to the bag's middle.
   span {
     translate: 0 var(--space-2);
   }
@@ -51,8 +49,7 @@ dialog {
   }
 }
 
-// Fills the dialog, so a click on the dialog element itself can only be on the backdrop.
-// The list in the middle scrolls, and the summary stays at the bottom.
+// Fills the dialog, so a click on the dialog itself is on the backdrop. The list scrolls.
 .panel {
   display: flex;
   flex-direction: column;
@@ -136,8 +133,7 @@ dialog {
   gap: var(--space-12);
 }
 
-// A long word like "Manschettknappar" breaks instead of pushing the price out of the panel.
-// hyphens: auto follows Swedish rules through the page's lang="sv".
+// Long words break instead of pushing the price out. hyphens: auto follows lang="sv".
 .name {
   min-width: 0;
   color: inherit;
@@ -181,26 +177,6 @@ dialog {
   p {
     margin: 0;
   }
-}
-
-// Closer to each other than to the button.
-.sums {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-}
-
-.line,
-.total {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  column-gap: var(--space-16);
-}
-
-.line {
-  color: var(--color-text-secondary);
 }
 
 .full-width {

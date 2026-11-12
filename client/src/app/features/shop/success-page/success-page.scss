@@ -15,18 +15,77 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-20);
+}
 
-  h1 {
-    // Long words break instead of making the page scroll sideways on a narrow phone.
-    overflow-wrap: anywhere;
+// The gaps set all the spacing. Long words and email addresses break instead of scrolling
+// the page sideways.
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+  padding: var(--space-20);
+  border: var(--border-width-default) solid var(--color-border-default);
+  background: var(--color-bg-surface);
+
+  @media (width >= 48rem) {
+    padding: var(--space-24) var(--space-28);
   }
 }
 
-// gap sets the space between everything on the page.
-h1,
-h2,
-p {
+.items {
   margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// The price goes below the title when there isn't room for both, e.g. with large text.
+.item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  column-gap: var(--space-16);
+  padding-block: var(--space-12);
+  border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+
+  &:first-child {
+    padding-top: 0;
+  }
+}
+
+.item-text {
+  display: flex;
+  flex: 1 1 8rem;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.quantity {
+  color: var(--color-text-secondary);
+}
+
+.text-price {
+  white-space: nowrap;
+}
+
+.address {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.address-line {
+  display: block;
 }
 
 .icon-box {
@@ -75,6 +134,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  min-width: 0;
 }
 
 .step .text-body-s {

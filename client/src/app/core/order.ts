@@ -40,6 +40,24 @@ export interface OrderDetails extends OrderSummary {
   items: OrderItem[];
 }
 
+// OrderConfirmationDto in the API, for the success page.
+export interface OrderConfirmation {
+  orderNumber: string;
+  paymentStatus: PaymentStatus;
+  // Null until the order is paid.
+  customerName: string | null;
+  customerEmail: string | null;
+  addressLine1: string | null;
+  addressLine2: string | null;
+  postalCode: string | null;
+  city: string | null;
+  shippingMethod: string | null;
+  shippingCost: number | null;
+  total: number;
+  currency: string;
+  items: OrderItem[];
+}
+
 // OrderItemDto in the API. The title and price are from the time of purchase.
 export interface OrderItem {
   title: string;

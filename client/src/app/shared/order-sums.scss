@@ -1,0 +1,20 @@
+// The amounts under a list of products, in the cart and on the success page.
+.sums {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.line,
+.total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--space-16);
+  margin: 0;
+}
+
+.line {
+  color: var(--color-text-secondary);
+}
