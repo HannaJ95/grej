@@ -20,9 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Grej.IntegrationTests;
 
-// Tests the admin seed, POST /api/auth/login and the role check on admin endpoints
-// through the real API and the real ASP.NET Core Identity, with EF Core's in-memory
-// database instead of PostgreSQL.
+// The real API and ASP.NET Core Identity, with EF Core's in-memory database.
 public class AdminLoginTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private const string Email = "admin@example.com";
@@ -34,8 +32,7 @@ public class AdminLoginTests : IClassFixture<WebApplicationFactory<Program>>
 
     public AdminLoginTests(WebApplicationFactory<Program> factory)
     {
-        // xUnit creates a new instance of the class for each test, so each test
-        // gets its own empty in-memory database.
+        // xUnit creates the class per test, so each test gets its own empty database.
         var databaseName = Guid.NewGuid().ToString();
 
         app = factory.WithWebHostBuilder(builder =>
@@ -49,8 +46,7 @@ public class AdminLoginTests : IClassFixture<WebApplicationFactory<Program>>
                 }));
             builder.ConfigureTestServices(services =>
             {
-                // Removes the PostgreSQL setup from AddInfrastructure, so the in-memory
-                // database below is the only one.
+                // Removes the PostgreSQL setup, so the in-memory database is the only one.
                 services.RemoveAll<IDbContextOptionsConfiguration<GrejDbContext>>();
                 services.AddDbContext<GrejDbContext>(options => options.UseInMemoryDatabase(databaseName));
             });
@@ -83,8 +79,7 @@ public class AdminLoginTests : IClassFixture<WebApplicationFactory<Program>>
         var body = await response.Content.ReadFromJsonAsync<LoginResult>();
         Assert.NotNull(body);
 
-        // Checks the token the same way the API will check it on admin requests:
-        // signed with our key, made by us, for us, and not expired.
+        // Like the API checks it: our key, our issuer and audience, not expired.
         var validation = await new JsonWebTokenHandler().ValidateTokenAsync(body.Token, new TokenValidationParameters
         {
             ValidIssuer = "grej-api",
@@ -204,7 +199,7 @@ public class AdminLoginTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
-    // Sends the token the same way the frontend does: "Authorization: Bearer <token>".
+    // Like the frontend: "Authorization: Bearer <token>".
     private Task<HttpResponseMessage> GetMe(string token)
     {
         var client = app.CreateClient();
@@ -212,11 +207,11 @@ public class AdminLoginTests : IClassFixture<WebApplicationFactory<Program>>
         return client.GetAsync("/api/auth/me");
     }
 
-    // Sends the visitor's IP the way Render's proxy does.
+    // Sends the visitor's IP the way Cloudflare does in front of Render.
     private Task<HttpResponseMessage> LoginFrom(string ipAddress, string email, string password)
     {
         var client = app.CreateClient();
-        client.DefaultRequestHeaders.Add("X-Forwarded-For", ipAddress);
+        client.DefaultRequestHeaders.Add("CF-Connecting-IP", ipAddress);
         return client.PostAsJsonAsync("/api/auth/login", new LoginRequest(email, password));
     }
 

@@ -170,10 +170,10 @@ Known limitations: without a verified domain, Resend only delivers to the accoun
 
 - `Program.cs` registers one policy per endpoint with `AddRateLimiter`, with the names and the limit in `Grej.Api/RateLimits.cs`. Each policy has one fixed window per IP address. The window starts at the first attempt and starts over after a minute. The controllers choose a policy with `[EnableRateLimiting]`.
 - Above the limit the API answers 429. In Angular, `isTooManyRequests` (`core/too-many-requests.ts`) lets the login page and the cart show "För många försök på kort tid. Vänta en minut och försök igen."
-- On Render every request comes through Render's proxy, which adds the visitor's IP to `X-Forwarded-For`. `UseForwardedHeaders` makes the last address in that header, the one the proxy added, the request's IP. It trusts every sender, since Render's proxy addresses are not published and the API can only be reached through the proxy. Without this, every visitor would share the proxy's counter.
-- `UseForwardedHeaders` comes first in the pipeline, and `UseRateLimiter` after `UseCors`, so a 429 has the CORS headers the browser needs to show it to Angular.
+- A visitor is the IP address in the `CF-Connecting-IP` header (`VisitorIp` in `Program.cs`). Render has Cloudflare in front of it, which sets that header to the visitor's own IP and overwrites any value the visitor sends. The connection's IP and the last address in `X-Forwarded-For` are proxies that nearby visitors share: the first version used `X-Forwarded-For`, and in production a phone on mobile data got 429 after a laptop's attempts (12 Nov). Locally there is no Cloudflare, so the connection's IP is used.
+- `UseRateLimiter` comes after `UseCors`, so a 429 has the CORS headers the browser needs to show it to Angular.
 
-Known limitations: the counters are in the API's memory, so they start over when Render restarts the API, and several instances would not share them (Render runs one). Visitors behind the same IP address, e.g. on one school Wi-Fi, share the limit. Up to 20 attempts can pass in a row when they fall on both sides of the end of a window.
+Known limitations: Render does not document `CF-Connecting-IP`; without it, every visitor would share one counter again. The counters are in the API's memory, so they start over when Render restarts the API, and several instances would not share them (Render runs one). Visitors behind the same IP address, e.g. on one school Wi-Fi, share the limit. Up to 20 attempts can pass in a row when they fall on both sides of the end of a window.
 
 ## Data model
 

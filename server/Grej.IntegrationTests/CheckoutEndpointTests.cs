@@ -162,7 +162,7 @@ public class CheckoutEndpointTests(WebApplicationFactory<Program> factory)
     {
         // Sold out, so the allowed attempts answer 409 and save nothing.
         var client = CreateClient(new Product { Id = 1, Title = "Skål", Price = 450m, Stock = 0, IsActive = true });
-        client.DefaultRequestHeaders.Add("X-Forwarded-For", "203.0.113.1");
+        client.DefaultRequestHeaders.Add("CF-Connecting-IP", "203.0.113.1");
         for (var attempt = 0; attempt < RateLimits.PermitsPerMinute; attempt++)
         {
             await client.PostAsJsonAsync("/api/checkout", Request(productId: 1, quantity: 1));
