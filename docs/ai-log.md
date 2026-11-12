@@ -238,3 +238,6 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - **Verification:** The production check showed that a phone on mobile data got 429 after the laptop's attempts: the last X-Forwarded-For address was a proxy that every visitor shared. The rate limiter now reads Cloudflare's CF-Connecting-IP. After the fix, the laptop got 429 and the phone a normal 401.
 
 - **Verified:** grej.hannajohansson01.se in Resend (3 DNS records + DMARC at one.com), so the order email reaches any address. Email:From changed in appsettings.json; no code change. Removed the "only the developer's address" note from the success page and the docs.
+
+- **Building:** Dark and light mode (Could, built after all). The page follows the system until the visitor chooses with a button in the header, the phone menu or the admin menu; the choice is saved in localStorage and set before the first paint. Dark mode swaps the color tokens; the footer and the phone menu stay dark in both modes, and product images stay on white.
+- **Verification:** client tests + build; Claude checked 320–1440 px in both modes in Chrome. A shop-layout test failed for me but passed for Claude, whose runs reused an old build of the spec.

@@ -167,6 +167,12 @@ Why: Selling abroad mainly requires VAT and legal work (Won't), not code. Storin
 Decision: 10 logins and 10 checkouts per minute per IP address, counted on their own (added 12 Nov). The window starts at the first attempt. One more attempt gets 429, and the page asks the visitor to wait a minute.
 Why: The lockout after 5 wrong passwords only protects one account, and every checkout saves an order and creates a Stripe session. A real visitor needs only a few attempts, so 10 leaves room for typos and for going back from Stripe. A visitor is an IP address, since customers have no account. So everyone on one network shares the limit, e.g. a class on the school's Wi-Fi during the presentation, which is acceptable in a small shop.
 
+## Appearance
+
+**Does the shop follow the system's dark mode, or does the visitor choose?**
+Decision: Both (added 12 Nov). The page follows the system's setting until the visitor chooses with the button in the header, the phone menu or the admin menu. The choice is saved in the browser, and choosing the system's own mode removes it again. The footer and the phone menu are dark in both modes, and product images stay on white.
+Why: The system's setting is a choice the visitor has already made, so most never need the button. Customers have no account, so the browser is the only place to save the choice, like the cart.
+
 ## Future idea – marketplace with sellers
 
 Not planned (see scope). Kept here so the decisions already made are not lost.

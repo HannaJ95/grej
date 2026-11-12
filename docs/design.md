@@ -11,8 +11,14 @@ The design lives in the code. `client/src/styles/` has the tokens, the text styl
   - the responsive font sizes and layout values (`--layout-margin`, `--layout-gutter`, `--layout-admin-gutter`, `--layout-viewport-width`)
 - The responsive values are mobile first. The phone's values are in `:root`, and new values come in media queries from 768 px (tablet) and from 1024 px (computer).
 - `_typography.scss` has one class per text style (e.g. `.text-display-l`, `.text-label-s`), built by a Sass mixin. The templates put the class on the element, and `<body class="text-body-m">` gives the body text. The fonts (Anton for the Display styles, Inter for text, Space Mono for small print) are loaded from Google Fonts in `index.html`. The Display styles have line height 1.16 (except Wordmark), so the dots on Å, Ä and Ö don't reach the line above.
-- Components only use `var(--…)` and the classes, so a change of a value is a change in one place, and dark mode (Could) only needs new values.
-- The page and the surfaces (header, cards, fields) share one background, linen, so cards and fields stand out by their borders.
+- Components only use `var(--…)` and the classes, so a change of a value is a change in one place.
+- Dark and light mode only change the color tokens:
+  - The page follows the system's setting (`prefers-color-scheme`) until the visitor chooses with `ThemeToggle`. The choice is `<html data-theme="light|dark">`, saved in `localStorage` (`grej.theme`). Choosing the system's own mode removes it, so the page follows the system again.
+  - A small script in `index.html` sets `data-theme` before the first paint, so a saved choice never flashes the other mode.
+  - The colors are two Sass mixins in `_tokens.scss`, `light-colors` and `dark-colors`. Dark mode swaps the light pairs (linen and charcoal), so every pair keeps its contrast. The feedback colors get lighter versions with at least 4.5:1 against the dark page, and `color-scheme` makes the browser's own fields, lists and scrollbars dark.
+  - The inverse bands (primary buttons, chosen tabs, the admin menu's chosen page) are light in dark mode. A part with `data-theme="light"` keeps the light mode's colors, so the footer and the phone menu's panel are dark in both modes.
+  - Product images stay on white (`--color-bg-image`) in both modes, since the photos are taken on white.
+- The page and the surfaces (header, cards, fields) share one background, linen (charcoal in dark mode), so cards and fields stand out by their borders.
 - Every text color has at least 4.5:1 contrast against its background, and field borders and the focus ring at least 3:1 (WCAG AA).
 - Hover: dark buttons get `--color-bg-inverse-hover` and light ones `--color-bg-hover`. Links are underlined.
 - The focus ring is 2 px in `--color-border-default`, and `--color-border-inverse` on the dark bands.
@@ -27,6 +33,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
 - `Button` is an attribute on a real `<button>` or `<a>` (`<button appButton variant="danger">`). That way the element keeps the browser's keyboard handling, form submit, `disabled` and `routerLink`. It has three variants (primary, secondary with a 2 px frame, danger) and two sizes (normal for forms and the CMS, `size="large"` for the shop's big buttons). The frame is taken from the padding, so all variants are equally tall.
 - `LinkButton` (`button[appLinkButton]`) is a button that looks like a link, for actions on the same page, such as "Redigera" and "Ta bort" in a CMS list. It has `tone` default or danger.
 - `Icon` shows one of the icons in `public/icons/` as a CSS mask, so it takes the text color around it. Arrows and other symbols beside a label are icons, never characters such as →, which Inter's web font lacks, so each browser would draw its own. Inside `Button` an icon is 1.25 times the label's size. `IconButton` is a square button with only an icon (e.g. close), and always needs an `aria-label`. `filled` gives it the surface color, for a button on an image or the dimmed page.
+- `ThemeToggle` (`button[appThemeToggle]`) switches between light and dark mode through `ThemeService`. The icon and the text show the mode a click gives: a moon and "Mörkt läge" in light mode, a sun and "Ljust läge" in dark mode. With `showLabel` the text shows; without it, the text is the `aria-label`. It has no box: the place sets the color and the size, and `--theme-toggle-hover` the hover color.
 - `InfoTip` is a small (i) button beside a label that opens a box of help text (`<app-info-tip label="Vad är alt-text?">`). It opens on click, tap or Enter, not on hover, which touch screens and keyboards lack.
   - The box is a native popover, so the browser closes it on Escape or a click outside.
   - From a tablet it sits by the button with CSS anchor positioning: below and to the right, or flipped to where it fits.
@@ -70,12 +77,14 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
 
 The shop has neutral colors. The CMS uses the same tokens, so it gets the same colors and fonts.
 
-- `ShopLayout` (`features/shop/shop-layout/`) has the shop's header (logo, menu, cart) and footer, and the header sticks at the top. The shop's routes are its children in `app.routes.ts`, so the admin pages have no shop header.
+- `ShopLayout` (`features/shop/shop-layout/`) has the shop's header (logo, menu, dark mode button, cart) and footer, and the header sticks at the top. The shop's routes are its children in `app.routes.ts`, so the admin pages have no shop header.
   - The header is the same low height on every screen size: the logo is smaller on a phone, and from a tablet it is as tall as the cart button. That height is `--shop-sticky-top` in `_base.scss`. `scroll-padding-top` uses it, so a focused element is never hidden under the header.
   - `<main>` is one layer below the header (`isolation: isolate`), so nothing on a page, such as the product page's sticky buy row, can scroll over it.
   - Its bands reach the screen's edges. The content inside them uses `.page-width`: centered, at most `--layout-viewport-width` (1440 px), with `--layout-margin` on the sides (20 px on a phone, 32 px on a tablet, 48 px on a computer).
-  - On a phone the menu links are in `MobileMenu`, a `<dialog>` like the cart.
+  - From a tablet, `ThemeToggle` is an icon before the cart, as tall as the cart button.
+  - On a phone the menu links are in `MobileMenu`, a `<dialog>` like the cart. Its panel is dark in both modes, and has `ThemeToggle` with its text above the cart button.
   - "Shop" in the menu is never underlined, also on its own page; `aria-current="page"` tells screen readers. On hover it gets the secondary text color, like the cart button.
+  - The footer is dark in both modes. In dark mode a 1 px line (the bottom of `<main>`) parts it from the dark page.
   - The footer's "Shop" lists "Alla produkter" and the five categories with the most products, in name order, each linking to the product list with that category chosen.
   - The footer's big "GREJ." is at most 42 % of the screen width, so it fits between 1024 and 1190 px. It is decoration and takes no clicks, since its letters reach up over the links above.
   - On screens wider than 1440 px the bands (header, start page, moving band, footer) still reach the edges while the content stays centered, so the page keeps one pattern instead of a box in the middle.
@@ -163,6 +172,7 @@ The CMS uses the same tokens, text styles and shared components as the shop.
   - Below 1024 px there is an app bar. Its menu button opens the same menu as a drawer that slides in from the left, a `<dialog>` like `MobileMenu`.
   - Kategorier and Egenskaper fold with a button (`aria-expanded`), and are open on their own pages (`isActive` and `linkedSignal`).
   - The menu shows the admin's email and its first letter.
+  - Below "Visa butiken" the menu has `ThemeToggle` with its text, in both the side menu and the drawer. The login page follows the saved choice but has no button.
 - `AdminPageHeader` is a page's top: a small label, the h1 and room for the page's button. Its line reaches the edges of the main area.
   - From 1024 px, when the window is at least 30rem high, it sticks at the top.
   - It measures its own height with a `ResizeObserver` and writes it to `--admin-page-header-height` on `<html>`, since the row wraps when there is no room.

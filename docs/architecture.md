@@ -425,3 +425,5 @@ Known limitations: if the same order is shipped and cancelled at the same time (
 ## Styles
 
 The design system and how each page looks and behaves are in [design.md](design.md). The rules for UI work are in the skill `grej-ui` (`.claude/skills/grej-ui/`).
+
+Dark and light mode: `ThemeService` (`core/theme.service.ts`) holds two signals, the system's mode (`matchMedia`) and the visitor's choice. The choice is saved in `localStorage` (`grej.theme`), like the cart, and set as `<html data-theme>`. `_tokens.scss` gives the color tokens their dark values from that attribute or from `prefers-color-scheme`, and a script in `index.html` sets the attribute before Angular starts (ambiguity.md).
