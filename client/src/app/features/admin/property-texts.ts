@@ -15,6 +15,8 @@ export interface PropertyTexts {
   newOne: string;
   // The name field's placeholder.
   example: string;
+  // "Sök på färgens namn."
+  searchHint: string;
   path: string;
   // The product list's filter: ?material= or ?farg=.
   productParam: string;
@@ -28,6 +30,7 @@ export const PROPERTY_TEXTS: Record<PropertyKind, PropertyTexts> = {
     theAll: 'materialen',
     newOne: 'Nytt material',
     example: 'T.ex. Trä',
+    searchHint: 'Sök på materialets namn.',
     path: '/admin/material',
     productParam: 'material',
   },
@@ -38,6 +41,7 @@ export const PROPERTY_TEXTS: Record<PropertyKind, PropertyTexts> = {
     theAll: 'färgerna',
     newOne: 'Ny färg',
     example: 'T.ex. Grön',
+    searchHint: 'Sök på färgens namn.',
     path: '/admin/farger',
     productParam: 'farg',
   },

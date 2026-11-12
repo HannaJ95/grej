@@ -226,3 +226,6 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 
 - **Building:** Search and filters in the CMS. The product list got a search, a menu each for category, material, color, visibility and sort (also "Äldst först") and a "Tillagd" column; materials and colors got a search. The product counts on the category, material and color pages link to the filtered list. The add cards now wait with "Fyll i ett namn." until the admin tries to save. I chose one choice per menu over checkboxes because of the feature freeze.
 - **Verification:** dotnet test + affected specs. Claude checked 320–1440 px and 200 % text in Chrome and fixed category options that looked like headings, a select that wrapped to two lines, "st" alone on a line and a date that broke at its hyphen. Pagination and the admin app bar still overflow at 200 % text (wrap-up).
+
+- **Building:** Removed the initial from the CMS app bar. The CMS search fields now have a hint below the field that says what they search in (chosen over a placeholder or an (i) icon). The search sentence in the order list's intro was removed so it isn't said twice.
+- **Verification:** build + affected specs. Claude checked 320–1440 px and 200 % zoom in Chrome.

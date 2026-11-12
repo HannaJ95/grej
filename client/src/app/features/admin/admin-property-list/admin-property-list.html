@@ -21,6 +21,7 @@
     <div class="search">
       <app-search-field
         [label]="'Sök bland ' + texts().theAll"
+        [hint]="texts().searchHint"
         [value]="search()"
         (searched)="showSearch($event)"
       />
