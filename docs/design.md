@@ -150,7 +150,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - Beside the title when both fit, otherwise below it (`flex-wrap` with a start width each, so from about 1150 px, and never with 200 % text):
     - "Din beställning": each row with its title, quantity and amount (the amount goes below the title when there is no room), then the products, the shipping and the total, which share `shared/order-sums.scss` with the cart.
     - Once paid, a box with "Leverans" (name, address, shipping method) and "Betalning" ("Betald via Stripe", the order date and the total), side by side when the box is wide enough. There is no card number, since the API does not store it, and no VAT, which is Won't.
-  - Below: "Vad händer nu?" as a numbered list, "Fortsätt handla", and a note that the shop is a demo, where no money is taken, nothing is sent and the confirmation only reaches the developer's address.
+  - Below: "Vad händer nu?" as a numbered list, "Fortsätt handla", and a note that the shop is a demo, where no money is taken and no package is sent.
   - Without a session, or when the API does not know it, the page shows only the order number from the URL.
 
 ## Admin
