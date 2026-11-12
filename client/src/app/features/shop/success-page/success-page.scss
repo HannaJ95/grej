@@ -38,8 +38,7 @@
   max-width: 50rem;
 }
 
-// The gaps set all the spacing. Long words and email addresses break instead of scrolling
-// the page sideways.
+// Long words and email addresses break instead of widening the page.
 h1,
 h2,
 h3,
@@ -70,7 +69,6 @@ p {
   list-style: none;
 }
 
-// The price goes below the title when there isn't room for both, e.g. with large text.
 .item {
   display: flex;
   flex-wrap: wrap;
@@ -102,7 +100,6 @@ p {
   white-space: nowrap;
 }
 
-// Leverans and Betalning side by side when the box is wide enough.
 .info {
   display: flex;
   flex-wrap: wrap;

@@ -40,7 +40,7 @@ export class SuccessPage {
 
   private readonly placed = inject(CheckoutService).getOrder(this.session);
 
-  // Kept when a later request fails, like ProductList's lastResult.
+  // Kept when a later request fails.
   protected readonly confirmation = linkedSignal<
     OrderConfirmation | undefined,
     OrderConfirmation | undefined
@@ -66,7 +66,6 @@ export class SuccessPage {
     return confirmation ? confirmation.total - (confirmation.shippingCost ?? 0) : 0;
   });
 
-  // Null fields left out, e.g. the second address line.
   protected readonly address = computed(() => {
     const c = this.confirmation();
     if (!c?.addressLine1) {

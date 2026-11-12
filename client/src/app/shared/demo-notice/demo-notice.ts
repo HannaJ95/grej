@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { Icon } from '../icons/icon';
 
-// <app-demo-notice>Betalningen gjordes i Stripes testläge …</app-demo-notice>. The heading is
-// the same everywhere; each page says what the demo means there.
+// The heading is fixed; each page explains the demo in its own words as content.
 @Component({
   selector: 'app-demo-notice',
   imports: [Icon],
