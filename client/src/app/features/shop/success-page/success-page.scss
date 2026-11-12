@@ -179,25 +179,3 @@ p {
     align-self: flex-start;
   }
 }
-
-.notice {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-14);
-  padding: var(--space-16) var(--space-20) var(--space-16) var(--space-16);
-  border: var(--border-width-default) solid var(--color-border-default);
-  background: var(--color-bg-surface);
-}
-
-.notice-icon {
-  --icon-size: 1rem;
-
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  background: var(--color-bg-inverse);
-  color: var(--color-text-on-inverse);
-}

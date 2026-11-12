@@ -5,6 +5,7 @@ import { CartService } from '../../../core/cart.service';
 import { CheckoutService } from '../../../core/checkout.service';
 import { OrderConfirmation } from '../../../core/order';
 import { Button } from '../../../shared/button/button';
+import { DemoNotice } from '../../../shared/demo-notice/demo-notice';
 import { Icon } from '../../../shared/icons/icon';
 
 // The webhook usually arrives within seconds. After 30 the page stops asking.
@@ -15,7 +16,7 @@ const MAX_RETRIES = 15;
 // Only the webhook knows that the order is paid, so the page asks the API (constraints.md).
 @Component({
   selector: 'app-success-page',
-  imports: [CurrencyPipe, DatePipe, RouterLink, Button, Icon],
+  imports: [CurrencyPipe, DatePipe, RouterLink, Button, DemoNotice, Icon],
   templateUrl: './success-page.html',
   styleUrls: ['./success-page.scss', '../../../shared/order-sums.scss'],
   host: { class: 'page-width' },
