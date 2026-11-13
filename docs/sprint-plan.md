@@ -117,7 +117,7 @@ In priority order. Responsive design and accessibility are checked on every page
 
 - [ ] Fix bugs, no new features
 - [x] Responsive design and accessibility review of all pages
-- [ ] README: how to run the project locally
+- [x] README: how to run the project locally
 - [ ] Update the planning documents to match what was built, including known limitations
 - [ ] Demo content: final texts and images in the demo data, reset once in the deployed shop
 - [ ] Write the Result section in examensarbete.md (AI documentation and personal evaluation) and submit it with the repo and deploy links
