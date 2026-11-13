@@ -14,6 +14,13 @@
   margin: 0;
   padding: 0;
   list-style: none;
+
+  // Unlike the shop's scrolling tabs, these wrap, so "Alla beställningar" may take two lines
+  // with large text, and even break the word on the narrowest phones.
+  .tab {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 }
 
 // A row of its own until 40rem, where both tabs and the field fit. min-width: 0, or the input's
@@ -34,11 +41,6 @@
 // A long search wraps instead of widening the page.
 .state {
   overflow-wrap: anywhere;
-}
-
-.date,
-.total {
-  white-space: nowrap;
 }
 
 .muted {

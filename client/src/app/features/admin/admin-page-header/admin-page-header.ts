@@ -36,6 +36,7 @@ import { Component, DestroyRef, DOCUMENT, ElementRef, inject, input } from '@ang
       display: flex;
       flex-direction: column;
       gap: var(--space-6);
+      min-width: 0;
     }
 
     .eyebrow {
@@ -43,8 +44,10 @@ import { Component, DestroyRef, DOCUMENT, ElementRef, inject, input } from '@ang
       color: var(--color-text-secondary);
     }
 
+    // With large text one word ("Beställningar") can be wider than a phone.
     h1 {
       margin: 0;
+      overflow-wrap: anywhere;
     }
   `,
 })

@@ -27,12 +27,15 @@ import { Component, input } from '@angular/core';
       align-items: center;
       justify-content: center;
       gap: var(--space-8);
+      max-width: 100%;
       padding: calc(var(--space-8) - var(--button-border))
         calc(var(--space-16) - var(--button-border));
       border: var(--button-border) solid var(--color-border-default);
       background: var(--button-bg);
       color: var(--button-text);
       text-align: center;
+      // With large text a label ("Ny huvudkategori") can be wider than a phone.
+      overflow-wrap: anywhere;
       cursor: pointer;
     }
 

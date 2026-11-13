@@ -197,6 +197,7 @@ The CMS uses the same tokens, text styles and shared components as the shop.
   - `admin-page.scss`: the page and every `.card` are CSS containers (`container-type: inline-size`), plus the columns, the list rows and the text links with an icon (`.back` to a list, `.icon-link`).
   - `admin-form.scss`: the form fields, hints and error texts. The selects also use `shared/select.scss`.
   - `admin-table.scss`: a table in a card. When the card is narrower than 36rem (44rem for the six columns of `.table.wide`), each row becomes a small block with two columns, and the column headings are kept for screen readers only. Each cell's own text says what it is ("2 st", "349 kr/st"); words only a stacked row needs are in `.stacked-only`, and `.nowrap-in-table` keeps a text on one line only while the table has columns.
+  - With large text (200 %) nothing widens the page: the order tabs, page titles, intros, buttons and card texts wrap, breaking a word on the narrowest phones, and the overview cards are never wider than the page.
   - `search-info.scss`: the number of hits and the clear button below a search.
 - So the layout follows the room the page has beside the menu, not the screen's width. On the category pages the card goes to the right of the list when the page is at least 56rem wide, and each row fits on one line when the list is at least 36rem wide.
   - The card comes first in the HTML, so it is on top on a narrow screen and the keyboard order matches what is seen.
