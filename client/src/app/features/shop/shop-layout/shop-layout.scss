@@ -16,10 +16,11 @@ main {
   border-bottom: 1px solid var(--color-border-subtle);
 }
 
+// Wraps, so large text moves the buttons to a row of their own instead of past the screen's edge.
 .header-content {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-16);
   padding-block: var(--space-12);
 
@@ -33,11 +34,14 @@ main {
   letter-spacing: var(--space-2);
 }
 
+// Takes the room between the logo and the buttons, so the links stay in the middle.
 .nav {
   display: none;
 
   @media (width >= 48rem) {
     display: flex;
+    flex: 1;
+    justify-content: center;
     gap: var(--space-28);
   }
 
@@ -59,6 +63,7 @@ main {
   display: flex;
   align-items: center;
   gap: var(--space-10);
+  margin-inline-start: auto;
 }
 
 // As tall as the cart button beside it.
@@ -139,9 +144,9 @@ main {
   margin: 0;
 }
 
-// 42vw keeps the wordmark inside the window just above 1024 px. No letter spacing, since the
-// browser also adds it after a lone letter in a span, which made the row too wide.
-// The glyphs reach above the line height and caught the clicks meant for the links above.
+// Capped by the window, so the wordmark fits just above 1024 px. No letter spacing, since the
+// browser adds it after a lone letter too. pointer-events: the glyphs reach above the line
+// height and caught clicks meant for the links above.
 .footer-logo {
   display: flex;
   justify-content: space-between;
