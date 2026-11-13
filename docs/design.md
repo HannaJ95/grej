@@ -53,7 +53,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - "I lager – 4 st" (yellow, 3–5 left; `--color-feedback-warning`)
   - "I lager – 12 st" (green, 6 or more)
   - The number and "st" are joined by a no-break space, so "st" never ends a line alone.
-- `shared/drawer.scss` is shared by the side panels, which are `<dialog>`s: the cart, the filter panel, the phone menu and the admin menu.
+- `shared/drawer.scss` is shared by the side panels, which are `<dialog>`s: the cart, the filter panel, the phone menu and the admin menu. Each leaves a strip of the page beside it, but with large text it fills the window instead of getting too narrow (`min-width`).
   - Each panel slides in from its side (`--drawer-from`) while the backdrop fades in, and back out when it closes.
   - Firefox and Safari close the panel at once, without the slide.
   - "Reduce motion" turns the slide off.
@@ -99,7 +99,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - a moving band of words, which pauses on hover and stands still for people who have turned on "reduce motion"
   - the four newest products (the first four from `GET /api/products`, which sorts the newest first), as a row to swipe through on a phone
   - links to the categories from `GET /api/categories`
-- The product list (`/produkter`) has a breadcrumb, the title with the number of products, `CategoryTabs`, and a toolbar with "Visar 1–12 av 40 grejer" ("0 grejer hittades" when nothing matches). It shows two products per row on a phone, and three on a tablet and a computer.
+- The product list (`/produkter`) has a breadcrumb, the title with the number of products, `CategoryTabs`, and a toolbar with "Visar 1–12 av 40 grejer" ("1 grej hittades" for one, "0 grejer hittades" when nothing matches). It shows two products per row on a phone, one when two would be too narrow (large text), and three on a tablet and a computer.
   - Screen readers hear the toolbar's count after each choice (`aria-live`).
   - A new page from `Pagination` starts at the toolbar (`#grejer`), not at the top, and the focus moves to the toolbar, so Tab goes on into the new products. Back returns to where the customer was.
   - While a new choice loads, the old products and the count stay, so the page doesn't jump. The products fade only if the answer takes more than 0.3 s.

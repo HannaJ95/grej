@@ -31,7 +31,7 @@ dialog {
 
   margin: 0 0 0 auto;
   width: min(30rem, calc(100% - var(--space-56)));
-  max-width: none;
+  max-width: 100%;
   height: 100dvh;
   max-height: 100dvh;
   padding: 0;
@@ -76,10 +76,13 @@ dialog {
   border-bottom: var(--border-width-default) solid var(--color-border-default);
 }
 
+// Wraps with large text, so the close button stays inside the panel.
 .heading {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-12);
+  gap: var(--space-4) var(--space-12);
+  min-width: 0;
 }
 
 .count {
@@ -88,6 +91,7 @@ dialog {
 
 .panel-title {
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .notice {
@@ -152,6 +156,7 @@ dialog {
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-12);
