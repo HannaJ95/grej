@@ -22,7 +22,7 @@ import { Icon } from '../icons/icon';
             <span class="step-text">Föregående</span>
           </a>
         } @else {
-          <span class="step disabled text-label-m" aria-hidden="true">
+          <span class="step disabled text-label-m" aria-hidden="true" aria-disabled="true">
             <app-icon name="arrow-left" />
             <span class="step-text">Föregående</span>
           </span>
@@ -69,7 +69,7 @@ import { Icon } from '../icons/icon';
             <app-icon name="arrow-right" />
           </a>
         } @else {
-          <span class="step disabled text-label-m" aria-hidden="true">
+          <span class="step disabled text-label-m" aria-hidden="true" aria-disabled="true">
             <span class="step-text">Nästa</span>
             <app-icon name="arrow-right" />
           </span>

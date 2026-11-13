@@ -116,7 +116,7 @@ In priority order. Responsive design and accessibility are checked on every page
 **Goal:** a stable, documented project, submitted by Sun 15 Nov. The code is not changed after that.
 
 - [ ] Fix bugs, no new features
-- [ ] Responsive design and accessibility review of all pages
+- [x] Responsive design and accessibility review of all pages
 - [ ] README: how to run the project locally
 - [ ] Update the planning documents to match what was built, including known limitations
 - [ ] Demo content: final texts and images in the demo data, reset once in the deployed shop
