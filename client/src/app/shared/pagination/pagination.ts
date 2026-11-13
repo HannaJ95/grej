@@ -78,11 +78,12 @@ import { Icon } from '../icons/icon';
     }
   `,
   styles: `
+    // Wraps with large text: the arrows get rows of their own above and below the numbers.
     nav {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      justify-content: space-between;
-      gap: var(--space-12);
+      gap: var(--space-8);
       margin-top: var(--space-40);
       padding-top: var(--space-24);
       border-top: var(--border-width-default) solid var(--color-border-default);
@@ -96,8 +97,8 @@ import { Icon } from '../icons/icon';
       align-items: center;
       justify-content: center;
       gap: var(--space-8);
-      width: 2.75rem;
-      height: 2.75rem;
+      width: 2.5rem;
+      height: 2.5rem;
       border: var(--border-width-default) solid var(--color-border-default);
       color: var(--color-text-primary);
       text-decoration: none;
@@ -122,9 +123,19 @@ import { Icon } from '../icons/icon';
       white-space: nowrap;
     }
 
+    // Keeps "Nästa" at the right edge also when it is alone on its row.
+    .step:last-child {
+      margin-inline-start: auto;
+    }
+
+    // Fills the room between the arrows; the auto basis lets the row break before the list when
+    // the numbers don't fit, so the list gets the whole width and wraps.
     .pages {
       display: none;
-      gap: var(--space-6);
+      flex: 1 1 auto;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-4);
       margin: 0;
       padding: 0;
       list-style: none;
@@ -154,7 +165,9 @@ import { Icon } from '../icons/icon';
       color: var(--color-text-on-inverse);
     }
 
-    .gap {
+    // Narrower than a page button, so "1 … 5 … 9" fits on a 320 px phone.
+    .page-button.gap {
+      width: auto;
       border-color: transparent;
     }
 
