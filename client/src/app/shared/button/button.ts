@@ -52,7 +52,7 @@ import { Component, input } from '@angular/core';
 
     :host(.danger) {
       --button-bg: var(--color-feedback-error);
-      --button-bg-hover: var(--color-bg-inverse);
+      --button-bg-hover: var(--color-feedback-error-hover);
       --button-text: var(--color-text-on-inverse);
     }
 
