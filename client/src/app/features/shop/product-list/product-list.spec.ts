@@ -64,9 +64,8 @@ describe('ProductList', () => {
     // Only the page's links: routeNativeElement is the shop's layout, with its own links.
     const page = harness.routeNativeElement!.querySelector('app-product-list')!;
     const links = [...page.querySelectorAll('a')].map((a) => a.getAttribute('href'));
-    // The breadcrumb's "Hem" first, then the product, then the page links (the page
-    // numbers twice: the list for a computer and the shorter one for a phone), which lead to
-    // the toolbar.
+    // "Hem", the product, then the page links to the toolbar. The numbers come twice: the
+    // computer's list and the phone's.
     expect(links).toEqual([
       '/',
       '/produkter/7',
@@ -77,9 +76,40 @@ describe('ProductList', () => {
       '/produkter?sida=3#grejer',
       '/produkter?sida=3#grejer',
     ]);
-    // Page 2 with 12 per page starts at the 13th product.
-    expect(page.querySelector('.toolbar')!.textContent).toContain('Visar 13–13 av 25 grejer');
+    // Page 2 with 12 per page starts at the 13th product, the only one on the page.
+    expect(page.querySelector('.toolbar')!.textContent).toContain('Visar 13 av 25 grejer');
     expect(page.querySelector('.intro')!.textContent).toContain('25 handgjorda grejer');
+  });
+
+  it('uses the singular for one product', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/produkter');
+    flushFilters();
+
+    httpTesting
+      .expectOne((req) => req.url.endsWith('/api/products'))
+      .flush({
+        items: [
+          {
+            id: 7,
+            title: 'Vas',
+            description: '',
+            price: 300,
+            currency: 'SEK',
+            isSoldOut: false,
+            images: [],
+          },
+        ],
+        page: 1,
+        pageSize: 12,
+        totalCount: 1,
+        totalPages: 1,
+      });
+    await harness.fixture.whenStable();
+
+    const page = harness.routeNativeElement!.querySelector('app-product-list')!;
+    expect(page.querySelector('.toolbar')!.textContent).toContain('1 grej hittades');
+    expect(page.querySelector('.intro')!.textContent).toContain('1 handgjord grej');
   });
 
   it('shows the image of each product, with its alt text', async () => {
@@ -191,7 +221,7 @@ describe('ProductList', () => {
 
     expect(page.querySelector('.results')!.getAttribute('aria-busy')).toBe('true');
     expect(page.querySelector('.product-grid')!.textContent).toContain('Vas');
-    expect(page.querySelector('.toolbar')!.textContent).toContain('Visar 1–1 av 1 grejer');
+    expect(page.querySelector('.toolbar')!.textContent).toContain('1 grej hittades');
     request.flush({ items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 });
   });
 
