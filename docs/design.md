@@ -152,7 +152,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
 - The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's main image when it is added) and a `QuantityStepper`, plus the products, the shipping and the total, and an empty state. Its button in the header is only a bag icon with the number of products beside it, also when the cart is empty, with no box or background. Both get the secondary text color on hover, and the whole button is the click area. Its `aria-label` says "Varukorg, 2 grejer". On a phone it is as tall as the menu button beside it, and from a tablet the number lines up with the page's edge.
   - The shipping is a copy of the API's rule (`core/shipping.ts`), only for showing. A row saved before shipping was built has no parcel, and then the cart shows the sum and "Frakten läggs till i kassan."
   - When "Till kassan" fails, a message under the button (`role="alert"`) says so. After too many attempts from one IP address (429), it asks the customer to wait a minute.
-- When something is added, `AddedToCart` shows a small popup under the cart button.
+- When something is added, `AddedToCart` shows a small popup under the cart button. From a tablet up its right edge lines up with the cart button on every screen width; on a phone it is nearly as wide as the screen.
   - It closes itself after 5 seconds, which pause on hover or focus. It also closes with the cross or with Escape.
   - It never takes the focus, and screen readers read it through `aria-live`.
 - The success page (`/kassa/tack?order=…&session=…`):

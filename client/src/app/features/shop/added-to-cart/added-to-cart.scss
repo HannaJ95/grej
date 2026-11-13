@@ -1,4 +1,5 @@
-// Fixed, so it stays under the header's cart button when the page is scrolled.
+// Fixed, so it stays under the header's cart button when the page is scrolled. Its right edge
+// follows the header's content, which stops growing at --layout-viewport-width (.page-width).
 .popup {
   position: fixed;
   top: 4.875rem;
@@ -15,6 +16,13 @@
 
   @media (width >= 48rem) {
     top: 5.375rem;
+  }
+
+  @media (width >= 64rem) {
+    right: max(
+      var(--layout-margin),
+      (100% - var(--layout-viewport-width)) / 2 + var(--layout-margin)
+    );
   }
 
   p {
