@@ -184,7 +184,7 @@ The CMS uses the same tokens, text styles and shared components as the shop.
 
 - `AdminLayout` (`features/admin/admin-layout/`) is the parent route of every admin page except the login page, like `ShopLayout`.
   - It holds `ConfirmDialog` and `Toast` once for every admin page, so a toast stays when the page changes.
-  - From 1024 px, `AdminNav` is a 264 px menu to the left. It is exactly the window's height and stays still while the page scrolls; it only scrolls on its own when its content is taller than the window.
+  - From 1024 px, `AdminNav` is a 264 px menu to the left. It is exactly the window's height and stays still while the page scrolls; it only scrolls on its own when its content is taller than the window. The whole menu is a landmark ("Adminmeny", `role="complementary"`), so the logo and the account part are inside one too, not only the links' `<nav>`.
   - Below 1024 px there is an app bar. Its menu button opens the same menu as a drawer that slides in from the left, a `<dialog>` like `MobileMenu`.
   - Kategorier and Egenskaper fold with a button (`aria-expanded`), and are open on their own pages (`isActive` and `linkedSignal`).
   - The menu shows the admin's email and its first letter.
