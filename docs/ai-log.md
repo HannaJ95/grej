@@ -248,3 +248,11 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 
 - **Building:** Terms page `/villkor`, linked from the footer and the product page. Every text was checked against the code (Order's fields, Stripe, Resend, localStorage); there are no company details or contact, and Retur, Reklamation and Tvister say why they don't apply. The contents follow the scrolling: a sticky list from 1024 px, a sticky "Hoppa till avsnitt" select below.
 - **Verification:** client tests + axe; Claude checked 320–1440 px in both modes in Chrome. The check found a Cloudflare cookie from Supabase, now named on the page. My test of the select showed it jumped to the wrong section: the select's height was in scroll-padding, so focusing it scrolled the page. The headings now use scroll-margin instead.
+
+## 2026-11-13
+
+- **Wrap-up:** Claude collected the wrap-up notes from earlier chats and its memory into one list, which I approved as a plan. Each fix was its own commit.
+- **Fixes:** at 200 % text nothing widens the page any more: the header and the admin app bar wrap, the pagination wraps (and fits nine pages at 320 px), the side panels fill the window, grids drop to one column, and long words break. Also: the zoomed image's focus ring, the whole admin menu as a landmark, "1 grej" in the singular, a darker red on hover for red buttons, the footer's columns in line with the logo, the added-to-cart popup under the cart button on wide screens, and the shared `.icon-link` on the admin overview.
+- **Verification:** Claude reviewed every page at 320–1440 px and 200 % text in both modes and ran axe on each; it fixed what it found (overflow on three pages, an empty table heading, a faded pagination arrow). The CMS sort menu still shows "Nyast fö…" at 320 px with 200 % text, by design.
+- **Docs:** README with how to run the project, an MIT license, and the planning documents brought up to date.
+- **AI use:** I switched from Fable (high) to Opus to save usage; the smaller fixes did not need the larger model.

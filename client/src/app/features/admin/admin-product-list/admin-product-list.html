@@ -27,8 +27,7 @@
             <th class="text-mono-s-caps" scope="col">Lager</th>
             <th class="text-mono-s-caps" scope="col">I butiken</th>
             <th class="text-mono-s-caps" scope="col">Tillagd</th>
-            <!-- No visible heading, but screen readers still get a name for the column. -->
-            <th scope="col" aria-label="Åtgärder"></th>
+            <th scope="col"><span class="visually-hidden">Åtgärder</span></th>
           </tr>
         </thead>
         <tbody>
@@ -42,7 +41,9 @@
                   } @else {
                     <span class="thumb empty"></span>
                   }
-                  <a class="title text-link-s" [routerLink]="['/admin/produkter', p.id]">{{ p.title }}</a>
+                  <a class="title text-link-s" [routerLink]="['/admin/produkter', p.id]">{{
+                    p.title
+                  }}</a>
                 </span>
               </td>
               <td class="price end text-body-s">
@@ -51,7 +52,9 @@
               <td>
                 <!-- Below 0: the last item was sold twice, and one order must be refunded. -->
                 @if (p.stock < 0) {
-                  <span class="oversold text-label-xs">{{ p.stock }} st – fler sålda än det fanns</span>
+                  <span class="oversold text-label-xs"
+                    >{{ p.stock }} st – fler sålda än det fanns</span
+                  >
                 } @else {
                   <app-stock-status class="nowrap-in-table" [stock]="p.stock" />
                 }

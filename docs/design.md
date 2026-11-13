@@ -30,7 +30,7 @@ The design lives in the code. `client/src/styles/` has the tokens, the text styl
 
 The component library is small and our own, in `shared/`, instead of e.g. Angular Material, so the Signal Forms forms keep their native fields.
 
-- `Button` is an attribute on a real `<button>` or `<a>` (`<button appButton variant="danger">`). That way the element keeps the browser's keyboard handling, form submit, `disabled` and `routerLink`. It has three variants (primary, secondary with a 2 px frame, danger) and two sizes (normal for forms and the CMS, `size="large"` for the shop's big buttons). The frame is taken from the padding, so all variants are equally tall.
+- `Button` is an attribute on a real `<button>` or `<a>` (`<button appButton variant="danger">`). That way the element keeps the browser's keyboard handling, form submit, `disabled` and `routerLink`. It has three variants (primary, secondary with a 2 px frame, danger) and two sizes (normal for forms and the CMS, `size="large"` for the shop's big buttons). The frame is taken from the padding, so all variants are equally tall. On hover, danger gets a darker red (`--color-feedback-error-hover`), so it stays a red button.
 - `LinkButton` (`button[appLinkButton]`) is a button that looks like a link, for actions on the same page, such as "Redigera" and "Ta bort" in a CMS list. It has `tone` default or danger.
 - `Icon` shows one of the icons in `public/icons/` as a CSS mask, so it takes the text color around it. Arrows and other symbols beside a label are icons, never characters such as →, which Inter's web font lacks, so each browser would draw its own. Inside `Button` an icon is 1.25 times the label's size. `IconButton` is a square button with only an icon (e.g. close), and always needs an `aria-label`. `filled` gives it the surface color, for a button on an image or the dimmed page.
 - `ThemeToggle` (`button[appThemeToggle]`) switches between light and dark mode through `ThemeService`. The icon and the text show the mode a click gives: a moon and "Mörkt läge" in light mode, a sun and "Ljust läge" in dark mode. With `showLabel` the text shows; without it, the text is the `aria-label`. It has no box: the place sets the color and the size, and `--theme-toggle-hover` the hover color.
@@ -44,7 +44,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - In the CMS, `hint` says below the field what the list searches in, since that differs between lists. The field is described by it (`aria-describedby`). The shop's search has no hint.
   - Like the price fields, it searches on Enter or when the field is left, so a list doesn't reload for every letter.
   - It has no clear button of its own; each page clears the search its own way. `focus()` moves the focus to the field when the page's clear button disappears.
-- `Pagination` shows the links to the page before and after, and the page numbers (`?sida=`), e.g. 1 2 3 … 8. A phone gets a shorter list. It shows nothing when the list fits on one page. With `fragment`, its links lead to that id on the page instead of the top; the router's offset is `scroll-padding-top` (`app.config.ts`), so the id lands just below the sticky header.
+- `Pagination` shows the links to the page before and after, and the page numbers (`?sida=`), e.g. 1 2 3 … 8. A phone gets a shorter list, and the "…" is narrower than a number, so 1 … 5 … 9 fits at 320 px. With large text the row wraps: the arrows get rows of their own above and below the numbers. It shows nothing when the list fits on one page. With `fragment`, its links lead to that id on the page instead of the top; the router's offset is `scroll-padding-top` (`app.config.ts`), so the id lands just below the sticky header.
 - `Breadcrumb` shows e.g. "Hem / Shop / Vas" above a page's title. The current page comes last and is not a link.
 - `QuantityStepper` is the − 1 + control in the cart and on the product page (`[(quantity)]` with `min` and `max`). Its buttons are squares of `--stepper-button-size`, which the product page sets so the stepper is as tall as the large button.
 - `StockStatus` is a colored dot and the stock as text:
@@ -53,7 +53,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
   - "I lager – 4 st" (yellow, 3–5 left; `--color-feedback-warning`)
   - "I lager – 12 st" (green, 6 or more)
   - The number and "st" are joined by a no-break space, so "st" never ends a line alone.
-- `shared/drawer.scss` is shared by the side panels, which are `<dialog>`s: the cart, the filter panel, the phone menu and the admin menu.
+- `shared/drawer.scss` is shared by the side panels, which are `<dialog>`s: the cart, the filter panel, the phone menu and the admin menu. Each leaves a strip of the page beside it, but with large text it fills the window instead of getting too narrow (`min-width`).
   - Each panel slides in from its side (`--drawer-from`) while the backdrop fades in, and back out when it closes.
   - Firefox and Safari close the panel at once, without the slide.
   - "Reduce motion" turns the slide off.
@@ -79,7 +79,7 @@ The component library is small and our own, in `shared/`, instead of e.g. Angula
 The shop has neutral colors. The CMS uses the same tokens, so it gets the same colors and fonts.
 
 - `ShopLayout` (`features/shop/shop-layout/`) has the shop's header (logo, menu, dark mode button, cart) and footer, and the header sticks at the top. The shop's routes are its children in `app.routes.ts`, so the admin pages have no shop header.
-  - The header is the same low height on every screen size: the logo is smaller on a phone, and from a tablet it is as tall as the cart button. That height is `--shop-sticky-top` in `_base.scss`. `scroll-padding-top` is that height plus `--space-8`, so a focused element and its focus ring are never hidden under the header.
+  - The header is the same low height on every screen size: the logo is smaller on a phone, and from a tablet it is as tall as the cart button. That height is `--shop-sticky-top` in `_base.scss`. `scroll-padding-top` is that height plus `--space-8`, so a focused element and its focus ring are never hidden under the header. With large text (200 %) the row wraps, so the buttons move to a row of their own under the logo instead of past the screen's edge; the admin app bar wraps the same way.
   - `<main>` is one layer below the header (`isolation: isolate`), so nothing on a page, such as the product page's sticky buy row, can scroll over it.
   - Its bands reach the screen's edges. The content inside them uses `.page-width`: centered, at most `--layout-viewport-width` (1440 px), with `--layout-margin` on the sides (20 px on a phone, 32 px on a tablet, 48 px on a computer).
   - From a tablet, `ThemeToggle` is an icon before the cart, as tall as the cart button.
@@ -99,7 +99,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - a moving band of words, which pauses on hover and stands still for people who have turned on "reduce motion"
   - the four newest products (the first four from `GET /api/products`, which sorts the newest first), as a row to swipe through on a phone
   - links to the categories from `GET /api/categories`
-- The product list (`/produkter`) has a breadcrumb, the title with the number of products, `CategoryTabs`, and a toolbar with "Visar 1–12 av 40 grejer" ("0 grejer hittades" when nothing matches). It shows two products per row on a phone, and three on a tablet and a computer.
+- The product list (`/produkter`) has a breadcrumb, the title with the number of products, `CategoryTabs`, and a toolbar with "Visar 1–12 av 40 grejer" ("1 grej hittades" for one, "0 grejer hittades" when nothing matches). It shows two products per row on a phone, one when two would be too narrow (large text), and three on a tablet and a computer.
   - Screen readers hear the toolbar's count after each choice (`aria-live`).
   - A new page from `Pagination` starts at the toolbar (`#grejer`), not at the top, and the focus moves to the toolbar, so Tab goes on into the new products. Back returns to where the customer was.
   - While a new choice loads, the old products and the count stay, so the page doesn't jump. The products fade only if the answer takes more than 0.3 s.
@@ -152,7 +152,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
 - The cart (`CartDrawer`) shows each row with a picture (the cart saves the product's main image when it is added) and a `QuantityStepper`, plus the products, the shipping and the total, and an empty state. Its button in the header is only a bag icon with the number of products beside it, also when the cart is empty, with no box or background. Both get the secondary text color on hover, and the whole button is the click area. Its `aria-label` says "Varukorg, 2 grejer". On a phone it is as tall as the menu button beside it, and from a tablet the number lines up with the page's edge.
   - The shipping is a copy of the API's rule (`core/shipping.ts`), only for showing. A row saved before shipping was built has no parcel, and then the cart shows the sum and "Frakten läggs till i kassan."
   - When "Till kassan" fails, a message under the button (`role="alert"`) says so. After too many attempts from one IP address (429), it asks the customer to wait a minute.
-- When something is added, `AddedToCart` shows a small popup under the cart button.
+- When something is added, `AddedToCart` shows a small popup under the cart button. From a tablet up its right edge lines up with the cart button on every screen width; on a phone it is nearly as wide as the screen.
   - It closes itself after 5 seconds, which pause on hover or focus. It also closes with the cross or with Escape.
   - It never takes the focus, and screen readers read it through `aria-live`.
 - The success page (`/kassa/tack?order=…&session=…`):
@@ -184,7 +184,7 @@ The CMS uses the same tokens, text styles and shared components as the shop.
 
 - `AdminLayout` (`features/admin/admin-layout/`) is the parent route of every admin page except the login page, like `ShopLayout`.
   - It holds `ConfirmDialog` and `Toast` once for every admin page, so a toast stays when the page changes.
-  - From 1024 px, `AdminNav` is a 264 px menu to the left. It is exactly the window's height and stays still while the page scrolls; it only scrolls on its own when its content is taller than the window.
+  - From 1024 px, `AdminNav` is a 264 px menu to the left. It is exactly the window's height and stays still while the page scrolls; it only scrolls on its own when its content is taller than the window. The whole menu is a landmark ("Adminmeny", `role="complementary"`), so the logo and the account part are inside one too, not only the links' `<nav>`.
   - Below 1024 px there is an app bar. Its menu button opens the same menu as a drawer that slides in from the left, a `<dialog>` like `MobileMenu`.
   - Kategorier and Egenskaper fold with a button (`aria-expanded`), and are open on their own pages (`isActive` and `linkedSignal`).
   - The menu shows the admin's email and its first letter.
@@ -197,6 +197,7 @@ The CMS uses the same tokens, text styles and shared components as the shop.
   - `admin-page.scss`: the page and every `.card` are CSS containers (`container-type: inline-size`), plus the columns, the list rows and the text links with an icon (`.back` to a list, `.icon-link`).
   - `admin-form.scss`: the form fields, hints and error texts. The selects also use `shared/select.scss`.
   - `admin-table.scss`: a table in a card. When the card is narrower than 36rem (44rem for the six columns of `.table.wide`), each row becomes a small block with two columns, and the column headings are kept for screen readers only. Each cell's own text says what it is ("2 st", "349 kr/st"); words only a stacked row needs are in `.stacked-only`, and `.nowrap-in-table` keeps a text on one line only while the table has columns.
+  - With large text (200 %) nothing widens the page: the order tabs, page titles, intros, buttons and card texts wrap, breaking a word on the narrowest phones, and the overview cards are never wider than the page.
   - `search-info.scss`: the number of hits and the clear button below a search.
 - So the layout follows the room the page has beside the menu, not the screen's width. On the category pages the card goes to the right of the list when the page is at least 56rem wide, and each row fits on one line when the list is at least 36rem wide.
   - The card comes first in the HTML, so it is on top on a narrow screen and the keyboard order matches what is seen.

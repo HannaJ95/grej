@@ -40,7 +40,7 @@ The MVP is a single-seller webshop with an admin CMS = all **Must** items below.
 - Search products by name
 - Filter products by price, material and color
 - Styled customer pages with shared colors, typography and spacing
-- Own visual design of the main customer pages, made before they are styled (about one day, decided Fri 23 Oct). Plan B: a component library with own colors
+- Own visual design of the main customer pages, made before they are styled (about one day, decided Fri 23 Oct). Plan B: a component library with own colors. The own design was chosen on 4 Nov; from 8 Nov the code itself is the design (design.md)
 - Responsive design: usable on mobile, tablet and desktop
 - Accessibility: keyboard navigation, alt texts on images, sufficient contrast
 - Several images per product
@@ -76,6 +76,10 @@ The MVP is a single-seller webshop with an admin CMS = all **Must** items below.
 - Selling to countries other than Sweden
 - Payment methods other than Stripe Checkout
 - VAT and legal requirements for distance selling
+
+## Known limitations
+
+Each area's known limitations are listed where it is described in [architecture.md](architecture.md) (shipping, email, rate limiting, payments, CMS, filters). Improvements that were left out are collected in the report.
 
 ## Future ideas (not planned)
 

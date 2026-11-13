@@ -58,9 +58,10 @@ import { PROPERTY_TEXTS } from '../property-texts';
       margin: 0;
     }
 
+    // min(…, 100%), so a column is never wider than the card with large text.
     .options {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(8.5rem, 100%), 1fr));
       gap: var(--space-12) var(--space-16);
     }
 

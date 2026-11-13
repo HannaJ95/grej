@@ -1,10 +1,11 @@
 <div class="page-width page-title">
   <app-breadcrumb [links]="[{ label: 'Hem', path: '/' }]" current="Shop" />
   <div class="title-row">
-    <!-- Normal case: the text style makes the capitals, so screen readers read words. -->
     <h1 class="title text-display-xl">Alla grejer</h1>
     <p class="intro text-body-m">
-      @if (totalCount() !== undefined) {
+      @if (totalCount() === 1) {
+        1 handgjord grej
+      } @else if (totalCount() !== undefined) {
         {{ totalCount() }} handgjorda grejer
       } @else {
         Handgjorda grejer
@@ -18,15 +19,18 @@
   <app-category-tabs [categories]="options().categories" [selected]="categoryIds()" />
 }
 
-<!-- Where Pagination's links lead (#grejer). tabindex="-1" lets the router move the focus here
-     too, so Tab goes on into the new page instead of the footer. -->
+<!-- Pagination's links lead here. tabindex="-1" lets the router focus it, so Tab goes on into
+     the new page. -->
 <div class="page-width toolbar" id="grejer" tabindex="-1">
   @if (shown(); as s) {
-    <!-- aria-live reads out the new number after each choice. tabindex="-1" lets focusCount()
-         move the focus here without adding it to the Tab order. -->
+    <!-- aria-live reads out the new number. tabindex="-1" lets focusCount() focus it. -->
     <p #count class="text-label-s" tabindex="-1" aria-live="polite">
       @if (s.total === 0) {
         0 grejer hittades
+      } @else if (s.total === 1) {
+        1 grej hittades
+      } @else if (s.from === s.to) {
+        Visar {{ s.from }} av {{ s.total }} grejer
       } @else {
         Visar {{ s.from }}–{{ s.to }} av {{ s.total }} grejer
       }

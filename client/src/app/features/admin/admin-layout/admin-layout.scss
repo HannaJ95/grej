@@ -14,9 +14,10 @@
   top: 0;
   z-index: 1;
   display: flex;
+  // Wraps and has a min-height, so large text makes the bar taller instead of wider.
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-14);
-  // min-height, so zoomed text can make it taller.
   min-height: 4rem;
   padding: var(--space-10) var(--layout-margin);
   border-bottom: var(--border-width-default) solid var(--color-border-default);
@@ -69,8 +70,7 @@
   }
 }
 
-// Always leaves at least 72 px of the page visible beside the drawer. The motion is in
-// shared/drawer.scss.
+// Leaves a strip of the page visible beside the drawer. The motion is in shared/drawer.scss.
 .drawer {
   --drawer-from: -100%;
 

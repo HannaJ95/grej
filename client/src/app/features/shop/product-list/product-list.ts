@@ -108,8 +108,7 @@ export class ProductList {
   protected readonly totalCount = computed(() => this.lastResult()?.totalCount);
   protected readonly choiceCount = computed(() => countChoices(this.filter()));
 
-  // For "Visar 13–24 av 40 grejer" and "0 grejer hittades". Null until the API has answered, and
-  // on a page after the last one.
+  // Null until the API has answered, and on a page after the last one.
   protected readonly shown = computed(() => {
     const result = this.lastResult();
     if (!result || (result.items.length === 0 && result.totalCount > 0)) {

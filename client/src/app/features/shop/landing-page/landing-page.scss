@@ -16,6 +16,8 @@
 
 .hero-title {
   margin: 0 0 var(--space-24);
+  // With large text on a phone one word can be wider than the screen.
+  overflow-wrap: anywhere;
 
   @media (width >= 48rem) {
     margin-bottom: var(--space-32);
@@ -180,11 +182,11 @@
 }
 
 // On a phone a row to swipe through that reaches the screen's edges, and each swipe stops at
-// a card.
+// a card. A card is never wider than the row, e.g. with large text.
 .product-grid {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 16.25rem;
+  grid-auto-columns: min(16.25rem, 100%);
   gap: var(--space-16);
   margin: 0 calc(-1 * var(--layout-margin));
   padding: 0 var(--layout-margin);
@@ -235,7 +237,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-8);
   padding-block: var(--space-8);
+  overflow-wrap: anywhere;
   border-bottom: var(--border-width-default) solid var(--color-bg-inverse);
   color: var(--color-text-primary);
   text-decoration: none;
@@ -248,6 +252,8 @@
 
 .category-arrow {
   --icon-size: 1.875rem;
+
+  flex-shrink: 0;
 
   transition: transform 0.2s;
 

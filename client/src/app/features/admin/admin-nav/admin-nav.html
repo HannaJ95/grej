@@ -67,8 +67,7 @@
                 routerLinkActive="active"
                 ariaCurrentWhenActive="page"
               >
-                <!-- The space keeps the name and the number apart for screen readers, like in
-                     the shop's category tabs. -->
+                <!-- The space keeps the name and the number apart for screen readers. -->
                 <span class="text-label-s">Huvudkategorier </span>
                 @if (mainCategories(); as mains) {
                   <span class="count text-mono-s">{{ mains.length }}</span>
@@ -95,7 +94,6 @@
                   <span class="count text-mono-s">{{ subcategoryCount() }}</span>
                 }
               </a>
-              <!-- The third level: each main category's own page. -->
               @if (onSubcategoryPage() && mainCategories(); as mains) {
                 <ul class="tree">
                   @for (main of mains; track main.id) {
@@ -165,7 +163,6 @@
     <span class="avatar text-label-xs" aria-hidden="true">{{ initial() }}</span>
     <span class="who">
       @if (emailParts(); as parts) {
-        <!-- <wbr> lets a long email break after the @ instead of in the middle of a word. -->
         <span class="name text-label-s">{{ parts.local }}&#64;<wbr />{{ parts.domain }}</span>
       }
       <span class="role text-body-xs">Admin</span>

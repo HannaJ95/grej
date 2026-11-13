@@ -37,8 +37,10 @@
   }
 }
 
+// With large text on a phone, "grejer" alone is wider than the screen.
 .title {
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 // body-m grows to body-l here; the two styles only differ in size.
@@ -133,11 +135,14 @@
   }
 }
 
-// The old products stay while new ones load. They only fade if the answer takes a while, so a
-// quick answer doesn't flicker.
+// Two columns on a phone, or one when two would be narrower than 8rem (large text). The old
+// products stay while new ones load, and only fade if the answer takes a while.
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(max(min(8rem, 100%), (100% - var(--layout-gutter)) / 2), 1fr)
+  );
   gap: var(--space-28) var(--layout-gutter);
   margin: 0;
   padding: 0;
@@ -145,7 +150,7 @@
   transition: opacity 0.2s ease;
 
   @media (width >= 48rem) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     row-gap: var(--space-40);
   }
 

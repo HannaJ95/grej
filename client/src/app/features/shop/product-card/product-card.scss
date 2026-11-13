@@ -49,10 +49,14 @@
   }
 }
 
+// May wrap within the image, since a card is narrow with large text on a phone.
 .badge {
   position: absolute;
   top: var(--space-14);
   left: var(--space-14);
+  max-width: calc(100% - 2 * var(--space-14));
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 // Room on the right for the add button on a tablet and a phone.
@@ -64,8 +68,11 @@
   padding-right: 2.75rem;
 }
 
+// Long words break instead of widening the card. hyphens: auto follows lang="sv".
 .title {
   color: inherit;
+  overflow-wrap: anywhere;
+  hyphens: auto;
   text-decoration: none;
 
   // An empty box over the whole card that belongs to the link, so a click anywhere on the

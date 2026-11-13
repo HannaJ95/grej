@@ -1,7 +1,7 @@
 import { booleanAttribute, Component, input } from '@angular/core';
 import { Icon, IconName } from '../icons/icon';
 
-// Always needs an aria-label, since it has no text. tone="light" is for dark backgrounds, and
+// Always needs an aria-label, since it has no text. tone="light" is for inverse backgrounds, and
 // filled for a button on an image or the dimmed page, where anything can be behind it.
 @Component({
   selector: 'button[appIconButton]',

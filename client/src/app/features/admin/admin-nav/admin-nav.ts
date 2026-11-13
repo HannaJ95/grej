@@ -7,10 +7,12 @@ import { Icon } from '../../../shared/icons/icon';
 import { IconButton } from '../../../shared/icon-button/icon-button';
 import { ThemeToggle } from '../../../shared/theme-toggle/theme-toggle';
 
-// AdminLayout shows it to the left on a computer and in a drawer on tablets and phones.
+// To the left on a computer, in a drawer below that. The whole menu is a landmark, so the logo
+// and the account part are inside one too.
 @Component({
   selector: 'app-admin-nav',
   imports: [RouterLink, RouterLinkActive, Badge, Icon, IconButton, ThemeToggle],
+  host: { role: 'complementary', 'aria-label': 'Adminmeny' },
   templateUrl: './admin-nav.html',
   styleUrl: './admin-nav.scss',
 })
@@ -24,13 +26,12 @@ export class AdminNav {
   readonly inDrawer = input(false);
   readonly closeDrawer = output();
 
-  // The categories the category pages have fetched. The menu never fetches them itself, so the
-  // other admin pages send no extra request; until a category page is opened, no numbers show.
+  // Only what the category pages have fetched, so the menu sends no request of its own and
+  // shows no numbers until one of them is opened.
   private readonly categories = inject(AdminCategoryService).all;
   private readonly categoryItems = computed(() =>
     this.categories.hasValue() ? this.categories.value().items : undefined,
   );
-  // The main categories, each with its number of subcategories, for the third level.
   protected readonly mainCategories = computed(() =>
     this.categoryItems()?.filter((c) => c.parentId === null),
   );

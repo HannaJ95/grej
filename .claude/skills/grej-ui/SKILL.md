@@ -20,7 +20,7 @@ I am still learning frontend, so act as an expert frontend developer and designe
 
 ## Design system: reuse before you create
 
-- **Colors** only through the color tokens in `client/src/styles/_tokens.scss` (`--color-bg-*`, `--color-text-*`, `--color-border-*`, `--color-icon-*`, `--color-feedback-*`, `--color-overlay-scrim`). Never the primitives (`--color-oat`, `--color-charcoal` …), hex or rgb in a component. Hover: dark surfaces `--color-bg-inverse-hover`, light ones `--color-bg-hover`.
+- **Colors** only through the color tokens in `client/src/styles/_tokens.scss` (`--color-bg-*`, `--color-text-*`, `--color-border-*`, `--color-icon-*`, `--color-feedback-*`, `--color-overlay-scrim`). Never the primitives (`--color-oat`, `--color-charcoal` …), hex or rgb in a component. Hover: dark surfaces `--color-bg-inverse-hover`, light ones `--color-bg-hover`, red ones `--color-feedback-error-hover`.
 - **Spacing** only `--space-*`, borders `--border-width-*`, the one shadow `--shadow-popover`. Sizes in rem (px ÷ 16), border widths in px.
 - **Missing value:** use the nearest token. Add a new token to `_tokens.scss` only when it is really needed, and tell me.
 - **Text** always through a class from `client/src/styles/_typography.scss` on the element (`class="text-label-m"`), never font-size or weight by hand. Anton is only for the Display styles, Inter for text, Space Mono for small print. Capitals come from the class, never typed. Body text and form fields are at least 16 px (smaller fields make iOS zoom).

@@ -5,8 +5,8 @@ import { LinkButton } from '../../../shared/link-button/link-button';
 import { injectShowFilter } from '../show-filter';
 import { FilterChip } from './filter-chips';
 
-// The chosen filters as chips: × removes one, "Rensa alla" removes them all. Dark in the toolbar,
-// light on a light surface.
+// The chosen filters as chips: × removes one, "Rensa alla" removes them all. Filled in the
+// toolbar, outlined with tone="light".
 // <app-active-filters [chips]="chips()" tone="light" [clearAll]="false" />
 @Component({
   selector: 'app-active-filters',

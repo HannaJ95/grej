@@ -81,12 +81,12 @@
               <td class="number">
                 <a class="text-link-s" [routerLink]="['/admin/ordrar', o.id]">{{ o.orderNumber }}</a>
               </td>
-              <td class="date text-body-s">{{ o.createdAt | date: 'yyyy-MM-dd HH:mm' }}</td>
+              <td class="date nowrap-in-table text-body-s">{{ o.createdAt | date: 'yyyy-MM-dd HH:mm' }}</td>
               <!-- Stripe sends the name when the order is paid. -->
               <td class="customer text-body-s" [class.muted]="!o.customerName">
                 {{ o.customerName ?? 'Okänd' }}
               </td>
-              <td class="total end text-body-s">
+              <td class="total end nowrap-in-table text-body-s">
                 {{ o.total | currency: o.currency : 'symbol' : '1.0-2' }}
               </td>
               <td class="payment text-body-s">{{ paymentStatusTexts[o.paymentStatus] }}</td>
