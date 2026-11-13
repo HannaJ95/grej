@@ -19,18 +19,6 @@
 }
 
 // At the bottom, so the links line up when the cards are side by side.
-.link {
-  --icon-size: 1rem;
-
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
-  width: fit-content;
+.icon-link {
   margin-top: auto;
-  padding-block: var(--space-4);
-  color: var(--color-text-primary);
-
-  &:hover {
-    color: var(--color-text-secondary);
-  }
 }
