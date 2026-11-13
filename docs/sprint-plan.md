@@ -109,16 +109,17 @@ In priority order. Responsive design and accessibility are checked on every page
 - [x] Rate limiting on login and checkout: 10 attempts per minute per IP address, with a message on the page (added 12 Nov)
 - [x] Order confirmation by email, and the order with its delivery and payment on the success page (added 12 Nov)
 - [x] Dark and light mode: follows the system, with a button in the header and the menus that saves the choice (added 12 Nov)
+- [x] About page "Om GREJ" and terms page "Villkor", linked from the header, the menus and the footer (added 12 Nov)
 
 
 ## Wrap-up (Fri 13 – Sun 15 Nov)
 
 **Goal:** a stable, documented project, submitted by Sun 15 Nov. The code is not changed after that.
 
-- [ ] Fix bugs, no new features
+- [x] Fix bugs, no new features
 - [x] Responsive design and accessibility review of all pages
 - [x] README: how to run the project locally
-- [ ] Update the planning documents to match what was built, including known limitations
+- [x] Update the planning documents to match what was built, including known limitations
 - [ ] Demo content: final texts and images in the demo data, reset once in the deployed shop
 - [ ] Write the Result section in examensarbete.md (AI documentation and personal evaluation) and submit it with the repo and deploy links
 

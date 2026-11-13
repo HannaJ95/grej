@@ -78,7 +78,7 @@ client/
   src/app/
     core/                API services, auth interceptor, route guards
     shared/              Reusable components (button, icon, badge, pagination) and helpers
-    features/shop/       Shop layout, start page, product list, product page, cart, checkout, success page
+    features/shop/       Shop layout, start page, product list, product page, cart, checkout, success page, about and terms pages
     features/admin/      Admin layout and menu, login, products, categories, properties, orders
 ```
 
