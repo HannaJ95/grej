@@ -61,6 +61,11 @@ dialog[open] {
   position: relative;
   padding: 0 var(--layout-margin);
   overflow: auto;
+
+  // Inside the edge, since the stage is as wide as the window.
+  &:focus-visible {
+    outline-offset: calc(-1 * var(--border-width-default));
+  }
 }
 
 // margin: auto, unlike justify-content, keeps a zoomed image scrollable to its first edge.
