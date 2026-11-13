@@ -108,11 +108,17 @@ main {
   }
 }
 
-// Side by side, and below each other only when they don't fit, e.g. with large text.
+// Side by side, and below each other only when they don't fit, e.g. with large text. Moved in
+// a little, since the round G in the wordmark below makes it look as if it starts further in.
 .footer-nav {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-32) var(--space-56);
+  padding-inline-start: var(--space-10);
+
+  @media (width >= 64rem) {
+    padding-inline-start: var(--space-20);
+  }
 }
 
 .footer-column {
