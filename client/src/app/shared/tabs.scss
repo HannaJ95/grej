@@ -1,4 +1,4 @@
-// A row of links where the current one is dark, shared by the shop's category tabs and the
+// A row of links where the current one is filled, shared by the shop's category tabs and the
 // CMS's order list: <a class="tab" aria-current="page">Alla <span class="count">5</span></a>
 
 .tab {
@@ -15,7 +15,7 @@
     background: var(--color-bg-hover);
   }
 
-  // After :hover, so the chosen tab stays dark under the mouse.
+  // After :hover, so the chosen tab stays filled under the mouse.
   &[aria-current='page'] {
     background: var(--color-bg-inverse);
     color: var(--color-text-on-inverse);

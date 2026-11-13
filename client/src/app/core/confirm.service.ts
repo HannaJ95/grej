@@ -7,7 +7,7 @@ export interface ConfirmQuestion {
   hint?: string;
   confirmLabel: string;
   cancelLabel?: string;
-  // danger (red) for what removes something, primary (dark) for other changes.
+  // danger (red) for what removes something, primary (filled) for other changes.
   tone?: 'danger' | 'primary';
 }
 
