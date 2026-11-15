@@ -3,52 +3,6 @@ import { adminGuard } from './core/admin.guard';
 
 export const routes: Routes = [
   {
-    path: '',
-    loadComponent: () =>
-      import('./features/shop/shop-layout/shop-layout').then((m) => m.ShopLayout),
-    children: [
-      {
-        // Also Stripe's cancel URL.
-        path: '',
-        pathMatch: 'full',
-        title: 'GREJ – handgjorda saker från små skapare',
-        loadComponent: () =>
-          import('./features/shop/landing-page/landing-page').then((m) => m.LandingPage),
-      },
-      {
-        path: 'produkter',
-        title: 'Alla grejer – GREJ',
-        loadComponent: () =>
-          import('./features/shop/product-list/product-list').then((m) => m.ProductList),
-      },
-      {
-        path: 'produkter/:id',
-        // ProductPage changes it to the product's name once it has loaded.
-        title: 'Produkt – GREJ',
-        loadComponent: () =>
-          import('./features/shop/product-page/product-page').then((m) => m.ProductPage),
-      },
-      {
-        path: 'om-grej',
-        title: 'Om GREJ',
-        loadComponent: () =>
-          import('./features/shop/about-page/about-page').then((m) => m.AboutPage),
-      },
-      {
-        path: 'villkor',
-        title: 'Villkor – GREJ',
-        loadComponent: () =>
-          import('./features/shop/terms-page/terms-page').then((m) => m.TermsPage),
-      },
-      {
-        path: 'kassa/tack',
-        title: 'Tack för din beställning – GREJ',
-        loadComponent: () =>
-          import('./features/shop/success-page/success-page').then((m) => m.SuccessPage),
-      },
-    ],
-  },
-  {
     path: 'admin/logga-in',
     title: 'Logga in – GREJ admin',
     loadComponent: () => import('./features/admin/login-page/login-page').then((m) => m.LoginPage),
@@ -151,6 +105,59 @@ export const routes: Routes = [
             (m) => m.AdminPropertyList,
           ),
         data: { kind: 'colors' },
+      },
+    ],
+  },
+  {
+    // Last, since its '**' child would otherwise catch the admin addresses too.
+    path: '',
+    loadComponent: () =>
+      import('./features/shop/shop-layout/shop-layout').then((m) => m.ShopLayout),
+    children: [
+      {
+        // Also Stripe's cancel URL.
+        path: '',
+        pathMatch: 'full',
+        title: 'GREJ – handgjorda saker från små skapare',
+        loadComponent: () =>
+          import('./features/shop/landing-page/landing-page').then((m) => m.LandingPage),
+      },
+      {
+        path: 'produkter',
+        title: 'Alla grejer – GREJ',
+        loadComponent: () =>
+          import('./features/shop/product-list/product-list').then((m) => m.ProductList),
+      },
+      {
+        path: 'produkter/:id',
+        // ProductPage changes it to the product's name once it has loaded.
+        title: 'Produkt – GREJ',
+        loadComponent: () =>
+          import('./features/shop/product-page/product-page').then((m) => m.ProductPage),
+      },
+      {
+        path: 'om-grej',
+        title: 'Om GREJ',
+        loadComponent: () =>
+          import('./features/shop/about-page/about-page').then((m) => m.AboutPage),
+      },
+      {
+        path: 'villkor',
+        title: 'Villkor – GREJ',
+        loadComponent: () =>
+          import('./features/shop/terms-page/terms-page').then((m) => m.TermsPage),
+      },
+      {
+        path: 'kassa/tack',
+        title: 'Tack för din beställning – GREJ',
+        loadComponent: () =>
+          import('./features/shop/success-page/success-page').then((m) => m.SuccessPage),
+      },
+      {
+        path: '**',
+        title: 'Sidan finns inte – GREJ',
+        loadComponent: () =>
+          import('./features/shop/not-found-page/not-found-page').then((m) => m.NotFoundPage),
       },
     ],
   },
