@@ -27,6 +27,8 @@ flowchart LR
 
 The API runs on Render as a Docker container, since Render has no built-in .NET support. It connects to the database through Supabase's session pooler, because Render can only reach IPv4 addresses.
 
+The frontend runs on Vercel, which adds the headers in `client/vercel.json` to every response. JavaScript and CSS files are cached for a year, since Angular puts a hash in their names and a new build gives new names; `index.html` is not cached, so a deploy shows up at once. Every response also gets `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options` and a `Permissions-Policy` that turns off camera, microphone and location. There is no Content-Security-Policy yet, because it would first have to be tested against Google Fonts, Supabase, Stripe and the inline scripts.
+
 Local development and production use the same Supabase database and image bucket, so migrations applied locally also apply to production, and images uploaded locally are shown in production too. There is no separate production database, since everything in the shop is demo content, so `reset-demo` resets the deployed shop too (see Demo data).
 
 ## Modular monolith
