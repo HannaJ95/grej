@@ -1,645 +1,901 @@
 {
   "materials": [
     "Stengods",
-    "Lergods",
-    "Porslin",
-    "Linne",
     "Bomull",
     "Ull",
+    "Sammet",
+    "Fuskpäls",
     "Papper",
-    "Duk",
-    "Akrylfärg",
-    "Akvarellfärg",
-    "Silver",
-    "Mässing",
     "Glas",
-    "Ek",
+    "Akrylglas",
+    "Silikon",
+    "PLA",
+    "PETG",
+    "Sojavax",
+    "Rapsvax",
+    "Växtbaserade oljor",
     "Björk",
-    "Valnöt"
+    "Rotfaner",
+    "MDF",
+    "Marmor",
+    "Stål",
+    "Rostfritt stål"
   ],
   "colors": [
     "Vit",
     "Svart",
-    "Grå",
     "Beige",
     "Brun",
     "Blå",
+    "Turkos",
     "Grön",
-    "Röd",
     "Gul",
-    "Rosa",
+    "Orange",
     "Terrakotta",
-    "Guld",
+    "Röd",
+    "Rosa",
+    "Lila",
     "Silver"
   ],
   "categories": [
     {
-      "name": "Keramik",
-      "image": "cirkle.png",
-      "imageAltText": "Platshållarbild: en svart cirkel på vit bakgrund",
-      "subcategories": ["Skålar och fat", "Muggar och koppar", "Vaser och krukor"],
+      "name": "Belysning",
+      "image": "neonverkstan/cherries/neonverkstan-cherries-01-main.jpg",
+      "imageAltText": "Neonskylt formad som två körsbär som lyser rött och grönt mot en ljusgrå vägg",
+      "subcategories": ["Neonskyltar", "Lampor"],
       "products": [
         {
-          "title": "Skål i blå glasyr",
-          "subcategory": "Skålar och fat",
-          "description": "Handdrejad skål i stengods med en djupblå glasyr som blir ljusare mot kanten. Rymmer ungefär 4 dl och passar till frukost, soppa eller som serveringsskål. Tål diskmaskin.",
-          "price": 349,
-          "stock": 6,
-          "isActive": true,
-          "materials": ["Stengods"],
-          "colors": ["Blå"],
-          "parcel": { "weightGrams": 900, "lengthCm": 25, "widthCm": 25, "heightCm": 15 },
-          "images": [
-            { "file": "squarecirkle.png", "altText": "Platshållarbild: en svart valvform på vit bakgrund" },
-            { "file": "cirkle.png", "altText": "Platshållarbild: en svart cirkel på vit bakgrund" },
-            { "file": "square.png", "altText": "Platshållarbild: en svart kvadrat på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Mugg med stort öra",
-          "subcategory": "Muggar och koppar",
-          "description": "Rejäl mugg i vitt stengods med ett öra som rymmer flera fingrar. Rymmer 3 dl. Varje mugg drejas för hand, så formen skiljer sig lite mellan dem.",
-          "price": 245,
-          "stock": 12,
-          "isActive": true,
-          "materials": ["Stengods"],
-          "colors": ["Vit"],
-          "parcel": { "weightGrams": 600, "lengthCm": 18, "widthCm": 15, "heightCm": 15 },
-          "size": { "weightGrams": 350 }
-        },
-        {
-          "title": "Hög vas i grönt",
-          "subcategory": "Vaser och krukor",
-          "description": "Smal vas, 30 cm hög, med en matt grön glasyr. Vattentät på insidan, så den fungerar både till färska blommor och torkade kvistar.",
-          "price": 695,
-          "stock": 3,
-          "isActive": true,
-          "materials": ["Stengods"],
-          "colors": ["Grön"],
-          "parcel": { "weightGrams": 1800, "lengthCm": 40, "widthCm": 20, "heightCm": 20 },
-          "size": { "heightCm": 30, "weightGrams": 1200 },
-          "images": [
-            { "file": "rectanglerounded.png", "altText": "Platshållarbild: en svart rektangel med rundade hörn på vit bakgrund" },
-            { "file": "ellipserotatedunfilled.png", "altText": "Platshållarbild: en lutande svart oval ring på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Kanna med pip",
-          "description": "Kanna i rött lergods med vit glasyr på insidan. Rymmer en liter och passar till vatten, mjölk eller som vas.",
-          "price": 545,
+          "title": "Neonskylt hej",
+          "subcategory": "Neonskyltar",
+          "description": "Rosa neonskylt med ordet hej i skrivstil. En vänlig hälsning i hallen, ovanför sängen eller i barnrummet.\n\nLED-neon i silikon på en skiva i akrylglas som är skuren efter formen. Levereras med 2 meter genomskinlig kabel, dimmer och adapter till vägguttaget.",
+          "price": 1295,
           "stock": 0,
           "isActive": true,
-          "materials": ["Lergods"],
-          "colors": ["Terrakotta", "Vit"],
-          "parcel": { "weightGrams": 1400, "lengthCm": 30, "widthCm": 25, "heightCm": 25 },
+          "materials": ["Silikon", "Akrylglas"],
+          "colors": ["Rosa"],
+          "parcel": { "weightGrams": 2000, "lengthCm": 60, "widthCm": 40, "heightCm": 8 },
+          "size": { "widthCm": 50, "heightCm": 28, "weightGrams": 900 },
           "images": [
-            { "file": "twocirkesquare.png", "altText": "Platshållarbild: en svart form med två rundade toppar på vit bakgrund" },
-            { "file": "twocirkesquare_unfilled.png", "altText": "Platshållarbild: konturen av en svart form med två rundade toppar på vit bakgrund" },
-            { "file": "halfcirkle.png", "altText": "Platshållarbild: en svart halvcirkel på vit bakgrund" },
-            { "file": "squarerounded.png", "altText": "Platshållarbild: en svart kvadrat med rundade hörn på vit bakgrund" }
+            { "file": "neonverkstan/hej/neonverkstan-hej-01-main.jpg", "altText": "Rosa neonskylt med ordet hej i skrivstil som lyser mot en ljusgrå vägg" },
+            { "file": "neonverkstan/hej/neonverkstan-hej-02-hallway.jpg", "altText": "Neonskylten hej lyser rosa ovanför en träbänk i en hall med rutig matta" },
+            { "file": "neonverkstan/hej/neonverkstan-hej-03-living-room.jpg", "altText": "Neonskylten hej på en terrakottafärgad vägg ovanför en krämvit soffa" },
+            { "file": "neonverkstan/hej/neonverkstan-hej-04-detail.jpg", "altText": "Närbild på det rosa neonröret och akrylskivans kant med en skruv i krom" }
           ]
         },
         {
-          "title": "Stort serveringsfat",
-          "subcategory": "Skålar och fat",
-          "description": "Runt fat, 34 cm i diameter, med en glasyr som går från grått till beige. Ett unikt exemplar som räcker till en hel middag.",
+          "title": "Taklampa med spiralribbor",
+          "subcategory": "Lampor",
+          "description": "3D-printad lampskärm i benvit PLA med ribbor som vrider sig runt hela skärmen. När lampan är tänd lyser ljuset igenom de tunna väggarna och ribborna syns tydligt.\n\nLevereras med 3 meter vit textilsladd, takkopp och E27-sockel. Ljuskällan ingår inte. Använd en LED-lampa på högst 10 watt, så blir skärmen inte varm.",
           "price": 895,
-          "stock": 1,
+          "stock": 6,
           "isActive": true,
-          "materials": ["Stengods"],
-          "colors": ["Grå", "Beige"],
-          "parcel": { "weightGrams": 2500, "lengthCm": 45, "widthCm": 45, "heightCm": 12 },
-          "size": { "diameterCm": 34, "weightGrams": 1900 }
-        },
-        {
-          "title": "Ljusstake för kronljus",
-          "description": "Låg ljusstake i oglaserat lergods för ett vanligt kronljus. Ytan är slipad för hand och känns mjuk och lite sandig.",
-          "price": 295,
-          "stock": 8,
-          "isActive": true,
-          "materials": ["Lergods"],
-          "colors": ["Terrakotta"],
-          "parcel": { "weightGrams": 500, "lengthCm": 20, "widthCm": 12, "heightCm": 12 },
+          "materials": ["PLA"],
+          "colors": ["Vit"],
+          "parcel": { "weightGrams": 900, "lengthCm": 35, "widthCm": 35, "heightCm": 35 },
+          "size": { "heightCm": 30, "diameterCm": 24, "weightGrams": 450 },
           "images": [
-            { "file": "rectanglerotated.png", "altText": "Platshållarbild: en lutande svart rektangel på vit bakgrund" },
-            { "file": "cirkleunfilled.png", "altText": "Platshållarbild: en svart ring på vit bakgrund" }
+            { "file": "lagerljus/spiral-pendant/lagerljus-spiral-pendant-01-main.jpg", "altText": "Vit taklampa med spiralvridna ribbor som hänger framför en ljus vägg" },
+            { "file": "lagerljus/spiral-pendant/lagerljus-spiral-pendant-02-dining-room.jpg", "altText": "Två tända spiraltaklampor över ett runt matbord i ek på kvällen" },
+            { "file": "lagerljus/spiral-pendant/lagerljus-spiral-pendant-03-kitchen.jpg", "altText": "Spiraltaklampan över ett frukostbord i ett ljust kök med grönt kakel" },
+            { "file": "lagerljus/spiral-pendant/lagerljus-spiral-pendant-04-detail.jpg", "altText": "Tänd spiraltaklampa sedd underifrån, ljuset syns genom de tunna ribborna" }
           ]
         },
         {
-          "title": "Espressokoppar, två stycken",
-          "subcategory": "Muggar och koppar",
-          "description": "Två små koppar i vitt porslin med en tunn svart kant. Rymmer 1 dl var och säljs i par.",
-          "price": 380,
+          "title": "Neonskylt fjäril",
+          "subcategory": "Neonskyltar",
+          "description": "Neonskylt formad som en fjäril, ritad med en enda linje. Vingarna lyser lila och kroppen rosa.\n\nLED-neon i silikon på en skiva i akrylglas som är skuren efter formen. Levereras med 2 meter genomskinlig kabel, dimmer och adapter till vägguttaget.",
+          "price": 1495,
           "stock": 4,
           "isActive": true,
-          "materials": ["Porslin"],
-          "colors": ["Vit", "Svart"],
-          "parcel": { "weightGrams": 700, "lengthCm": 25, "widthCm": 15, "heightCm": 12 },
+          "materials": ["Silikon", "Akrylglas"],
+          "colors": ["Lila", "Rosa"],
+          "parcel": { "weightGrams": 1800, "lengthCm": 55, "widthCm": 45, "heightCm": 8 },
+          "size": { "widthCm": 45, "heightCm": 35, "weightGrams": 800 },
           "images": [
-            { "file": "squarerounded.png", "altText": "Platshållarbild: en svart kvadrat med rundade hörn på vit bakgrund" },
-            { "file": "square.png", "altText": "Platshållarbild: en svart kvadrat på vit bakgrund" },
-            { "file": "cirkle.png", "altText": "Platshållarbild: en svart cirkel på vit bakgrund" }
+            { "file": "neonverkstan/butterfly/neonverkstan-butterfly-01-main.jpg", "altText": "Neonskylt formad som en fjäril med lila vingar och rosa kropp mot en ljusgrå vägg" },
+            { "file": "neonverkstan/butterfly/neonverkstan-butterfly-02-desk.jpg", "altText": "Fjärilsneonen lyser lila ovanför ett skrivbord med tulpaner och en bordslampa" },
+            { "file": "neonverkstan/butterfly/neonverkstan-butterfly-03-boutique.jpg", "altText": "Fjärilsneonen på väggen bakom en klädställning med pastellfärgade kläder" },
+            { "file": "neonverkstan/butterfly/neonverkstan-butterfly-04-detail.jpg", "altText": "Närbild på fjärilens lila vinge och rosa kropp i neonrör på en akrylskiva" }
           ]
         },
         {
-          "title": "Blomkruka med fat",
-          "subcategory": "Vaser och krukor",
-          "description": "Kruka i terrakotta med hål i botten och ett fat som fångar vattnet. 14 cm i diameter, passar en mellanstor krukväxt.",
-          "price": 420,
+          "title": "Neonskylt fika",
+          "subcategory": "Neonskyltar",
+          "description": "Orange neonskylt med ordet fika i skrivstil. Passar i köket, på kontoret eller bakom disken i ett café.\n\nLED-neon i silikon på en skiva i akrylglas. Med dimmern och den lilla fjärrkontrollen ställer du in hur starkt skylten ska lysa. Levereras med 2 meter kabel och adapter till vägguttaget.",
+          "price": 1395,
           "stock": 5,
           "isActive": true,
-          "materials": ["Lergods"],
-          "colors": ["Terrakotta"],
-          "parcel": { "weightGrams": 2000, "lengthCm": 30, "widthCm": 30, "heightCm": 28 },
-          "size": { "diameterCm": 14 },
+          "materials": ["Silikon", "Akrylglas"],
+          "colors": ["Orange"],
+          "parcel": { "weightGrams": 1900, "lengthCm": 65, "widthCm": 35, "heightCm": 8 },
+          "size": { "widthCm": 55, "heightCm": 25, "weightGrams": 850 },
           "images": [
-            { "file": "squarecirklerounded.png", "altText": "Platshållarbild: en svart valvform med rundade hörn på vit bakgrund" },
-            { "file": "squarecirkle.png", "altText": "Platshållarbild: en svart valvform på vit bakgrund" },
-            { "file": "twocirkesquare.png", "altText": "Platshållarbild: en svart form med två rundade toppar på vit bakgrund" },
-            { "file": "rectanglerounded.png", "altText": "Platshållarbild: en svart rektangel med rundade hörn på vit bakgrund" },
-            { "file": "halfcirkle.png", "altText": "Platshållarbild: en svart halvcirkel på vit bakgrund" }
+            { "file": "neonverkstan/fika/neonverkstan-fika-01-main.jpg", "altText": "Orange neonskylt med ordet fika i skrivstil mot en ljusgrå vägg" },
+            { "file": "neonverkstan/fika/neonverkstan-fika-02-kitchen.jpg", "altText": "Fikaneonen ovanför öppna hyllor med koppar, med kanelbullar och kaffe på bänken nedanför" },
+            { "file": "neonverkstan/fika/neonverkstan-fika-03-cafe.jpg", "altText": "Fikaneonen på en terrakottafärgad kakelvägg bakom en cafédisk med bullar" },
+            { "file": "neonverkstan/fika/neonverkstan-fika-04-detail.jpg", "altText": "Kabel med dimmer och en liten fjärrkontroll framför det orange neonljuset" }
           ]
         },
         {
-          "title": "Tekanna",
-          "description": "Tekanna i stengods med lock och inbyggd sil. Rymmer 8 dl. Glasyren provas fortfarande, så kannan är inte till salu än.",
-          "price": 1150,
-          "stock": 2,
+          "title": "Neonskylt måne och stjärnor",
+          "subcategory": "Neonskyltar",
+          "description": "Neonskylt med en månskära och två stjärnor som lyser varmt gult. Ett mjukt nattljus i sovrummet eller en mysig lampa i bokhyllan.\n\nKan hängas på väggen eller stå på en hylla. LED-neon i silikon på en skiva i akrylglas som är skuren efter formen. Levereras med 2 meter genomskinlig kabel, dimmer och adapter till vägguttaget.",
+          "price": 1395,
+          "stock": 3,
+          "isActive": true,
+          "materials": ["Silikon", "Akrylglas"],
+          "colors": ["Gul"],
+          "parcel": { "weightGrams": 1600, "lengthCm": 50, "widthCm": 40, "heightCm": 8 },
+          "size": { "widthCm": 30, "heightCm": 40, "weightGrams": 700 },
+          "images": [
+            { "file": "neonverkstan/moon-stars/neonverkstan-moon-stars-01-main.jpg", "altText": "Neonskylt formad som en månskära med två stjärnor som lyser gult mot en ljusgrå vägg" },
+            { "file": "neonverkstan/moon-stars/neonverkstan-moon-stars-02-bedroom.jpg", "altText": "Månneonen lyser varmt ovanför en säng med grönt linne i skymningen" },
+            { "file": "neonverkstan/moon-stars/neonverkstan-moon-stars-03-shelf.jpg", "altText": "Månneonen står på en bokhylla bredvid böcker, en klätterväxt och en vas" },
+            { "file": "neonverkstan/moon-stars/neonverkstan-moon-stars-04-detail.jpg", "altText": "Närbild på månens gula neonrör och en stjärna på den genomskinliga akrylskivan" }
+          ]
+        },
+        {
+          "title": "Neonskylt martini",
+          "subcategory": "Neonskyltar",
+          "description": "Neonskylt formad som ett martiniglas i isblått, med en grön oliv på en rosa pinne. Gjord för barvagnen, hemmabaren eller väggen där middagarna brukar sluta.\n\nLED-neon i silikon på en skiva i akrylglas som är skuren efter formen. Levereras med 2 meter genomskinlig kabel, dimmer och adapter till vägguttaget.",
+          "price": 1595,
+          "stock": 3,
+          "isActive": true,
+          "materials": ["Silikon", "Akrylglas"],
+          "colors": ["Blå", "Grön", "Rosa"],
+          "parcel": { "weightGrams": 2000, "lengthCm": 60, "widthCm": 45, "heightCm": 8 },
+          "size": { "widthCm": 35, "heightCm": 50, "weightGrams": 900 },
+          "images": [
+            { "file": "neonverkstan/martini/neonverkstan-martini-01-main.jpg", "altText": "Neonskylt formad som ett martiniglas i isblått med grön oliv och rosa pinne mot en ljusgrå vägg" },
+            { "file": "neonverkstan/martini/neonverkstan-martini-02-bar-cart.jpg", "altText": "Martinineonen lyser blått ovanför en barvagn i krom mot en mörkgrön vägg" },
+            { "file": "neonverkstan/martini/neonverkstan-martini-03-dinner-party.jpg", "altText": "Martinineonen ovanför ett dukat middagsbord med tända ljus och blommor" },
+            { "file": "neonverkstan/martini/neonverkstan-martini-04-detail.jpg", "altText": "Närbild på neonolivens gröna ring och den rosa pinnen över glasets blå kant" }
+          ]
+        },
+        {
+          "title": "Svamplampa i smörgult",
+          "subcategory": "Lampor",
+          "description": "Bordslampa formad som en svamp, med en veckad skärm och en kraftig fot. 3D-printad i smörgul PLA, ett plastmaterial som tillverkas av majsstärkelse.\n\nNär lampan är tänd lyser ljuset igenom skärmen och man ser de tunna lagerlinjerna från skrivaren. Ljuset blir varmt och dämpat, så lampan passar bäst som stämningsljus på nattduksbordet, i fönstret eller på en skänk.\n\nLagerljus printar lamporna i små serier i sin verkstad. Varje lampa tar ungefär åtta timmar att printa, och små skillnader i ytan mellan två lampor är en del av hantverket.\n\nLevereras med 2 meter vit textilsladd med strömbrytare och en E14-sockel. Ljuskällan ingår inte. Använd en LED-lampa på högst 5 watt.",
+          "price": 695,
+          "stock": 8,
+          "isActive": true,
+          "materials": ["PLA"],
+          "colors": ["Gul"],
+          "parcel": { "weightGrams": 1200, "lengthCm": 36, "widthCm": 36, "heightCm": 38 },
+          "size": { "heightCm": 32, "diameterCm": 28, "weightGrams": 600 },
+          "images": [
+            { "file": "lagerljus/mushroom-lamp/lagerljus-mushroom-lamp-01-main.jpg", "altText": "Smörgul bordslampa formad som en svamp med veckad skärm på en ljus träskiva" },
+            { "file": "lagerljus/mushroom-lamp/lagerljus-mushroom-lamp-02-bedroom.jpg", "altText": "Tänd svamplampa på ett nattduksbord bredvid böcker och ett glas vatten" },
+            { "file": "lagerljus/mushroom-lamp/lagerljus-mushroom-lamp-03-living-room.jpg", "altText": "Svamplampan lyser på en skänk bredvid en skivspelare i skymningen" },
+            { "file": "lagerljus/mushroom-lamp/lagerljus-mushroom-lamp-04-detail.jpg", "altText": "Närbild på skärmens veck och lagerlinjer där ljuset lyser igenom" }
+          ]
+        },
+        {
+          "title": "Neonskylt körsbär",
+          "subcategory": "Neonskyltar",
+          "description": "Neonskylt formad som två körsbär med stjälk och blad. Bären lyser rött och stjälken grönt, och de färgar väggen runt sig med ett mjukt sken.\n\nNeonverkstan böjer varje skylt för hand efter en egen ritning. Röret är LED-neon i silikon, som lyser lika starkt som glasneon men drar mycket mindre ström, inte blir varmt och tål att flyttas.\n\nSkylten sitter på en skiva i genomskinligt akrylglas som är skuren efter formen. Den hängs upp med skruvarna som följer med, eller i en tunn kedja.\n\nI paketet finns 2 meter genomskinlig kabel med dimmer och en adapter till vägguttaget. Skylten är gjord för inomhusbruk.",
+          "price": 1495,
+          "stock": 6,
+          "isActive": true,
+          "materials": ["Silikon", "Akrylglas"],
+          "colors": ["Röd", "Grön"],
+          "parcel": { "weightGrams": 1900, "lengthCm": 55, "widthCm": 50, "heightCm": 8 },
+          "size": { "widthCm": 40, "heightCm": 45, "weightGrams": 850 },
+          "images": [
+            { "file": "neonverkstan/cherries/neonverkstan-cherries-01-main.jpg", "altText": "Neonskylt formad som två körsbär som lyser rött och grönt mot en ljusgrå vägg" },
+            { "file": "neonverkstan/cherries/neonverkstan-cherries-02-kitchen.jpg", "altText": "Körsbärsneonen på en blank kakelvägg ovanför en köksbänk med körsbär och en cocktail" },
+            { "file": "neonverkstan/cherries/neonverkstan-cherries-03-cafe.jpg", "altText": "Körsbärsneonen på en mörkgrön vägg i ett café på kvällen" },
+            { "file": "neonverkstan/cherries/neonverkstan-cherries-04-detail.jpg", "altText": "Närbild på körsbärens röda neonrör, akrylskivan och kabeln med dimmer" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ljus och tvål",
+      "image": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-01-main.jpg",
+      "imageAltText": "Salviagrönt bubbelljus format som en kub av runda kulor på en stenskiva",
+      "subcategories": ["Ljus", "Tvål", "Ljusstakar"],
+      "products": [
+        {
+          "title": "Tvål med kol och eukalyptus",
+          "subcategory": "Tvål",
+          "description": "Kallprocessad tvål med aktivt kol och eukalyptusolja. Den svarta tvålen har en vit virvel och torkade eukalyptusblad på ovansidan.\n\nKolet gör tvålen lite djuprengörande, och eukalyptusen ger en frisk doft. Väger ungefär 110 gram.",
+          "price": 95,
+          "stock": 0,
+          "isActive": true,
+          "materials": ["Växtbaserade oljor"],
+          "colors": ["Svart", "Vit"],
+          "parcel": { "weightGrams": 200, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
+          "size": { "lengthCm": 9, "widthCm": 6, "heightCm": 3, "weightGrams": 110 },
+          "images": [
+            { "file": "vaxverkstan/charcoal-soap/vaxverkstan-charcoal-soap-01-main.jpg", "altText": "Svart tvål med vit virvel och torkade eukalyptusblad på en ljus stenskiva" },
+            { "file": "vaxverkstan/charcoal-soap/vaxverkstan-charcoal-soap-02-shower.jpg", "altText": "Koltvålen på en tvålkopp i trä i en dusch med mörkgrönt kakel och eukalyptus" },
+            { "file": "vaxverkstan/charcoal-soap/vaxverkstan-charcoal-soap-03-with-lavender-soap.jpg", "altText": "Koltvålen bredvid en lavendeltvål på linnetyg med eukalyptus och lavendel" },
+            { "file": "vaxverkstan/charcoal-soap/vaxverkstan-charcoal-soap-04-detail.jpg", "altText": "Närbild på koltvålens vita virvel, eukalyptusblad och lite lödder" }
+          ]
+        },
+        {
+          "title": "Tvinnade kronljus, två stycken",
+          "subcategory": "Ljus",
+          "description": "Två spiraltvinnade kronljus i terrakotta, doppade och vridna för hand. 25 cm höga och passar i vanliga ljusstakar.\n\nGjorda av rapsvax med veke i bomull. Brinner i ungefär sju timmar. Ljusstakarna på bilderna ingår inte.",
+          "price": 149,
+          "stock": 14,
+          "isActive": true,
+          "materials": ["Rapsvax"],
+          "colors": ["Terrakotta"],
+          "parcel": { "weightGrams": 300, "lengthCm": 30, "widthCm": 10, "heightCm": 5 },
+          "size": { "heightCm": 25, "diameterCm": 2.2 },
+          "images": [
+            { "file": "vaxverkstan/taper-candles/vaxverkstan-taper-candles-01-main.jpg", "altText": "Två tvinnade kronljus i terrakotta i ljusstakar av mässing på en stenskiva" },
+            { "file": "vaxverkstan/taper-candles/vaxverkstan-taper-candles-02-dinner.jpg", "altText": "Två tända tvinnade kronljus på ett dukat middagsbord med fikon och vinglas" },
+            { "file": "vaxverkstan/taper-candles/vaxverkstan-taper-candles-03-mantelpiece.jpg", "altText": "De tvinnade ljusen på en spiselkrans där solen kastar spiralskuggor på väggen" },
+            { "file": "vaxverkstan/taper-candles/vaxverkstan-taper-candles-04-detail.jpg", "altText": "Närbild på ett tänt tvinnat ljus och vaxets spiralform" }
+          ]
+        },
+        {
+          "title": "Lavendeltvål",
+          "subcategory": "Tvål",
+          "description": "Kallprocessad tvål med lavendelolja och torkade lavendelknoppar pressade i ovansidan. Mild nog att använda varje dag, även i ansiktet.\n\nTvålen får härda i sex veckor innan den säljs, vilket gör den fast och långvarig. Väger ungefär 110 gram och blir en fin present med ett snöre och en kvist lavendel.",
+          "price": 89,
+          "stock": 22,
+          "isActive": true,
+          "materials": ["Växtbaserade oljor"],
+          "colors": ["Vit", "Lila"],
+          "parcel": { "weightGrams": 200, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
+          "size": { "lengthCm": 9, "widthCm": 6, "heightCm": 3, "weightGrams": 110 },
+          "images": [
+            { "file": "vaxverkstan/lavender-soap/vaxverkstan-lavender-soap-01-main.jpg", "altText": "Ljus tvål med torkade lavendelknoppar på ovansidan på en stenskiva" },
+            { "file": "vaxverkstan/lavender-soap/vaxverkstan-lavender-soap-02-bathroom.jpg", "altText": "Lavendeltvålen på en tvålkopp i travertin vid ett handfat med mässingskran" },
+            { "file": "vaxverkstan/lavender-soap/vaxverkstan-lavender-soap-03-gift-stack.jpg", "altText": "Tre lavendeltvålar inslagna i kraftpapper och knutna med snöre och lavendel" },
+            { "file": "vaxverkstan/lavender-soap/vaxverkstan-lavender-soap-04-detail.jpg", "altText": "Närbild på tvålens hörn med lavendelknoppar och den täta, krämiga ytan" }
+          ]
+        },
+        {
+          "title": "Ljusstakar med vågor, tre stycken",
+          "subcategory": "Ljusstakar",
+          "description": "Tre ljusstakar i mintgrön PLA, 10, 15 och 20 cm höga. Formen ser ut som staplade kulor, och de passar vanliga kronljus.\n\n3D-printade av Lagerljus. Ljusen ingår inte. Lämna aldrig levande ljus utan uppsikt, och låt dem inte brinna ner till ljusstaken.",
+          "price": 345,
+          "stock": 9,
+          "isActive": true,
+          "materials": ["PLA"],
+          "colors": ["Grön"],
+          "parcel": { "weightGrams": 500, "lengthCm": 25, "widthCm": 20, "heightCm": 10 },
+          "size": { "heightCm": 20, "diameterCm": 4.5, "weightGrams": 180 },
+          "images": [
+            { "file": "lagerljus/candle-holders/lagerljus-candle-holders-01-main.jpg", "altText": "Tre mintgröna ljusstakar med vågig form i olika höjder på en ljus träskiva" },
+            { "file": "lagerljus/candle-holders/lagerljus-candle-holders-02-dinner.jpg", "altText": "De mintgröna ljusstakarna med tända terrakottaljus på ett dukat middagsbord" },
+            { "file": "lagerljus/candle-holders/lagerljus-candle-holders-03-sideboard.jpg", "altText": "Ljusstakarna med vita kronljus på en skänk i solljus bredvid körsbärsblommor" },
+            { "file": "lagerljus/candle-holders/lagerljus-candle-holders-04-detail.jpg", "altText": "Närbild på ljusstakens rundade vågor, lagerlinjer och ett vitt kronljus" }
+          ]
+        },
+        {
+          "title": "Doftljus i keramikburk",
+          "subcategory": "Ljus",
+          "description": "Doftljus i en handgjord keramikburk med räfflad sida och lock i ek. När ljuset är slut kan burken diskas och användas till penslar, tändstickor eller en liten växt.\n\nVaxet är sojavax och veken är bomull. Ljuset brinner i ungefär 40 timmar och smälter jämnt ända ut till kanten.\n\nVi provar fortfarande doften, en blandning av fikonblad och ceder, så ljuset är inte till salu än.",
+          "price": 449,
+          "stock": 10,
           "isActive": false,
-          "materials": ["Stengods"],
-          "colors": ["Blå", "Vit"],
-          "parcel": { "weightGrams": 1600, "lengthCm": 30, "widthCm": 25, "heightCm": 22 }
+          "materials": ["Sojavax", "Stengods"],
+          "colors": ["Beige"],
+          "parcel": { "weightGrams": 900, "lengthCm": 15, "widthCm": 15, "heightCm": 15 },
+          "size": { "heightCm": 9, "diameterCm": 9, "weightGrams": 550 },
+          "images": [
+            { "file": "vaxverkstan/scented-candle/vaxverkstan-scented-candle-01-main.jpg", "altText": "Doftljus i en sandbeige räfflad keramikburk med lock i ek på en stenskiva" },
+            { "file": "vaxverkstan/scented-candle/vaxverkstan-scented-candle-02-bedroom.jpg", "altText": "Tänt doftljus på ett nattduksbord bredvid en bok, en kopp te och läsglasögon" },
+            { "file": "vaxverkstan/scented-candle/vaxverkstan-scented-candle-03-coffee-table.jpg", "altText": "Doftljuset på ett soffbord i travertin med en kopp kaffe och en ullfilt" },
+            { "file": "vaxverkstan/scented-candle/vaxverkstan-scented-candle-04-detail.jpg", "altText": "Närbild på lågan och det smälta vaxet i den räfflade keramikburken" }
+          ]
+        },
+        {
+          "title": "Vågigt blockljus",
+          "subcategory": "Ljus",
+          "description": "Blockljus i gammelrosa med vågiga ribbor från topp till botten. Ett skulpturalt ljus som är fint även när det inte är tänt.\n\nGjort av rapsvax och brinner i ungefär 30 timmar. Bilden med tre ljus visar alla storlekar i serien. Det här är det mellersta, 15 cm högt.",
+          "price": 229,
+          "stock": 12,
+          "isActive": true,
+          "materials": ["Rapsvax"],
+          "colors": ["Rosa"],
+          "parcel": { "weightGrams": 700, "lengthCm": 20, "widthCm": 12, "heightCm": 12 },
+          "size": { "heightCm": 15, "diameterCm": 7, "weightGrams": 450 },
+          "images": [
+            { "file": "vaxverkstan/wavy-pillar-candle/vaxverkstan-wavy-pillar-candle-01-main.jpg", "altText": "Gammelrosa blockljus med vågiga ribbor på en stenskiva mot en putsad vägg" },
+            { "file": "vaxverkstan/wavy-pillar-candle/vaxverkstan-wavy-pillar-candle-02-set.jpg", "altText": "Tre vågiga blockljus i olika höjder på en rund bricka i travertin" },
+            { "file": "vaxverkstan/wavy-pillar-candle/vaxverkstan-wavy-pillar-candle-03-windowsill.jpg", "altText": "Tänt vågigt blockljus i ett fönster i skymningen med stadens ljus utanför" },
+            { "file": "vaxverkstan/wavy-pillar-candle/vaxverkstan-wavy-pillar-candle-04-detail.jpg", "altText": "Närbild på blockljusets mjuka vågor och den matta vaxytan" }
+          ]
+        },
+        {
+          "title": "Bubbelljus",
+          "subcategory": "Ljus",
+          "description": "Ljus format som en kub av runda bubblor, i matt salviagrönt sojavax. Lika mycket en liten skulptur som ett ljus.\n\nVaxverkstan gjuter ljusen för hand i silikonformar, några stycken i taget. Sojavax brinner renare och långsammare än paraffin, och det matta vaxet håller färgen även i solljus.\n\nNär ljuset brinner smälter bubblorna sakta ihop. Ställ det på ett fat, eftersom det formade vaxet kan rinna lite. Brinntiden är ungefär 20 timmar.\n\nSerien finns i salviagrönt, rosa och krämvitt. Det här är det salviagröna.",
+          "price": 189,
+          "stock": 16,
+          "isActive": true,
+          "materials": ["Sojavax"],
+          "colors": ["Grön"],
+          "parcel": { "weightGrams": 500, "lengthCm": 15, "widthCm": 15, "heightCm": 12 },
+          "size": { "lengthCm": 7, "widthCm": 7, "heightCm": 7, "weightGrams": 280 },
+          "images": [
+            { "file": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-01-main.jpg", "altText": "Salviagrönt bubbelljus format som en kub av runda kulor på en stenskiva" },
+            { "file": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-02-bathtub.jpg", "altText": "Tänt bubbelljus på en travertinkant vid ett badkar med handduk och eukalyptus" },
+            { "file": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-03-colors.jpg", "altText": "Tre bubbelljus i salviagrönt, rosa och krämvitt på en bokstapel i solljus" },
+            { "file": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-04-detail.jpg", "altText": "Närbild på bubbelljusets runda kulor och den korta bomullsveken" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Konst och väggdekor",
+      "image": "atelje-form/lemons/atelje-form-lemons-01-main.jpg",
+      "imageAltText": "Konsttryck med fyra citroner på en blåvit rutig duk, i ekram på en skänk",
+      "subcategories": ["Konsttryck", "Speglar"],
+      "products": [
+        {
+          "title": "Spegel med bågkant",
+          "subcategory": "Speglar",
+          "description": "Rund spegel med en ram som ser ut som en blomma. Ramen är i matt pistaschgrön MDF och spegeln är 60 cm i diameter.\n\nHängs i öglan på baksidan. Passar i hallen, i badrummet eller tillsammans med fler speglar på en vägg.",
+          "price": 1295,
+          "stock": 5,
+          "isActive": true,
+          "materials": ["MDF", "Glas"],
+          "colors": ["Grön"],
+          "parcel": { "weightGrams": 6000, "lengthCm": 70, "widthCm": 70, "heightCm": 8 },
+          "size": { "diameterCm": 60, "weightGrams": 4500 },
+          "images": [
+            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-01-main.jpg", "altText": "Rund spegel med pistaschgrön ram formad som en blomma med rundade kronblad" },
+            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-02-bathroom.jpg", "altText": "Blomspegeln ovanför ett handfat med mässingskran och ljusgrönt kakel" },
+            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-03-hallway.jpg", "altText": "Blomspegeln ovanför ett konsolbord med en tänd svamplampa på kvällen" },
+            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-04-detail.jpg", "altText": "Närbild på ramens matta, rundade kronblad mot spegelglasets kant" },
+            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-05-sizes.jpg", "altText": "Tre blomspeglar i olika storlekar upphängda tillsammans ovanför en bänk" }
+          ]
+        },
+        {
+          "title": "Olivkvist, konsttryck",
+          "subcategory": "Konsttryck",
+          "description": "Minimalistisk teckning av en olivkvist i en enda tunn svart linje, tryckt på krämvitt papper med lite struktur.\n\n40 × 50 cm. Ramen på bilderna ingår inte, men trycket passar i en standardram. Skickas rullat i ett rör.",
+          "price": 345,
+          "stock": 20,
+          "isActive": true,
+          "materials": ["Papper"],
+          "colors": ["Svart", "Beige"],
+          "parcel": { "weightGrams": 300, "lengthCm": 55, "widthCm": 8, "heightCm": 8 },
+          "size": { "widthCm": 40, "heightCm": 50 },
+          "images": [
+            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-01-main.jpg", "altText": "Konsttryck med en olivkvist tecknad i tunn svart linje, i ekram på en skänk" },
+            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-02-print.jpg", "altText": "Trycket med olivkvisten utan ram, på krämvitt papper" },
+            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-03-living-room.jpg", "altText": "Olivkvisten inramat på en beige vägg ovanför en krämvit bouclésoffa" },
+            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-04-bedroom.jpg", "altText": "Olivkvisten inramat ovanför en säng mot en salviagrön vägg" },
+            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-05-dining.jpg", "altText": "Olivkvisten inramat ovanför ett runt matbord i ek med två stolar" },
+            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-06-detail.jpg", "altText": "Närbild på olivkvistens blad och två oliver i svart tusch" }
+          ]
+        },
+        {
+          "title": "Molnspegel med tuftad ram",
+          "subcategory": "Speglar",
+          "description": "Spegel formad som ett moln, med en tjock och mjuk ram i lila och salviagröna ränder. Varje ram tuftas för hand, så ränderna blir lite olika från spegel till spegel.\n\nRamen är tuftad i ullgarn på en stabil skiva. Dammsug den försiktigt med ett mjukt munstycke. Ett unikt exemplar.",
+          "price": 2495,
+          "stock": 1,
+          "isActive": true,
+          "materials": ["Ull", "Glas"],
+          "colors": ["Lila", "Grön"],
+          "parcel": { "weightGrams": 5000, "lengthCm": 70, "widthCm": 65, "heightCm": 12 },
+          "size": { "widthCm": 60, "heightCm": 55, "weightGrams": 3500 },
+          "images": [
+            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-01-main.jpg", "altText": "Spegel formad som ett moln med tjock tuftad ram i lila och salviagröna ränder" },
+            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-02-vanity.jpg", "altText": "Molnspegeln ovanför en vit byrå med parfymflaskor och en vas med blommor" },
+            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-03-entryway.jpg", "altText": "Molnspegeln ovanför ett konsolbord i trä med en lampa och tulpaner i en hall" },
+            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-04-detail.jpg", "altText": "Närbild på ramens mjuka garn i lila och grönt mot spegelglasets kant" },
+            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-05-teen-room.jpg", "altText": "Molnspegeln ovanför ett sminkbord med ljusslingor och polaroidbilder på väggen" }
+          ]
+        },
+        {
+          "title": "Abstrakta former, konsttryck",
+          "subcategory": "Konsttryck",
+          "description": "Abstrakt tryck med mjuka former och en hög båge i terrakotta, salviagrönt och senapsgult. Förlagan är målad i gouache, och penselstrukturen syns i trycket.\n\n40 × 50 cm. Ramen på bilderna ingår inte, men trycket passar i en standardram. Skickas rullat i ett rör.",
+          "price": 395,
+          "stock": 15,
+          "isActive": true,
+          "materials": ["Papper"],
+          "colors": ["Terrakotta", "Grön", "Gul"],
+          "parcel": { "weightGrams": 300, "lengthCm": 55, "widthCm": 8, "heightCm": 8 },
+          "size": { "widthCm": 40, "heightCm": 50 },
+          "images": [
+            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-01-main.jpg", "altText": "Konsttryck med abstrakta former i terrakotta, salviagrönt och senapsgult, i ekram på en skänk" },
+            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-02-print.jpg", "altText": "Trycket med abstrakta former utan ram" },
+            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-03-living-room.jpg", "altText": "Det abstrakta trycket inramat på en beige vägg ovanför en krämvit bouclésoffa" },
+            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-04-bedroom.jpg", "altText": "Det abstrakta trycket inramat ovanför en säng mot en salviagrön vägg" },
+            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-05-dining.jpg", "altText": "Det abstrakta trycket inramat ovanför ett runt matbord i ek med två stolar" },
+            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-06-detail.jpg", "altText": "Närbild på de målade formerna med synlig penselstruktur" }
+          ]
+        },
+        {
+          "title": "Solnedgång, konsttryck",
+          "subcategory": "Konsttryck",
+          "description": "Grafiskt tryck med en sol som går ner bakom bågar i rost, senapsgult och rosa. Färgerna är tryckta med risograf, som ger en mjuk och lite kornig yta.\n\n40 × 50 cm. Ramen på bilderna ingår inte, men trycket passar i en standardram. Skickas rullat i ett rör.",
+          "price": 395,
+          "stock": 12,
+          "isActive": true,
+          "materials": ["Papper"],
+          "colors": ["Orange", "Gul", "Rosa"],
+          "parcel": { "weightGrams": 300, "lengthCm": 55, "widthCm": 8, "heightCm": 8 },
+          "size": { "widthCm": 40, "heightCm": 50 },
+          "images": [
+            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-01-main.jpg", "altText": "Konsttryck med en sol som går ner bakom bågar i rost, senap och rosa, i ekram på en skänk" },
+            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-02-print.jpg", "altText": "Trycket med solnedgång och bågar utan ram" },
+            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-03-living-room.jpg", "altText": "Solnedgångstrycket inramat på en beige vägg ovanför en krämvit bouclésoffa" },
+            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-04-bedroom.jpg", "altText": "Solnedgångstrycket inramat ovanför en säng mot en salviagrön vägg" },
+            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-05-dining.jpg", "altText": "Solnedgångstrycket inramat ovanför ett runt matbord i ek med två stolar" },
+            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-06-detail.jpg", "altText": "Närbild på solen och bågarna där trycktexturen syns" }
+          ]
+        },
+        {
+          "title": "Vågig golvspegel",
+          "subcategory": "Speglar",
+          "description": "Hög golvspegel med en tjock vågig ram i blank smörgul lack. Spegeln är 160 cm hög, så den visar hela figuren och gör rummet ljusare.\n\nRamen är fräst ur MDF, slipad och lackad i flera lager, så att vågorna blir blanka och mjuka att ta på. Spegelglaset är 4 mm tjockt och har en skyddsfilm på baksidan som håller ihop glaset om det skulle gå sönder.\n\nSpegeln är gjord för att stå lutad mot väggen. Fäst den gärna i väggen med beslaget som följer med, särskilt om det finns barn eller djur hemma.\n\nPå grund av storleken skickas spegeln i en egen förstärkt kartong.",
+          "price": 3495,
+          "stock": 4,
+          "isActive": true,
+          "materials": ["MDF", "Glas"],
+          "colors": ["Gul"],
+          "parcel": { "weightGrams": 18000, "lengthCm": 170, "widthCm": 70, "heightCm": 10 },
+          "size": { "widthCm": 60, "heightCm": 160, "weightGrams": 14000 },
+          "images": [
+            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-01-main.jpg", "altText": "Hög golvspegel med tjock vågig ram i blank smörgul lack lutad mot en vägg" },
+            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-02-bedroom.jpg", "altText": "Den vågiga spegeln lutad mot väggen i ett soligt sovrum med växter" },
+            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-03-dressing-area.jpg", "altText": "Den gula vågiga spegeln mot en rosa vägg bredvid en klädställning" },
+            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-04-detail.jpg", "altText": "Närbild på ramens blanka vågor i smörgult" },
+            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-05-side-view.jpg", "altText": "Den vågiga golvspegeln från sidan, så att ramens djup syns" }
+          ]
+        },
+        {
+          "title": "Citroner, konsttryck",
+          "subcategory": "Konsttryck",
+          "description": "Tryck av en gouachemålning med fyra citroner på en blåvit rutig duk. Somrigt och glatt, och lika fint i köket som i vardagsrummet.\n\nAteljé Form målar förlagan för hand och trycker den sedan på tjockt, matt papper som inte glansar i ljuset. Penseldragen och papperets struktur syns i trycket, precis som på originalet.\n\nTrycket är 40 × 50 cm och passar i en standardram, gärna med passepartout. Ramen på bilderna ingår inte.\n\nSkickas rullat i ett stadigt rör. Låt trycket ligga under några böcker ett dygn innan du ramar in det.",
+          "price": 395,
+          "stock": 18,
+          "isActive": true,
+          "materials": ["Papper"],
+          "colors": ["Gul", "Blå"],
+          "parcel": { "weightGrams": 300, "lengthCm": 55, "widthCm": 8, "heightCm": 8 },
+          "size": { "widthCm": 40, "heightCm": 50 },
+          "images": [
+            { "file": "atelje-form/lemons/atelje-form-lemons-01-main.jpg", "altText": "Konsttryck med fyra citroner på en blåvit rutig duk, i ekram på en skänk" },
+            { "file": "atelje-form/lemons/atelje-form-lemons-02-print.jpg", "altText": "Gouachemålningen med citroner utan ram" },
+            { "file": "atelje-form/lemons/atelje-form-lemons-03-living-room.jpg", "altText": "Citrontrycket inramat på en beige vägg ovanför en krämvit bouclésoffa" },
+            { "file": "atelje-form/lemons/atelje-form-lemons-04-bedroom.jpg", "altText": "Citrontrycket inramat ovanför en säng mot en salviagrön vägg" },
+            { "file": "atelje-form/lemons/atelje-form-lemons-05-dining.jpg", "altText": "Citrontrycket inramat ovanför ett runt matbord i ek med två stolar" },
+            { "file": "atelje-form/lemons/atelje-form-lemons-06-detail.jpg", "altText": "Närbild på en citron och den rutiga duken med synliga penseldrag" }
+          ]
         }
       ]
     },
     {
       "name": "Textil",
-      "image": "squarerounded.png",
-      "imageAltText": "Platshållarbild: en svart kvadrat med rundade hörn på vit bakgrund",
+      "image": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-01-main.jpg",
+      "imageAltText": "Tuftad matta med vågigt rutmönster i lila och krämvitt, sedd ovanifrån på ett trägolv",
+      "subcategories": ["Kläder", "Accessoarer", "Mattor"],
       "products": [
         {
-          "title": "Kökshandduk i linne",
-          "description": "Kökshandduk i tvättat linne som torkar bra och blir mjukare för varje tvätt. 50 × 70 cm med en hängare i hörnet.",
-          "price": 189,
-          "stock": 15,
-          "isActive": true,
-          "materials": ["Linne"],
-          "colors": ["Beige"],
-          "parcel": { "weightGrams": 200, "lengthCm": 25, "widthCm": 20, "heightCm": 3 },
-          "size": { "lengthCm": 70, "widthCm": 50 },
-          "images": [
-            { "file": "square.png", "altText": "Platshållarbild: en svart kvadrat på vit bakgrund" },
-            { "file": "squarerounded.png", "altText": "Platshållarbild: en svart kvadrat med rundade hörn på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Vävd kudde i ull",
-          "description": "Kuddfodral i handvävd ull med ett enkelt rutmönster. 50 × 50 cm, med dragkedja. Innerkudde ingår inte.",
-          "price": 595,
-          "stock": 4,
-          "isActive": true,
-          "materials": ["Ull"],
-          "colors": ["Grå", "Vit"],
-          "parcel": { "weightGrams": 900, "lengthCm": 45, "widthCm": 35, "heightCm": 12 },
-          "size": { "widthCm": 50, "heightCm": 50 }
-        },
-        {
-          "title": "Handvävd löpare",
-          "description": "Smal bordslöpare i bomull och linne, vävd på en gammal vävstol. 35 × 140 cm.",
-          "price": 450,
-          "stock": 3,
-          "isActive": true,
-          "materials": ["Bomull", "Linne"],
-          "colors": ["Blå", "Vit"],
-          "parcel": { "weightGrams": 400, "lengthCm": 35, "widthCm": 25, "heightCm": 5 },
-          "size": { "lengthCm": 140, "widthCm": 35 },
-          "images": [
-            { "file": "ellipserotatedunfilled.png", "altText": "Platshållarbild: en lutande svart oval ring på vit bakgrund" },
-            { "file": "cirkleunfilled.png", "altText": "Platshållarbild: en svart ring på vit bakgrund" },
-            { "file": "rectanglerotated.png", "altText": "Platshållarbild: en lutande svart rektangel på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Tygkasse med tryck",
-          "description": "Rymlig tygkasse i tjock bomull med ett handtryckt mönster av blad. Handtagen är långa nog att bära över axeln.",
-          "price": 159,
-          "stock": 20,
+          "title": "Tygväska med prickar",
+          "subcategory": "Accessoarer",
+          "description": "Tygväska i tjock naturfärgad bomull med stora koboltblå prickar, tryckta för hand med screentryck. Samma prickar som på Prickstudions keramik.\n\nLånga handtag som går att bära över axeln. Rymmer en hel matkasse.",
+          "price": 229,
+          "stock": 25,
           "isActive": true,
           "materials": ["Bomull"],
-          "colors": ["Beige", "Grön"],
-          "parcel": { "weightGrams": 150, "lengthCm": 25, "widthCm": 20, "heightCm": 2 }
+          "colors": ["Beige", "Blå"],
+          "parcel": { "weightGrams": 200, "lengthCm": 25, "widthCm": 20, "heightCm": 2 },
+          "size": { "widthCm": 38, "heightCm": 42 },
+          "images": [
+            { "file": "prickstudion/tote-bag/prickstudion-tote-bag-01-main.jpg", "altText": "Tygväska i naturfärgad bomull med stora koboltblå prickar som hänger på en träknopp" },
+            { "file": "prickstudion/tote-bag/prickstudion-tote-bag-02-cafe.jpg", "altText": "Tygväskan med prickar på en caféstol med en baguette och vita tulpaner" },
+            { "file": "prickstudion/tote-bag/prickstudion-tote-bag-03-detail.jpg", "altText": "Närbild på tygets väv, sömmen vid handtaget och en tryckt blå prick" }
+          ]
         },
         {
-          "title": "Pläd i ull",
-          "description": "Varm pläd i ren ull med fransar på kortsidorna. 130 × 180 cm. Vävd i ett enda exemplar.",
-          "price": 1450,
+          "title": "Ribbstickad mössa",
+          "subcategory": "Accessoarer",
+          "description": "Ribbstickad mössa i rostfärgad merinoull med uppvikt kant. Mjuk och varm, och den sticks inte.\n\nEn storlek som passar de flesta vuxna. Tvättas för hand i ljummet vatten och torkas liggande.",
+          "price": 449,
+          "stock": 7,
+          "isActive": true,
+          "materials": ["Ull"],
+          "colors": ["Terrakotta"],
+          "parcel": { "weightGrams": 200, "lengthCm": 20, "widthCm": 15, "heightCm": 5 },
+          "size": { "weightGrams": 90 },
+          "images": [
+            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-01-main.jpg", "altText": "Ribbstickad mössa i rostfärgad ull med uppvikt kant på en stenskiva" },
+            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-02-flat-lay.jpg", "altText": "Mössan bredvid vita vantar, en termos, kottar och en grankvist på ett träbord" },
+            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-03-entryway.jpg", "altText": "Mössan på en krok bredvid en kamelfärgad kappa och en stickad halsduk" },
+            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-04-colors.jpg", "altText": "Tre ribbstickade mössor i rost, senapsgult och skogsgrönt staplade på en pall" },
+            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-05-forest.jpg", "altText": "Mössan på en ryggsäck på en mossig sten i en dimmig höstskog" },
+            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-06-detail.jpg", "altText": "Närbild på mössans ribbstickning och uppvikta kant i rostfärgad ull" }
+          ]
+        },
+        {
+          "title": "Sweatshirt med broderad prästkrage",
+          "subcategory": "Kläder",
+          "description": "Sweatshirt i havregrå ekologisk bomull med en liten prästkrage broderad för hand på bröstet. Avslappnad passform med ribbade muddar.\n\nStorlek M. Tvätta den ut och in i 30 grader, så håller broderiet länge.",
+          "price": 749,
+          "stock": 10,
+          "isActive": true,
+          "materials": ["Bomull"],
+          "colors": ["Beige"],
+          "parcel": { "weightGrams": 700, "lengthCm": 35, "widthCm": 25, "heightCm": 6 },
+          "size": { "weightGrams": 550 },
+          "images": [
+            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-01-main.jpg", "altText": "Havregrå sweatshirt med en liten broderad prästkrage på bröstet, på galge mot en vägg" },
+            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-02-flat-lay.jpg", "altText": "Sweatshirten på ett trägolv bredvid en kopp kaffe, ullsockor och en bok" },
+            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-03-armchair.jpg", "altText": "Sweatshirten slängd över armstödet på en bouclé-fåtölj" },
+            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-04-colors.jpg", "altText": "Tre hopvikta sweatshirts i havregrått, salviagrönt och duvblått med broderade prästkragar" },
+            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-05-entryway.jpg", "altText": "Sweatshirten på en krok i en ljus hall bredvid en tygväska och en stråhatt" },
+            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-06-detail.jpg", "altText": "Närbild på den handbroderade prästkragen med vita kronblad och gul mitt" }
+          ]
+        },
+        {
+          "title": "Stickad kofta med flätor",
+          "subcategory": "Kläder",
+          "description": "Rejäl kofta i krämvit ull, stickad för hand med flätor längs båda framstyckena. Djup v-ringning och fem knappar i trä.\n\nTrådverket stickar varje kofta för hand, och det tar ungefär tre veckor. Garnet är en tjock blandning av ull och alpacka som är varm men lätt, och som blir mjukare för varje gång den används.\n\nKoftan har en avslappnad och lite stor passform. Den här är i storlek M/L och mäter 62 cm över bröstet och 68 cm i längd.\n\nTvättas för hand med ullmedel och torkas liggande, så behåller den formen. Ett unikt exemplar.",
+          "price": 2495,
           "stock": 1,
           "isActive": true,
           "materials": ["Ull"],
-          "colors": ["Röd", "Brun"],
-          "parcel": { "weightGrams": 1300, "lengthCm": 45, "widthCm": 35, "heightCm": 12 },
-          "size": { "lengthCm": 180, "widthCm": 130, "weightGrams": 1000 },
+          "colors": ["Vit"],
+          "parcel": { "weightGrams": 1300, "lengthCm": 40, "widthCm": 30, "heightCm": 12 },
+          "size": { "weightGrams": 950 },
           "images": [
-            { "file": "twocirkesquare_unfilled.png", "altText": "Platshållarbild: konturen av en svart form med två rundade toppar på vit bakgrund" },
-            { "file": "twocirkesquare.png", "altText": "Platshållarbild: en svart form med två rundade toppar på vit bakgrund" }
+            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-01-main.jpg", "altText": "Krämvit stickad kofta med flätmönster och träknappar på galge mot en putsad vägg" },
+            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-02-flat-lay.jpg", "altText": "Koftan på linnetyg bland höstlöv bredvid en kopp te och läsglasögon" },
+            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-03-rainy-day.jpg", "altText": "Koftan hänger på en stol vid ett regnigt fönster med te och ett tänt ljus" },
+            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-04-handmade.jpg", "altText": "Koftan hopvikt på en säng bredvid stickor och ett nystan i samma garn" },
+            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-05-clothes-rail.jpg", "altText": "Koftan på en klädstång i ett soligt sovrum bredvid linneplagg" },
+            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-06-detail.jpg", "altText": "Närbild på flätstickningen och en träknapp på koftans knappslå" }
           ]
         },
         {
-          "title": "Grytlappar, två stycken",
-          "description": "Två tjocka grytlappar i virkad bomull. Tål 60 grader i tvättmaskinen.",
+          "title": "Tuftad matta apelsinskiva",
+          "subcategory": "Mattor",
+          "description": "Rund matta formad som en apelsinskiva, 100 cm i diameter. Klyftorna är tuftade i orange och kanterna i krämvitt, med skurna spår som gör mönstret tydligt.\n\nFungerar på golvet i barnrummet eller hallen, och lika bra som textilkonst på väggen. Baksidan är klädd med filt.",
+          "price": 1495,
+          "stock": 5,
+          "isActive": true,
+          "materials": ["Ull"],
+          "colors": ["Orange", "Vit"],
+          "parcel": { "weightGrams": 3500, "lengthCm": 55, "widthCm": 30, "heightCm": 30 },
+          "size": { "diameterCm": 100, "weightGrams": 2800 },
+          "images": [
+            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-01-main.jpg", "altText": "Rund tuftad matta formad som en apelsinskiva på ett ljust trägolv, sedd ovanifrån" },
+            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-02-playroom.jpg", "altText": "Apelsinmattan på golvet i ett lekrum med leksakskök och klossar" },
+            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-03-entryway.jpg", "altText": "Apelsinmattan framför ytterdörren i en ljus hall" },
+            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-04-detail.jpg", "altText": "Närbild på mattans orange klyftor och den skulpterade kanten" },
+            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-05-wall-hanging.jpg", "altText": "Apelsinmattan upphängd som väggdekor ovanför en krämvit soffa" }
+          ]
+        },
+        {
+          "title": "Batikfärgad t-shirt",
+          "subcategory": "Kläder",
+          "description": "T-shirt i ekologisk bomull, färgad för hand med spiralbatik i lila, blått och vitt. Eftersom tyget vrids och färgas för hand blir mönstret aldrig exakt likadant två gånger.\n\nStorlek M med avslappnad passform. Tvätta den separat de första gångerna.",
+          "price": 449,
+          "stock": 9,
+          "isActive": true,
+          "materials": ["Bomull"],
+          "colors": ["Lila", "Blå", "Vit"],
+          "parcel": { "weightGrams": 300, "lengthCm": 30, "widthCm": 22, "heightCm": 3 },
+          "images": [
+            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-01-main.jpg", "altText": "T-shirt med spiralbatik i lila, blått och vitt på galge mot en putsad vägg" },
+            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-02-flat-lay.jpg", "altText": "Batik-t-shirten på linnetyg med solglasögon, körsbär och en bok" },
+            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-03-clothing-rail.jpg", "altText": "Batik-t-shirten på en klädstång i mässing i ett soligt sovrum" },
+            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-04-colors.jpg", "altText": "Tre hopvikta batik-t-shirts i lila, persika och mintgrönt på en pall" },
+            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-05-picnic.jpg", "altText": "Batik-t-shirten på en rutig picknickfilt med jordgubbar och en stråhatt" },
+            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-06-detail.jpg", "altText": "Närbild på batikmönstret där färgerna flyter ihop och den ribbade halsen" }
+          ]
+        },
+        {
+          "title": "Tuftad matta med virvlar",
+          "subcategory": "Mattor",
+          "description": "Tuftad matta i en mjuk organisk form med virvlar i rosa, körsbärsrött och krämvitt. 120 × 80 cm.\n\nLuggen är tjock och mjuk att gå på. Baksidan är klädd med filt och har halkskydd.",
+          "price": 1795,
+          "stock": 4,
+          "isActive": true,
+          "materials": ["Ull"],
+          "colors": ["Rosa", "Röd", "Vit"],
+          "parcel": { "weightGrams": 3800, "lengthCm": 85, "widthCm": 30, "heightCm": 30 },
+          "size": { "lengthCm": 120, "widthCm": 80, "weightGrams": 3000 },
+          "images": [
+            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-01-main.jpg", "altText": "Tuftad matta i organisk form med virvlar i rosa, körsbärsrött och krämvitt, sedd ovanifrån" },
+            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-02-studio.jpg", "altText": "Virvelmattan under ett skrivbord i en ljus ateljé" },
+            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-03-bedroom.jpg", "altText": "Virvelmattan vid en säng med randiga sängkläder och en tänd lampa" },
+            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-04-detail.jpg", "altText": "Närbild på luggen i rosa, rött och krämvitt med skurna spår mellan färgerna" },
+            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-05-backing.jpg", "altText": "Mattans kant uppvikt så att den grå baksidan och luggens tjocklek syns" }
+          ]
+        },
+        {
+          "title": "Matta med vågigt rutmönster",
+          "subcategory": "Mattor",
+          "description": "Tuftad matta med vågiga rutor i lila och krämvitt och en kant som böljar runt hela mattan. 140 × 90 cm.\n\nVåglängd tuftar varje matta för hand med en tuftpistol. Garnet skjuts genom en spänd duk, klipps till en jämn lugg och skärs sedan ut runt mönstret, så att rutorna blir tydliga. En matta tar ungefär en vecka att göra.\n\nLuggen är tät och ungefär 15 mm hög. Baksidan är klädd med filt och har halkskydd, så mattan ligger still även på trägolv.\n\nDammsug utan roterande borste och fläckrengör med en fuktig trasa. Mattan ska inte tvättas i maskin.",
+          "price": 1995,
+          "stock": 6,
+          "isActive": true,
+          "materials": ["Ull"],
+          "colors": ["Lila", "Vit"],
+          "parcel": { "weightGrams": 4500, "lengthCm": 95, "widthCm": 30, "heightCm": 30 },
+          "size": { "lengthCm": 140, "widthCm": 90, "weightGrams": 3800 },
+          "images": [
+            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-01-main.jpg", "altText": "Tuftad matta med vågigt rutmönster i lila och krämvitt, sedd ovanifrån på ett trägolv" },
+            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-02-bedroom.jpg", "altText": "Den rutiga mattan bredvid en säng med lila sängkläder i morgonljus" },
+            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-03-living-room.jpg", "altText": "Den rutiga mattan under en bouclé-fåtölj i en solig vardagsrumshörna" },
+            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-04-detail.jpg", "altText": "Närbild på den tjocka luggen där lila möter krämvitt i en mjuk våg" },
+            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-05-with-cat.jpg", "altText": "En vit katt sover på den rutiga mattan i eftermiddagssolen" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Inredning",
+      "image": "prickstudion/mug/prickstudion-mug-01-main.jpg",
+      "imageAltText": "Handgjord mugg med ringformat öra och stora koboltblå prickar i skarpt fönsterljus",
+      "subcategories": ["Keramik", "Vaser och krukor", "Förvaring"],
+      "products": [
+        {
+          "title": "Ledad drake",
+          "description": "3D-printad drake i ett enda stycke, med leder som gör att hela kroppen går att böja och slingra. 30 cm lång, i skimrande filament som skiftar från lila till turkos.\n\nNya färger provas fortfarande, så draken är inte till salu än. Innehåller små delar och passar inte barn under tre år.",
+          "price": 299,
+          "stock": 6,
+          "isActive": false,
+          "materials": ["PLA"],
+          "colors": ["Lila", "Turkos"],
+          "parcel": { "weightGrams": 250, "lengthCm": 25, "widthCm": 20, "heightCm": 8 },
+          "size": { "lengthCm": 30, "weightGrams": 120 },
+          "images": [
+            { "file": "lagerljus/flexi-dragon/lagerljus-flexi-dragon-01-main.jpg", "altText": "3D-printad ledad drake i skimrande lila och turkos på en ljus träskiva" },
+            { "file": "lagerljus/flexi-dragon/lagerljus-flexi-dragon-02-gaming-desk.jpg", "altText": "Draken på en skrivbordsmatta bredvid ett tangentbord och hörlurar i lila ljus" },
+            { "file": "lagerljus/flexi-dragon/lagerljus-flexi-dragon-03-bookshelf.jpg", "altText": "Draken draperad över en stapel gamla böcker på en hylla" },
+            { "file": "lagerljus/flexi-dragon/lagerljus-flexi-dragon-04-detail.jpg", "altText": "Närbild på drakens leder och taggar i skimrande lila och turkos" }
+          ]
+        },
+        {
+          "title": "Skrivbordsorganisatör med sexkantiga fack",
+          "subcategory": "Förvaring",
+          "description": "Organisatör med sex sexkantiga fack i olika höjder, 3D-printad i pudrigt blå PLA. Rymmer pennor, saxar och linjaler, eller sminkborstar och hårspännen.\n\nFacken har slät botten och är lätta att torka rena.",
+          "price": 249,
+          "stock": 11,
+          "isActive": true,
+          "materials": ["PLA"],
+          "colors": ["Blå"],
+          "parcel": { "weightGrams": 450, "lengthCm": 25, "widthCm": 20, "heightCm": 18 },
+          "size": { "lengthCm": 18, "widthCm": 14, "heightCm": 13, "weightGrams": 220 },
+          "images": [
+            { "file": "lagerljus/desk-organizer/lagerljus-desk-organizer-01-main.jpg", "altText": "Pudrigt blå organisatör med sexkantiga fack i olika höjder på en ljus träskiva" },
+            { "file": "lagerljus/desk-organizer/lagerljus-desk-organizer-02-home-office.jpg", "altText": "Organisatören med pennor, sax och linjal på ett skrivbord bredvid en kopp kaffe" },
+            { "file": "lagerljus/desk-organizer/lagerljus-desk-organizer-03-vanity.jpg", "altText": "Organisatören med sminkborstar och hårspännen på ett vitt sminkbord" },
+            { "file": "lagerljus/desk-organizer/lagerljus-desk-organizer-04-detail.jpg", "altText": "Närbild ovanifrån på de sexkantiga facken med gem och klämmor" }
+          ]
+        },
+        {
+          "title": "Smyckesskål blomma",
+          "subcategory": "Förvaring",
+          "description": "Liten skål formad som en blomma med sex runda kronblad, 3D-printad i persikofärgad PLA. Passar till ringar och örhängen på nattduksbordet.\n\n12 cm i diameter. Bilden med tre skålar visar alla färger i serien.",
           "price": 129,
           "stock": 0,
           "isActive": true,
-          "materials": ["Bomull"],
-          "colors": ["Gul"],
-          "parcel": { "weightGrams": 150, "lengthCm": 22, "widthCm": 20, "heightCm": 3 },
+          "materials": ["PLA"],
+          "colors": ["Rosa"],
+          "parcel": { "weightGrams": 100, "lengthCm": 15, "widthCm": 15, "heightCm": 5 },
+          "size": { "diameterCm": 12, "heightCm": 2.5, "weightGrams": 40 },
           "images": [
-            { "file": "cirkle.png", "altText": "Platshållarbild: en svart cirkel på vit bakgrund" },
-            { "file": "halfcirkle.png", "altText": "Platshållarbild: en svart halvcirkel på vit bakgrund" }
+            { "file": "lagerljus/flower-dish/lagerljus-flower-dish-01-main.jpg", "altText": "Liten persikofärgad skål formad som en blomma på en ljus träskiva" },
+            { "file": "lagerljus/flower-dish/lagerljus-flower-dish-02-bedside.jpg", "altText": "Blomskålen med guldringar och ett halsband på ett nattduksbord" },
+            { "file": "lagerljus/flower-dish/lagerljus-flower-dish-03-colors.jpg", "altText": "Tre blomskålar i persika, smörgult och mintgrönt på linnetyg i solljus" },
+            { "file": "lagerljus/flower-dish/lagerljus-flower-dish-04-detail.jpg", "altText": "Närbild på ett kronblad med synliga lagerlinjer och en guldring i mitten" }
           ]
         },
         {
-          "title": "Bordsduk i linne",
-          "description": "Bordsduk i tvättat linne för ett bord med sex platser. 150 × 250 cm.",
-          "price": 795,
-          "stock": 2,
-          "isActive": true,
-          "materials": ["Linne"],
-          "colors": ["Vit"],
-          "parcel": { "weightGrams": 700, "lengthCm": 35, "widthCm": 30, "heightCm": 5 },
-          "size": { "lengthCm": 250, "widthCm": 150 }
-        },
-        {
-          "title": "Korg i bomullsrep",
-          "description": "Mjuk förvaringskorg sydd av bomullsrep. Passar till garn, leksaker eller tidningar. 25 cm hög.",
-          "price": 345,
-          "stock": 6,
-          "isActive": true,
-          "materials": ["Bomull"],
-          "colors": ["Vit", "Svart"],
-          "parcel": { "weightGrams": 800, "lengthCm": 32, "widthCm": 32, "heightCm": 25 },
-          "size": { "heightCm": 25 },
-          "images": [
-            { "file": "halfcirkle.png", "altText": "Platshållarbild: en svart halvcirkel på vit bakgrund" },
-            { "file": "squarecirklerounded.png", "altText": "Platshållarbild: en svart valvform med rundade hörn på vit bakgrund" },
-            { "file": "cirkle.png", "altText": "Platshållarbild: en svart cirkel på vit bakgrund" },
-            { "file": "ellipserotatedunfilled.png", "altText": "Platshållarbild: en lutande svart oval ring på vit bakgrund" }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Konst",
-      "image": "rectanglerotated.png",
-      "imageAltText": "Platshållarbild: en lutande svart rektangel på vit bakgrund",
-      "subcategories": ["Original", "Tryck"],
-      "products": [
-        {
-          "title": "Morgon vid sjön, akvarell",
-          "subcategory": "Original",
-          "description": "Originalakvarell av en stilla sjö i gryningsljus. 30 × 40 cm på tjockt akvarellpapper. Levereras utan ram.",
-          "price": 1800,
-          "stock": 1,
-          "isActive": true,
-          "materials": ["Papper", "Akvarellfärg"],
-          "colors": ["Blå", "Rosa"],
-          "parcel": { "weightGrams": 800, "lengthCm": 50, "widthCm": 40, "heightCm": 4 },
-          "size": { "widthCm": 30, "heightCm": 40 },
-          "images": [
-            { "file": "cirkleunfilled.png", "altText": "Platshållarbild: en svart ring på vit bakgrund" },
-            { "file": "ellipserotatedunfilled.png", "altText": "Platshållarbild: en lutande svart oval ring på vit bakgrund" },
-            { "file": "cirkle.png", "altText": "Platshållarbild: en svart cirkel på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Röda hus, akrylmålning",
-          "subcategory": "Original",
-          "description": "Målning i akryl på duk av en rad röda hus längs en grusväg. 50 × 70 cm. Kanterna är målade, så den kan hängas utan ram.",
-          "price": 3200,
-          "stock": 1,
-          "isActive": true,
-          "materials": ["Duk", "Akrylfärg"],
-          "colors": ["Röd", "Grön"],
-          "parcel": { "weightGrams": 2500, "lengthCm": 80, "widthCm": 65, "heightCm": 8 },
-          "size": { "widthCm": 50, "heightCm": 70 },
-          "images": [
-            { "file": "squarecirkle.png", "altText": "Platshållarbild: en svart valvform på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Fåglar, linoleumtryck",
-          "subcategory": "Tryck",
-          "description": "Handtryckt linoleumtryck i en upplaga om 20 exemplar, signerat och numrerat. 21 × 30 cm.",
-          "price": 650,
-          "stock": 5,
-          "isActive": true,
-          "materials": ["Papper"],
-          "colors": ["Svart", "Vit"],
-          "parcel": { "weightGrams": 400, "lengthCm": 45, "widthCm": 35, "heightCm": 3 },
-          "size": { "widthCm": 21, "heightCm": 30 }
-        },
-        {
-          "title": "Blommor, konsttryck",
-          "subcategory": "Tryck",
-          "description": "Tryck av en akvarell med vilda blommor, på matt papper. 30 × 40 cm, passar i en standardram.",
-          "price": 395,
-          "stock": 10,
-          "isActive": true,
-          "materials": ["Papper"],
-          "colors": ["Gul", "Rosa", "Grön"],
-          "parcel": { "weightGrams": 300, "lengthCm": 55, "widthCm": 8, "heightCm": 8 },
-          "size": { "widthCm": 30, "heightCm": 40 },
-          "images": [
-            { "file": "twocirkesquare.png", "altText": "Platshållarbild: en svart form med två rundade toppar på vit bakgrund" },
-            { "file": "squarerounded.png", "altText": "Platshållarbild: en svart kvadrat med rundade hörn på vit bakgrund" },
-            { "file": "square.png", "altText": "Platshållarbild: en svart kvadrat på vit bakgrund" },
-            { "file": "twocirkesquare_unfilled.png", "altText": "Platshållarbild: konturen av en svart form med två rundade toppar på vit bakgrund" },
-            { "file": "rectanglerotated.png", "altText": "Platshållarbild: en lutande svart rektangel på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Höstlöv, akvarell",
-          "subcategory": "Original",
-          "description": "Originalakvarell med löv i rött och gult. 24 × 32 cm.",
-          "price": 1400,
-          "stock": 0,
-          "isActive": true,
-          "materials": ["Papper", "Akvarellfärg"],
-          "colors": ["Röd", "Gul"],
-          "parcel": { "weightGrams": 700, "lengthCm": 45, "widthCm": 35, "heightCm": 4 },
-          "size": { "widthCm": 24, "heightCm": 32 },
-          "images": [
-            { "file": "halfcirkle.png", "altText": "Platshållarbild: en svart halvcirkel på vit bakgrund" },
-            { "file": "rectanglerounded.png", "altText": "Platshållarbild: en svart rektangel med rundade hörn på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Abstrakt i blått",
-          "subcategory": "Original",
-          "description": "Stor abstrakt målning i akryl med lager av blått och grått. 80 × 100 cm på duk.",
-          "price": 4500,
-          "stock": 1,
-          "isActive": true,
-          "materials": ["Duk", "Akrylfärg"],
-          "colors": ["Blå", "Grå"],
-          "parcel": { "weightGrams": 4000, "lengthCm": 120, "widthCm": 100, "heightCm": 8 },
-          "size": { "widthCm": 80, "heightCm": 100 },
-          "images": [
-            { "file": "ellipserotatedunfilled.png", "altText": "Platshållarbild: en lutande svart oval ring på vit bakgrund" },
-            { "file": "rectanglerotated.png", "altText": "Platshållarbild: en lutande svart rektangel på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Katten, blyertsteckning",
-          "subcategory": "Original",
-          "description": "Detaljerad blyertsteckning av en sovande katt. 21 × 30 cm, levereras med en vit passepartout.",
-          "price": 850,
-          "stock": 1,
-          "isActive": true,
-          "materials": ["Papper"],
-          "colors": ["Grå"],
-          "parcel": { "weightGrams": 500, "lengthCm": 40, "widthCm": 30, "heightCm": 4 },
-          "size": { "widthCm": 21, "heightCm": 30 },
-          "images": [
-            { "file": "square.png", "altText": "Platshållarbild: en svart kvadrat på vit bakgrund" },
-            { "file": "cirkleunfilled.png", "altText": "Platshållarbild: en svart ring på vit bakgrund" },
-            { "file": "squarecirkle.png", "altText": "Platshållarbild: en svart valvform på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Små akvareller, serie",
-          "subcategory": "Original",
-          "description": "En serie om sex små akvareller, 10 × 15 cm var. Bilderna är inte klara än.",
-          "price": 600,
-          "stock": 3,
-          "isActive": false,
-          "materials": ["Papper", "Akvarellfärg"],
-          "colors": ["Blå", "Grön"],
-          "parcel": { "weightGrams": 400, "lengthCm": 30, "widthCm": 25, "heightCm": 3 }
-        }
-      ]
-    },
-    {
-      "name": "Smycken",
-      "image": "cirkleunfilled.png",
-      "imageAltText": "Platshållarbild: en svart ring på vit bakgrund",
-      "products": [
-        {
-          "title": "Droppörhängen i silver",
-          "description": "Lätta örhängen i återvunnet silver, formade som droppar. 2 cm långa, med krokar i silver.",
-          "price": 495,
-          "stock": 7,
-          "isActive": true,
-          "materials": ["Silver"],
-          "colors": ["Silver"],
-          "parcel": { "weightGrams": 100, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
-          "size": { "lengthCm": 2 },
-          "images": [
-            { "file": "squarecirklerounded.png", "altText": "Platshållarbild: en svart valvform med rundade hörn på vit bakgrund" },
-            { "file": "cirkleunfilled.png", "altText": "Platshållarbild: en svart ring på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Halsband med mässingshänge",
-          "description": "Runt hänge i hamrad mässing på en 45 cm lång kedja.",
-          "price": 395,
-          "stock": 9,
-          "isActive": true,
-          "materials": ["Mässing"],
-          "colors": ["Guld"],
-          "parcel": { "weightGrams": 120, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
-          "size": { "lengthCm": 45 }
-        },
-        {
-          "title": "Hamrad silverring",
-          "description": "Bred ring i silver med en hamrad yta som fångar ljuset. Storlek 17.",
-          "price": 650,
-          "stock": 4,
-          "isActive": true,
-          "materials": ["Silver"],
-          "colors": ["Silver"],
-          "parcel": { "weightGrams": 80, "lengthCm": 10, "widthCm": 10, "heightCm": 5 },
-          "size": { "diameterCm": 1.7, "weightGrams": 8 },
-          "images": [
-            { "file": "cirkleunfilled.png", "altText": "Platshållarbild: en svart ring på vit bakgrund" },
-            { "file": "ellipserotatedunfilled.png", "altText": "Platshållarbild: en lutande svart oval ring på vit bakgrund" },
-            { "file": "squarerounded.png", "altText": "Platshållarbild: en svart kvadrat med rundade hörn på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Armband med glaspärlor",
-          "description": "Armband med handgjorda glaspärlor i blått och grönt på ett elastiskt band. Passar de flesta handleder.",
+          "title": "Kruka med vågor",
+          "subcategory": "Vaser och krukor",
+          "description": "Kruka med mjuka vågor runt om och ett fat som fångar vattnet. 3D-printad i lila PLA, med ett hål i botten för dränering.\n\nPassar en liten krukväxt, till exempel en pilea. Växten ingår inte.",
           "price": 245,
           "stock": 10,
           "isActive": true,
-          "materials": ["Glas"],
-          "colors": ["Blå", "Grön"],
-          "parcel": { "weightGrams": 120, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
+          "materials": ["PLA"],
+          "colors": ["Lila"],
+          "parcel": { "weightGrams": 400, "lengthCm": 20, "widthCm": 20, "heightCm": 18 },
+          "size": { "heightCm": 12, "diameterCm": 12, "weightGrams": 200 },
           "images": [
-            { "file": "rectanglerounded.png", "altText": "Platshållarbild: en svart rektangel med rundade hörn på vit bakgrund" },
-            { "file": "cirkle.png", "altText": "Platshållarbild: en svart cirkel på vit bakgrund" }
+            { "file": "lagerljus/wavy-planter/lagerljus-wavy-planter-01-main.jpg", "altText": "Lila kruka med vågiga ribbor och fat, med en pilea, på en ljus träskiva" },
+            { "file": "lagerljus/wavy-planter/lagerljus-wavy-planter-02-sizes.jpg", "altText": "Tre lila vågkrukor i olika storlekar med växter i ett soligt fönster" },
+            { "file": "lagerljus/wavy-planter/lagerljus-wavy-planter-03-plant-shelf.jpg", "altText": "Vågkrukan med en hängande pothos på en vit hylla bland andra växter" },
+            { "file": "lagerljus/wavy-planter/lagerljus-wavy-planter-04-detail.jpg", "altText": "Närbild på krukans kant med vågiga ribbor, lagerlinjer och jord" }
           ]
         },
         {
-          "title": "Cirkelörhängen i mässing",
-          "description": "Stora örhängen i mässing, formade som öppna cirklar. 4 cm i diameter.",
+          "title": "Assiett med prickar",
+          "subcategory": "Keramik",
+          "description": "Handgjord assiett i ljust stengods med koboltblå prickar som Prickstudion målar för hand. Kanten är lite vågig, och ingen tallrik blir exakt som en annan.\n\n21 cm i diameter. Tål diskmaskin och mikrovågsugn.",
+          "price": 325,
+          "stock": 8,
+          "isActive": true,
+          "materials": ["Stengods"],
+          "colors": ["Vit", "Blå"],
+          "parcel": { "weightGrams": 900, "lengthCm": 30, "widthCm": 30, "heightCm": 8 },
+          "size": { "diameterCm": 21, "weightGrams": 520 },
+          "images": [
+            { "file": "prickstudion/plate/prickstudion-plate-01-main.jpg", "altText": "Assiett i ljust stengods med handmålade koboltblå prickar, sedd ovanifrån" },
+            { "file": "prickstudion/plate/prickstudion-plate-02-living-room.jpg", "altText": "Assietten med en bit citronkaka bredvid en prickig mugg på ett travertinbord" },
+            { "file": "prickstudion/plate/prickstudion-plate-03-detail.jpg", "altText": "Närbild på assiettens vågiga kant och penseldragen i de blå prickarna" }
+          ]
+        },
+        {
+          "title": "Skål med prickar",
+          "subcategory": "Keramik",
+          "description": "Handgjord skål i ljust stengods med koboltblå prickar och en prickig, blank glasyr. Lagom stor till frukost, soppa eller en sallad.\n\n14 cm i diameter. Tål diskmaskin och mikrovågsugn.",
           "price": 345,
-          "stock": 0,
+          "stock": 7,
           "isActive": true,
-          "materials": ["Mässing"],
-          "colors": ["Guld"],
-          "parcel": { "weightGrams": 100, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
-          "size": { "diameterCm": 4 }
-        },
-        {
-          "title": "Brosch i silver",
-          "description": "Brosch i silver formad som ett blad, med säkerhetslås. Ett unikt exemplar.",
-          "price": 720,
-          "stock": 1,
-          "isActive": true,
-          "materials": ["Silver"],
-          "colors": ["Silver"],
-          "parcel": { "weightGrams": 100, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
+          "materials": ["Stengods"],
+          "colors": ["Vit", "Blå"],
+          "parcel": { "weightGrams": 800, "lengthCm": 22, "widthCm": 22, "heightCm": 14 },
+          "size": { "heightCm": 7, "diameterCm": 14, "weightGrams": 400 },
           "images": [
-            { "file": "twocirkesquare_unfilled.png", "altText": "Platshållarbild: konturen av en svart form med två rundade toppar på vit bakgrund" },
-            { "file": "squarecirkle.png", "altText": "Platshållarbild: en svart valvform på vit bakgrund" },
-            { "file": "halfcirkle.png", "altText": "Platshållarbild: en svart halvcirkel på vit bakgrund" }
+            { "file": "prickstudion/bowl/prickstudion-bowl-01-main.jpg", "altText": "Handgjord skål med koboltblå prickar i fönsterljus mot en ljus vägg" },
+            { "file": "prickstudion/bowl/prickstudion-bowl-02-breakfast.jpg", "altText": "Skålen med yoghurt, granola och hallon på linnetyg, sedd ovanifrån" },
+            { "file": "prickstudion/bowl/prickstudion-bowl-03-stack.jpg", "altText": "Tre prickiga skålar staplade på linnetyg i solljus med lövskuggor" }
           ]
         },
         {
-          "title": "Tunn silverkedja",
-          "description": "Fin kedja i silver, 50 cm lång. Bär den ensam eller med ett hänge.",
-          "price": 590,
-          "stock": 3,
+          "title": "Spiralvas i bärnsten",
+          "subcategory": "Vaser och krukor",
+          "description": "Hög och smal vas med en spiral som vrider sig runt hela vasen. 3D-printad i genomskinlig PETG i bärnstensfärg.\n\nI solljus lyser vasen gyllene och kastar varma ljusmönster på bordet och väggen. Lagerlinjerna från skrivaren fångar ljuset, så ytan ser nästan vävd ut.\n\nVasen är 30 cm hög och tät nog för snittblommor. Lagerljus provar varje vas med vatten innan den skickas. Den passar också till torkade blommor och pampasgräs.\n\nDiskas för hand i ljummet vatten, eftersom PETG blir mjukt av hög värme.",
+          "price": 395,
+          "stock": 8,
           "isActive": true,
-          "materials": ["Silver"],
-          "colors": ["Silver"],
-          "parcel": { "weightGrams": 80, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
-          "size": { "lengthCm": 50 },
+          "materials": ["PETG"],
+          "colors": ["Orange"],
+          "parcel": { "weightGrams": 400, "lengthCm": 38, "widthCm": 15, "heightCm": 15 },
+          "size": { "heightCm": 30, "diameterCm": 8, "weightGrams": 180 },
           "images": [
-            { "file": "rectanglerotated.png", "altText": "Platshållarbild: en lutande svart rektangel på vit bakgrund" },
-            { "file": "square.png", "altText": "Platshållarbild: en svart kvadrat på vit bakgrund" }
+            { "file": "lagerljus/amber-vase/lagerljus-amber-vase-01-main.jpg", "altText": "Hög smal vas i genomskinlig bärnstensfärgad plast med spiralvridning på en träskiva" },
+            { "file": "lagerljus/amber-vase/lagerljus-amber-vase-02-windowsill.jpg", "altText": "Spiralvasen med tulpaner i ett soligt fönster där ljuset kastar gyllene skuggor" },
+            { "file": "lagerljus/amber-vase/lagerljus-amber-vase-03-bookshelf.jpg", "altText": "Spiralvasen med pampasgräs i en bokhylla bredvid konstböcker" },
+            { "file": "lagerljus/amber-vase/lagerljus-amber-vase-04-detail.jpg", "altText": "Närbild på vasens spiraler och lagerlinjer som lyser i motljus" }
           ]
         },
         {
-          "title": "Manschettknappar i mässing",
-          "description": "Fyrkantiga manschettknappar i borstad mässing. Säljs i par.",
-          "price": 425,
-          "stock": 5,
+          "title": "Mugg med prickar",
+          "subcategory": "Keramik",
+          "description": "Handgjord mugg i ljust stengods med stora koboltblå prickar och ett runt öra som är skönt att hålla i. Rymmer ungefär 3 dl.\n\nPrickstudion bygger varje mugg för hand av en lera med små mörka prickar i, och målar sedan de blå prickarna med pensel. Därför har ingen mugg exakt samma prickar, och formen är lite ojämn på ett sätt som både syns och känns.\n\nGlasyren är blank och prickarna sitter lite upphöjda på ytan. Muggen tål diskmaskin och mikrovågsugn.\n\nPassar ihop med skålen och assietten med samma prickar.",
+          "price": 295,
+          "stock": 12,
           "isActive": true,
-          "materials": ["Mässing"],
-          "colors": ["Guld"],
-          "parcel": { "weightGrams": 120, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
+          "materials": ["Stengods"],
+          "colors": ["Vit", "Blå"],
+          "parcel": { "weightGrams": 700, "lengthCm": 18, "widthCm": 15, "heightCm": 15 },
+          "size": { "heightCm": 9, "diameterCm": 8.5, "weightGrams": 380 },
           "images": [
-            { "file": "twocirkesquare.png", "altText": "Platshållarbild: en svart form med två rundade toppar på vit bakgrund" },
-            { "file": "cirkle.png", "altText": "Platshållarbild: en svart cirkel på vit bakgrund" },
-            { "file": "rectanglerounded.png", "altText": "Platshållarbild: en svart rektangel med rundade hörn på vit bakgrund" }
+            { "file": "prickstudion/mug/prickstudion-mug-01-main.jpg", "altText": "Handgjord mugg med ringformat öra och stora koboltblå prickar i skarpt fönsterljus" },
+            { "file": "prickstudion/mug/prickstudion-mug-02-stack.jpg", "altText": "Tre prickiga muggar, två staplade, på linnetyg med lövskuggor" },
+            { "file": "prickstudion/mug/prickstudion-mug-03-living-room.jpg", "altText": "Muggen med kaffe på en bokstapel på ett travertinbord bredvid en bouclésoffa" },
+            { "file": "prickstudion/mug/prickstudion-mug-04-breakfast.jpg", "altText": "Muggen med kaffe på en blåvit rutig duk bredvid en croissant och hallon" }
           ]
         }
       ]
     },
     {
-      "name": "Trä",
-      "image": "halfcirkle.png",
-      "imageAltText": "Platshållarbild: en svart halvcirkel på vit bakgrund",
+      "name": "Möbler",
+      "image": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-01-main.jpg",
+      "imageAltText": "Rundad modulsoffa av mjuka kuddar i rosa fuskpäls på fiskbensparkett",
+      "subcategories": ["Soffor och fåtöljer", "Bord", "Förvaring"],
       "products": [
         {
-          "title": "Skärbräda i ek",
-          "description": "Kraftig skärbräda i massiv ek, behandlad med matolja. 25 × 40 cm. Diskas för hand.",
-          "price": 549,
-          "stock": 6,
-          "isActive": true,
-          "materials": ["Ek"],
-          "colors": ["Brun"],
-          "parcel": { "weightGrams": 1500, "lengthCm": 45, "widthCm": 28, "heightCm": 5 },
-          "size": { "lengthCm": 40, "widthCm": 25, "weightGrams": 1100 },
-          "images": [
-            { "file": "square.png", "altText": "Platshållarbild: en svart kvadrat på vit bakgrund" },
-            { "file": "rectanglerounded.png", "altText": "Platshållarbild: en svart rektangel med rundade hörn på vit bakgrund" },
-            { "file": "squarerounded.png", "altText": "Platshållarbild: en svart kvadrat med rundade hörn på vit bakgrund" },
-            { "file": "squarecirklerounded.png", "altText": "Platshållarbild: en svart valvform med rundade hörn på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Smörkniv i björk",
-          "description": "Täljd smörkniv i björk med ett rundat skaft som ligger bra i handen. Oljad med linolja.",
-          "price": 149,
-          "stock": 18,
-          "isActive": true,
-          "materials": ["Björk"],
-          "colors": ["Beige"],
-          "parcel": { "weightGrams": 100, "lengthCm": 22, "widthCm": 6, "heightCm": 3 }
-        },
-        {
-          "title": "Salladsbestick i björk",
-          "description": "Sked och gaffel i björk för att blanda och servera sallad. 30 cm långa.",
-          "price": 265,
-          "stock": 8,
-          "isActive": true,
-          "materials": ["Björk"],
-          "colors": ["Beige"],
-          "parcel": { "weightGrams": 250, "lengthCm": 35, "widthCm": 12, "heightCm": 5 },
-          "size": { "lengthCm": 30 },
-          "images": [
-            { "file": "rectanglerotated.png", "altText": "Platshållarbild: en lutande svart rektangel på vit bakgrund" },
-            { "file": "halfcirkle.png", "altText": "Platshållarbild: en svart halvcirkel på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Svarvad skål i valnöt",
-          "description": "Skål svarvad ur ett enda stycke valnöt, med synlig ådring. 22 cm i diameter. Till frukt och annat torrt.",
-          "price": 1250,
-          "stock": 1,
-          "isActive": true,
-          "materials": ["Valnöt"],
-          "colors": ["Brun"],
-          "parcel": { "weightGrams": 900, "lengthCm": 30, "widthCm": 30, "heightCm": 14 },
-          "size": { "diameterCm": 22 },
-          "images": [
-            { "file": "cirkle.png", "altText": "Platshållarbild: en svart cirkel på vit bakgrund" },
-            { "file": "cirkleunfilled.png", "altText": "Platshållarbild: en svart ring på vit bakgrund" },
-            { "file": "ellipserotatedunfilled.png", "altText": "Platshållarbild: en lutande svart oval ring på vit bakgrund" }
-          ]
-        },
-        {
-          "title": "Ljusstake i ek",
-          "description": "Avlång ljusstake i ek för fyra kronljus. 40 cm lång.",
-          "price": 395,
+          "title": "Fåtölj med prickar och frans",
+          "subcategory": "Soffor och fåtöljer",
+          "description": "Liten fåtölj med en rygg formad som en snäcka, klädd i salviagrön sammet med vita prickar. Runt foten hänger en tjock frans i krämvitt.\n\nStommen är i massiv björk och sitsen har kallskum som behåller formen. Passar framför ett toalettbord eller i en läshörna.",
+          "price": 6495,
           "stock": 0,
           "isActive": true,
-          "materials": ["Ek"],
-          "colors": ["Brun"],
-          "parcel": { "weightGrams": 700, "lengthCm": 25, "widthCm": 15, "heightCm": 15 },
-          "size": { "lengthCm": 40 }
-        },
-        {
-          "title": "Glasunderlägg, fyra stycken",
-          "description": "Fyra runda underlägg i ek som skyddar bordet mot ringar. 10 cm i diameter.",
-          "price": 299,
-          "stock": 5,
-          "isActive": true,
-          "materials": ["Ek"],
-          "colors": ["Brun"],
-          "parcel": { "weightGrams": 300, "lengthCm": 15, "widthCm": 15, "heightCm": 6 },
-          "size": { "diameterCm": 10 },
+          "materials": ["Sammet", "Björk"],
+          "colors": ["Grön", "Vit"],
+          "parcel": { "weightGrams": 18000, "lengthCm": 75, "widthCm": 75, "heightCm": 85 },
+          "size": { "lengthCm": 65, "widthCm": 65, "heightCm": 75, "weightGrams": 14000 },
           "images": [
-            { "file": "squarerounded.png", "altText": "Platshållarbild: en svart kvadrat med rundade hörn på vit bakgrund" },
-            { "file": "twocirkesquare_unfilled.png", "altText": "Platshållarbild: konturen av en svart form med två rundade toppar på vit bakgrund" }
+            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-01-main.jpg", "altText": "Liten fåtölj i salviagrön sammet med vita prickar, snäckformad rygg och frans" },
+            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-02-vanity.jpg", "altText": "Fåtöljen framför ett toalettbord med rund spegel, pioner och blommig tapet" },
+            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-03-reading-nook.jpg", "altText": "Fåtöljen med en uppslagen bok vid ett fönster i en läshörna" },
+            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-04-detail.jpg", "altText": "Närbild på sammetens prickar, den vita passpoalen och fransen" },
+            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-05-back.jpg", "altText": "Fåtöljen bakifrån, så att den snäckformade ryggen syns" }
           ]
         },
         {
-          "title": "Klädkrok i ek",
-          "description": "Enkel krok i ek att skruva upp i hallen. Skruvar ingår.",
-          "price": 189,
-          "stock": 11,
+          "title": "Taxkonsol",
+          "subcategory": "Bord",
+          "description": "Avlång konsol formad som en tax, där den långa ryggen är bordsskivan. Taxen har hängande öron, fyra korta ben och en svans, och är lackad i blank karamellbrun.\n\nStudio Bulle formger och bygger konsolen i björk. Huvudet och benen formas för hand, och lacken läggs i flera lager så att ytan blir blank och tålig.\n\nMed sina 45 cm i höjd fungerar konsolen både som avlastningsyta i hallen och som en bänk att sitta på när man knyter skorna. Den bär upp till 100 kg.\n\nLevereras färdigmonterad. Torka av med en fuktig trasa.",
+          "price": 8995,
+          "stock": 2,
           "isActive": true,
-          "materials": ["Ek"],
+          "materials": ["Björk"],
           "colors": ["Brun"],
-          "parcel": { "weightGrams": 400, "lengthCm": 20, "widthCm": 12, "heightCm": 8 },
+          "parcel": { "weightGrams": 23000, "lengthCm": 140, "widthCm": 40, "heightCm": 55 },
+          "size": { "lengthCm": 130, "widthCm": 30, "heightCm": 45, "weightGrams": 18000 },
           "images": [
-            { "file": "rectanglerounded.png", "altText": "Platshållarbild: en svart rektangel med rundade hörn på vit bakgrund" },
-            { "file": "squarecirkle.png", "altText": "Platshållarbild: en svart valvform på vit bakgrund" },
-            { "file": "twocirkesquare.png", "altText": "Platshållarbild: en svart form med två rundade toppar på vit bakgrund" }
+            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-01-main.jpg", "altText": "Avlång konsol formad som en tax i blank karamellbrun lack på fiskbensparkett" },
+            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-02-entryway.jpg", "altText": "Taxkonsolen i en hall under en välvd spegel med en bordslampa och böcker" },
+            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-03-green-living-room.jpg", "altText": "Taxkonsolen mot en mörkgrön vägg med tända ljus och en skål apelsiner" },
+            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-04-detail.jpg", "altText": "Närbild på taxens huvud med hängande öron i blank lack" },
+            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-05-dining-room.jpg", "altText": "Taxkonsolen som skänk i en ljus matsal med tulpaner och en fruktskål" }
+          ]
+        },
+        {
+          "title": "Golvlampa med tulpaner",
+          "description": "Golvlampa med tre tulpaner i frostat glas på smala, böjda stjälkar i rosa metall. Ett runt blad halvvägs upp fungerar som hylla för en bok, en kopp eller mobilen.\n\n150 cm hög, med strömbrytare på sladden och tre E14-socklar. Ljuskällorna ingår inte.",
+          "price": 3995,
+          "stock": 3,
+          "isActive": true,
+          "materials": ["Stål", "Glas"],
+          "colors": ["Rosa", "Vit"],
+          "parcel": { "weightGrams": 9000, "lengthCm": 160, "widthCm": 40, "heightCm": 20 },
+          "size": { "heightCm": 150, "diameterCm": 30, "weightGrams": 6500 },
+          "images": [
+            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-01-main.jpg", "altText": "Golvlampa med tre tända tulpaner i frostat glas på rosa stjälkar och en liten hylla" },
+            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-02-bedroom.jpg", "altText": "Tulpanlampan lyser bredvid en säng med rosa sängkläder i skymningen" },
+            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-03-reading-corner.jpg", "altText": "Tulpanlampan med en kopp te på hyllan bredvid en vinröd sammetsfåtölj" },
+            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-04-detail.jpg", "altText": "Närbild på en tänd tulpan i frostat glas på en rosa stjälk" },
+            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-05-daylight.jpg", "altText": "Tulpanlampan med en vas ranunkler på hyllan bredvid en bouclésoffa i dagsljus" }
+          ]
+        },
+        {
+          "title": "Skänk i rotfaner och stål",
+          "subcategory": "Förvaring",
+          "description": "Låg skänk med helt rundade gavlar och fyra dörrar i blank rotfaner med kraftig ådring. Toppen och sockeln är i borstat rostfritt stål.\n\nBakom dörrarna finns två hyllor med plats för porslin och glas. 180 cm lång. Ett unikt exemplar.",
+          "price": 18995,
+          "stock": 1,
+          "isActive": true,
+          "materials": ["Rotfaner", "Rostfritt stål"],
+          "colors": ["Brun", "Silver"],
+          "parcel": { "weightGrams": 70000, "lengthCm": 190, "widthCm": 55, "heightCm": 80 },
+          "size": { "lengthCm": 180, "widthCm": 45, "heightCm": 70, "weightGrams": 60000 },
+          "images": [
+            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-01-main.jpg", "altText": "Låg skänk med rundade gavlar i blank rotfaner med topp och sockel i rostfritt stål" },
+            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-02-dining-room.jpg", "altText": "Skänken i en matsal under en stor abstrakt målning med vaser och en mässingsskål" },
+            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-03-living-room.jpg", "altText": "Skänken med en tänd lampa i krom och en skål citroner i ett vardagsrum på kvällen" },
+            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-04-detail.jpg", "altText": "Närbild på det virvlande rotfanéret runt skänkens rundade hörn" },
+            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-05-open.jpg", "altText": "Skänken med två dörrar öppna och hyllor med tallrikar, skålar och glas" }
+          ]
+        },
+        {
+          "title": "Soffbord i grön marmor",
+          "subcategory": "Bord",
+          "description": "Lågt soffbord i grön marmor med vit ådring. Skivan har en mjuk, organisk form och vilar på en skulpterad fot i samma sten.\n\nYtan är polerad och behandlad mot fläckar, men torka gärna upp vin och citron direkt. Bordet väger 85 kg. Ett unikt exemplar, eftersom ådringen är olika i varje block.",
+          "price": 14995,
+          "stock": 1,
+          "isActive": true,
+          "materials": ["Marmor"],
+          "colors": ["Grön", "Vit"],
+          "parcel": { "weightGrams": 95000, "lengthCm": 120, "widthCm": 80, "heightCm": 45 },
+          "size": { "lengthCm": 110, "widthCm": 70, "heightCm": 35, "weightGrams": 85000 },
+          "images": [
+            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-01-main.jpg", "altText": "Lågt soffbord i grön marmor med vit ådring, organisk form och skulpterad fot" },
+            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-02-parisian-salon.jpg", "altText": "Marmorbordet framför molnsoffan på en rund grön ryamatta i en parisisk salong" },
+            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-03-styled-top.jpg", "altText": "Bordsskivan ovanifrån med böcker, en skål, tända ljus och vita tulpaner" },
+            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-04-detail.jpg", "altText": "Närbild på marmorns vita ådring och den polerade rundade kanten" },
+            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-05-living-room.jpg", "altText": "Marmorbordet framför en linnesoffa i ett ljust vardagsrum med ett olivträd" }
+          ]
+        },
+        {
+          "title": "Molnsoffa i rosa fuskpäls",
+          "subcategory": "Soffor och fåtöljer",
+          "description": "Rundad soffa byggd av stora, mjuka kuddar som tillsammans bildar ett moln. Klädd i långhårig fuskpäls i rosa, och låg och djup nog att ligga i.\n\nStudio Bulle bygger soffan av fyra moduler som hakas ihop, så den går att få in genom en vanlig dörr. Modulerna kan också ställas på andra sätt, till exempel som en rak soffa och en fristående puff.\n\nStommen är i massivt trä och plywood, och kuddarna är fyllda med kallskum och ett mjukt lager fiberfyllning, så sitsen är mjuk utan att sjunka ihop. Pälsen är tät och tål vardag. Borsta den med en mjuk borste och dammsug försiktigt.\n\nSoffan är 240 cm lång och 110 cm djup. Sista bilden visar samma soffa i krämvit fuskpäls, som tillverkas på beställning.",
+          "price": 24995,
+          "stock": 2,
+          "isActive": true,
+          "materials": ["Fuskpäls"],
+          "colors": ["Rosa"],
+          "parcel": { "weightGrams": 75000, "lengthCm": 250, "widthCm": 115, "heightCm": 80 },
+          "size": { "lengthCm": 240, "widthCm": 110, "heightCm": 70, "weightGrams": 65000 },
+          "images": [
+            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-01-main.jpg", "altText": "Rundad modulsoffa av mjuka kuddar i rosa fuskpäls på fiskbensparkett" },
+            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-02-parisian-salon.jpg", "altText": "Molnsoffan på en rund grön ryamatta i en parisisk salong med höga fönster" },
+            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-03-loft.jpg", "altText": "Molnsoffan i ett loft med betongväggar och solnedgång genom stora fönster" },
+            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-04-detail.jpg", "altText": "Närbild på den långhåriga rosa fuskpälsen och sömmen mellan två kuddar" },
+            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-05-cream-color.jpg", "altText": "Molnsoffan i krämvit fuskpäls mot samma ljusa vägg" }
           ]
         }
       ]
@@ -647,96 +903,102 @@
   ],
   "orders": [
     {
-      "daysAgo": 12,
+      "daysAgo": 13,
       "status": "Shipped",
       "customer": {
-        "name": "Lars Persson",
-        "email": "lars.persson@example.com",
-        "addressLine1": "Drottninggatan 14",
+        "name": "Elin Andersson",
+        "email": "elin.andersson@example.com",
+        "addressLine1": "Vasagatan 22",
         "addressLine2": null,
-        "postalCode": "702 10",
-        "city": "Örebro",
+        "postalCode": "411 24",
+        "city": "Göteborg",
         "country": "SE"
       },
-      "items": [{ "product": "Mugg med stort öra", "quantity": 4 }]
+      "items": [
+        { "product": "Mugg med prickar", "quantity": 2 },
+        { "product": "Skål med prickar", "quantity": 2 }
+      ]
     },
     {
-      "daysAgo": 8,
+      "daysAgo": 9,
       "status": "Shipped",
       "customer": {
-        "name": "Maria Karlsson",
-        "email": "maria.karlsson@example.com",
-        "addressLine1": "Hornsgatan 52",
-        "addressLine2": "Lägenhet 1203",
-        "postalCode": "118 21",
+        "name": "Oskar Lund",
+        "email": "oskar.lund@example.com",
+        "addressLine1": "Götgatan 31",
+        "addressLine2": "Lägenhet 1102",
+        "postalCode": "116 21",
         "city": "Stockholm",
         "country": "SE"
       },
       "items": [
-        { "product": "Skärbräda i ek", "quantity": 1 },
-        { "product": "Smörkniv i björk", "quantity": 2 }
+        { "product": "Neonskylt hej", "quantity": 1 },
+        { "product": "Bubbelljus", "quantity": 2 }
       ]
     },
     {
-      "daysAgo": 4,
+      "daysAgo": 5,
       "status": "NeedsRefund",
       "customer": {
-        "name": "Johan Berg",
-        "email": "johan.berg@example.com",
-        "addressLine1": "Storgatan 3",
+        "name": "Amira Hassan",
+        "email": "amira.hassan@example.com",
+        "addressLine1": "Bergsgatan 9",
         "addressLine2": null,
-        "postalCode": "903 26",
-        "city": "Umeå",
+        "postalCode": "214 22",
+        "city": "Malmö",
         "country": "SE"
       },
-      "items": [{ "product": "Vävd kudde i ull", "quantity": 1 }]
+      "items": [{ "product": "Ribbstickad mössa", "quantity": 1 }]
     },
     {
       "daysAgo": 3,
       "status": "ToShip",
       "customer": {
-        "name": "Sara Nilsson",
-        "email": "sara.nilsson@example.com",
-        "addressLine1": "Svartbäcksgatan 20",
+        "name": "Ida Ström",
+        "email": "ida.strom@example.com",
+        "addressLine1": "Kungsängsgatan 12",
         "addressLine2": null,
-        "postalCode": "753 32",
+        "postalCode": "753 22",
         "city": "Uppsala",
         "country": "SE"
       },
       "items": [
-        { "product": "Fåglar, linoleumtryck", "quantity": 1 },
-        { "product": "Blommor, konsttryck", "quantity": 2 }
+        { "product": "Fåtölj med prickar och frans", "quantity": 1 },
+        { "product": "Citroner, konsttryck", "quantity": 1 }
       ]
     },
     {
       "daysAgo": 2,
       "status": "ToShip",
       "customer": {
-        "name": "Erik Johansson",
-        "email": "erik.johansson@example.com",
-        "addressLine1": "Södra Förstadsgatan 40",
+        "name": "Viktor Holm",
+        "email": "viktor.holm@example.com",
+        "addressLine1": "Klostergatan 5",
         "addressLine2": null,
-        "postalCode": "211 43",
-        "city": "Malmö",
+        "postalCode": "222 22",
+        "city": "Lund",
         "country": "SE"
       },
-      "items": [{ "product": "Droppörhängen i silver", "quantity": 1 }]
+      "items": [
+        { "product": "Tvål med kol och eukalyptus", "quantity": 3 },
+        { "product": "Lavendeltvål", "quantity": 3 }
+      ]
     },
     {
       "daysAgo": 1,
       "status": "ToShip",
       "customer": {
-        "name": "Anna Lindqvist",
-        "email": "anna.lindqvist@example.com",
-        "addressLine1": "Linnégatan 7",
+        "name": "Nora Ek",
+        "email": "nora.ek@example.com",
+        "addressLine1": "Rådhusesplanaden 8",
         "addressLine2": null,
-        "postalCode": "413 04",
-        "city": "Göteborg",
+        "postalCode": "903 28",
+        "city": "Umeå",
         "country": "SE"
       },
       "items": [
-        { "product": "Skål i blå glasyr", "quantity": 2 },
-        { "product": "Kökshandduk i linne", "quantity": 1 }
+        { "product": "Matta med vågigt rutmönster", "quantity": 1 },
+        { "product": "Smyckesskål blomma", "quantity": 1 }
       ]
     }
   ]
