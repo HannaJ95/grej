@@ -268,3 +268,7 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - Block 2: the hero images became WebP (29 + 25 kB instead of 283 + 288 kB) to cut the start page's LCP.
 - Kept one 1440 px size instead of the planned two: the tall phone hero scales the image up, so an 800 px version would blur.
 - Quality 75–90 showed blocks in the smooth gradients, so Claude compared the output visually and chose 95.
+
+- Block 3: Claude measured what moved while the pages loaded, with a script in headless Chrome (empty cache, phone size). On the product page the loading text's margin pushed down all of `<main>`, and on both pages the footer stood mid-screen and jumped away when the content came; on the product list the category tabs also pushed everything down.
+- The loading states now hold the places of what comes (the breadcrumb, the gallery's empty frame, an invisible row of tabs) and are at least the window's height. Locally, CLS went to 0 on the product page (0.92 in production) and 0.02 on the product list (0.66).
+- Verification: client tests and build; Claude measured 320–1440 px and 200 % zoom with the script.
