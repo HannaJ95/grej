@@ -70,9 +70,11 @@ dd {
   overflow-wrap: anywhere;
 }
 
+// The card's overflow-wrap would otherwise split an amount from its "kr".
 .quantity,
 .unit-price,
-.line-total {
+.line-total,
+tfoot td {
   white-space: nowrap;
 }
 
