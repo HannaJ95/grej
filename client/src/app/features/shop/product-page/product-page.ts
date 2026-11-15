@@ -1,8 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 import {
   Component,
   computed,
   DOCUMENT,
+  effect,
   ElementRef,
   inject,
   input,
@@ -71,6 +73,15 @@ export class ProductPage {
   protected readonly quantity = linkedSignal({ source: this.id, computation: () => 1 });
 
   private readonly description = viewChild<ElementRef<HTMLDetailsElement>>('description');
+
+  constructor() {
+    const title = inject(Title);
+    effect(() => {
+      if (this.product.hasValue()) {
+        title.setTitle(`${this.product.value().title} – GREJ`);
+      }
+    });
+  }
 
   protected addToCart(product: Product): void {
     this.cart.add(product, this.quantity());

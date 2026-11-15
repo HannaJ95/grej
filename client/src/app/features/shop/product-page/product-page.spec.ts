@@ -128,6 +128,17 @@ describe('ProductPage', () => {
     expect(page().querySelector('app-product-page .quantity')!.textContent).toBe('1');
   });
 
+  it('names the browser tab after the product once it has loaded', async () => {
+    await harness.navigateByUrl('/produkter/1');
+    httpTesting.expectOne((req) => req.url.endsWith('/api/categories')).flush([]);
+    expect(document.title).toBe('Produkt – GREJ');
+
+    httpTesting.expectOne((req) => req.url.endsWith('/api/products/1')).flush(vase);
+    await harness.fixture.whenStable();
+
+    expect(document.title).toBe('Vas – GREJ');
+  });
+
   it('shows no buy row when the product is sold out', async () => {
     await openVase({ stock: 0, isSoldOut: true });
 
