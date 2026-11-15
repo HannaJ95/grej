@@ -1,14 +1,19 @@
-// Below 1024 px a bar below the header, with the header's gradient. The negative margins let it
-// reach the screen's edges.
+// The negative margins let the bar reach the screen's edges.
 :host {
   display: block;
   margin-inline: calc(-1 * var(--layout-margin));
   padding: var(--space-12) var(--layout-margin);
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--color-bg-surface) 98%, transparent),
-    color-mix(in srgb, var(--color-bg-header-end) 98%, transparent)
-  );
+  clip-path: inset(0);
+
+  // The page's fixed gradient (text-page.scss), clipped to the bar, so the bar blends into the page
+  // and still hides the text that scrolls under it.
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--text-page-gradient);
+  }
 
   @media (height >= 30rem) {
     position: sticky;
@@ -19,7 +24,11 @@
   @media (width >= 64rem) {
     margin-inline: 0;
     padding: 0;
-    background: none;
+    clip-path: none;
+
+    &::before {
+      content: none;
+    }
   }
 
   @media (width >= 64rem) and (height >= 30rem) {
