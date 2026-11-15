@@ -7,6 +7,13 @@ A webshop for art and handmade items, with a CMS for the admin. Built as a thesi
 
 Payments run in Stripe's test mode. No real money is charged and no parcels are sent.
 
+## Demo content
+
+Everything in the shop is made up for the demo, and `reset-demo` fills it from `server/Grej.Infrastructure/DemoData/`:
+
+- The products and their texts are invented, and the product photos are AI-generated (Claude in Figma).
+- The six demo orders have invented customers (`@example.com`). They are written straight to the database with the payment provider `Demo` and no Stripe session, so they have no link to Stripe, cannot be refunded there and never sent an email. Real test purchases go through Stripe Checkout.
+
 ## Stack
 
 | Part | Technology | Hosting |

@@ -167,7 +167,7 @@ A few lines a day about how AI was used: what for, which tool, and what worked o
 - **Design:** My first version, a "Huvudkategori" menu in the category form, felt backwards, so I drew the admin pages in Figma and we built the admin layout (menu) and the category pages after it, with the card on top on narrow screens.
 - **Verification:** Every part was built and tested in a copy first, and Claude measured the pages at 320–1440 px. I found that the list rows were cramped at 1100 px, which we fixed with container queries.
 
-##2026-11-08
+## 2026-11-08
 
 Switched from a Figma-first to a code-first workflow. The rules for responsive design, WCAG and components were gathered in the skill grej-ui, so they apply to every UI change without me repeating them. Claude then removed the Figma references from the code comments and replaced the palette colors in the hover styles with tokens.
 
@@ -259,21 +259,32 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 
 ## 2026-11-15
 
-- **Review:** Claude reviewed the code and ran Lighthouse against production, and we picked the fixes with the most effect per minute for the last coding day. What is left becomes improvement points in the report.
-- **SEO basics:** robots.txt, a meta description and a title on every page; the product page uses the product's name. Lighthouse SEO was 83 on every page.
+- **Demo content:** a new demo catalog with 44 products in 6 categories, all with subcategories and 3–6 photos per product, replaced the placeholder shapes. Claude generated the photos in Figma, with my AI credits there. The photos became WebP (25–169 kB instead of 0.8–1.2 MB), and `reset-demo` loaded them into the deployed shop.
+- **Design:** gradients on the shop's bands in both modes, hero images on the start page and a "Hem" link in the menu.
+- **Review:** Claude reviewed the code and ran Lighthouse against production, and we picked the fixes with the most effect per minute for the last coding day. Each fix was its own branch and pull request, started in a new chat from a shared plan file. What is left becomes improvement points in the report.
+- **SEO basics:** robots.txt, a meta description and a title on every page; the product page uses the product's name. Lighthouse SEO went from 83 to 100.
 - **Not found pages:** unknown addresses show "Sidan finns inte" instead of a blank page. The shop's routes moved last, so the catch-all route doesn't catch `/admin/...`, and a test checks it. A missing or hidden product shows "Grejen finns inte"; other errors get "Försök igen".
-- **Fix:** with the page zoomed in, the phone menu's dark panel now reaches the bottom when it scrolls.
-- **Verification:** client tests and build; Claude checked 320–1440 px and 200 % text in Chrome.
+- **Hero image:** WebP instead of JPEG (29 + 25 kB instead of 283 + 288 kB): mobile Performance on the start page went from 72 to 91 and LCP from 6.2 to 2.9 s. One 1440 px size, since the tall phone hero scales the image up, and quality 95, since Claude's visual comparison showed blocks in the gradients at 75–90.
+- **Layout shift:** Claude measured what moved while the pages loaded, with a script in headless Chrome (empty cache, phone size): the loading text's margin, the footer jumping away and the category tabs. The loading states now hold the places of what comes and fill the window. Lighthouse CLS in production went from 0.65–0.98 to 0.01 on mobile.
+- **Vercel headers:** `client/vercel.json` caches Angular's hashed JS and CSS for a year and adds four security headers. Checked with `curl -I` in production. No Content-Security-Policy yet, since it must first be tested against Google Fonts, Supabase, Stripe and the inline scripts.
+- **What did not work:** the review said `main` was unprotected, because Claude read the older branch-protection API, which answers 404 for rulesets. `main` has had a ruleset since 15 Oct.
+- **Fixes:** the phone menu's dark panel reaches the bottom when zoomed in, the terms page's contents bar blends into the page, the sort box has no fill, and the amounts in the CMS order's sums stay on one line.
+- **Verification:** client tests and build after each part; Claude checked 320–1440 px and 200 % text in Chrome, and Lighthouse ran against production after each merge.
 
-- Block 2: the hero images became WebP (29 + 25 kB instead of 283 + 288 kB) to cut the start page's LCP.
-- Kept one 1440 px size instead of the planned two: the tall phone hero scales the image up, so an 800 px version would blur.
-- Quality 75–90 showed blocks in the smooth gradients, so Claude compared the output visually and chose 95.
+## Summary
 
-- Block 3: Claude measured what moved while the pages loaded, with a script in headless Chrome (empty cache, phone size). The loading text's margin pushed down all of `<main>` on the product page, the footer jumped away when the content came, and the category tabs pushed the product list down.
-- The loading states now hold the places of what comes (breadcrumb, image frames, an invisible row of tabs) and fill the window. Locally CLS went to 0 on the product page (0.92 in production) and 0.02 on the product list (0.66).
-- Also: the terms page's contents bar now blends into the page on phones, and the sort box has no fill, like Filter.
-- In production after the merge: Lighthouse CLS 0.01 on mobile and 0.02 on desktop.
+The project in short, for the Result section of examensarbete.md.
 
-- Block 4: `client/vercel.json` caches Angular's JS and CSS for a year (their names carry a hash, so a new build gets new names) and adds four security headers to every response. Checked with `curl -I` in production; deep links still work.
-- No Content-Security-Policy yet: it must first be tested against Google Fonts, Supabase, Stripe and the inline scripts, so it becomes an improvement point.
-- Block 5 was already done: `main` has had a ruleset since 15 Oct. The review said it was unprotected because Claude read the older branch-protection API, which answers 404 for rulesets.
+**Result.** Every Must, Should and Could item in [scope.md](scope.md) was built between 12 Oct and 15 Nov, plus the items added in sprint 4. 64 pull requests were merged to `main`, each after green CI. At the end there are 81 unit tests, 229 integration tests and 301 Angular tests. Lighthouse on mobile against production on 15 Nov: SEO 100, start page Performance 91 and CLS 0.01 on the product pages. Accessibility and Best Practices were 100 in the review.
+
+**How AI was used.** Claude Code in VS Code, for planning, research, code, reviews and docs, and Claude in Figma for the demo products' photos.
+
+- `CLAUDE.md` holds the working rules, a hook stops Claude from reading secrets, and the skill `grej-ui` holds the rules for UI work (tokens, responsive design, WCAG). Each feature started in plan mode, with a plan file, and Claude's memory carried the status between chats.
+- The way of working changed three times. In sprint 1 I wrote all code myself while Claude explained each step (guided mode). From 24 Oct Claude wrote the code, and I approved every change, made every commit and had to be able to explain every line. Claude built and tested each part in a copy outside the repo first. From 10 Nov that copy was dropped, since it doubled the work, and Claude built and tested in the repo after each part instead.
+- The design started in Figma (4–8 Nov) and then moved into the code, since the round trips were too slow before the feature freeze.
+
+**How the code was checked.** Tests for every business rule, which Claude made fail by removing the rule they test. Claude checked every changed page in Chrome at 320–1440 px and 200 % text, both modes, and with axe in the wrap-up. Stripe was tested with the Stripe CLI and test purchases, and every feature was checked in production after its merge. A code review and Lighthouse on the last day picked the final fixes.
+
+**What did not work.** Long answers overwhelmed me, so we moved to one decision at a time. Claude made small slips early, and later forgot to clean old comments until I asked. A stale test build passed for Claude but failed for me, and the final review misread the branch protection. Long chats got slow, so each fix and sprint item started in a new chat from a plan file.
+
+**Left as improvements.** Separate environments (local, staging, production) with migrations in the deploy; resizing, EXIF removal and `srcset` for uploaded images; a preload for the hero image; integration tests against a real PostgreSQL (Testcontainers); Problem Details and error monitoring (Sentry); the token in an httpOnly cookie and a Content-Security-Policy; server-side rendering.
