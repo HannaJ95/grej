@@ -128,6 +128,21 @@ describe('ProductPage', () => {
     expect(page().querySelector('app-product-page .quantity')!.textContent).toBe('1');
   });
 
+  it('keeps the breadcrumb and the image frame in place while the product loads', async () => {
+    await harness.navigateByUrl('/produkter/1');
+    httpTesting.expectOne((req) => req.url.endsWith('/api/categories')).flush([]);
+
+    const loading = page().querySelector('app-product-page .loading')!;
+    expect(loading.querySelector('[role="status"]')!.textContent).toContain('Laddar produkten…');
+    expect(loading.querySelector('app-breadcrumb')!.textContent).toContain('Shop');
+    expect(loading.querySelector('app-product-gallery .main')).not.toBeNull();
+
+    httpTesting.expectOne((req) => req.url.endsWith('/api/products/1')).flush(vase);
+    await harness.fixture.whenStable();
+
+    expect(page().querySelector('.loading')).toBeNull();
+  });
+
   it('names the browser tab after the product once it has loaded', async () => {
     await harness.navigateByUrl('/produkter/1');
     httpTesting.expectOne((req) => req.url.endsWith('/api/categories')).flush([]);

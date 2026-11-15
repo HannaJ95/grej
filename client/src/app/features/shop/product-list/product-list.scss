@@ -59,6 +59,11 @@
   }
 }
 
+// As tall as the tabs at every width and text size. Hidden from screen readers and Tab too.
+.placeholder {
+  visibility: hidden;
+}
+
 // wrap-reverse puts Filter and the sort above the count when they don't fit beside it. The count
 // isn't in the Tab order, so the focus still follows the HTML.
 .toolbar {
@@ -168,4 +173,24 @@
   @media (prefers-reduced-motion: reduce) {
     transition-duration: 0s;
   }
+}
+
+// White like a card's image before it has loaded. Only the first row, since the cards below it
+// also have a title and a price.
+.frame {
+  aspect-ratio: var(--ratio-product-image);
+  background: var(--color-bg-image);
+
+  &:nth-child(3) {
+    display: none;
+
+    @media (width >= 48rem) {
+      display: block;
+    }
+  }
+}
+
+// The same space as between a card's image and its title.
+.loading .status {
+  margin-top: var(--space-12);
 }

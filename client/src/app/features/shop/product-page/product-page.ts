@@ -17,7 +17,7 @@ import { CartService } from '../../../core/cart.service';
 import { Product, ProductService } from '../../../core/product.service';
 import { sizeText, weightText } from '../../../core/product-size';
 import { shippingCost } from '../../../core/shipping';
-import { Breadcrumb } from '../../../shared/breadcrumb/breadcrumb';
+import { Breadcrumb, BreadcrumbLink } from '../../../shared/breadcrumb/breadcrumb';
 import { Button } from '../../../shared/button/button';
 import { Icon } from '../../../shared/icons/icon';
 import { QuantityStepper } from '../../../shared/quantity-stepper/quantity-stepper';
@@ -42,7 +42,7 @@ const SHORT_DESCRIPTION = 150;
     ProductGallery,
   ],
   templateUrl: './product-page.html',
-  styleUrl: './product-page.scss',
+  styleUrls: ['../loading.scss', './product-page.scss'],
   host: { class: 'page-width' },
 })
 export class ProductPage {
@@ -54,6 +54,11 @@ export class ProductPage {
   readonly id = input.required<string>();
 
   protected readonly product = this.products.getProduct(this.id);
+
+  protected readonly breadcrumb: BreadcrumbLink[] = [
+    { label: 'Hem', path: '/' },
+    { label: 'Shop', path: '/produkter' },
+  ];
 
   // The API answers 404 for a missing or hidden product, and 400 when the id isn't a number.
   protected readonly notFound = computed(() => {

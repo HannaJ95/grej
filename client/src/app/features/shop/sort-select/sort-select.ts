@@ -46,7 +46,6 @@ import { Icon } from '../../../shared/icons/icon';
       display: flex;
       align-items: center;
       border: var(--border-width-default) solid var(--color-border-default);
-      background: var(--color-bg-surface);
       color: var(--color-text-primary);
       cursor: pointer;
 

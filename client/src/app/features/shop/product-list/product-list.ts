@@ -44,7 +44,7 @@ import { SortSelect } from '../sort-select/sort-select';
     SortSelect,
   ],
   templateUrl: './product-list.html',
-  styleUrl: './product-list.scss',
+  styleUrls: ['../loading.scss', './product-list.scss'],
 })
 export class ProductList {
   private readonly products = inject(ProductService);

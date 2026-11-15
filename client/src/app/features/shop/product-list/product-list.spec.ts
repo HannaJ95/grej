@@ -164,6 +164,27 @@ describe('ProductList', () => {
     expect(tabs.querySelector('[aria-current]')).toBeNull();
   });
 
+  it('holds the places of the tabs and the products while they load', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/produkter');
+    const page = harness.routeNativeElement!.querySelector('app-product-list')!;
+
+    expect(page.querySelector('app-category-tabs.placeholder')).not.toBeNull();
+    const loading = page.querySelector('.results .loading')!;
+    expect(loading.querySelectorAll('.frame').length).toBe(3);
+    expect(loading.querySelector('[role="status"]')!.textContent).toContain('Laddar produkterna…');
+
+    flushFilters([{ id: 1, name: 'Keramik', productCount: 4, subcategories: [] }]);
+    httpTesting
+      .expectOne((req) => req.url.endsWith('/api/products'))
+      .flush({ items: [], page: 1, pageSize: 12, totalCount: 0, totalPages: 0 });
+    await harness.fixture.whenStable();
+
+    expect(page.querySelector('app-category-tabs.placeholder')).toBeNull();
+    expect(page.querySelector('app-category-tabs')!.textContent).toContain('Keramik');
+    expect(page.querySelector('.loading')).toBeNull();
+  });
+
   it('says what matched nothing, and Rensa alla filter moves the focus to the count', async () => {
     const harness = await RouterTestingHarness.create();
     // Attached, so focus() works.

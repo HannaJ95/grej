@@ -1,0 +1,9 @@
+// The loading state of the product page and the product list. At least the window's height, so
+// the footer stays out of sight instead of jumping away when the content comes.
+.loading {
+  min-height: 100svh;
+
+  p {
+    margin: 0;
+  }
+}
