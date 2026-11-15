@@ -36,11 +36,12 @@ dialog {
   background: none;
 }
 
-// Fills the dialog, which closeOnBackdrop() relies on.
+// Fills the dialog, which closeOnBackdrop() relies on, and grows with the content when the
+// window is too low for it (zoomed in), so the dark background scrolls along.
 .panel {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 100%;
   padding: var(--space-12) var(--space-20) var(--space-28);
   background: var(--color-bg-inverse);
   color: var(--color-text-on-inverse);
