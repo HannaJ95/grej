@@ -40,7 +40,7 @@
   "categories": [
     {
       "name": "Belysning",
-      "image": "neonverkstan/cherries/neonverkstan-cherries-01-main.jpg",
+      "image": "neonverkstan/cherries/neonverkstan-cherries-01-main.webp",
       "imageAltText": "Neonskylt formad som två körsbär som lyser rött och grönt mot en ljusgrå vägg",
       "subcategories": ["Neonskyltar", "Lampor"],
       "products": [
@@ -56,10 +56,10 @@
           "parcel": { "weightGrams": 2000, "lengthCm": 60, "widthCm": 40, "heightCm": 8 },
           "size": { "widthCm": 50, "heightCm": 28, "weightGrams": 900 },
           "images": [
-            { "file": "neonverkstan/hej/neonverkstan-hej-01-main.jpg", "altText": "Rosa neonskylt med ordet hej i skrivstil som lyser mot en ljusgrå vägg" },
-            { "file": "neonverkstan/hej/neonverkstan-hej-02-hallway.jpg", "altText": "Neonskylten hej lyser rosa ovanför en träbänk i en hall med rutig matta" },
-            { "file": "neonverkstan/hej/neonverkstan-hej-03-living-room.jpg", "altText": "Neonskylten hej på en terrakottafärgad vägg ovanför en krämvit soffa" },
-            { "file": "neonverkstan/hej/neonverkstan-hej-04-detail.jpg", "altText": "Närbild på det rosa neonröret och akrylskivans kant med en skruv i krom" }
+            { "file": "neonverkstan/hej/neonverkstan-hej-01-main.webp", "altText": "Rosa neonskylt med ordet hej i skrivstil som lyser mot en ljusgrå vägg" },
+            { "file": "neonverkstan/hej/neonverkstan-hej-02-hallway.webp", "altText": "Neonskylten hej lyser rosa ovanför en träbänk i en hall med rutig matta" },
+            { "file": "neonverkstan/hej/neonverkstan-hej-03-living-room.webp", "altText": "Neonskylten hej på en terrakottafärgad vägg ovanför en krämvit soffa" },
+            { "file": "neonverkstan/hej/neonverkstan-hej-04-detail.webp", "altText": "Närbild på det rosa neonröret och akrylskivans kant med en skruv i krom" }
           ]
         },
         {
@@ -74,10 +74,10 @@
           "parcel": { "weightGrams": 900, "lengthCm": 35, "widthCm": 35, "heightCm": 35 },
           "size": { "heightCm": 30, "diameterCm": 24, "weightGrams": 450 },
           "images": [
-            { "file": "lagerljus/spiral-pendant/lagerljus-spiral-pendant-01-main.jpg", "altText": "Vit taklampa med spiralvridna ribbor som hänger framför en ljus vägg" },
-            { "file": "lagerljus/spiral-pendant/lagerljus-spiral-pendant-02-dining-room.jpg", "altText": "Två tända spiraltaklampor över ett runt matbord i ek på kvällen" },
-            { "file": "lagerljus/spiral-pendant/lagerljus-spiral-pendant-03-kitchen.jpg", "altText": "Spiraltaklampan över ett frukostbord i ett ljust kök med grönt kakel" },
-            { "file": "lagerljus/spiral-pendant/lagerljus-spiral-pendant-04-detail.jpg", "altText": "Tänd spiraltaklampa sedd underifrån, ljuset syns genom de tunna ribborna" }
+            { "file": "lagerljus/spiral-pendant/lagerljus-spiral-pendant-01-main.webp", "altText": "Vit taklampa med spiralvridna ribbor som hänger framför en ljus vägg" },
+            { "file": "lagerljus/spiral-pendant/lagerljus-spiral-pendant-02-dining-room.webp", "altText": "Två tända spiraltaklampor över ett runt matbord i ek på kvällen" },
+            { "file": "lagerljus/spiral-pendant/lagerljus-spiral-pendant-03-kitchen.webp", "altText": "Spiraltaklampan över ett frukostbord i ett ljust kök med grönt kakel" },
+            { "file": "lagerljus/spiral-pendant/lagerljus-spiral-pendant-04-detail.webp", "altText": "Tänd spiraltaklampa sedd underifrån, ljuset syns genom de tunna ribborna" }
           ]
         },
         {
@@ -92,10 +92,10 @@
           "parcel": { "weightGrams": 1800, "lengthCm": 55, "widthCm": 45, "heightCm": 8 },
           "size": { "widthCm": 45, "heightCm": 35, "weightGrams": 800 },
           "images": [
-            { "file": "neonverkstan/butterfly/neonverkstan-butterfly-01-main.jpg", "altText": "Neonskylt formad som en fjäril med lila vingar och rosa kropp mot en ljusgrå vägg" },
-            { "file": "neonverkstan/butterfly/neonverkstan-butterfly-02-desk.jpg", "altText": "Fjärilsneonen lyser lila ovanför ett skrivbord med tulpaner och en bordslampa" },
-            { "file": "neonverkstan/butterfly/neonverkstan-butterfly-03-boutique.jpg", "altText": "Fjärilsneonen på väggen bakom en klädställning med pastellfärgade kläder" },
-            { "file": "neonverkstan/butterfly/neonverkstan-butterfly-04-detail.jpg", "altText": "Närbild på fjärilens lila vinge och rosa kropp i neonrör på en akrylskiva" }
+            { "file": "neonverkstan/butterfly/neonverkstan-butterfly-01-main.webp", "altText": "Neonskylt formad som en fjäril med lila vingar och rosa kropp mot en ljusgrå vägg" },
+            { "file": "neonverkstan/butterfly/neonverkstan-butterfly-02-desk.webp", "altText": "Fjärilsneonen lyser lila ovanför ett skrivbord med tulpaner och en bordslampa" },
+            { "file": "neonverkstan/butterfly/neonverkstan-butterfly-03-boutique.webp", "altText": "Fjärilsneonen på väggen bakom en klädställning med pastellfärgade kläder" },
+            { "file": "neonverkstan/butterfly/neonverkstan-butterfly-04-detail.webp", "altText": "Närbild på fjärilens lila vinge och rosa kropp i neonrör på en akrylskiva" }
           ]
         },
         {
@@ -110,10 +110,10 @@
           "parcel": { "weightGrams": 1900, "lengthCm": 65, "widthCm": 35, "heightCm": 8 },
           "size": { "widthCm": 55, "heightCm": 25, "weightGrams": 850 },
           "images": [
-            { "file": "neonverkstan/fika/neonverkstan-fika-01-main.jpg", "altText": "Orange neonskylt med ordet fika i skrivstil mot en ljusgrå vägg" },
-            { "file": "neonverkstan/fika/neonverkstan-fika-02-kitchen.jpg", "altText": "Fikaneonen ovanför öppna hyllor med koppar, med kanelbullar och kaffe på bänken nedanför" },
-            { "file": "neonverkstan/fika/neonverkstan-fika-03-cafe.jpg", "altText": "Fikaneonen på en terrakottafärgad kakelvägg bakom en cafédisk med bullar" },
-            { "file": "neonverkstan/fika/neonverkstan-fika-04-detail.jpg", "altText": "Kabel med dimmer och en liten fjärrkontroll framför det orange neonljuset" }
+            { "file": "neonverkstan/fika/neonverkstan-fika-01-main.webp", "altText": "Orange neonskylt med ordet fika i skrivstil mot en ljusgrå vägg" },
+            { "file": "neonverkstan/fika/neonverkstan-fika-02-kitchen.webp", "altText": "Fikaneonen ovanför öppna hyllor med koppar, med kanelbullar och kaffe på bänken nedanför" },
+            { "file": "neonverkstan/fika/neonverkstan-fika-03-cafe.webp", "altText": "Fikaneonen på en terrakottafärgad kakelvägg bakom en cafédisk med bullar" },
+            { "file": "neonverkstan/fika/neonverkstan-fika-04-detail.webp", "altText": "Kabel med dimmer och en liten fjärrkontroll framför det orange neonljuset" }
           ]
         },
         {
@@ -128,10 +128,10 @@
           "parcel": { "weightGrams": 1600, "lengthCm": 50, "widthCm": 40, "heightCm": 8 },
           "size": { "widthCm": 30, "heightCm": 40, "weightGrams": 700 },
           "images": [
-            { "file": "neonverkstan/moon-stars/neonverkstan-moon-stars-01-main.jpg", "altText": "Neonskylt formad som en månskära med två stjärnor som lyser gult mot en ljusgrå vägg" },
-            { "file": "neonverkstan/moon-stars/neonverkstan-moon-stars-02-bedroom.jpg", "altText": "Månneonen lyser varmt ovanför en säng med grönt linne i skymningen" },
-            { "file": "neonverkstan/moon-stars/neonverkstan-moon-stars-03-shelf.jpg", "altText": "Månneonen står på en bokhylla bredvid böcker, en klätterväxt och en vas" },
-            { "file": "neonverkstan/moon-stars/neonverkstan-moon-stars-04-detail.jpg", "altText": "Närbild på månens gula neonrör och en stjärna på den genomskinliga akrylskivan" }
+            { "file": "neonverkstan/moon-stars/neonverkstan-moon-stars-01-main.webp", "altText": "Neonskylt formad som en månskära med två stjärnor som lyser gult mot en ljusgrå vägg" },
+            { "file": "neonverkstan/moon-stars/neonverkstan-moon-stars-02-bedroom.webp", "altText": "Månneonen lyser varmt ovanför en säng med grönt linne i skymningen" },
+            { "file": "neonverkstan/moon-stars/neonverkstan-moon-stars-03-shelf.webp", "altText": "Månneonen står på en bokhylla bredvid böcker, en klätterväxt och en vas" },
+            { "file": "neonverkstan/moon-stars/neonverkstan-moon-stars-04-detail.webp", "altText": "Närbild på månens gula neonrör och en stjärna på den genomskinliga akrylskivan" }
           ]
         },
         {
@@ -146,10 +146,10 @@
           "parcel": { "weightGrams": 2000, "lengthCm": 60, "widthCm": 45, "heightCm": 8 },
           "size": { "widthCm": 35, "heightCm": 50, "weightGrams": 900 },
           "images": [
-            { "file": "neonverkstan/martini/neonverkstan-martini-01-main.jpg", "altText": "Neonskylt formad som ett martiniglas i isblått med grön oliv och rosa pinne mot en ljusgrå vägg" },
-            { "file": "neonverkstan/martini/neonverkstan-martini-02-bar-cart.jpg", "altText": "Martinineonen lyser blått ovanför en barvagn i krom mot en mörkgrön vägg" },
-            { "file": "neonverkstan/martini/neonverkstan-martini-03-dinner-party.jpg", "altText": "Martinineonen ovanför ett dukat middagsbord med tända ljus och blommor" },
-            { "file": "neonverkstan/martini/neonverkstan-martini-04-detail.jpg", "altText": "Närbild på neonolivens gröna ring och den rosa pinnen över glasets blå kant" }
+            { "file": "neonverkstan/martini/neonverkstan-martini-01-main.webp", "altText": "Neonskylt formad som ett martiniglas i isblått med grön oliv och rosa pinne mot en ljusgrå vägg" },
+            { "file": "neonverkstan/martini/neonverkstan-martini-02-bar-cart.webp", "altText": "Martinineonen lyser blått ovanför en barvagn i krom mot en mörkgrön vägg" },
+            { "file": "neonverkstan/martini/neonverkstan-martini-03-dinner-party.webp", "altText": "Martinineonen ovanför ett dukat middagsbord med tända ljus och blommor" },
+            { "file": "neonverkstan/martini/neonverkstan-martini-04-detail.webp", "altText": "Närbild på neonolivens gröna ring och den rosa pinnen över glasets blå kant" }
           ]
         },
         {
@@ -164,10 +164,10 @@
           "parcel": { "weightGrams": 1200, "lengthCm": 36, "widthCm": 36, "heightCm": 38 },
           "size": { "heightCm": 32, "diameterCm": 28, "weightGrams": 600 },
           "images": [
-            { "file": "lagerljus/mushroom-lamp/lagerljus-mushroom-lamp-01-main.jpg", "altText": "Smörgul bordslampa formad som en svamp med veckad skärm på en ljus träskiva" },
-            { "file": "lagerljus/mushroom-lamp/lagerljus-mushroom-lamp-02-bedroom.jpg", "altText": "Tänd svamplampa på ett nattduksbord bredvid böcker och ett glas vatten" },
-            { "file": "lagerljus/mushroom-lamp/lagerljus-mushroom-lamp-03-living-room.jpg", "altText": "Svamplampan lyser på en skänk bredvid en skivspelare i skymningen" },
-            { "file": "lagerljus/mushroom-lamp/lagerljus-mushroom-lamp-04-detail.jpg", "altText": "Närbild på skärmens veck och lagerlinjer där ljuset lyser igenom" }
+            { "file": "lagerljus/mushroom-lamp/lagerljus-mushroom-lamp-01-main.webp", "altText": "Smörgul bordslampa formad som en svamp med veckad skärm på en ljus träskiva" },
+            { "file": "lagerljus/mushroom-lamp/lagerljus-mushroom-lamp-02-bedroom.webp", "altText": "Tänd svamplampa på ett nattduksbord bredvid böcker och ett glas vatten" },
+            { "file": "lagerljus/mushroom-lamp/lagerljus-mushroom-lamp-03-living-room.webp", "altText": "Svamplampan lyser på en skänk bredvid en skivspelare i skymningen" },
+            { "file": "lagerljus/mushroom-lamp/lagerljus-mushroom-lamp-04-detail.webp", "altText": "Närbild på skärmens veck och lagerlinjer där ljuset lyser igenom" }
           ]
         },
         {
@@ -182,17 +182,17 @@
           "parcel": { "weightGrams": 1900, "lengthCm": 55, "widthCm": 50, "heightCm": 8 },
           "size": { "widthCm": 40, "heightCm": 45, "weightGrams": 850 },
           "images": [
-            { "file": "neonverkstan/cherries/neonverkstan-cherries-01-main.jpg", "altText": "Neonskylt formad som två körsbär som lyser rött och grönt mot en ljusgrå vägg" },
-            { "file": "neonverkstan/cherries/neonverkstan-cherries-02-kitchen.jpg", "altText": "Körsbärsneonen på en blank kakelvägg ovanför en köksbänk med körsbär och en cocktail" },
-            { "file": "neonverkstan/cherries/neonverkstan-cherries-03-cafe.jpg", "altText": "Körsbärsneonen på en mörkgrön vägg i ett café på kvällen" },
-            { "file": "neonverkstan/cherries/neonverkstan-cherries-04-detail.jpg", "altText": "Närbild på körsbärens röda neonrör, akrylskivan och kabeln med dimmer" }
+            { "file": "neonverkstan/cherries/neonverkstan-cherries-01-main.webp", "altText": "Neonskylt formad som två körsbär som lyser rött och grönt mot en ljusgrå vägg" },
+            { "file": "neonverkstan/cherries/neonverkstan-cherries-02-kitchen.webp", "altText": "Körsbärsneonen på en blank kakelvägg ovanför en köksbänk med körsbär och en cocktail" },
+            { "file": "neonverkstan/cherries/neonverkstan-cherries-03-cafe.webp", "altText": "Körsbärsneonen på en mörkgrön vägg i ett café på kvällen" },
+            { "file": "neonverkstan/cherries/neonverkstan-cherries-04-detail.webp", "altText": "Närbild på körsbärens röda neonrör, akrylskivan och kabeln med dimmer" }
           ]
         }
       ]
     },
     {
       "name": "Ljus och tvål",
-      "image": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-01-main.jpg",
+      "image": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-01-main.webp",
       "imageAltText": "Salviagrönt bubbelljus format som en kub av runda kulor på en stenskiva",
       "subcategories": ["Ljus", "Tvål", "Ljusstakar"],
       "products": [
@@ -208,10 +208,10 @@
           "parcel": { "weightGrams": 200, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
           "size": { "lengthCm": 9, "widthCm": 6, "heightCm": 3, "weightGrams": 110 },
           "images": [
-            { "file": "vaxverkstan/charcoal-soap/vaxverkstan-charcoal-soap-01-main.jpg", "altText": "Svart tvål med vit virvel och torkade eukalyptusblad på en ljus stenskiva" },
-            { "file": "vaxverkstan/charcoal-soap/vaxverkstan-charcoal-soap-02-shower.jpg", "altText": "Koltvålen på en tvålkopp i trä i en dusch med mörkgrönt kakel och eukalyptus" },
-            { "file": "vaxverkstan/charcoal-soap/vaxverkstan-charcoal-soap-03-with-lavender-soap.jpg", "altText": "Koltvålen bredvid en lavendeltvål på linnetyg med eukalyptus och lavendel" },
-            { "file": "vaxverkstan/charcoal-soap/vaxverkstan-charcoal-soap-04-detail.jpg", "altText": "Närbild på koltvålens vita virvel, eukalyptusblad och lite lödder" }
+            { "file": "vaxverkstan/charcoal-soap/vaxverkstan-charcoal-soap-01-main.webp", "altText": "Svart tvål med vit virvel och torkade eukalyptusblad på en ljus stenskiva" },
+            { "file": "vaxverkstan/charcoal-soap/vaxverkstan-charcoal-soap-02-shower.webp", "altText": "Koltvålen på en tvålkopp i trä i en dusch med mörkgrönt kakel och eukalyptus" },
+            { "file": "vaxverkstan/charcoal-soap/vaxverkstan-charcoal-soap-03-with-lavender-soap.webp", "altText": "Koltvålen bredvid en lavendeltvål på linnetyg med eukalyptus och lavendel" },
+            { "file": "vaxverkstan/charcoal-soap/vaxverkstan-charcoal-soap-04-detail.webp", "altText": "Närbild på koltvålens vita virvel, eukalyptusblad och lite lödder" }
           ]
         },
         {
@@ -226,10 +226,10 @@
           "parcel": { "weightGrams": 300, "lengthCm": 30, "widthCm": 10, "heightCm": 5 },
           "size": { "heightCm": 25, "diameterCm": 2.2 },
           "images": [
-            { "file": "vaxverkstan/taper-candles/vaxverkstan-taper-candles-01-main.jpg", "altText": "Två tvinnade kronljus i terrakotta i ljusstakar av mässing på en stenskiva" },
-            { "file": "vaxverkstan/taper-candles/vaxverkstan-taper-candles-02-dinner.jpg", "altText": "Två tända tvinnade kronljus på ett dukat middagsbord med fikon och vinglas" },
-            { "file": "vaxverkstan/taper-candles/vaxverkstan-taper-candles-03-mantelpiece.jpg", "altText": "De tvinnade ljusen på en spiselkrans där solen kastar spiralskuggor på väggen" },
-            { "file": "vaxverkstan/taper-candles/vaxverkstan-taper-candles-04-detail.jpg", "altText": "Närbild på ett tänt tvinnat ljus och vaxets spiralform" }
+            { "file": "vaxverkstan/taper-candles/vaxverkstan-taper-candles-01-main.webp", "altText": "Två tvinnade kronljus i terrakotta i ljusstakar av mässing på en stenskiva" },
+            { "file": "vaxverkstan/taper-candles/vaxverkstan-taper-candles-02-dinner.webp", "altText": "Två tända tvinnade kronljus på ett dukat middagsbord med fikon och vinglas" },
+            { "file": "vaxverkstan/taper-candles/vaxverkstan-taper-candles-03-mantelpiece.webp", "altText": "De tvinnade ljusen på en spiselkrans där solen kastar spiralskuggor på väggen" },
+            { "file": "vaxverkstan/taper-candles/vaxverkstan-taper-candles-04-detail.webp", "altText": "Närbild på ett tänt tvinnat ljus och vaxets spiralform" }
           ]
         },
         {
@@ -244,10 +244,10 @@
           "parcel": { "weightGrams": 200, "lengthCm": 15, "widthCm": 10, "heightCm": 5 },
           "size": { "lengthCm": 9, "widthCm": 6, "heightCm": 3, "weightGrams": 110 },
           "images": [
-            { "file": "vaxverkstan/lavender-soap/vaxverkstan-lavender-soap-01-main.jpg", "altText": "Ljus tvål med torkade lavendelknoppar på ovansidan på en stenskiva" },
-            { "file": "vaxverkstan/lavender-soap/vaxverkstan-lavender-soap-02-bathroom.jpg", "altText": "Lavendeltvålen på en tvålkopp i travertin vid ett handfat med mässingskran" },
-            { "file": "vaxverkstan/lavender-soap/vaxverkstan-lavender-soap-03-gift-stack.jpg", "altText": "Tre lavendeltvålar inslagna i kraftpapper och knutna med snöre och lavendel" },
-            { "file": "vaxverkstan/lavender-soap/vaxverkstan-lavender-soap-04-detail.jpg", "altText": "Närbild på tvålens hörn med lavendelknoppar och den täta, krämiga ytan" }
+            { "file": "vaxverkstan/lavender-soap/vaxverkstan-lavender-soap-01-main.webp", "altText": "Ljus tvål med torkade lavendelknoppar på ovansidan på en stenskiva" },
+            { "file": "vaxverkstan/lavender-soap/vaxverkstan-lavender-soap-02-bathroom.webp", "altText": "Lavendeltvålen på en tvålkopp i travertin vid ett handfat med mässingskran" },
+            { "file": "vaxverkstan/lavender-soap/vaxverkstan-lavender-soap-03-gift-stack.webp", "altText": "Tre lavendeltvålar inslagna i kraftpapper och knutna med snöre och lavendel" },
+            { "file": "vaxverkstan/lavender-soap/vaxverkstan-lavender-soap-04-detail.webp", "altText": "Närbild på tvålens hörn med lavendelknoppar och den täta, krämiga ytan" }
           ]
         },
         {
@@ -262,10 +262,10 @@
           "parcel": { "weightGrams": 500, "lengthCm": 25, "widthCm": 20, "heightCm": 10 },
           "size": { "heightCm": 20, "diameterCm": 4.5, "weightGrams": 180 },
           "images": [
-            { "file": "lagerljus/candle-holders/lagerljus-candle-holders-01-main.jpg", "altText": "Tre mintgröna ljusstakar med vågig form i olika höjder på en ljus träskiva" },
-            { "file": "lagerljus/candle-holders/lagerljus-candle-holders-02-dinner.jpg", "altText": "De mintgröna ljusstakarna med tända terrakottaljus på ett dukat middagsbord" },
-            { "file": "lagerljus/candle-holders/lagerljus-candle-holders-03-sideboard.jpg", "altText": "Ljusstakarna med vita kronljus på en skänk i solljus bredvid körsbärsblommor" },
-            { "file": "lagerljus/candle-holders/lagerljus-candle-holders-04-detail.jpg", "altText": "Närbild på ljusstakens rundade vågor, lagerlinjer och ett vitt kronljus" }
+            { "file": "lagerljus/candle-holders/lagerljus-candle-holders-01-main.webp", "altText": "Tre mintgröna ljusstakar med vågig form i olika höjder på en ljus träskiva" },
+            { "file": "lagerljus/candle-holders/lagerljus-candle-holders-02-dinner.webp", "altText": "De mintgröna ljusstakarna med tända terrakottaljus på ett dukat middagsbord" },
+            { "file": "lagerljus/candle-holders/lagerljus-candle-holders-03-sideboard.webp", "altText": "Ljusstakarna med vita kronljus på en skänk i solljus bredvid körsbärsblommor" },
+            { "file": "lagerljus/candle-holders/lagerljus-candle-holders-04-detail.webp", "altText": "Närbild på ljusstakens rundade vågor, lagerlinjer och ett vitt kronljus" }
           ]
         },
         {
@@ -280,10 +280,10 @@
           "parcel": { "weightGrams": 900, "lengthCm": 15, "widthCm": 15, "heightCm": 15 },
           "size": { "heightCm": 9, "diameterCm": 9, "weightGrams": 550 },
           "images": [
-            { "file": "vaxverkstan/scented-candle/vaxverkstan-scented-candle-01-main.jpg", "altText": "Doftljus i en sandbeige räfflad keramikburk med lock i ek på en stenskiva" },
-            { "file": "vaxverkstan/scented-candle/vaxverkstan-scented-candle-02-bedroom.jpg", "altText": "Tänt doftljus på ett nattduksbord bredvid en bok, en kopp te och läsglasögon" },
-            { "file": "vaxverkstan/scented-candle/vaxverkstan-scented-candle-03-coffee-table.jpg", "altText": "Doftljuset på ett soffbord i travertin med en kopp kaffe och en ullfilt" },
-            { "file": "vaxverkstan/scented-candle/vaxverkstan-scented-candle-04-detail.jpg", "altText": "Närbild på lågan och det smälta vaxet i den räfflade keramikburken" }
+            { "file": "vaxverkstan/scented-candle/vaxverkstan-scented-candle-01-main.webp", "altText": "Doftljus i en sandbeige räfflad keramikburk med lock i ek på en stenskiva" },
+            { "file": "vaxverkstan/scented-candle/vaxverkstan-scented-candle-02-bedroom.webp", "altText": "Tänt doftljus på ett nattduksbord bredvid en bok, en kopp te och läsglasögon" },
+            { "file": "vaxverkstan/scented-candle/vaxverkstan-scented-candle-03-coffee-table.webp", "altText": "Doftljuset på ett soffbord i travertin med en kopp kaffe och en ullfilt" },
+            { "file": "vaxverkstan/scented-candle/vaxverkstan-scented-candle-04-detail.webp", "altText": "Närbild på lågan och det smälta vaxet i den räfflade keramikburken" }
           ]
         },
         {
@@ -298,10 +298,10 @@
           "parcel": { "weightGrams": 700, "lengthCm": 20, "widthCm": 12, "heightCm": 12 },
           "size": { "heightCm": 15, "diameterCm": 7, "weightGrams": 450 },
           "images": [
-            { "file": "vaxverkstan/wavy-pillar-candle/vaxverkstan-wavy-pillar-candle-01-main.jpg", "altText": "Gammelrosa blockljus med vågiga ribbor på en stenskiva mot en putsad vägg" },
-            { "file": "vaxverkstan/wavy-pillar-candle/vaxverkstan-wavy-pillar-candle-02-set.jpg", "altText": "Tre vågiga blockljus i olika höjder på en rund bricka i travertin" },
-            { "file": "vaxverkstan/wavy-pillar-candle/vaxverkstan-wavy-pillar-candle-03-windowsill.jpg", "altText": "Tänt vågigt blockljus i ett fönster i skymningen med stadens ljus utanför" },
-            { "file": "vaxverkstan/wavy-pillar-candle/vaxverkstan-wavy-pillar-candle-04-detail.jpg", "altText": "Närbild på blockljusets mjuka vågor och den matta vaxytan" }
+            { "file": "vaxverkstan/wavy-pillar-candle/vaxverkstan-wavy-pillar-candle-01-main.webp", "altText": "Gammelrosa blockljus med vågiga ribbor på en stenskiva mot en putsad vägg" },
+            { "file": "vaxverkstan/wavy-pillar-candle/vaxverkstan-wavy-pillar-candle-02-set.webp", "altText": "Tre vågiga blockljus i olika höjder på en rund bricka i travertin" },
+            { "file": "vaxverkstan/wavy-pillar-candle/vaxverkstan-wavy-pillar-candle-03-windowsill.webp", "altText": "Tänt vågigt blockljus i ett fönster i skymningen med stadens ljus utanför" },
+            { "file": "vaxverkstan/wavy-pillar-candle/vaxverkstan-wavy-pillar-candle-04-detail.webp", "altText": "Närbild på blockljusets mjuka vågor och den matta vaxytan" }
           ]
         },
         {
@@ -316,17 +316,17 @@
           "parcel": { "weightGrams": 500, "lengthCm": 15, "widthCm": 15, "heightCm": 12 },
           "size": { "lengthCm": 7, "widthCm": 7, "heightCm": 7, "weightGrams": 280 },
           "images": [
-            { "file": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-01-main.jpg", "altText": "Salviagrönt bubbelljus format som en kub av runda kulor på en stenskiva" },
-            { "file": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-02-bathtub.jpg", "altText": "Tänt bubbelljus på en travertinkant vid ett badkar med handduk och eukalyptus" },
-            { "file": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-03-colors.jpg", "altText": "Tre bubbelljus i salviagrönt, rosa och krämvitt på en bokstapel i solljus" },
-            { "file": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-04-detail.jpg", "altText": "Närbild på bubbelljusets runda kulor och den korta bomullsveken" }
+            { "file": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-01-main.webp", "altText": "Salviagrönt bubbelljus format som en kub av runda kulor på en stenskiva" },
+            { "file": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-02-bathtub.webp", "altText": "Tänt bubbelljus på en travertinkant vid ett badkar med handduk och eukalyptus" },
+            { "file": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-03-colors.webp", "altText": "Tre bubbelljus i salviagrönt, rosa och krämvitt på en bokstapel i solljus" },
+            { "file": "vaxverkstan/bubble-candle/vaxverkstan-bubble-candle-04-detail.webp", "altText": "Närbild på bubbelljusets runda kulor och den korta bomullsveken" }
           ]
         }
       ]
     },
     {
       "name": "Konst och väggdekor",
-      "image": "atelje-form/lemons/atelje-form-lemons-01-main.jpg",
+      "image": "atelje-form/lemons/atelje-form-lemons-01-main.webp",
       "imageAltText": "Konsttryck med fyra citroner på en blåvit rutig duk, i ekram på en skänk",
       "subcategories": ["Konsttryck", "Speglar"],
       "products": [
@@ -342,11 +342,11 @@
           "parcel": { "weightGrams": 6000, "lengthCm": 70, "widthCm": 70, "heightCm": 8 },
           "size": { "diameterCm": 60, "weightGrams": 4500 },
           "images": [
-            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-01-main.jpg", "altText": "Rund spegel med pistaschgrön ram formad som en blomma med rundade kronblad" },
-            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-02-bathroom.jpg", "altText": "Blomspegeln ovanför ett handfat med mässingskran och ljusgrönt kakel" },
-            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-03-hallway.jpg", "altText": "Blomspegeln ovanför ett konsolbord med en tänd svamplampa på kvällen" },
-            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-04-detail.jpg", "altText": "Närbild på ramens matta, rundade kronblad mot spegelglasets kant" },
-            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-05-sizes.jpg", "altText": "Tre blomspeglar i olika storlekar upphängda tillsammans ovanför en bänk" }
+            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-01-main.webp", "altText": "Rund spegel med pistaschgrön ram formad som en blomma med rundade kronblad" },
+            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-02-bathroom.webp", "altText": "Blomspegeln ovanför ett handfat med mässingskran och ljusgrönt kakel" },
+            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-03-hallway.webp", "altText": "Blomspegeln ovanför ett konsolbord med en tänd svamplampa på kvällen" },
+            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-04-detail.webp", "altText": "Närbild på ramens matta, rundade kronblad mot spegelglasets kant" },
+            { "file": "vaglangd/scalloped-mirror/vaglangd-scalloped-mirror-05-sizes.webp", "altText": "Tre blomspeglar i olika storlekar upphängda tillsammans ovanför en bänk" }
           ]
         },
         {
@@ -361,12 +361,12 @@
           "parcel": { "weightGrams": 300, "lengthCm": 55, "widthCm": 8, "heightCm": 8 },
           "size": { "widthCm": 40, "heightCm": 50 },
           "images": [
-            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-01-main.jpg", "altText": "Konsttryck med en olivkvist tecknad i tunn svart linje, i ekram på en skänk" },
-            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-02-print.jpg", "altText": "Trycket med olivkvisten utan ram, på krämvitt papper" },
-            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-03-living-room.jpg", "altText": "Olivkvisten inramat på en beige vägg ovanför en krämvit bouclésoffa" },
-            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-04-bedroom.jpg", "altText": "Olivkvisten inramat ovanför en säng mot en salviagrön vägg" },
-            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-05-dining.jpg", "altText": "Olivkvisten inramat ovanför ett runt matbord i ek med två stolar" },
-            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-06-detail.jpg", "altText": "Närbild på olivkvistens blad och två oliver i svart tusch" }
+            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-01-main.webp", "altText": "Konsttryck med en olivkvist tecknad i tunn svart linje, i ekram på en skänk" },
+            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-02-print.webp", "altText": "Trycket med olivkvisten utan ram, på krämvitt papper" },
+            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-03-living-room.webp", "altText": "Olivkvisten inramat på en beige vägg ovanför en krämvit bouclésoffa" },
+            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-04-bedroom.webp", "altText": "Olivkvisten inramat ovanför en säng mot en salviagrön vägg" },
+            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-05-dining.webp", "altText": "Olivkvisten inramat ovanför ett runt matbord i ek med två stolar" },
+            { "file": "atelje-form/olive-branch/atelje-form-olive-branch-06-detail.webp", "altText": "Närbild på olivkvistens blad och två oliver i svart tusch" }
           ]
         },
         {
@@ -381,11 +381,11 @@
           "parcel": { "weightGrams": 5000, "lengthCm": 70, "widthCm": 65, "heightCm": 12 },
           "size": { "widthCm": 60, "heightCm": 55, "weightGrams": 3500 },
           "images": [
-            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-01-main.jpg", "altText": "Spegel formad som ett moln med tjock tuftad ram i lila och salviagröna ränder" },
-            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-02-vanity.jpg", "altText": "Molnspegeln ovanför en vit byrå med parfymflaskor och en vas med blommor" },
-            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-03-entryway.jpg", "altText": "Molnspegeln ovanför ett konsolbord i trä med en lampa och tulpaner i en hall" },
-            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-04-detail.jpg", "altText": "Närbild på ramens mjuka garn i lila och grönt mot spegelglasets kant" },
-            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-05-teen-room.jpg", "altText": "Molnspegeln ovanför ett sminkbord med ljusslingor och polaroidbilder på väggen" }
+            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-01-main.webp", "altText": "Spegel formad som ett moln med tjock tuftad ram i lila och salviagröna ränder" },
+            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-02-vanity.webp", "altText": "Molnspegeln ovanför en vit byrå med parfymflaskor och en vas med blommor" },
+            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-03-entryway.webp", "altText": "Molnspegeln ovanför ett konsolbord i trä med en lampa och tulpaner i en hall" },
+            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-04-detail.webp", "altText": "Närbild på ramens mjuka garn i lila och grönt mot spegelglasets kant" },
+            { "file": "vaglangd/tufted-cloud-mirror/vaglangd-tufted-cloud-mirror-05-teen-room.webp", "altText": "Molnspegeln ovanför ett sminkbord med ljusslingor och polaroidbilder på väggen" }
           ]
         },
         {
@@ -400,12 +400,12 @@
           "parcel": { "weightGrams": 300, "lengthCm": 55, "widthCm": 8, "heightCm": 8 },
           "size": { "widthCm": 40, "heightCm": 50 },
           "images": [
-            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-01-main.jpg", "altText": "Konsttryck med abstrakta former i terrakotta, salviagrönt och senapsgult, i ekram på en skänk" },
-            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-02-print.jpg", "altText": "Trycket med abstrakta former utan ram" },
-            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-03-living-room.jpg", "altText": "Det abstrakta trycket inramat på en beige vägg ovanför en krämvit bouclésoffa" },
-            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-04-bedroom.jpg", "altText": "Det abstrakta trycket inramat ovanför en säng mot en salviagrön vägg" },
-            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-05-dining.jpg", "altText": "Det abstrakta trycket inramat ovanför ett runt matbord i ek med två stolar" },
-            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-06-detail.jpg", "altText": "Närbild på de målade formerna med synlig penselstruktur" }
+            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-01-main.webp", "altText": "Konsttryck med abstrakta former i terrakotta, salviagrönt och senapsgult, i ekram på en skänk" },
+            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-02-print.webp", "altText": "Trycket med abstrakta former utan ram" },
+            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-03-living-room.webp", "altText": "Det abstrakta trycket inramat på en beige vägg ovanför en krämvit bouclésoffa" },
+            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-04-bedroom.webp", "altText": "Det abstrakta trycket inramat ovanför en säng mot en salviagrön vägg" },
+            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-05-dining.webp", "altText": "Det abstrakta trycket inramat ovanför ett runt matbord i ek med två stolar" },
+            { "file": "atelje-form/abstract-shapes/atelje-form-abstract-shapes-06-detail.webp", "altText": "Närbild på de målade formerna med synlig penselstruktur" }
           ]
         },
         {
@@ -420,12 +420,12 @@
           "parcel": { "weightGrams": 300, "lengthCm": 55, "widthCm": 8, "heightCm": 8 },
           "size": { "widthCm": 40, "heightCm": 50 },
           "images": [
-            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-01-main.jpg", "altText": "Konsttryck med en sol som går ner bakom bågar i rost, senap och rosa, i ekram på en skänk" },
-            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-02-print.jpg", "altText": "Trycket med solnedgång och bågar utan ram" },
-            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-03-living-room.jpg", "altText": "Solnedgångstrycket inramat på en beige vägg ovanför en krämvit bouclésoffa" },
-            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-04-bedroom.jpg", "altText": "Solnedgångstrycket inramat ovanför en säng mot en salviagrön vägg" },
-            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-05-dining.jpg", "altText": "Solnedgångstrycket inramat ovanför ett runt matbord i ek med två stolar" },
-            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-06-detail.jpg", "altText": "Närbild på solen och bågarna där trycktexturen syns" }
+            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-01-main.webp", "altText": "Konsttryck med en sol som går ner bakom bågar i rost, senap och rosa, i ekram på en skänk" },
+            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-02-print.webp", "altText": "Trycket med solnedgång och bågar utan ram" },
+            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-03-living-room.webp", "altText": "Solnedgångstrycket inramat på en beige vägg ovanför en krämvit bouclésoffa" },
+            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-04-bedroom.webp", "altText": "Solnedgångstrycket inramat ovanför en säng mot en salviagrön vägg" },
+            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-05-dining.webp", "altText": "Solnedgångstrycket inramat ovanför ett runt matbord i ek med två stolar" },
+            { "file": "atelje-form/sunset-arches/atelje-form-sunset-arches-06-detail.webp", "altText": "Närbild på solen och bågarna där trycktexturen syns" }
           ]
         },
         {
@@ -440,11 +440,11 @@
           "parcel": { "weightGrams": 18000, "lengthCm": 170, "widthCm": 70, "heightCm": 10 },
           "size": { "widthCm": 60, "heightCm": 160, "weightGrams": 14000 },
           "images": [
-            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-01-main.jpg", "altText": "Hög golvspegel med tjock vågig ram i blank smörgul lack lutad mot en vägg" },
-            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-02-bedroom.jpg", "altText": "Den vågiga spegeln lutad mot väggen i ett soligt sovrum med växter" },
-            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-03-dressing-area.jpg", "altText": "Den gula vågiga spegeln mot en rosa vägg bredvid en klädställning" },
-            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-04-detail.jpg", "altText": "Närbild på ramens blanka vågor i smörgult" },
-            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-05-side-view.jpg", "altText": "Den vågiga golvspegeln från sidan, så att ramens djup syns" }
+            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-01-main.webp", "altText": "Hög golvspegel med tjock vågig ram i blank smörgul lack lutad mot en vägg" },
+            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-02-bedroom.webp", "altText": "Den vågiga spegeln lutad mot väggen i ett soligt sovrum med växter" },
+            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-03-dressing-area.webp", "altText": "Den gula vågiga spegeln mot en rosa vägg bredvid en klädställning" },
+            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-04-detail.webp", "altText": "Närbild på ramens blanka vågor i smörgult" },
+            { "file": "vaglangd/wavy-floor-mirror/vaglangd-wavy-floor-mirror-05-side-view.webp", "altText": "Den vågiga golvspegeln från sidan, så att ramens djup syns" }
           ]
         },
         {
@@ -459,19 +459,19 @@
           "parcel": { "weightGrams": 300, "lengthCm": 55, "widthCm": 8, "heightCm": 8 },
           "size": { "widthCm": 40, "heightCm": 50 },
           "images": [
-            { "file": "atelje-form/lemons/atelje-form-lemons-01-main.jpg", "altText": "Konsttryck med fyra citroner på en blåvit rutig duk, i ekram på en skänk" },
-            { "file": "atelje-form/lemons/atelje-form-lemons-02-print.jpg", "altText": "Gouachemålningen med citroner utan ram" },
-            { "file": "atelje-form/lemons/atelje-form-lemons-03-living-room.jpg", "altText": "Citrontrycket inramat på en beige vägg ovanför en krämvit bouclésoffa" },
-            { "file": "atelje-form/lemons/atelje-form-lemons-04-bedroom.jpg", "altText": "Citrontrycket inramat ovanför en säng mot en salviagrön vägg" },
-            { "file": "atelje-form/lemons/atelje-form-lemons-05-dining.jpg", "altText": "Citrontrycket inramat ovanför ett runt matbord i ek med två stolar" },
-            { "file": "atelje-form/lemons/atelje-form-lemons-06-detail.jpg", "altText": "Närbild på en citron och den rutiga duken med synliga penseldrag" }
+            { "file": "atelje-form/lemons/atelje-form-lemons-01-main.webp", "altText": "Konsttryck med fyra citroner på en blåvit rutig duk, i ekram på en skänk" },
+            { "file": "atelje-form/lemons/atelje-form-lemons-02-print.webp", "altText": "Gouachemålningen med citroner utan ram" },
+            { "file": "atelje-form/lemons/atelje-form-lemons-03-living-room.webp", "altText": "Citrontrycket inramat på en beige vägg ovanför en krämvit bouclésoffa" },
+            { "file": "atelje-form/lemons/atelje-form-lemons-04-bedroom.webp", "altText": "Citrontrycket inramat ovanför en säng mot en salviagrön vägg" },
+            { "file": "atelje-form/lemons/atelje-form-lemons-05-dining.webp", "altText": "Citrontrycket inramat ovanför ett runt matbord i ek med två stolar" },
+            { "file": "atelje-form/lemons/atelje-form-lemons-06-detail.webp", "altText": "Närbild på en citron och den rutiga duken med synliga penseldrag" }
           ]
         }
       ]
     },
     {
       "name": "Textil",
-      "image": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-01-main.jpg",
+      "image": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-01-main.webp",
       "imageAltText": "Tuftad matta med vågigt rutmönster i lila och krämvitt, sedd ovanifrån på ett trägolv",
       "subcategories": ["Kläder", "Accessoarer", "Mattor"],
       "products": [
@@ -487,9 +487,9 @@
           "parcel": { "weightGrams": 200, "lengthCm": 25, "widthCm": 20, "heightCm": 2 },
           "size": { "widthCm": 38, "heightCm": 42 },
           "images": [
-            { "file": "prickstudion/tote-bag/prickstudion-tote-bag-01-main.jpg", "altText": "Tygväska i naturfärgad bomull med stora koboltblå prickar som hänger på en träknopp" },
-            { "file": "prickstudion/tote-bag/prickstudion-tote-bag-02-cafe.jpg", "altText": "Tygväskan med prickar på en caféstol med en baguette och vita tulpaner" },
-            { "file": "prickstudion/tote-bag/prickstudion-tote-bag-03-detail.jpg", "altText": "Närbild på tygets väv, sömmen vid handtaget och en tryckt blå prick" }
+            { "file": "prickstudion/tote-bag/prickstudion-tote-bag-01-main.webp", "altText": "Tygväska i naturfärgad bomull med stora koboltblå prickar som hänger på en träknopp" },
+            { "file": "prickstudion/tote-bag/prickstudion-tote-bag-02-cafe.webp", "altText": "Tygväskan med prickar på en caféstol med en baguette och vita tulpaner" },
+            { "file": "prickstudion/tote-bag/prickstudion-tote-bag-03-detail.webp", "altText": "Närbild på tygets väv, sömmen vid handtaget och en tryckt blå prick" }
           ]
         },
         {
@@ -504,12 +504,12 @@
           "parcel": { "weightGrams": 200, "lengthCm": 20, "widthCm": 15, "heightCm": 5 },
           "size": { "weightGrams": 90 },
           "images": [
-            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-01-main.jpg", "altText": "Ribbstickad mössa i rostfärgad ull med uppvikt kant på en stenskiva" },
-            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-02-flat-lay.jpg", "altText": "Mössan bredvid vita vantar, en termos, kottar och en grankvist på ett träbord" },
-            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-03-entryway.jpg", "altText": "Mössan på en krok bredvid en kamelfärgad kappa och en stickad halsduk" },
-            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-04-colors.jpg", "altText": "Tre ribbstickade mössor i rost, senapsgult och skogsgrönt staplade på en pall" },
-            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-05-forest.jpg", "altText": "Mössan på en ryggsäck på en mossig sten i en dimmig höstskog" },
-            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-06-detail.jpg", "altText": "Närbild på mössans ribbstickning och uppvikta kant i rostfärgad ull" }
+            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-01-main.webp", "altText": "Ribbstickad mössa i rostfärgad ull med uppvikt kant på en stenskiva" },
+            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-02-flat-lay.webp", "altText": "Mössan bredvid vita vantar, en termos, kottar och en grankvist på ett träbord" },
+            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-03-entryway.webp", "altText": "Mössan på en krok bredvid en kamelfärgad kappa och en stickad halsduk" },
+            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-04-colors.webp", "altText": "Tre ribbstickade mössor i rost, senapsgult och skogsgrönt staplade på en pall" },
+            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-05-forest.webp", "altText": "Mössan på en ryggsäck på en mossig sten i en dimmig höstskog" },
+            { "file": "tradverket/rib-beanie/tradverket-rib-beanie-06-detail.webp", "altText": "Närbild på mössans ribbstickning och uppvikta kant i rostfärgad ull" }
           ]
         },
         {
@@ -524,12 +524,12 @@
           "parcel": { "weightGrams": 700, "lengthCm": 35, "widthCm": 25, "heightCm": 6 },
           "size": { "weightGrams": 550 },
           "images": [
-            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-01-main.jpg", "altText": "Havregrå sweatshirt med en liten broderad prästkrage på bröstet, på galge mot en vägg" },
-            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-02-flat-lay.jpg", "altText": "Sweatshirten på ett trägolv bredvid en kopp kaffe, ullsockor och en bok" },
-            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-03-armchair.jpg", "altText": "Sweatshirten slängd över armstödet på en bouclé-fåtölj" },
-            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-04-colors.jpg", "altText": "Tre hopvikta sweatshirts i havregrått, salviagrönt och duvblått med broderade prästkragar" },
-            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-05-entryway.jpg", "altText": "Sweatshirten på en krok i en ljus hall bredvid en tygväska och en stråhatt" },
-            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-06-detail.jpg", "altText": "Närbild på den handbroderade prästkragen med vita kronblad och gul mitt" }
+            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-01-main.webp", "altText": "Havregrå sweatshirt med en liten broderad prästkrage på bröstet, på galge mot en vägg" },
+            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-02-flat-lay.webp", "altText": "Sweatshirten på ett trägolv bredvid en kopp kaffe, ullsockor och en bok" },
+            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-03-armchair.webp", "altText": "Sweatshirten slängd över armstödet på en bouclé-fåtölj" },
+            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-04-colors.webp", "altText": "Tre hopvikta sweatshirts i havregrått, salviagrönt och duvblått med broderade prästkragar" },
+            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-05-entryway.webp", "altText": "Sweatshirten på en krok i en ljus hall bredvid en tygväska och en stråhatt" },
+            { "file": "tradverket/daisy-sweatshirt/tradverket-daisy-sweatshirt-06-detail.webp", "altText": "Närbild på den handbroderade prästkragen med vita kronblad och gul mitt" }
           ]
         },
         {
@@ -544,12 +544,12 @@
           "parcel": { "weightGrams": 1300, "lengthCm": 40, "widthCm": 30, "heightCm": 12 },
           "size": { "weightGrams": 950 },
           "images": [
-            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-01-main.jpg", "altText": "Krämvit stickad kofta med flätmönster och träknappar på galge mot en putsad vägg" },
-            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-02-flat-lay.jpg", "altText": "Koftan på linnetyg bland höstlöv bredvid en kopp te och läsglasögon" },
-            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-03-rainy-day.jpg", "altText": "Koftan hänger på en stol vid ett regnigt fönster med te och ett tänt ljus" },
-            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-04-handmade.jpg", "altText": "Koftan hopvikt på en säng bredvid stickor och ett nystan i samma garn" },
-            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-05-clothes-rail.jpg", "altText": "Koftan på en klädstång i ett soligt sovrum bredvid linneplagg" },
-            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-06-detail.jpg", "altText": "Närbild på flätstickningen och en träknapp på koftans knappslå" }
+            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-01-main.webp", "altText": "Krämvit stickad kofta med flätmönster och träknappar på galge mot en putsad vägg" },
+            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-02-flat-lay.webp", "altText": "Koftan på linnetyg bland höstlöv bredvid en kopp te och läsglasögon" },
+            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-03-rainy-day.webp", "altText": "Koftan hänger på en stol vid ett regnigt fönster med te och ett tänt ljus" },
+            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-04-handmade.webp", "altText": "Koftan hopvikt på en säng bredvid stickor och ett nystan i samma garn" },
+            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-05-clothes-rail.webp", "altText": "Koftan på en klädstång i ett soligt sovrum bredvid linneplagg" },
+            { "file": "tradverket/cable-cardigan/tradverket-cable-cardigan-06-detail.webp", "altText": "Närbild på flätstickningen och en träknapp på koftans knappslå" }
           ]
         },
         {
@@ -564,11 +564,11 @@
           "parcel": { "weightGrams": 3500, "lengthCm": 55, "widthCm": 30, "heightCm": 30 },
           "size": { "diameterCm": 100, "weightGrams": 2800 },
           "images": [
-            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-01-main.jpg", "altText": "Rund tuftad matta formad som en apelsinskiva på ett ljust trägolv, sedd ovanifrån" },
-            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-02-playroom.jpg", "altText": "Apelsinmattan på golvet i ett lekrum med leksakskök och klossar" },
-            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-03-entryway.jpg", "altText": "Apelsinmattan framför ytterdörren i en ljus hall" },
-            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-04-detail.jpg", "altText": "Närbild på mattans orange klyftor och den skulpterade kanten" },
-            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-05-wall-hanging.jpg", "altText": "Apelsinmattan upphängd som väggdekor ovanför en krämvit soffa" }
+            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-01-main.webp", "altText": "Rund tuftad matta formad som en apelsinskiva på ett ljust trägolv, sedd ovanifrån" },
+            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-02-playroom.webp", "altText": "Apelsinmattan på golvet i ett lekrum med leksakskök och klossar" },
+            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-03-entryway.webp", "altText": "Apelsinmattan framför ytterdörren i en ljus hall" },
+            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-04-detail.webp", "altText": "Närbild på mattans orange klyftor och den skulpterade kanten" },
+            { "file": "vaglangd/orange-slice-rug/vaglangd-orange-slice-rug-05-wall-hanging.webp", "altText": "Apelsinmattan upphängd som väggdekor ovanför en krämvit soffa" }
           ]
         },
         {
@@ -582,12 +582,12 @@
           "colors": ["Lila", "Blå", "Vit"],
           "parcel": { "weightGrams": 300, "lengthCm": 30, "widthCm": 22, "heightCm": 3 },
           "images": [
-            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-01-main.jpg", "altText": "T-shirt med spiralbatik i lila, blått och vitt på galge mot en putsad vägg" },
-            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-02-flat-lay.jpg", "altText": "Batik-t-shirten på linnetyg med solglasögon, körsbär och en bok" },
-            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-03-clothing-rail.jpg", "altText": "Batik-t-shirten på en klädstång i mässing i ett soligt sovrum" },
-            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-04-colors.jpg", "altText": "Tre hopvikta batik-t-shirts i lila, persika och mintgrönt på en pall" },
-            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-05-picnic.jpg", "altText": "Batik-t-shirten på en rutig picknickfilt med jordgubbar och en stråhatt" },
-            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-06-detail.jpg", "altText": "Närbild på batikmönstret där färgerna flyter ihop och den ribbade halsen" }
+            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-01-main.webp", "altText": "T-shirt med spiralbatik i lila, blått och vitt på galge mot en putsad vägg" },
+            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-02-flat-lay.webp", "altText": "Batik-t-shirten på linnetyg med solglasögon, körsbär och en bok" },
+            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-03-clothing-rail.webp", "altText": "Batik-t-shirten på en klädstång i mässing i ett soligt sovrum" },
+            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-04-colors.webp", "altText": "Tre hopvikta batik-t-shirts i lila, persika och mintgrönt på en pall" },
+            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-05-picnic.webp", "altText": "Batik-t-shirten på en rutig picknickfilt med jordgubbar och en stråhatt" },
+            { "file": "tradverket/tie-dye-tee/tradverket-tie-dye-tee-06-detail.webp", "altText": "Närbild på batikmönstret där färgerna flyter ihop och den ribbade halsen" }
           ]
         },
         {
@@ -602,11 +602,11 @@
           "parcel": { "weightGrams": 3800, "lengthCm": 85, "widthCm": 30, "heightCm": 30 },
           "size": { "lengthCm": 120, "widthCm": 80, "weightGrams": 3000 },
           "images": [
-            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-01-main.jpg", "altText": "Tuftad matta i organisk form med virvlar i rosa, körsbärsrött och krämvitt, sedd ovanifrån" },
-            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-02-studio.jpg", "altText": "Virvelmattan under ett skrivbord i en ljus ateljé" },
-            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-03-bedroom.jpg", "altText": "Virvelmattan vid en säng med randiga sängkläder och en tänd lampa" },
-            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-04-detail.jpg", "altText": "Närbild på luggen i rosa, rött och krämvitt med skurna spår mellan färgerna" },
-            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-05-backing.jpg", "altText": "Mattans kant uppvikt så att den grå baksidan och luggens tjocklek syns" }
+            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-01-main.webp", "altText": "Tuftad matta i organisk form med virvlar i rosa, körsbärsrött och krämvitt, sedd ovanifrån" },
+            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-02-studio.webp", "altText": "Virvelmattan under ett skrivbord i en ljus ateljé" },
+            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-03-bedroom.webp", "altText": "Virvelmattan vid en säng med randiga sängkläder och en tänd lampa" },
+            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-04-detail.webp", "altText": "Närbild på luggen i rosa, rött och krämvitt med skurna spår mellan färgerna" },
+            { "file": "vaglangd/swirl-rug/vaglangd-swirl-rug-05-backing.webp", "altText": "Mattans kant uppvikt så att den grå baksidan och luggens tjocklek syns" }
           ]
         },
         {
@@ -621,18 +621,18 @@
           "parcel": { "weightGrams": 4500, "lengthCm": 95, "widthCm": 30, "heightCm": 30 },
           "size": { "lengthCm": 140, "widthCm": 90, "weightGrams": 3800 },
           "images": [
-            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-01-main.jpg", "altText": "Tuftad matta med vågigt rutmönster i lila och krämvitt, sedd ovanifrån på ett trägolv" },
-            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-02-bedroom.jpg", "altText": "Den rutiga mattan bredvid en säng med lila sängkläder i morgonljus" },
-            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-03-living-room.jpg", "altText": "Den rutiga mattan under en bouclé-fåtölj i en solig vardagsrumshörna" },
-            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-04-detail.jpg", "altText": "Närbild på den tjocka luggen där lila möter krämvitt i en mjuk våg" },
-            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-05-with-cat.jpg", "altText": "En vit katt sover på den rutiga mattan i eftermiddagssolen" }
+            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-01-main.webp", "altText": "Tuftad matta med vågigt rutmönster i lila och krämvitt, sedd ovanifrån på ett trägolv" },
+            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-02-bedroom.webp", "altText": "Den rutiga mattan bredvid en säng med lila sängkläder i morgonljus" },
+            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-03-living-room.webp", "altText": "Den rutiga mattan under en bouclé-fåtölj i en solig vardagsrumshörna" },
+            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-04-detail.webp", "altText": "Närbild på den tjocka luggen där lila möter krämvitt i en mjuk våg" },
+            { "file": "vaglangd/checkerboard-rug/vaglangd-checkerboard-rug-05-with-cat.webp", "altText": "En vit katt sover på den rutiga mattan i eftermiddagssolen" }
           ]
         }
       ]
     },
     {
       "name": "Inredning",
-      "image": "prickstudion/mug/prickstudion-mug-01-main.jpg",
+      "image": "prickstudion/mug/prickstudion-mug-01-main.webp",
       "imageAltText": "Handgjord mugg med ringformat öra och stora koboltblå prickar i skarpt fönsterljus",
       "subcategories": ["Keramik", "Vaser och krukor", "Förvaring"],
       "products": [
@@ -647,10 +647,10 @@
           "parcel": { "weightGrams": 250, "lengthCm": 25, "widthCm": 20, "heightCm": 8 },
           "size": { "lengthCm": 30, "weightGrams": 120 },
           "images": [
-            { "file": "lagerljus/flexi-dragon/lagerljus-flexi-dragon-01-main.jpg", "altText": "3D-printad ledad drake i skimrande lila och turkos på en ljus träskiva" },
-            { "file": "lagerljus/flexi-dragon/lagerljus-flexi-dragon-02-gaming-desk.jpg", "altText": "Draken på en skrivbordsmatta bredvid ett tangentbord och hörlurar i lila ljus" },
-            { "file": "lagerljus/flexi-dragon/lagerljus-flexi-dragon-03-bookshelf.jpg", "altText": "Draken draperad över en stapel gamla böcker på en hylla" },
-            { "file": "lagerljus/flexi-dragon/lagerljus-flexi-dragon-04-detail.jpg", "altText": "Närbild på drakens leder och taggar i skimrande lila och turkos" }
+            { "file": "lagerljus/flexi-dragon/lagerljus-flexi-dragon-01-main.webp", "altText": "3D-printad ledad drake i skimrande lila och turkos på en ljus träskiva" },
+            { "file": "lagerljus/flexi-dragon/lagerljus-flexi-dragon-02-gaming-desk.webp", "altText": "Draken på en skrivbordsmatta bredvid ett tangentbord och hörlurar i lila ljus" },
+            { "file": "lagerljus/flexi-dragon/lagerljus-flexi-dragon-03-bookshelf.webp", "altText": "Draken draperad över en stapel gamla böcker på en hylla" },
+            { "file": "lagerljus/flexi-dragon/lagerljus-flexi-dragon-04-detail.webp", "altText": "Närbild på drakens leder och taggar i skimrande lila och turkos" }
           ]
         },
         {
@@ -665,10 +665,10 @@
           "parcel": { "weightGrams": 450, "lengthCm": 25, "widthCm": 20, "heightCm": 18 },
           "size": { "lengthCm": 18, "widthCm": 14, "heightCm": 13, "weightGrams": 220 },
           "images": [
-            { "file": "lagerljus/desk-organizer/lagerljus-desk-organizer-01-main.jpg", "altText": "Pudrigt blå organisatör med sexkantiga fack i olika höjder på en ljus träskiva" },
-            { "file": "lagerljus/desk-organizer/lagerljus-desk-organizer-02-home-office.jpg", "altText": "Organisatören med pennor, sax och linjal på ett skrivbord bredvid en kopp kaffe" },
-            { "file": "lagerljus/desk-organizer/lagerljus-desk-organizer-03-vanity.jpg", "altText": "Organisatören med sminkborstar och hårspännen på ett vitt sminkbord" },
-            { "file": "lagerljus/desk-organizer/lagerljus-desk-organizer-04-detail.jpg", "altText": "Närbild ovanifrån på de sexkantiga facken med gem och klämmor" }
+            { "file": "lagerljus/desk-organizer/lagerljus-desk-organizer-01-main.webp", "altText": "Pudrigt blå organisatör med sexkantiga fack i olika höjder på en ljus träskiva" },
+            { "file": "lagerljus/desk-organizer/lagerljus-desk-organizer-02-home-office.webp", "altText": "Organisatören med pennor, sax och linjal på ett skrivbord bredvid en kopp kaffe" },
+            { "file": "lagerljus/desk-organizer/lagerljus-desk-organizer-03-vanity.webp", "altText": "Organisatören med sminkborstar och hårspännen på ett vitt sminkbord" },
+            { "file": "lagerljus/desk-organizer/lagerljus-desk-organizer-04-detail.webp", "altText": "Närbild ovanifrån på de sexkantiga facken med gem och klämmor" }
           ]
         },
         {
@@ -683,10 +683,10 @@
           "parcel": { "weightGrams": 100, "lengthCm": 15, "widthCm": 15, "heightCm": 5 },
           "size": { "diameterCm": 12, "heightCm": 2.5, "weightGrams": 40 },
           "images": [
-            { "file": "lagerljus/flower-dish/lagerljus-flower-dish-01-main.jpg", "altText": "Liten persikofärgad skål formad som en blomma på en ljus träskiva" },
-            { "file": "lagerljus/flower-dish/lagerljus-flower-dish-02-bedside.jpg", "altText": "Blomskålen med guldringar och ett halsband på ett nattduksbord" },
-            { "file": "lagerljus/flower-dish/lagerljus-flower-dish-03-colors.jpg", "altText": "Tre blomskålar i persika, smörgult och mintgrönt på linnetyg i solljus" },
-            { "file": "lagerljus/flower-dish/lagerljus-flower-dish-04-detail.jpg", "altText": "Närbild på ett kronblad med synliga lagerlinjer och en guldring i mitten" }
+            { "file": "lagerljus/flower-dish/lagerljus-flower-dish-01-main.webp", "altText": "Liten persikofärgad skål formad som en blomma på en ljus träskiva" },
+            { "file": "lagerljus/flower-dish/lagerljus-flower-dish-02-bedside.webp", "altText": "Blomskålen med guldringar och ett halsband på ett nattduksbord" },
+            { "file": "lagerljus/flower-dish/lagerljus-flower-dish-03-colors.webp", "altText": "Tre blomskålar i persika, smörgult och mintgrönt på linnetyg i solljus" },
+            { "file": "lagerljus/flower-dish/lagerljus-flower-dish-04-detail.webp", "altText": "Närbild på ett kronblad med synliga lagerlinjer och en guldring i mitten" }
           ]
         },
         {
@@ -701,10 +701,10 @@
           "parcel": { "weightGrams": 400, "lengthCm": 20, "widthCm": 20, "heightCm": 18 },
           "size": { "heightCm": 12, "diameterCm": 12, "weightGrams": 200 },
           "images": [
-            { "file": "lagerljus/wavy-planter/lagerljus-wavy-planter-01-main.jpg", "altText": "Lila kruka med vågiga ribbor och fat, med en pilea, på en ljus träskiva" },
-            { "file": "lagerljus/wavy-planter/lagerljus-wavy-planter-02-sizes.jpg", "altText": "Tre lila vågkrukor i olika storlekar med växter i ett soligt fönster" },
-            { "file": "lagerljus/wavy-planter/lagerljus-wavy-planter-03-plant-shelf.jpg", "altText": "Vågkrukan med en hängande pothos på en vit hylla bland andra växter" },
-            { "file": "lagerljus/wavy-planter/lagerljus-wavy-planter-04-detail.jpg", "altText": "Närbild på krukans kant med vågiga ribbor, lagerlinjer och jord" }
+            { "file": "lagerljus/wavy-planter/lagerljus-wavy-planter-01-main.webp", "altText": "Lila kruka med vågiga ribbor och fat, med en pilea, på en ljus träskiva" },
+            { "file": "lagerljus/wavy-planter/lagerljus-wavy-planter-02-sizes.webp", "altText": "Tre lila vågkrukor i olika storlekar med växter i ett soligt fönster" },
+            { "file": "lagerljus/wavy-planter/lagerljus-wavy-planter-03-plant-shelf.webp", "altText": "Vågkrukan med en hängande pothos på en vit hylla bland andra växter" },
+            { "file": "lagerljus/wavy-planter/lagerljus-wavy-planter-04-detail.webp", "altText": "Närbild på krukans kant med vågiga ribbor, lagerlinjer och jord" }
           ]
         },
         {
@@ -719,9 +719,9 @@
           "parcel": { "weightGrams": 900, "lengthCm": 30, "widthCm": 30, "heightCm": 8 },
           "size": { "diameterCm": 21, "weightGrams": 520 },
           "images": [
-            { "file": "prickstudion/plate/prickstudion-plate-01-main.jpg", "altText": "Assiett i ljust stengods med handmålade koboltblå prickar, sedd ovanifrån" },
-            { "file": "prickstudion/plate/prickstudion-plate-02-living-room.jpg", "altText": "Assietten med en bit citronkaka bredvid en prickig mugg på ett travertinbord" },
-            { "file": "prickstudion/plate/prickstudion-plate-03-detail.jpg", "altText": "Närbild på assiettens vågiga kant och penseldragen i de blå prickarna" }
+            { "file": "prickstudion/plate/prickstudion-plate-01-main.webp", "altText": "Assiett i ljust stengods med handmålade koboltblå prickar, sedd ovanifrån" },
+            { "file": "prickstudion/plate/prickstudion-plate-02-living-room.webp", "altText": "Assietten med en bit citronkaka bredvid en prickig mugg på ett travertinbord" },
+            { "file": "prickstudion/plate/prickstudion-plate-03-detail.webp", "altText": "Närbild på assiettens vågiga kant och penseldragen i de blå prickarna" }
           ]
         },
         {
@@ -736,9 +736,9 @@
           "parcel": { "weightGrams": 800, "lengthCm": 22, "widthCm": 22, "heightCm": 14 },
           "size": { "heightCm": 7, "diameterCm": 14, "weightGrams": 400 },
           "images": [
-            { "file": "prickstudion/bowl/prickstudion-bowl-01-main.jpg", "altText": "Handgjord skål med koboltblå prickar i fönsterljus mot en ljus vägg" },
-            { "file": "prickstudion/bowl/prickstudion-bowl-02-breakfast.jpg", "altText": "Skålen med yoghurt, granola och hallon på linnetyg, sedd ovanifrån" },
-            { "file": "prickstudion/bowl/prickstudion-bowl-03-stack.jpg", "altText": "Tre prickiga skålar staplade på linnetyg i solljus med lövskuggor" }
+            { "file": "prickstudion/bowl/prickstudion-bowl-01-main.webp", "altText": "Handgjord skål med koboltblå prickar i fönsterljus mot en ljus vägg" },
+            { "file": "prickstudion/bowl/prickstudion-bowl-02-breakfast.webp", "altText": "Skålen med yoghurt, granola och hallon på linnetyg, sedd ovanifrån" },
+            { "file": "prickstudion/bowl/prickstudion-bowl-03-stack.webp", "altText": "Tre prickiga skålar staplade på linnetyg i solljus med lövskuggor" }
           ]
         },
         {
@@ -753,10 +753,10 @@
           "parcel": { "weightGrams": 400, "lengthCm": 38, "widthCm": 15, "heightCm": 15 },
           "size": { "heightCm": 30, "diameterCm": 8, "weightGrams": 180 },
           "images": [
-            { "file": "lagerljus/amber-vase/lagerljus-amber-vase-01-main.jpg", "altText": "Hög smal vas i genomskinlig bärnstensfärgad plast med spiralvridning på en träskiva" },
-            { "file": "lagerljus/amber-vase/lagerljus-amber-vase-02-windowsill.jpg", "altText": "Spiralvasen med tulpaner i ett soligt fönster där ljuset kastar gyllene skuggor" },
-            { "file": "lagerljus/amber-vase/lagerljus-amber-vase-03-bookshelf.jpg", "altText": "Spiralvasen med pampasgräs i en bokhylla bredvid konstböcker" },
-            { "file": "lagerljus/amber-vase/lagerljus-amber-vase-04-detail.jpg", "altText": "Närbild på vasens spiraler och lagerlinjer som lyser i motljus" }
+            { "file": "lagerljus/amber-vase/lagerljus-amber-vase-01-main.webp", "altText": "Hög smal vas i genomskinlig bärnstensfärgad plast med spiralvridning på en träskiva" },
+            { "file": "lagerljus/amber-vase/lagerljus-amber-vase-02-windowsill.webp", "altText": "Spiralvasen med tulpaner i ett soligt fönster där ljuset kastar gyllene skuggor" },
+            { "file": "lagerljus/amber-vase/lagerljus-amber-vase-03-bookshelf.webp", "altText": "Spiralvasen med pampasgräs i en bokhylla bredvid konstböcker" },
+            { "file": "lagerljus/amber-vase/lagerljus-amber-vase-04-detail.webp", "altText": "Närbild på vasens spiraler och lagerlinjer som lyser i motljus" }
           ]
         },
         {
@@ -771,17 +771,17 @@
           "parcel": { "weightGrams": 700, "lengthCm": 18, "widthCm": 15, "heightCm": 15 },
           "size": { "heightCm": 9, "diameterCm": 8.5, "weightGrams": 380 },
           "images": [
-            { "file": "prickstudion/mug/prickstudion-mug-01-main.jpg", "altText": "Handgjord mugg med ringformat öra och stora koboltblå prickar i skarpt fönsterljus" },
-            { "file": "prickstudion/mug/prickstudion-mug-02-stack.jpg", "altText": "Tre prickiga muggar, två staplade, på linnetyg med lövskuggor" },
-            { "file": "prickstudion/mug/prickstudion-mug-03-living-room.jpg", "altText": "Muggen med kaffe på en bokstapel på ett travertinbord bredvid en bouclésoffa" },
-            { "file": "prickstudion/mug/prickstudion-mug-04-breakfast.jpg", "altText": "Muggen med kaffe på en blåvit rutig duk bredvid en croissant och hallon" }
+            { "file": "prickstudion/mug/prickstudion-mug-01-main.webp", "altText": "Handgjord mugg med ringformat öra och stora koboltblå prickar i skarpt fönsterljus" },
+            { "file": "prickstudion/mug/prickstudion-mug-02-stack.webp", "altText": "Tre prickiga muggar, två staplade, på linnetyg med lövskuggor" },
+            { "file": "prickstudion/mug/prickstudion-mug-03-living-room.webp", "altText": "Muggen med kaffe på en bokstapel på ett travertinbord bredvid en bouclésoffa" },
+            { "file": "prickstudion/mug/prickstudion-mug-04-breakfast.webp", "altText": "Muggen med kaffe på en blåvit rutig duk bredvid en croissant och hallon" }
           ]
         }
       ]
     },
     {
       "name": "Möbler",
-      "image": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-01-main.jpg",
+      "image": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-01-main.webp",
       "imageAltText": "Rundad modulsoffa av mjuka kuddar i rosa fuskpäls på fiskbensparkett",
       "subcategories": ["Soffor och fåtöljer", "Bord", "Förvaring"],
       "products": [
@@ -797,11 +797,11 @@
           "parcel": { "weightGrams": 18000, "lengthCm": 75, "widthCm": 75, "heightCm": 85 },
           "size": { "lengthCm": 65, "widthCm": 65, "heightCm": 75, "weightGrams": 14000 },
           "images": [
-            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-01-main.jpg", "altText": "Liten fåtölj i salviagrön sammet med vita prickar, snäckformad rygg och frans" },
-            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-02-vanity.jpg", "altText": "Fåtöljen framför ett toalettbord med rund spegel, pioner och blommig tapet" },
-            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-03-reading-nook.jpg", "altText": "Fåtöljen med en uppslagen bok vid ett fönster i en läshörna" },
-            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-04-detail.jpg", "altText": "Närbild på sammetens prickar, den vita passpoalen och fransen" },
-            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-05-back.jpg", "altText": "Fåtöljen bakifrån, så att den snäckformade ryggen syns" }
+            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-01-main.webp", "altText": "Liten fåtölj i salviagrön sammet med vita prickar, snäckformad rygg och frans" },
+            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-02-vanity.webp", "altText": "Fåtöljen framför ett toalettbord med rund spegel, pioner och blommig tapet" },
+            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-03-reading-nook.webp", "altText": "Fåtöljen med en uppslagen bok vid ett fönster i en läshörna" },
+            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-04-detail.webp", "altText": "Närbild på sammetens prickar, den vita passpoalen och fransen" },
+            { "file": "studio-bulle/slipper-chair/studio-bulle-slipper-chair-05-back.webp", "altText": "Fåtöljen bakifrån, så att den snäckformade ryggen syns" }
           ]
         },
         {
@@ -816,11 +816,11 @@
           "parcel": { "weightGrams": 23000, "lengthCm": 140, "widthCm": 40, "heightCm": 55 },
           "size": { "lengthCm": 130, "widthCm": 30, "heightCm": 45, "weightGrams": 18000 },
           "images": [
-            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-01-main.jpg", "altText": "Avlång konsol formad som en tax i blank karamellbrun lack på fiskbensparkett" },
-            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-02-entryway.jpg", "altText": "Taxkonsolen i en hall under en välvd spegel med en bordslampa och böcker" },
-            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-03-green-living-room.jpg", "altText": "Taxkonsolen mot en mörkgrön vägg med tända ljus och en skål apelsiner" },
-            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-04-detail.jpg", "altText": "Närbild på taxens huvud med hängande öron i blank lack" },
-            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-05-dining-room.jpg", "altText": "Taxkonsolen som skänk i en ljus matsal med tulpaner och en fruktskål" }
+            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-01-main.webp", "altText": "Avlång konsol formad som en tax i blank karamellbrun lack på fiskbensparkett" },
+            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-02-entryway.webp", "altText": "Taxkonsolen i en hall under en välvd spegel med en bordslampa och böcker" },
+            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-03-green-living-room.webp", "altText": "Taxkonsolen mot en mörkgrön vägg med tända ljus och en skål apelsiner" },
+            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-04-detail.webp", "altText": "Närbild på taxens huvud med hängande öron i blank lack" },
+            { "file": "studio-bulle/dachshund-console/studio-bulle-dachshund-console-05-dining-room.webp", "altText": "Taxkonsolen som skänk i en ljus matsal med tulpaner och en fruktskål" }
           ]
         },
         {
@@ -834,11 +834,11 @@
           "parcel": { "weightGrams": 9000, "lengthCm": 160, "widthCm": 40, "heightCm": 20 },
           "size": { "heightCm": 150, "diameterCm": 30, "weightGrams": 6500 },
           "images": [
-            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-01-main.jpg", "altText": "Golvlampa med tre tända tulpaner i frostat glas på rosa stjälkar och en liten hylla" },
-            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-02-bedroom.jpg", "altText": "Tulpanlampan lyser bredvid en säng med rosa sängkläder i skymningen" },
-            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-03-reading-corner.jpg", "altText": "Tulpanlampan med en kopp te på hyllan bredvid en vinröd sammetsfåtölj" },
-            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-04-detail.jpg", "altText": "Närbild på en tänd tulpan i frostat glas på en rosa stjälk" },
-            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-05-daylight.jpg", "altText": "Tulpanlampan med en vas ranunkler på hyllan bredvid en bouclésoffa i dagsljus" }
+            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-01-main.webp", "altText": "Golvlampa med tre tända tulpaner i frostat glas på rosa stjälkar och en liten hylla" },
+            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-02-bedroom.webp", "altText": "Tulpanlampan lyser bredvid en säng med rosa sängkläder i skymningen" },
+            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-03-reading-corner.webp", "altText": "Tulpanlampan med en kopp te på hyllan bredvid en vinröd sammetsfåtölj" },
+            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-04-detail.webp", "altText": "Närbild på en tänd tulpan i frostat glas på en rosa stjälk" },
+            { "file": "studio-bulle/tulip-floor-lamp/studio-bulle-tulip-floor-lamp-05-daylight.webp", "altText": "Tulpanlampan med en vas ranunkler på hyllan bredvid en bouclésoffa i dagsljus" }
           ]
         },
         {
@@ -853,11 +853,11 @@
           "parcel": { "weightGrams": 70000, "lengthCm": 190, "widthCm": 55, "heightCm": 80 },
           "size": { "lengthCm": 180, "widthCm": 45, "heightCm": 70, "weightGrams": 60000 },
           "images": [
-            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-01-main.jpg", "altText": "Låg skänk med rundade gavlar i blank rotfaner med topp och sockel i rostfritt stål" },
-            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-02-dining-room.jpg", "altText": "Skänken i en matsal under en stor abstrakt målning med vaser och en mässingsskål" },
-            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-03-living-room.jpg", "altText": "Skänken med en tänd lampa i krom och en skål citroner i ett vardagsrum på kvällen" },
-            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-04-detail.jpg", "altText": "Närbild på det virvlande rotfanéret runt skänkens rundade hörn" },
-            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-05-open.jpg", "altText": "Skänken med två dörrar öppna och hyllor med tallrikar, skålar och glas" }
+            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-01-main.webp", "altText": "Låg skänk med rundade gavlar i blank rotfaner med topp och sockel i rostfritt stål" },
+            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-02-dining-room.webp", "altText": "Skänken i en matsal under en stor abstrakt målning med vaser och en mässingsskål" },
+            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-03-living-room.webp", "altText": "Skänken med en tänd lampa i krom och en skål citroner i ett vardagsrum på kvällen" },
+            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-04-detail.webp", "altText": "Närbild på det virvlande rotfanéret runt skänkens rundade hörn" },
+            { "file": "studio-bulle/burl-sideboard/studio-bulle-burl-sideboard-05-open.webp", "altText": "Skänken med två dörrar öppna och hyllor med tallrikar, skålar och glas" }
           ]
         },
         {
@@ -872,11 +872,11 @@
           "parcel": { "weightGrams": 95000, "lengthCm": 120, "widthCm": 80, "heightCm": 45 },
           "size": { "lengthCm": 110, "widthCm": 70, "heightCm": 35, "weightGrams": 85000 },
           "images": [
-            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-01-main.jpg", "altText": "Lågt soffbord i grön marmor med vit ådring, organisk form och skulpterad fot" },
-            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-02-parisian-salon.jpg", "altText": "Marmorbordet framför molnsoffan på en rund grön ryamatta i en parisisk salong" },
-            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-03-styled-top.jpg", "altText": "Bordsskivan ovanifrån med böcker, en skål, tända ljus och vita tulpaner" },
-            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-04-detail.jpg", "altText": "Närbild på marmorns vita ådring och den polerade rundade kanten" },
-            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-05-living-room.jpg", "altText": "Marmorbordet framför en linnesoffa i ett ljust vardagsrum med ett olivträd" }
+            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-01-main.webp", "altText": "Lågt soffbord i grön marmor med vit ådring, organisk form och skulpterad fot" },
+            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-02-parisian-salon.webp", "altText": "Marmorbordet framför molnsoffan på en rund grön ryamatta i en parisisk salong" },
+            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-03-styled-top.webp", "altText": "Bordsskivan ovanifrån med böcker, en skål, tända ljus och vita tulpaner" },
+            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-04-detail.webp", "altText": "Närbild på marmorns vita ådring och den polerade rundade kanten" },
+            { "file": "studio-bulle/marble-coffee-table/studio-bulle-marble-coffee-table-05-living-room.webp", "altText": "Marmorbordet framför en linnesoffa i ett ljust vardagsrum med ett olivträd" }
           ]
         },
         {
@@ -891,11 +891,11 @@
           "parcel": { "weightGrams": 75000, "lengthCm": 250, "widthCm": 115, "heightCm": 80 },
           "size": { "lengthCm": 240, "widthCm": 110, "heightCm": 70, "weightGrams": 65000 },
           "images": [
-            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-01-main.jpg", "altText": "Rundad modulsoffa av mjuka kuddar i rosa fuskpäls på fiskbensparkett" },
-            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-02-parisian-salon.jpg", "altText": "Molnsoffan på en rund grön ryamatta i en parisisk salong med höga fönster" },
-            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-03-loft.jpg", "altText": "Molnsoffan i ett loft med betongväggar och solnedgång genom stora fönster" },
-            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-04-detail.jpg", "altText": "Närbild på den långhåriga rosa fuskpälsen och sömmen mellan två kuddar" },
-            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-05-cream-color.jpg", "altText": "Molnsoffan i krämvit fuskpäls mot samma ljusa vägg" }
+            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-01-main.webp", "altText": "Rundad modulsoffa av mjuka kuddar i rosa fuskpäls på fiskbensparkett" },
+            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-02-parisian-salon.webp", "altText": "Molnsoffan på en rund grön ryamatta i en parisisk salong med höga fönster" },
+            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-03-loft.webp", "altText": "Molnsoffan i ett loft med betongväggar och solnedgång genom stora fönster" },
+            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-04-detail.webp", "altText": "Närbild på den långhåriga rosa fuskpälsen och sömmen mellan två kuddar" },
+            { "file": "studio-bulle/cloud-sofa/studio-bulle-cloud-sofa-05-cream-color.webp", "altText": "Molnsoffan i krämvit fuskpäls mot samma ljusa vägg" }
           ]
         }
       ]
