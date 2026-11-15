@@ -1,6 +1,13 @@
 @if (product.isLoading()) {
-  <!-- Render's free tier can take up to a minute to wake up. -->
-  <p role="status">Laddar produkten…</p>
+  <!-- Render's free tier can take up to a minute to wake up. The breadcrumb and the gallery's
+       empty frame stand where the product's will, so nothing moves when it comes. -->
+  <div class="loading">
+    <app-breadcrumb class="breadcrumb" [links]="breadcrumb" current="" />
+    <div class="product">
+      <app-product-gallery [images]="[]" />
+      <p role="status">Laddar produkten…</p>
+    </div>
+  </div>
 } @else if (notFound()) {
   <app-not-found heading="Grejen finns inte">
     Den kan ha tagits bort ur butiken, eller så är adressen fel. Det finns fler grejer att titta på.
@@ -12,14 +19,7 @@
   </div>
 } @else if (product.hasValue()) {
   @let p = product.value();
-  <app-breadcrumb
-    class="breadcrumb"
-    [links]="[
-      { label: 'Hem', path: '/' },
-      { label: 'Shop', path: '/produkter' },
-    ]"
-    [current]="p.title"
-  />
+  <app-breadcrumb class="breadcrumb" [links]="breadcrumb" [current]="p.title" />
 
   <article class="product">
     <app-product-gallery [images]="p.images" />
