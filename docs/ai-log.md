@@ -269,10 +269,11 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - Kept one 1440 px size instead of the planned two: the tall phone hero scales the image up, so an 800 px version would blur.
 - Quality 75–90 showed blocks in the smooth gradients, so Claude compared the output visually and chose 95.
 
-- Block 3: Claude measured what moved while the pages loaded, with a script in headless Chrome (empty cache, phone size). On the product page the loading text's margin pushed down all of `<main>`, and on both pages the footer stood mid-screen and jumped away when the content came; on the product list the category tabs also pushed everything down.
-- The loading states now hold the places of what comes (the breadcrumb, the gallery's empty frame, an invisible row of tabs) and are at least the window's height. Locally, CLS went to 0 on the product page (0.92 in production) and 0.02 on the product list (0.66).
-- Verification: client tests and build; Claude measured 320–1440 px and 200 % zoom with the script.
-
 - Block 3: Claude measured what moved while the pages loaded, with a script in headless Chrome (empty cache, phone size). The loading text's margin pushed down all of `<main>` on the product page, the footer jumped away when the content came, and the category tabs pushed the product list down.
 - The loading states now hold the places of what comes (breadcrumb, image frames, an invisible row of tabs) and fill the window. Locally CLS went to 0 on the product page (0.92 in production) and 0.02 on the product list (0.66).
 - Also: the terms page's contents bar now blends into the page on phones, and the sort box has no fill, like Filter.
+- In production after the merge: Lighthouse CLS 0.01 on mobile and 0.02 on desktop.
+
+- Block 4: `client/vercel.json` caches Angular's JS and CSS for a year (their names carry a hash, so a new build gets new names) and adds four security headers to every response. Checked with `curl -I` in production; deep links still work.
+- No Content-Security-Policy yet: it must first be tested against Google Fonts, Supabase, Stripe and the inline scripts, so it becomes an improvement point.
+- Block 5 was already done: `main` has had a ruleset since 15 Oct. The review said it was unprotected because Claude read the older branch-protection API, which answers 404 for rulesets.
