@@ -105,9 +105,15 @@
         [totalPages]="r.totalPages"
       />
     } @else {
-      <!-- Only before the first answer. Render's free tier can take up to a minute to wake up. -->
+      <!-- Before the first answer: frames for the first row's images, and the status where their
+           titles will be. Render's free tier can take up to a minute to wake up. -->
       <div class="loading">
-        <p role="status">Laddar produkterna…</p>
+        <ul class="product-grid" aria-hidden="true">
+          @for (frame of [1, 2, 3]; track frame) {
+            <li class="frame"></li>
+          }
+        </ul>
+        <p class="status" role="status">Laddar produkterna…</p>
       </div>
     }
   </div>

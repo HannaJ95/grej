@@ -174,3 +174,23 @@
     transition-duration: 0s;
   }
 }
+
+// White like a card's image before it has loaded. Only the first row, since the cards below it
+// also have a title and a price.
+.frame {
+  aspect-ratio: var(--ratio-product-image);
+  background: var(--color-bg-image);
+
+  &:nth-child(3) {
+    display: none;
+
+    @media (width >= 48rem) {
+      display: block;
+    }
+  }
+}
+
+// The same space as between a card's image and its title.
+.loading .status {
+  margin-top: var(--space-12);
+}

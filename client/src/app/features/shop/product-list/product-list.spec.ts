@@ -170,7 +170,9 @@ describe('ProductList', () => {
     const page = harness.routeNativeElement!.querySelector('app-product-list')!;
 
     expect(page.querySelector('app-category-tabs.placeholder')).not.toBeNull();
-    expect(page.querySelector('.results .loading')!.textContent).toContain('Laddar produkterna…');
+    const loading = page.querySelector('.results .loading')!;
+    expect(loading.querySelectorAll('.frame').length).toBe(3);
+    expect(loading.querySelector('[role="status"]')!.textContent).toContain('Laddar produkterna…');
 
     flushFilters([{ id: 1, name: 'Keramik', productCount: 4, subcategories: [] }]);
     httpTesting
