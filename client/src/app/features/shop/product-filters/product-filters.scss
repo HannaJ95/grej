@@ -2,7 +2,8 @@
   display: block;
 }
 
-// Sticks only where a parent sets --filters-header-top (the phone panel); top: auto doesn't stick.
+// Sticks, with a background, only where a parent sets --filters-header-top and -bg (the phone
+// panel); top: auto doesn't stick. On the shop page the page's gradient shows through.
 .header {
   position: sticky;
   top: var(--filters-header-top, auto);
@@ -12,7 +13,7 @@
   justify-content: space-between;
   gap: var(--space-16);
   padding-bottom: var(--space-16);
-  background: var(--color-bg-page);
+  background: var(--filters-header-bg, none);
 
   h2 {
     margin: 0;

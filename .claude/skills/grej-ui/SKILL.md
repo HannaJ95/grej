@@ -24,7 +24,7 @@ I am still learning frontend, so act as an expert frontend developer and designe
 - **Spacing** only `--space-*`, borders `--border-width-*`, the one shadow `--shadow-popover`. Sizes in rem (px ÷ 16), border widths in px.
 - **Missing value:** use the nearest token. Add a new token to `_tokens.scss` only when it is really needed, and tell me.
 - **Text** always through a class from `client/src/styles/_typography.scss` on the element (`class="text-label-m"`), never font-size or weight by hand. Anton is only for the Display styles, Inter for text, Space Mono for small print. Capitals come from the class, never typed. Body text and form fields are at least 16 px (smaller fields make iOS zoom).
-- **The look:** flat colors, square corners (radius only for round shapes such as the stock dot), 2 px borders (3 px for strong, 1 px `--color-border-subtle` for row lines), no gradients, blur or other shadows. Links are underlined.
+- **The look:** flat colors, square corners (radius only for round shapes such as the stock dot), 2 px borders (3 px for strong, 1 px `--color-border-subtle` for row lines), no blur. Gradients only go top to bottom and only where design.md lists them, with the `--color-bg-*-end` tokens; the only shadows are `--shadow-popover` and the shop header's `--shadow-header`. Links are underlined.
 - **Shared components** in `client/src/app/shared/`:
   - `Button`, an attribute on a real `<button>` or `<a>`: `variant` primary, secondary, danger; `size` normal (forms, CMS) or large (the shop's big buttons)
   - `LinkButton` (`appLinkButton`): an action on the same page that looks like a link, e.g. "Redigera"; `tone` default or danger

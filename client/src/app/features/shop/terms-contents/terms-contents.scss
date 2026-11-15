@@ -1,9 +1,14 @@
-// Below 1024 px a bar below the header. The negative margins let it reach the screen's edges.
+// Below 1024 px a bar below the header, with the header's gradient. The negative margins let it
+// reach the screen's edges.
 :host {
   display: block;
   margin-inline: calc(-1 * var(--layout-margin));
   padding: var(--space-12) var(--layout-margin);
-  background: var(--color-bg-page);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-bg-surface) 98%, transparent),
+    color-mix(in srgb, var(--color-bg-header-end) 98%, transparent)
+  );
 
   @media (height >= 30rem) {
     position: sticky;
@@ -14,6 +19,7 @@
   @media (width >= 64rem) {
     margin-inline: 0;
     padding: 0;
+    background: none;
   }
 
   @media (width >= 64rem) and (height >= 30rem) {

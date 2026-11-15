@@ -11,8 +11,8 @@ import { TERMS_SECTIONS } from './terms-sections';
   selector: 'app-terms-page',
   imports: [Breadcrumb, DemoNotice, TermsContents],
   templateUrl: './terms-page.html',
-  styleUrls: ['../page-hero.scss', './terms-page.scss'],
-  host: { class: 'page-width', '(window:scroll)': 'updateCurrent()' },
+  styleUrls: ['../text-page.scss', '../page-hero.scss', './terms-page.scss'],
+  host: { class: 'page-width fixed-gradient', '(window:scroll)': 'updateCurrent()' },
 })
 export class TermsPage {
   private readonly document = inject(DOCUMENT);

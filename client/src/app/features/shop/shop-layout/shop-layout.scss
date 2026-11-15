@@ -6,7 +6,12 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--color-bg-surface);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-bg-surface) 98%, transparent),
+    color-mix(in srgb, var(--color-bg-header-end) 98%, transparent)
+  );
+  box-shadow: var(--shadow-header);
 }
 
 // One layer below the header, so nothing on a page can cover it, whatever its z-index. The line
@@ -167,6 +172,17 @@ main {
 
   @media (width >= 64rem) {
     margin-top: var(--space-64);
+  }
+
+  // On each letter, so every letter gets the whole gradient.
+  span {
+    background: linear-gradient(
+      180deg,
+      var(--color-text-on-inverse),
+      var(--color-text-wordmark-end)
+    );
+    background-clip: text;
+    color: transparent;
   }
 }
 

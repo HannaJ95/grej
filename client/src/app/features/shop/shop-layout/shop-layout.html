@@ -5,6 +5,15 @@
     <nav class="nav" aria-label="Huvudmeny">
       <a
         class="nav-link text-label-nav"
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ariaCurrentWhenActive="page"
+      >
+        Hem
+      </a>
+      <a
+        class="nav-link text-label-nav"
         routerLink="/produkter"
         routerLinkActive="active"
         ariaCurrentWhenActive="page"

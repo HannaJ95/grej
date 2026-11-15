@@ -7,7 +7,7 @@ The design lives in the code. `client/src/styles/` has the tokens, the text styl
 - `_tokens.scss` has every design value as a CSS custom property:
   - the palette (`--color-linen`, `--color-charcoal` …), which only the color tokens use
   - the color tokens, which point at the palette with `var()` (`--color-bg-page`, `--color-text-primary` …)
-  - spacing named after its size in px (`--space-2` … `--space-160`), border widths, `--size-control-height`, `--ratio-product-image` and the popover shadow
+  - spacing named after its size in px (`--space-2` … `--space-160`), border widths, `--size-control-height`, `--ratio-product-image`, the popover shadow and the shop header's shadow
   - the responsive font sizes and layout values (`--layout-margin`, `--layout-gutter`, `--layout-admin-gutter`, `--layout-viewport-width`)
 - The responsive values are mobile first. The phone's values are in `:root`, and new values come in media queries from 768 px (tablet) and from 1024 px (computer).
 - `_typography.scss` has one class per text style (e.g. `.text-display-l`, `.text-label-s`), built by a Sass mixin. The templates put the class on the element, and `<body class="text-body-m">` gives the body text. The fonts (Anton for the Display styles, Inter for text, Space Mono for small print) are loaded from Google Fonts in `index.html`. The Display styles have line height 1.3, so the ring on Å doesn't reach the line above; Logo (always one line, and the header's height) keeps 1.16 and Wordmark 1.
@@ -18,7 +18,9 @@ The design lives in the code. `client/src/styles/` has the tokens, the text styl
   - The colors are two Sass mixins in `_tokens.scss`, `light-colors` and `dark-colors`. Dark mode swaps the light pairs (linen and charcoal), so every pair keeps its contrast. The feedback colors get lighter versions with at least 4.5:1 against the dark page, and `color-scheme` makes the browser's own fields, lists and scrollbars dark.
   - The inverse bands (primary buttons, chosen tabs, the admin menu's chosen page) are light in dark mode. A part with `data-theme="light"` keeps the light mode's colors, so the footer and the phone menu's panel are dark in both modes.
   - Product images stay on white (`--color-bg-image`) in both modes, since the photos are taken on white.
-- The page and the surfaces (header, cards, fields) share one background, linen (charcoal in dark mode), so cards and fields stand out by their borders.
+- The page and the surfaces (cards, fields) share one background, linen (charcoal in dark mode), so cards and fields stand out by their borders.
+- Gradients give the shop depth. They all go from top to bottom, from a section's own background token to an end token (`--color-bg-header-end`, `--color-bg-newest-end`, `--color-bg-categories-end`, `--color-bg-page-end`, `--color-text-wordmark-end`). In light mode they end in stone, sand, taupe and mist; in dark mode they go lighter, to ash, umber and graphite, but never so light that the secondary text (mist) drops below 4.5:1; only the categories, with large linen text, reach graphite. The light mode's secondary text is ash, so it keeps 4.5:1 also on the gradients' dark ends.
+- `--image-hero` is the start page's background image, `hero.jpg` or `hero-dark.jpg`, so it follows the mode without a flash and only the shown one is downloaded. Each has a thin layer of linen or charcoal on top, so the title and the intro keep their contrast at every width.
 - Every text color has at least 4.5:1 contrast against its background, and field borders and the focus ring at least 3:1 (WCAG AA).
 - Hover: dark buttons get `--color-bg-inverse-hover` and light ones `--color-bg-hover`. Links are underlined.
 - The focus ring is 2 px in `--color-border-default`, and `--color-border-inverse` on the dark bands.
@@ -84,10 +86,11 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - Its bands reach the screen's edges. The content inside them uses `.page-width`: centered, at most `--layout-viewport-width` (1440 px), with `--layout-margin` on the sides (20 px on a phone, 32 px on a tablet, 48 px on a computer).
   - From a tablet, `ThemeToggle` is an icon before the cart, as tall as the cart button.
   - On a phone the menu links are in `MobileMenu`, a `<dialog>` like the cart. Its panel is dark in both modes, and has `ThemeToggle` with its text above the cart button.
-  - The menu has "Shop" and "Om GREJ". They are never underlined, also on their own page; `aria-current="page"` tells screen readers. On hover they get the secondary text color, like the cart button.
+  - The header is a gradient (`--color-bg-header-end`) at 98 %, so the page shows very faintly when it scrolls under, with `--shadow-header` below it.
+  - The menu has "Hem", "Shop" and "Om GREJ". "Hem" leads to the start page, like the logo, and is only current there. They are never underlined, also on their own page; `aria-current="page"` tells screen readers. On hover they get the secondary text color, like the cart button.
   - The footer is dark in both modes. In dark mode a 1 px line (the bottom of `<main>`) parts it from the dark page.
   - The footer's "Shop" lists "Alla produkter" and the five categories with the most products, in name order, each linking to the product list with that category chosen. Beside it, "GREJ" links to "Om GREJ" and "Villkor". The columns go below each other only when they don't fit, e.g. with large text.
-  - The footer's big "GREJ." is at most 42 % of the screen width, so it fits between 1024 and 1190 px. It is decoration and takes no clicks, since its letters reach up over the links above.
+  - The footer's big "GREJ." is at most 42 % of the screen width, so it fits between 1024 and 1190 px. It is decoration and takes no clicks, since its letters reach up over the links above. Each letter has its own gradient (`background-clip: text`).
   - On screens wider than 1440 px the bands (header, start page, moving band, footer) still reach the edges while the content stays centered, so the page keeps one pattern instead of a box in the middle.
 - `ProductCard` is used by both the start page and the product list. It has an image, title and price, a "Slutsåld" or "Få kvar" (1–2 left) badge, and an add button.
   - On a computer the add button is a bar over the image, shown on hover or keyboard focus. On a tablet and a phone, where there is no hover, it is a "+" square.
@@ -95,11 +98,12 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - The sold-out layer over the image is 70 %, so the image can still be seen.
   - With a mouse, the product's second image fades in over the first on hover or keyboard focus. Touch screens never show or download it; the product page's gallery has it.
 - The start page (`/`, `LandingPage`) has:
-  - a big title
+  - a big title on `--image-hero`, anchored to the left, where both images are calm behind the text
   - a moving band of words, which pauses on hover and stands still for people who have turned on "reduce motion"
-  - the four newest products (the first four from `GET /api/products`, which sorts the newest first), as a row to swipe through on a phone
-  - links to the categories from `GET /api/categories`
+  - the four newest products (the first four from `GET /api/products`, which sorts the newest first), as a row to swipe through on a phone, on a gradient to `--color-bg-newest-end`
+  - links to the categories from `GET /api/categories`, on a gradient to `--color-bg-categories-end`
 - The product list (`/produkter`) has a breadcrumb, the title with the number of products, `CategoryTabs`, and a toolbar with "Visar 1–12 av 40 grejer" ("1 grej hittades" for one, "0 grejer hittades" when nothing matches). It shows two products per row on a phone, one when two would be too narrow (large text), and three on a tablet and a computer.
+  - Its top has the header's end color, which fades into the page by 40rem, so the header's shade flows into the title and the products stay on the plain page. The filter's heading therefore has no background of its own, except in `FilterDrawer`, where it sticks.
   - Screen readers hear the toolbar's count after each choice (`aria-live`).
   - A new page from `Pagination` starts at the toolbar (`#grejer`), not at the top, and the focus moves to the toolbar, so Tab goes on into the new products. Back returns to where the customer was.
   - While a new choice loads, the old products and the count stay, so the page doesn't jump. The products fade only if the answer takes more than 0.3 s.
@@ -163,7 +167,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - Below: "Vad händer nu?" as a numbered list, "Fortsätt handla", and a `DemoNotice` that says no money is taken and no package is sent.
   - Without a session, or when the API does not know it, the page shows only the order number from the URL.
 - The about page (`/om-grej`, `AboutPage`) only says what the shop does: one seller who picks every item (scope.md), not a marketplace. It has:
-  - a breadcrumb, the big title "Saker som någon gjort." and an intro. This top is `features/shop/page-hero.scss`, shared with the terms page.
+  - a breadcrumb, the big title "Saker som någon gjort." and an intro. This top is `features/shop/page-hero.scss`, shared with the terms page. The about, terms and success pages share `features/shop/text-page.scss`: a gradient to `--color-bg-page-end` over the whole page. The pages' host is `.page-width`, so the gradient is a border image whose outset reaches the screen's edges. On the about and terms pages (`fixed-gradient` on the host) it is instead a fixed layer that the text scrolls over. The page clips the layer to its own box, out to the screen's edges, since `<main>` is painted after the footer and the layer would otherwise cover it.
   - a band in the muted color with a pill, an arch and a circle drawn in CSS. It is decoration (`aria-hidden`), follows dark mode through the color tokens, and gets wider on larger screens while the shapes keep their proportions.
   - "Så funkar GREJ": how items are picked, paid with Stripe, packed and sent to an ombud. The heading is beside the text from 1024 px.
   - "Det här tror vi på": three framed cards in an `<ol>`, side by side from 768 px. The big numbers are hidden from screen readers, since the list already numbers them.
@@ -173,7 +177,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
   - ten numbered sections, whose texts are data in `terms-sections.ts`: a string is a paragraph and a list of strings a bulleted list. Each heading has `tabindex="-1"`, so the focus can move there and Tab goes on from the section.
   - `TermsContents`, the sections' contents:
     - From 1024 px, "Innehåll" is a 288 px column to the left that sticks while the text scrolls. Each section is a row with a line at its start; the rows are in the secondary text color and get the primary color on hover. The current section has the primary color, `aria-current="true"` and a wider, dark line, so it isn't told by color alone. The number is hidden from screen readers, since the list numbers the rows.
-    - Below 1024 px, "Hoppa till avsnitt" is a `shared/select.scss` select in a bar that sticks below the header and reaches the screen's edges. The select shows the current section.
+    - Below 1024 px, "Hoppa till avsnitt" is a `shared/select.scss` select in a bar that sticks below the header and reaches the screen's edges. The bar has the header's gradient, so it looks like part of the header. The select shows the current section.
     - A link or a choice scrolls smoothly to the section (at once with reduced motion), moves the focus to its heading and puts `#id` in the address with the router's `scroll: 'manual'`. A link is a plain `href`, so ctrl/cmd-click still opens a new tab. Chrome's styled select gives the focus back to the select after a choice, so its scroll starts right after that.
   - The current section is the last one whose heading has scrolled up to where a link puts it, updated on scroll (`TermsPage.updateCurrent`).
   - Below 1024 px the headings have the bar's height as `scroll-margin-top`, which `TermsContents` measures with a `ResizeObserver` (`--terms-contents-height`). It is not in `scroll-padding-top`, since the browser would then scroll whenever the select itself got the focus. The router doesn't count `scroll-margin-top`, so the page scrolls a `#fragment` in the URL into view again right after the router.

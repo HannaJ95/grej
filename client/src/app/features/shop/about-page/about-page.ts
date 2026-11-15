@@ -10,8 +10,8 @@ import { Icon } from '../../../shared/icons/icon';
   selector: 'app-about-page',
   imports: [RouterLink, Breadcrumb, Button, DemoNotice, Icon],
   templateUrl: './about-page.html',
-  styleUrls: ['../page-hero.scss', './about-page.scss'],
-  host: { class: 'page-width' },
+  styleUrls: ['../text-page.scss', '../page-hero.scss', './about-page.scss'],
+  host: { class: 'page-width fixed-gradient' },
 })
 export class AboutPage {
   protected readonly values = [

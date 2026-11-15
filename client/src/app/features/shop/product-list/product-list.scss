@@ -1,5 +1,7 @@
+// The header's shade flows into the title, and the products stay on the plain page.
 :host {
   display: block;
+  background: linear-gradient(180deg, var(--color-bg-header-end), var(--color-bg-page) 40rem);
 }
 
 // Style scoping makes this more specific than .page-width, so display: flex wins.
