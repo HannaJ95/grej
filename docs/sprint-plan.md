@@ -120,8 +120,9 @@ In priority order. Responsive design and accessibility are checked on every page
 - [x] Responsive design and accessibility review of all pages
 - [x] README: how to run the project locally
 - [x] Update the planning documents to match what was built, including known limitations
-- [ ] Demo content: final texts and images in the demo data, reset once in the deployed shop
-- [ ] Write the Result section in examensarbete.md (AI documentation and personal evaluation) and submit it with the repo and deploy links
+- [x] Demo content: final texts and images in the demo data, reset once in the deployed shop (a new catalog of 44 products in 6 categories on 15 Nov)
+- [x] Fixes after a code review and Lighthouse on 15 Nov: SEO basics and a page for unknown addresses, WebP images, no layout shift while the pages load, and cache and security headers on Vercel
+- [x] Write the Result section in examensarbete.md (AI documentation and personal evaluation) and submit it with the repo and deploy links
 
 ## Presentation (Mon 16 – Fri 20 Nov)
 
