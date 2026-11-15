@@ -1,0 +1,27 @@
+// The background of the shop's text pages: Om GREJ, Villkor and the thank-you page. The host is
+// .page-width, so the gradient is a border image whose outset reaches the screen's edges.
+:host {
+  --text-page-gradient: linear-gradient(
+    180deg,
+    var(--color-bg-page) 2.47%,
+    var(--color-bg-page-end) 77.82%
+  );
+
+  border-image: var(--text-page-gradient) fill 0 / 0 / 0 100vw;
+}
+
+// With .fixed-gradient the gradient stands still and the text scrolls over it. A fixed layer
+// instead of background-attachment: fixed, which iOS Safari ignores. The clip keeps the layer
+// within the page, sideways out to the screen's edges, so it never covers the footer.
+:host(.fixed-gradient) {
+  border-image: none;
+  clip-path: inset(0 -100vw);
+
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--text-page-gradient);
+  }
+}

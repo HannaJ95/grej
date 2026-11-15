@@ -2,8 +2,12 @@
   display: block;
 }
 
+// Anchored left, where both images are calm enough behind the text.
 .hero {
   padding-block: var(--space-20) var(--space-48);
+  background-image: var(--image-hero);
+  background-position: left center;
+  background-size: cover;
 
   @media (width >= 48rem) {
     padding-block: var(--space-24) var(--space-72);
@@ -134,6 +138,7 @@
 
 .newest {
   padding-block: var(--space-56) var(--space-64);
+  background: linear-gradient(180deg, var(--color-bg-page), var(--color-bg-newest-end));
 
   @media (width >= 48rem) {
     padding-block: var(--space-80) var(--space-96);
@@ -217,7 +222,7 @@
 
 .categories {
   padding-block: var(--space-20);
-  background: var(--color-bg-muted);
+  background: linear-gradient(180deg, var(--color-bg-muted), var(--color-bg-categories-end));
 
   @media (width >= 48rem) {
     padding-block: var(--space-32);

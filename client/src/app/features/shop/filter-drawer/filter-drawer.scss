@@ -32,9 +32,10 @@ dialog {
   padding-top: var(--space-16);
 }
 
-// --filters-header-top makes the filter's heading and close button stick while it scrolls.
+// The filter's heading and close button stick while it scrolls.
 .body {
   --filters-header-top: 0;
+  --filters-header-bg: var(--color-bg-page);
 
   flex: 1;
   min-height: 0;

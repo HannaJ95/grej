@@ -18,7 +18,7 @@ const MAX_RETRIES = 15;
   selector: 'app-success-page',
   imports: [CurrencyPipe, DatePipe, RouterLink, Button, DemoNotice, Icon],
   templateUrl: './success-page.html',
-  styleUrls: ['./success-page.scss', '../../../shared/order-sums.scss'],
+  styleUrls: ['../text-page.scss', './success-page.scss', '../../../shared/order-sums.scss'],
   host: { class: 'page-width' },
 })
 export class SuccessPage {

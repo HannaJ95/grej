@@ -26,6 +26,19 @@
         <li>
           <a
             class="link text-display-m"
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            ariaCurrentWhenActive="page"
+            (click)="close()"
+          >
+            Hem
+            <app-icon name="arrow-right" />
+          </a>
+        </li>
+        <li>
+          <a
+            class="link text-display-m"
             routerLink="/produkter"
             routerLinkActive="active"
             ariaCurrentWhenActive="page"
