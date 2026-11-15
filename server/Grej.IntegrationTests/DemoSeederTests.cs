@@ -72,7 +72,7 @@ public class DemoSeederTests
         var category = catalog.Categories[0];
         var product = category.Products[0] with
         {
-            Images = [new DemoImage("square.png", "Första"), new DemoImage(category.Image, "Andra")],
+            Images = [new DemoImage(catalog.Categories[1].Image, "Första"), new DemoImage(category.Image, "Andra")],
         };
         var withoutImages = category.Products[1] with { Images = null };
         var changed = catalog with
