@@ -33,7 +33,7 @@
   --color-text-wordmark-end: var(--color-smoke);
   // Lightened a little, since the image's dark side reaches in under the text on a tablet.
   --image-hero:
-    linear-gradient(var(--color-linen-a20), var(--color-linen-a20)), url('/images/hero.jpg');
+    linear-gradient(var(--color-linen-a20), var(--color-linen-a20)), url('/images/hero.webp');
 
   --shadow-popover: 0 0.5rem 1.5rem rgb(43 42 39 / 18%);
   --shadow-header: 0 0.125rem 1.25rem 0.125rem rgb(0 0 0 / 25%);
@@ -75,7 +75,7 @@
   // Dimmed, since the image's light streaks reach in under the text.
   --image-hero:
     linear-gradient(var(--color-charcoal-a55), var(--color-charcoal-a55)),
-    url('/images/hero-dark.jpg');
+    url('/images/hero-dark.webp');
 
   --shadow-popover: 0 0.5rem 1.5rem rgb(0 0 0 / 50%);
   --shadow-header: 0 0.125rem 1.25rem 0.125rem rgb(0 0 0 / 50%);
