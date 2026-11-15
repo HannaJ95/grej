@@ -6,8 +6,8 @@
   padding: var(--space-12) var(--layout-margin);
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--color-bg-surface) 95%, transparent),
-    color-mix(in srgb, var(--color-bg-header-end) 95%, transparent)
+    color-mix(in srgb, var(--color-bg-surface) 98%, transparent),
+    color-mix(in srgb, var(--color-bg-header-end) 98%, transparent)
   );
 
   @media (height >= 30rem) {

@@ -65,10 +65,12 @@
   --color-feedback-success: var(--color-moss-light);
   --color-feedback-warning: var(--color-ochre-light);
   --color-accent-creator: var(--color-linen);
-  --color-bg-header-end: var(--color-soot);
-  --color-bg-newest-end: var(--color-soot);
-  --color-bg-categories-end: var(--color-soot);
-  --color-bg-page-end: var(--color-soot);
+  // At most as light as ash, so the secondary text (mist) keeps 4.5:1. The categories have
+  // only large linen text, so they can go lighter.
+  --color-bg-header-end: var(--color-ash);
+  --color-bg-newest-end: var(--color-umber);
+  --color-bg-categories-end: var(--color-graphite);
+  --color-bg-page-end: var(--color-ash);
   --color-text-wordmark-end: var(--color-graphite);
   // Dimmed, since the image's light streaks reach in under the text.
   --image-hero:
@@ -105,6 +107,7 @@
   --color-sand: #bfae94;
   --color-taupe: #7f796f;
   --color-smoke: #928f8a;
+  --color-umber: #4f463a;
 
   @include light-colors;
 
