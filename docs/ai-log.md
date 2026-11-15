@@ -272,3 +272,7 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - Block 3: Claude measured what moved while the pages loaded, with a script in headless Chrome (empty cache, phone size). On the product page the loading text's margin pushed down all of `<main>`, and on both pages the footer stood mid-screen and jumped away when the content came; on the product list the category tabs also pushed everything down.
 - The loading states now hold the places of what comes (the breadcrumb, the gallery's empty frame, an invisible row of tabs) and are at least the window's height. Locally, CLS went to 0 on the product page (0.92 in production) and 0.02 on the product list (0.66).
 - Verification: client tests and build; Claude measured 320–1440 px and 200 % zoom with the script.
+
+- Block 3: Claude measured what moved while the pages loaded, with a script in headless Chrome (empty cache, phone size). The loading text's margin pushed down all of `<main>` on the product page, the footer jumped away when the content came, and the category tabs pushed the product list down.
+- The loading states now hold the places of what comes (breadcrumb, image frames, an invisible row of tabs) and fill the window. Locally CLS went to 0 on the product page (0.92 in production) and 0.02 on the product list (0.66).
+- Also: the terms page's contents bar now blends into the page on phones, and the sort box has no fill, like Filter.
