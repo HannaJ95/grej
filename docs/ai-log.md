@@ -256,3 +256,11 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - **Verification:** Claude reviewed every page at 320–1440 px and 200 % text in both modes and ran axe on each; it fixed what it found (overflow on three pages, an empty table heading, a faded pagination arrow). The CMS sort menu still shows "Nyast fö…" at 320 px with 200 % text, by design.
 - **Docs:** README with how to run the project, an MIT license, and the planning documents brought up to date.
 - **AI use:** I switched from Fable (high) to Opus to save usage; the smaller fixes did not need the larger model.
+
+## 2026-11-15
+
+- **Review:** Claude reviewed the code and ran Lighthouse against production, and we picked the fixes with the most effect per minute for the last coding day. What is left becomes improvement points in the report.
+- **SEO basics:** robots.txt, a meta description and a title on every page; the product page uses the product's name. Lighthouse SEO was 83 on every page.
+- **Not found pages:** unknown addresses show "Sidan finns inte" instead of a blank page. The shop's routes moved last, so the catch-all route doesn't catch `/admin/...`, and a test checks it. A missing or hidden product shows "Grejen finns inte"; other errors get "Försök igen".
+- **Fix:** with the page zoomed in, the phone menu's dark panel now reaches the bottom when it scrolls.
+- **Verification:** client tests and build; Claude checked 320–1440 px and 200 % text in Chrome.

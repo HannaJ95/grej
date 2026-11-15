@@ -128,6 +128,46 @@ describe('ProductPage', () => {
     expect(page().querySelector('app-product-page .quantity')!.textContent).toBe('1');
   });
 
+  it('names the browser tab after the product once it has loaded', async () => {
+    await harness.navigateByUrl('/produkter/1');
+    httpTesting.expectOne((req) => req.url.endsWith('/api/categories')).flush([]);
+    expect(document.title).toBe('Produkt – GREJ');
+
+    httpTesting.expectOne((req) => req.url.endsWith('/api/products/1')).flush(vase);
+    await harness.fixture.whenStable();
+
+    expect(document.title).toBe('Vas – GREJ');
+  });
+
+  it('says the product does not exist when the API answers 404', async () => {
+    await harness.navigateByUrl('/produkter/1');
+    httpTesting.expectOne((req) => req.url.endsWith('/api/categories')).flush([]);
+    httpTesting
+      .expectOne((req) => req.url.endsWith('/api/products/1'))
+      .flush(null, { status: 404, statusText: 'Not Found' });
+    await harness.fixture.whenStable();
+
+    expect(page().querySelector('h1')!.textContent!.trim()).toBe('Grejen finns inte');
+    expect(document.title).toBe('Grejen finns inte – GREJ');
+  });
+
+  it('lets the visitor try again when the product could not be fetched', async () => {
+    await harness.navigateByUrl('/produkter/1');
+    httpTesting.expectOne((req) => req.url.endsWith('/api/categories')).flush([]);
+    httpTesting
+      .expectOne((req) => req.url.endsWith('/api/products/1'))
+      .flush(null, { status: 500, statusText: 'Server Error' });
+    await harness.fixture.whenStable();
+
+    expect(page().querySelector('[role="alert"]')!.textContent).toContain('kunde inte hämtas');
+    button('Försök igen').click();
+    await new Promise((resolve) => setTimeout(resolve));
+    httpTesting.expectOne((req) => req.url.endsWith('/api/products/1')).flush(vase);
+    await harness.fixture.whenStable();
+
+    expect(page().querySelector('h1')!.textContent!.trim()).toBe('Vas');
+  });
+
   it('shows no buy row when the product is sold out', async () => {
     await openVase({ stock: 0, isSoldOut: true });
 
