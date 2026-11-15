@@ -36,9 +36,11 @@ describe('ShopLayout', () => {
     // and the menu's links.
     expect(links).toEqual([
       ['GREJ, till startsidan', '/'],
+      ['Hem', '/'],
       ['Shop', '/produkter'],
       ['Om GREJ', '/om-grej'],
       ['Utforska shoppen', '/produkter'],
+      ['Hem', '/'],
       ['Shop', '/produkter'],
       ['Om GREJ', '/om-grej'],
       ['Alla produkter', '/produkter'],
