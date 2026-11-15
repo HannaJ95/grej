@@ -17,6 +17,9 @@
 
 @if (options().categories.length > 0) {
   <app-category-tabs [categories]="options().categories" [selected]="categoryIds()" />
+} @else if (categories.isLoading()) {
+  <!-- Holds the tabs' place, so the list doesn't move down when they come. -->
+  <app-category-tabs class="placeholder" [categories]="[]" [selected]="[]" />
 }
 
 <!-- Pagination's links lead here. tabindex="-1" lets the router focus it, so Tab goes on into
@@ -103,7 +106,9 @@
       />
     } @else {
       <!-- Only before the first answer. Render's free tier can take up to a minute to wake up. -->
-      <p role="status">Laddar produkterna…</p>
+      <div class="loading">
+        <p role="status">Laddar produkterna…</p>
+      </div>
     }
   </div>
 </div>

@@ -42,7 +42,7 @@ const SHORT_DESCRIPTION = 150;
     ProductGallery,
   ],
   templateUrl: './product-page.html',
-  styleUrl: './product-page.scss',
+  styleUrls: ['../loading.scss', './product-page.scss'],
   host: { class: 'page-width' },
 })
 export class ProductPage {

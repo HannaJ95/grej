@@ -6,16 +6,6 @@
   padding-top: var(--space-24);
 }
 
-// The window's height, so the footer stays out of sight instead of jumping away when the
-// product comes.
-.loading {
-  min-height: 100svh;
-
-  p {
-    margin: 0;
-  }
-}
-
 .load-error {
   display: flex;
   flex-direction: column;
