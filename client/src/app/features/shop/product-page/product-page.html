@@ -1,8 +1,15 @@
 @if (product.isLoading()) {
   <!-- Render's free tier can take up to a minute to wake up. -->
   <p role="status">Laddar produkten…</p>
+} @else if (notFound()) {
+  <app-not-found heading="Grejen finns inte">
+    Den kan ha tagits bort ur butiken, eller så är adressen fel. Det finns fler grejer att titta på.
+  </app-not-found>
 } @else if (product.error()) {
-  <p role="alert">Produkten kunde inte visas.</p>
+  <div class="load-error">
+    <p role="alert">Produkten kunde inte hämtas just nu.</p>
+    <button appButton size="large" type="button" (click)="product.reload()">Försök igen</button>
+  </div>
 } @else if (product.hasValue()) {
   @let p = product.value();
   <app-breadcrumb

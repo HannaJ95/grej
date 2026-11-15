@@ -1,4 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import {
   Component,
@@ -21,6 +22,7 @@ import { Button } from '../../../shared/button/button';
 import { Icon } from '../../../shared/icons/icon';
 import { QuantityStepper } from '../../../shared/quantity-stepper/quantity-stepper';
 import { StockStatus } from '../../../shared/stock-status/stock-status';
+import { NotFound } from '../not-found/not-found';
 import { ProductGallery } from '../product-gallery/product-gallery';
 
 // Longer descriptions are cut short at the top of the page.
@@ -36,6 +38,7 @@ const SHORT_DESCRIPTION = 150;
     Icon,
     QuantityStepper,
     StockStatus,
+    NotFound,
     ProductGallery,
   ],
   templateUrl: './product-page.html',
@@ -51,6 +54,12 @@ export class ProductPage {
   readonly id = input.required<string>();
 
   protected readonly product = this.products.getProduct(this.id);
+
+  // The API answers 404 for a missing or hidden product, and 400 when the id isn't a number.
+  protected readonly notFound = computed(() => {
+    const error = this.product.error();
+    return error instanceof HttpErrorResponse && (error.status === 404 || error.status === 400);
+  });
 
   // Null when the description is short enough to show whole.
   protected readonly shortDescription = computed(() =>
@@ -79,6 +88,8 @@ export class ProductPage {
     effect(() => {
       if (this.product.hasValue()) {
         title.setTitle(`${this.product.value().title} – GREJ`);
+      } else if (this.notFound()) {
+        title.setTitle('Grejen finns inte – GREJ');
       }
     });
   }

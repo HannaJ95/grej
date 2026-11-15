@@ -149,6 +149,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
     - "Beskrivning": the whole description.
     - "Detaljer": only the rows the product has, i.e. Material, Färg, Mått and Vikt. Mått is e.g. "Ø 8 × H 9 cm", with the height last, and screen readers hear "diameter 8 cm, höjd 9 cm" instead. Vikt is in kg from 1 000 g. The fold is left out when the product has none of them.
     - "Frakt och retur": Leverans (Paket till ombud), Frakt (this product alone, from its packed size with the cart's copy of the shipping rule) and Ångerrätt (14 dagar), with a sentence that several products are counted as one parcel in the cart, and "Läs mer i villkoren", which leads to the terms page's Frakt section (`/villkor#frakt`).
+  - When the API answers 404 (missing or hidden) or 400 (the id isn't a number), the page for unknown addresses with the title "Grejen finns inte". Any other error says that the product couldn't be fetched just now, with "Försök igen".
 - The buy row on a phone:
   - It sticks at the bottom of the screen until the page is scrolled down to its place, where it stays.
   - The row itself sticks, instead of a separate buy bar, so the page never shows two buy buttons.
@@ -182,7 +183,7 @@ The shop has neutral colors. The CMS uses the same tokens, so it gets the same c
     - A link or a choice scrolls smoothly to the section (at once with reduced motion), moves the focus to its heading and puts `#id` in the address with the router's `scroll: 'manual'`. A link is a plain `href`, so ctrl/cmd-click still opens a new tab. Chrome's styled select gives the focus back to the select after a choice, so its scroll starts right after that.
   - The current section is the last one whose heading has scrolled up to where a link puts it, updated on scroll (`TermsPage.updateCurrent`).
   - Below 1024 px the headings have the bar's height as `scroll-margin-top`, which `TermsContents` measures with a `ResizeObserver` (`--terms-contents-height`). It is not in `scroll-padding-top`, since the browser would then scroll whenever the select itself got the focus. The router doesn't count `scroll-margin-top`, so the page scrolls a `#fragment` in the URL into view again right after the router.
-- The page for unknown addresses (`NotFoundPage`, every address the routes don't know) has the about page's top without a breadcrumb: the big title "Sidan finns inte", a sentence, "Visa alla grejer" and the link "Till startsidan". The gradient stands still, since the page is short. Vercel still answers such an address with status 200, since the app decides what to show.
+- The page for unknown addresses (`NotFoundPage`, every address the routes don't know) has the about page's top without a breadcrumb, from `NotFound` (`features/shop/not-found/`), which the product page reuses: the big title "Sidan finns inte", a sentence, "Visa alla grejer" and the link "Till startsidan". The gradient stands still, since the page is short. Vercel still answers such an address with status 200, since the app decides what to show.
 
 ## Admin
 
