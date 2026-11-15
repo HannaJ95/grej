@@ -264,3 +264,7 @@ Switched from a Figma-first to a code-first workflow. The rules for responsive d
 - **Not found pages:** unknown addresses show "Sidan finns inte" instead of a blank page. The shop's routes moved last, so the catch-all route doesn't catch `/admin/...`, and a test checks it. A missing or hidden product shows "Grejen finns inte"; other errors get "Försök igen".
 - **Fix:** with the page zoomed in, the phone menu's dark panel now reaches the bottom when it scrolls.
 - **Verification:** client tests and build; Claude checked 320–1440 px and 200 % text in Chrome.
+
+- Block 2: the hero images became WebP (29 + 25 kB instead of 283 + 288 kB) to cut the start page's LCP.
+- Kept one 1440 px size instead of the planned two: the tall phone hero scales the image up, so an 800 px version would blur.
+- Quality 75–90 showed blocks in the smooth gradients, so Claude compared the output visually and chose 95.
